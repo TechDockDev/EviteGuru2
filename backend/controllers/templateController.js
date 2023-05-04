@@ -239,33 +239,13 @@ const deleteTemplate = asyncHandler(async (req, res) => {
  */
 
 const allTemplate = asyncHandler(async (req, res) => {
-  // const { page = 1, limit = 10 } = req.query;
-
   try {
-    let page;
-    let limit;
+    const template = await Template.find({});
 
-    if (req.query.page) {
-      if (req.query.page && req.query.limit) {
-        page = parseInt(req.query.page);
-        limit = parseInt(req.query.limit);
-      }
-      page = parseInt(req.query.page);
-    } else {
-      limit = 6;
-      page = 1;
-    }
-
-    const skip = (page - 1) * limit;
-    // execute query with page and limit values
-    const total = await Template.countDocuments({});
-    const template = await Template.find({}).skip(skip).limit(limit).exec();
-
-    // return response with posts, total pages, and current page
-    res.json({ template, total });
+    res.json({ template });
   } catch (err) {
     console.log("not showing all template", err);
-    // console.error(err.message);
+    res.json(err);
   }
 });
 

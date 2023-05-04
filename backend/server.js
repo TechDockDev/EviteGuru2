@@ -13,14 +13,16 @@ import adminRouter from "./routes/adminRouter.js";
 import templateRouter from "./routes/imageRouter.js";
 import handleError from "./middlewares/errorHandler.js";
 import dguestRouter from "./routes/demogRouter.js";
+import bodyParser from "body-parser";
 
 //connecting database
 dotenv.config();
 connectDb();
 
 const app = express();
-app.use(express.json());
-
+app.use(express.json({limit: '50mb'}));
+app.use(bodyParser.json({ limit: "50mb" }))
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }))
 app.use(cors());
 
 //custom routes
@@ -43,13 +45,13 @@ app.get("/", async (req, res) => {
 });
 
 // Error middle_wares
-app.use(handleError, async (req, res) => {
-  res.send("Please check your url");
-  console.log(
-    `No responding in ${process.env.NODE_ENV} mode on port ${PORT} please check the url`
-      .red.bold
-  );
-});
+// app.use(handleError, async (req, res) => {
+//   res.send("Please check your url");
+//   console.log(
+//     `No responding in ${process.env.NODE_ENV} mode on port ${PORT} please check the url`
+//       .red.bold
+//   );
+// });
 
 app.listen(PORT, async (req, res) => {
   console.log(
