@@ -11,10 +11,10 @@ import {
 const templateRouter = express.Router();
 
 // to take image and json data form data at same time
-templateRouter.use(bodyParser.json());
-templateRouter.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
+// templateRouter.use(bodyParser.json());
+// templateRouter.use(bodyParser.urlencoded({ extended: true, limit: "30mb" }));
 
-templateRouter.use(express.static("public"));
+// templateRouter.use(express.static("public"));
 //multer for image upload and update
 const memory = multer.memoryStorage();
 const memory1 = multer.memoryStorage();
@@ -46,88 +46,19 @@ const updatedImage = multer({
  * @access private /admin
  */
 
-templateRouter.post("/create", upload, async (req, res) => {
-  const { name, description } = req.body;
-  const templateExists = await Template.findOne({ name });
-
-  if (templateExists) {
-    res.json("Please choose the different Template name ");
-  }
+templateRouter.post("/create", async (req, res) => {
+  const { name, description, templateJson } = req.body;
   try {
-    let sampleimage64 = null;
-    let sampleimage164 = null;
-    let sampleimage264 = null;
-    let sampleimage364 = null;
-    let backgroundimage64 = null;
-
-    if (
-      req.files["backgroundimage"] &&
-      req.files["sampleimage"] &&
-      req.files["sampleimage1"] &&
-      req.files["sampleimage2"] &&
-      req.files["sampleimage3"] &&
-      req.body
-    ) {
-      // Return the saved image data as base64 encoded strings
-      sampleimage64 = Buffer.from(req.files["sampleimage"][0].buffer).toString(
-        "base64"
-      );
-      console.log(sampleimage64);
-      sampleimage164 = Buffer.from(
-        req.files["sampleimage1"][0].buffer
-      ).toString("base64");
-      sampleimage264 = Buffer.from(
-        req.files["sampleimage2"][0].buffer
-      ).toString("base64");
-      sampleimage364 = Buffer.from(
-        req.files["sampleimage3"][0].buffer
-      ).toString("base64");
-
-      backgroundimage64 = Buffer.from(
-        req.files["backgroundimage"][0].buffer
-      ).toString("base64");
-      console.log(backgroundimage64);
-      let template = await Template.create({
-        name: name,
-        description: description,
-        sampleimage: sampleimage64,
-        sampleimage1: sampleimage164,
-        sampleimage2: sampleimage264,
-        sampleimage3: sampleimage364,
-        backgroundimage: backgroundimage64,
-      });
-      res.json(template);
-    } else if (
-      req.files["backgroundimage"] &&
-      req.files["sampleimage"] &&
-      req.files["sampleimage1"] &&
-      req.files["sampleimage2"] &&
-      !req.files["sampleimage3"] &&
-      req.body
-    ) {
-      // Return the saved image data as base64 encoded strings
-      sampleimage64 = Buffer.from(req.files["sampleimage"][0].buffer).toString(
-        "base64"
-      );
-      sampleimage164 = Buffer.from(
-        req.files["sampleimage1"][0].buffer
-      ).toString("base64");
-      sampleimage264 = Buffer.from(
-        req.files["sampleimage2"][0].buffer
-      ).toString("base64");
-      backgroundimage64 = Buffer.from(
-        req.files["backgroundimage64"][0].buffer
-      ).toString("base64");
-      let template = await Template.create({
-        name: name,
-        description: description,
-        sampleimage: sampleimage64,
-        sampleimage1: sampleimage164,
-        sampleimage2: sampleimage264,
-        backgroundimage: backgroundimage64,
-      });
-      res.json(template);
-    }
+    let template = await Template.create({
+      name,
+      description,
+      templateJson,
+    });
+    res.json({
+      status: "success",
+      message: "Template has been created successfully",
+      template,
+    });
   } catch (err) {
     res.json(err);
   }
@@ -294,8 +225,8 @@ templateRouter.put("/:id", updatedImage, async (req, res) => {
     res.json("Template not updated please try again", err);
   }
 });
+templateRouter.get("/", allTemplate);
 templateRouter.delete("/delete/:id", deleteTemplate);
-templateRouter.get("/template-list", allTemplate);
 templateRouter.get("/:id", singleTemplate);
 
 export default templateRouter;

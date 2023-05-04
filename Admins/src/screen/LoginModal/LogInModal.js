@@ -53,7 +53,7 @@ const LogInModal = (props) => {
       //   alert(`logged in successfully ${adminInfo.name}`);
       // }
 
-      props.showAlertBar("logged in successfully", "success");
+      // props.showAlertBar("logged in successfully", "success");
     }
   }, []);
   return (
