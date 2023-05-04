@@ -36,70 +36,53 @@ import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import testOutputObject from "./test";
 const Design = () => {
+  const testSvg = `<svg
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  version="1.1"
+  width="900"
+  height="600"
+  viewBox="0 0 900 600"
+  xml:space="preserve"
+>
+  <desc>Created with Fabric.js 5.3.0</desc>
+  <defs></defs>
+  <g transform="matrix(1 0 0 1 1000 496)">
+    <image
+      style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"
+      xlink:href="https://img.freepik.com/free-photo/abstract-grunge-decorative-relief-navy-blue-stucco-wall-texture-wide-angle-rough-colored-background_1258-28311.jpg?w=2000"
+      x="-1000"
+      y="-496"
+      width="2000"
+      height="992"
+    ></image>
+  </g>
+  <g transform="matrix(1 0 0 1 120.5 120.5)">
+    <rect
+      style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(156,22,22); fill-rule: nonzero; opacity: 1;"
+      x="-20"
+      y="-20"
+      rx="0"
+      ry="0"
+      width="40"
+      height="40"
+    />
+  </g>
+</svg>`;
   const outputJson = {
     version: "5.3.0",
     objects: [
-      {
-        type: "i-text",
-        version: "5.3.0",
-        originX: "left",
-        originY: "top",
-        left: 255.75,
-        top: 223.84,
-        width: 2,
-        height: 40.68,
-        fill: "rgb(0,0,0)",
-        stroke: null,
-        strokeWidth: 1,
-        strokeDashArray: null,
-        strokeLineCap: "butt",
-        strokeDashOffset: 0,
-        strokeLineJoin: "miter",
-        strokeUniform: false,
-        strokeMiterLimit: 4,
-        scaleX: 0.84,
-        scaleY: 0.84,
-        angle: 0,
-        flipX: false,
-        flipY: false,
-        opacity: 1,
-        shadow: null,
-        visible: true,
-        backgroundColor: "",
-        fillRule: "nonzero",
-        paintFirst: "fill",
-        globalCompositeOperation: "source-over",
-        skewX: 0,
-        skewY: 0,
-        fontFamily: "Helvetica",
-        fontWeight: "normal",
-        fontSize: 36,
-        text: "",
-        underline: false,
-        overline: false,
-        linethrough: false,
-        textAlign: "left",
-        fontStyle: "normal",
-        lineHeight: 1.16,
-        textBackgroundColor: "",
-        charSpacing: 0,
-        styles: [],
-        direction: "ltr",
-        path: null,
-        pathStartOffset: 0,
-        pathSide: "left",
-        pathAlign: "baseline",
-      },
       {
         type: "group",
         version: "5.3.0",
         originX: "left",
         originY: "top",
-        left: 187.07,
-        top: 35.38,
-        width: 352.45,
-        height: 424.91,
+        left: 229.85,
+        top: 38.63,
+        width: 332.57,
+        height: 465.6,
         fill: "rgb(0,0,0)",
         stroke: null,
         strokeWidth: 0,
@@ -125,165 +108,16 @@ const Design = () => {
         skewY: 0,
         objects: [
           {
-            type: "group",
-            version: "5.3.0",
-            originX: "left",
-            originY: "top",
-            left: -176.23,
-            top: -212.45,
-            width: 285.84,
-            height: 400.18,
-            fill: "rgb(0,0,0)",
-            stroke: null,
-            strokeWidth: 0,
-            strokeDashArray: null,
-            strokeLineCap: "butt",
-            strokeDashOffset: 0,
-            strokeLineJoin: "miter",
-            strokeUniform: false,
-            strokeMiterLimit: 4,
-            scaleX: 1.23,
-            scaleY: 1.06,
-            angle: 0,
-            flipX: false,
-            flipY: false,
-            opacity: 1,
-            shadow: null,
-            visible: true,
-            backgroundColor: "",
-            fillRule: "nonzero",
-            paintFirst: "fill",
-            globalCompositeOperation: "source-over",
-            skewX: 0,
-            skewY: 0,
-            objects: [
-              {
-                type: "image",
-                version: "5.3.0",
-                originX: "left",
-                originY: "top",
-                left: -142.92,
-                top: -200.09,
-                width: 1500,
-                height: 2100,
-                fill: "rgb(0,0,0)",
-                stroke: null,
-                strokeWidth: 0,
-                strokeDashArray: null,
-                strokeLineCap: "butt",
-                strokeDashOffset: 0,
-                strokeLineJoin: "miter",
-                strokeUniform: false,
-                strokeMiterLimit: 4,
-                scaleX: 0.19,
-                scaleY: 0.19,
-                angle: 0,
-                flipX: false,
-                flipY: false,
-                opacity: 1,
-                shadow: null,
-                visible: true,
-                backgroundColor: "",
-                fillRule: "nonzero",
-                paintFirst: "fill",
-                globalCompositeOperation: "source-over",
-                skewX: 0,
-                skewY: 0,
-                cropX: 0,
-                cropY: 0,
-                src: "blob:http://localhost:3000/b47f15d6-6427-47db-998f-54c9d2c2c7b",
-                crossOrigin: null,
-                filters: [],
-              },
-              {
-                type: "image",
-                version: "5.3.0",
-                originX: "left",
-                originY: "top",
-                left: 64.33,
-                top: -173.28,
-                width: 624,
-                height: 622,
-                fill: "rgb(0,0,0)",
-                stroke: null,
-                strokeWidth: 0,
-                strokeDashArray: null,
-                strokeLineCap: "butt",
-                strokeDashOffset: 0,
-                strokeLineJoin: "miter",
-                strokeUniform: false,
-                strokeMiterLimit: 4,
-                scaleX: 0.12,
-                scaleY: 0.12,
-                angle: 0,
-                flipX: false,
-                flipY: false,
-                opacity: 1,
-                shadow: null,
-                visible: true,
-                backgroundColor: "",
-                fillRule: "nonzero",
-                paintFirst: "fill",
-                globalCompositeOperation: "source-over",
-                skewX: 0,
-                skewY: 0,
-                cropX: 0,
-                cropY: 0,
-                src: "http://localhost:3000/assets/footerDecoSir.png",
-                crossOrigin: null,
-                filters: [],
-              },
-              {
-                type: "image",
-                version: "5.3.0",
-                originX: "left",
-                originY: "top",
-                left: -140.25,
-                top: 79.06,
-                width: 624,
-                height: 622,
-                fill: "rgb(0,0,0)",
-                stroke: null,
-                strokeWidth: 0,
-                strokeDashArray: null,
-                strokeLineCap: "butt",
-                strokeDashOffset: 0,
-                strokeLineJoin: "miter",
-                strokeUniform: false,
-                strokeMiterLimit: 4,
-                scaleX: 0.14,
-                scaleY: 0.14,
-                angle: 0,
-                flipX: false,
-                flipY: false,
-                opacity: 1,
-                shadow: null,
-                visible: true,
-                backgroundColor: "",
-                fillRule: "nonzero",
-                paintFirst: "fill",
-                globalCompositeOperation: "source-over",
-                skewX: 0,
-                skewY: 0,
-                cropX: 0,
-                cropY: 0,
-                src: "http://localhost:3000/assets/footerDecoSir.png",
-                crossOrigin: null,
-                filters: [],
-              },
-            ],
-          },
-          {
             type: "i-text",
             version: "5.3.0",
             originX: "left",
             originY: "top",
-            left: -88.74,
-            top: -9.22,
-            width: 305.16,
+            left: -140.38,
+            top: -48.59,
+            width: 2,
             height: 40.68,
-            fill: "#bc5f45",
-            stroke: "#bc5f45",
+            fill: "rgb(0,0,0)",
+            stroke: null,
             strokeWidth: 1,
             strokeDashArray: null,
             strokeLineCap: "butt",
@@ -291,8 +125,8 @@ const Design = () => {
             strokeLineJoin: "miter",
             strokeUniform: false,
             strokeMiterLimit: 4,
-            scaleX: 0.57,
-            scaleY: 0.57,
+            scaleX: 0.84,
+            scaleY: 0.84,
             angle: 0,
             flipX: false,
             flipY: false,
@@ -308,7 +142,7 @@ const Design = () => {
             fontFamily: "Helvetica",
             fontWeight: "normal",
             fontSize: 36,
-            text: "' शादी, खाना आबादी।",
+            text: "",
             underline: false,
             overline: false,
             linethrough: false,
@@ -325,16 +159,54 @@ const Design = () => {
             pathAlign: "baseline",
           },
           {
+            type: "image",
+            version: "5.3.0",
+            originX: "left",
+            originY: "top",
+            left: -166.28,
+            top: -232.8,
+            width: 1500,
+            height: 2100,
+            fill: "rgb(0,0,0)",
+            stroke: null,
+            strokeWidth: 0,
+            strokeDashArray: null,
+            strokeLineCap: "butt",
+            strokeDashOffset: 0,
+            strokeLineJoin: "miter",
+            strokeUniform: false,
+            strokeMiterLimit: 4,
+            scaleX: 0.22,
+            scaleY: 0.22,
+            angle: 0,
+            flipX: false,
+            flipY: false,
+            opacity: 1,
+            shadow: null,
+            visible: true,
+            backgroundColor: "",
+            fillRule: "nonzero",
+            paintFirst: "fill",
+            globalCompositeOperation: "source-over",
+            skewX: 0,
+            skewY: 0,
+            cropX: 0,
+            cropY: 0,
+            src: "blob:http://localhost:3000/7582db07-71a1-4f23-b5aa-5beb9e62a1b6",
+            crossOrigin: null,
+            filters: [],
+          },
+          {
             type: "i-text",
             version: "5.3.0",
             originX: "left",
             originY: "top",
-            left: -46.93,
-            top: -75.27,
-            width: 121.79,
-            height: 20.34,
-            fill: "#0c101e",
-            stroke: "#0c101e",
+            left: -64.35,
+            top: -114.48,
+            width: 142.08,
+            height: 40.68,
+            fill: "#e8a496",
+            stroke: "#e8a496",
             strokeWidth: 1,
             strokeDashArray: null,
             strokeLineCap: "butt",
@@ -342,8 +214,8 @@ const Design = () => {
             strokeLineJoin: "miter",
             strokeUniform: false,
             strokeMiterLimit: 4,
-            scaleX: 0.92,
-            scaleY: 1.56,
+            scaleX: 1,
+            scaleY: 1,
             angle: 0,
             flipX: false,
             flipY: false,
@@ -358,8 +230,8 @@ const Design = () => {
             skewY: 0,
             fontFamily: "Helvetica",
             fontWeight: "normal",
-            fontSize: 18,
-            text: "आपका स्वागत है",
+            fontSize: 36,
+            text: "invitation",
             underline: false,
             overline: false,
             linethrough: false,
@@ -380,12 +252,12 @@ const Design = () => {
             version: "5.3.0",
             originX: "left",
             originY: "top",
-            left: -69.85,
-            top: -109.33,
-            width: 256.15,
+            left: -65.97,
+            top: 6.3,
+            width: 222.1,
             height: 40.68,
-            fill: "#c88073",
-            stroke: "#c88073",
+            fill: "#ecaa91",
+            stroke: "#ecaa91",
             strokeWidth: 1,
             strokeDashArray: null,
             strokeLineCap: "butt",
@@ -407,61 +279,10 @@ const Design = () => {
             globalCompositeOperation: "source-over",
             skewX: 0,
             skewY: 0,
-            fontFamily: "Arial",
-            fontWeight: "normal",
-            fontSize: 36,
-            text: "shaadi samaroh",
-            underline: false,
-            overline: false,
-            linethrough: false,
-            textAlign: "left",
-            fontStyle: "normal",
-            lineHeight: 1.16,
-            textBackgroundColor: "",
-            charSpacing: 0,
-            styles: [],
-            direction: "ltr",
-            path: null,
-            pathStartOffset: 0,
-            pathSide: "left",
-            pathAlign: "baseline",
-          },
-          {
-            type: "i-text",
-            version: "5.3.0",
-            originX: "left",
-            originY: "top",
-            left: -89.88,
-            top: 38.79,
-            width: 420.35,
-            height: 135.06,
-            fill: "#324a63",
-            stroke: "#324a63",
-            strokeWidth: 1,
-            strokeDashArray: null,
-            strokeLineCap: "butt",
-            strokeDashOffset: 0,
-            strokeLineJoin: "miter",
-            strokeUniform: false,
-            strokeMiterLimit: 4,
-            scaleX: 0.42,
-            scaleY: 0.42,
-            angle: -5.88,
-            flipX: false,
-            flipY: false,
-            opacity: 1,
-            shadow: null,
-            visible: true,
-            backgroundColor: "",
-            fillRule: "nonzero",
-            paintFirst: "fill",
-            globalCompositeOperation: "source-over",
-            skewX: 0,
-            skewY: 0,
             fontFamily: "Helvetica",
             fontWeight: "normal",
             fontSize: 36,
-            text: "कोई बहाना अब काम नहीं\nआना आपको सहपरिवार हमारे\nभैया की शादी में पक्का आना।",
+            text: "Text Message",
             underline: false,
             overline: false,
             linethrough: false,
@@ -482,12 +303,12 @@ const Design = () => {
             version: "5.3.0",
             originX: "left",
             originY: "top",
-            left: -61.38,
-            top: -34.79,
-            width: 280.2,
+            left: -73.71,
+            top: -52.94,
+            width: 324.23,
             height: 40.68,
-            fill: "#e87163",
-            stroke: "#e87163",
+            fill: "rgb(0,0,0)",
+            stroke: null,
             strokeWidth: 1,
             strokeDashArray: null,
             strokeLineCap: "butt",
@@ -495,8 +316,8 @@ const Design = () => {
             strokeLineJoin: "miter",
             strokeUniform: false,
             strokeMiterLimit: 4,
-            scaleX: 0.4,
-            scaleY: 0.4,
+            scaleX: 0.51,
+            scaleY: 0.51,
             angle: 0,
             flipX: false,
             flipY: false,
@@ -512,7 +333,7 @@ const Design = () => {
             fontFamily: "Helvetica",
             fontWeight: "normal",
             fontSize: 36,
-            text: "Date: 30-04-2023",
+            text: "venue: Banquet Hall",
             underline: false,
             overline: false,
             linethrough: false,
@@ -536,6 +357,7 @@ const Design = () => {
   const { editor, onReady } = useFabricJSEditor();
   const [data, setData] = useState();
   const [groupCanvas, setGroupCanvas] = useState();
+  const [templateData, setTemplateData] = useState();
   const fonts = [
     "Pacifico",
     "VT323",
@@ -647,6 +469,7 @@ const Design = () => {
   const moveBackward = () => {
     const myObject = editor.canvas.getActiveObject();
     editor.canvas.sendBackwards(myObject);
+    editor.canvas.discardActiveObject();
   };
   //   ============send forward =============
   const moveForward = () => {
@@ -765,22 +588,32 @@ const Design = () => {
 
   //   ====load canvas from json =====
   const loadCanvasFromJson = () => {
-    // let object = new fabric.Canvas("canvas");
-    editor?.canvas?.loadFromJSON(outputJson, editor?.canvas?.renderAll.bind());
+    let object = new fabric.Canvas("canvas");
+    editor?.canvas?.loadFromJSON(
+      templateData,
+      editor?.canvas?.renderAll.bind()
+    );
     // Load canvas from JSON
-    // object.loadFromJSON(outputJson, function () {
-    //   // Callback function that runs after the canvas is loaded
-    //   console.log("Canvas loaded from JSON");
+    object.loadFromJSON(templateData, function () {
+      // Callback function that runs after the canvas is loaded
+      console.log("Canvas loaded from JSON");
+      editor.canvas.renderAll();
+    });
+    editor?.canvas?.renderAll();
+    // fabric.loadSVGFromString(testSvg, (objects, options) => {
+    //   const svgObject = fabric.util.groupSVGElements(objects, options);
+    //   svgObject.selectable = false;
+    //   editor.canvas.add(svgObject);
+
     //   editor.canvas.renderAll();
     // });
-    editor?.canvas?.renderAll();
   };
   // ==================================
   // =================== This is YOur Handler + Image Downloader
   const downloadImage = (e) => {
     e.preventDefault();
     const ext = "jpg";
-    const base64 = editor.canvas.toDataURL({
+    const base64 = editor?.canvas?.toDataURL({
       format: ext,
       enableRetinaScaling: true,
     });
@@ -788,7 +621,7 @@ const Design = () => {
     link.href = base64;
     link.download = `eraser_example.${ext}`;
     console.log("Running", base64);
-    dispatch(EditTemplate(base64));
+    // dispatch(EditTemplate(base64));
     // { THis link.Click For Dowload Editd Image , Whene You remove That Commit And that Image will Download}
     link.click();
   };
@@ -798,10 +631,17 @@ const Design = () => {
     editor?.canvas?.remove(editor?.canvas?.getActiveObject());
     editor?.canvas?.renderAll();
   };
-
+  // ==================
+  const getTemplate = async () => {
+    const s = await axios.get(`/template/`);
+    console.log(s.data.template[0].templateJson); //
+    console.log("template data=>", s);
+    const latest = s?.data?.template.length - 1;
+    setTemplateData(s?.data?.template[latest]?.templateJson);
+  };
   // ===============
   useEffect(() => {
-    dispatch(ATemplateDetails(id));
+    // dispatch(ATemplateDetails(id));
     // _onReady();
     // loadCanvasFromJson();
   }, [dispatch, id]);
@@ -809,9 +649,10 @@ const Design = () => {
 
   useEffect(() => {
     // _onReady(document.getElementsByClassName("fabCanvas")[0]);
+    getTemplate();
     console.log("---->", templateDetails.template);
     loadCanvasFromJson();
-  }, [templateDetails]);
+  }, [templateDetails, templateData]);
   // ================
 
   return (

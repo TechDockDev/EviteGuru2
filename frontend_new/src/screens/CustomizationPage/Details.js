@@ -24,7 +24,7 @@ const Details = () => {
    const userLogin = useSelector((state) => state.userLogin);
    const { userInfo } = userLogin;
 
-   const id = userInfo._id;
+   const id = userInfo?._id;
 
    const submitHandler = (e)  => {
       e.preventDefault();
