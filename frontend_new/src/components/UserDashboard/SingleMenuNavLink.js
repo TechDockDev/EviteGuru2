@@ -24,6 +24,12 @@ const SingleMenuNavLink = ({ linkText, icon, to, handleDrawerToggle }) => {
                bgcolor:"#CDB5EA",
                borderRadius: "4px 0px 0px 4px",
             },
+            "& .active": {
+               color: "#000",
+               borderLeft: "10px solid #795DA8",
+               bgcolor: "#CDB5EA",
+               borderRadius: "4px 0px 0px 4px",
+             },
          }}>
          <ListItemButton
             sx={{

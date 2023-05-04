@@ -79,7 +79,7 @@ const Header = () => {
         <AppBar
           elevation={1}
           sx={{
-            bgcolor: "transparent",
+            bgcolor: "white",
             display: {
               xl: "block",
               lg: "block",

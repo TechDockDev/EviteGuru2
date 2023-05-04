@@ -132,11 +132,17 @@ const UserDashboard = () => {
                 // border:"1px solid blue",
                 height: "fit-content",
                 bgcolor: "transparent",
+                "& .active": {
+                  color: "#000",
+                  borderLeft: "10px solid #795DA8",
+                  bgcolor: "#CDB5EA",
+                  borderRadius: "4px 0px 0px 4px",
+                },
               }}
             >
               <SingleMenuNavLink
                 icon={<GrDocumentText />}
-                to={"/dashboard/myTemplates/642bb01d64a71238dab88d9e"}
+                to={"/dashboard/edit/642bb01d64a71238dab88d9e"}
                 linkText={"My Template"}
               />
               <SingleMenuNavLink
@@ -146,12 +152,12 @@ const UserDashboard = () => {
               />
               <SingleMenuNavLink
                 icon={<GoMail />}
-                to={"#"}
+                to={"/"}
                 linkText={"Mailing Response"}
               />
               <SingleMenuNavLink
                 icon={<TbAddressBook />}
-                to={"#"}
+                to={"/"}
                 linkText={"Address Book"}
               />
               <SingleMenuNavLink
@@ -161,7 +167,7 @@ const UserDashboard = () => {
               />
               <SingleMenuNavLink
                 icon={<MdLogout />}
-                to={"#"}
+                to={"/"}
                 linkText={"Log out"}
               />
             </List>
@@ -397,9 +403,9 @@ const UserDashboard = () => {
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}
                   icon={<GoMailRead />}
-                  to={"#"}
+                  to={"/"}
                   linkText={"Mailing Response"}
-                />
+                />  
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}
                   icon={<GoMail />}
@@ -409,19 +415,19 @@ const UserDashboard = () => {
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}
                   icon={<TbAddressBook />}
-                  to={"#"}
+                  to={"/"}
                   linkText={"Address Book"}
                 />
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}
                   icon={<FiSettings />}
-                  to={"#"}
+                  to={"/"}
                   linkText={"My Template"}
                 />
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}
                   icon={<MdLogout />}
-                  to={"#"}
+                  to={"/"}
                   linkText={"Log out"}
                 />
               </List>

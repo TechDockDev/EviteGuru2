@@ -10,6 +10,7 @@ import {
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
+import { useNavigate } from "react-router-dom";
 
 const BrowseTemplate = () => {
   const [templateData, setTemplateData] = useState([]);
@@ -18,7 +19,7 @@ const BrowseTemplate = () => {
   const [singleTemplateId, setSingleTemplateId] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
+  const navigate = useNavigate();
   const [loadingTemplate, setLoadingTemplate] = useState(true);
 
   const toggleTemplatePreviewModal = (e, templateId) => {
@@ -34,12 +35,12 @@ const BrowseTemplate = () => {
   const getTemplate = async () => {
     try {
       setLoadingTemplate(true);
-      const res = await axios.get(
-        `template/template-list?page=${page}&limit=6`
-      );
-      setTemplateData(res.data.template);
+      const res = await axios.get(`template/`);
+      console.log(res.data.template);
+      setTemplateData(res.data.template[0].templateJson);
       setLoadingTemplate(false);
-      setTotalPages(Math.ceil(res.data.total / 6));
+      navigate(`/dashboard/edit/${res.data.template[0]._id}`);
+      // setTotalPages(Math.ceil(res.data.total / 6));
     } catch (error) {
       console.log(error);
     }
@@ -183,12 +184,18 @@ const BrowseTemplate = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              padding:"20px"
+              padding: "20px",
             }}
           >
-            <CircularProgress color="primary" sx={{bgcolor:"transparent !important", "& svg":{
-               bgcolor:"transparent !important"
-            }}} />{" "}
+            <CircularProgress
+              color="primary"
+              sx={{
+                bgcolor: "transparent !important",
+                "& svg": {
+                  bgcolor: "transparent !important",
+                },
+              }}
+            />{" "}
           </Grid>
         ) : (
           ""
@@ -203,9 +210,10 @@ const BrowseTemplate = () => {
         {page === totalPages ? "Nothing more to display" : "see more template"}
       </Button>
       <TemplatePreview
-        carouselClick={carouselClick}
+        // carouselClick={carouselClick}
         toggleTemplatePreviewModal={toggleTemplatePreviewModal}
-        singleTemplateId={singleTemplateId}
+        // singleTemplateId={singleTemplateId}
+        data={templateData}
         openTemplatePreviewModal={openTemplatePreviewModal}
       />
     </Stack>
