@@ -11,6 +11,7 @@ import Design from "./Design";
 import Preview from "./Preview";
 import Details from "./Details";
 import Send from "./Send";
+import Track from "./MailingReponses";
 
 const CustomizationPage = () => {
   const [value, setValue] = React.useState(0);
@@ -151,7 +152,7 @@ const CustomizationPage = () => {
           {/* === 👆Send tab button👆  ===*/}
           {/* === 👇Send tab button👇  ===*/}
 
-          <Tab
+          {/* <Tab
             component={Button}
             label="Track"
             id={`track-tab-4`}
@@ -166,7 +167,7 @@ const CustomizationPage = () => {
               "&:hover": { border: "none", bgcolor: "#E7E2ED" },
               width: "150px",
             }}
-          />
+          /> */}
           {/* === 👆Send tab button👆  ===*/}
         </Tabs>
         {/* ======================================================================= */}
@@ -216,7 +217,17 @@ const CustomizationPage = () => {
       >
         {value === 3 && <Send />}
       </div>
-      {/* === 👆 tab-3 Send tab button👆  ===*/}
+      {/* === 👆 tab-4 send tab button👆  ===*/}
+      {/* === 👇 tab-4 track tab button👇  ===*/}
+      {/* <div
+        role="tabpanel"
+        hidden={value !== 4}
+        id={`track-tabpanel-${4}`}
+        aria-labelledby={`track-tab-${4}`}
+      >
+        {value === 4 && <Track />}
+      </div> */}
+      {/* === 👆 tab-4 track tab button👆  ===*/}
     </Box>
   );
 };

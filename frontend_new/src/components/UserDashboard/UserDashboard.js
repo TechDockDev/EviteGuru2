@@ -152,7 +152,7 @@ const UserDashboard = () => {
               />
               <SingleMenuNavLink
                 icon={<GoMail />}
-                to={"/"}
+                to={"/dashboard/mailing-responses"}
                 linkText={"Mailing Response"}
               />
               <SingleMenuNavLink
@@ -396,16 +396,22 @@ const UserDashboard = () => {
               >
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}
+                  icon={<FiSettings />}
+                  to={"/dashboard/edit/642bb01d64a71238dab88d9e"}
+                  linkText={"My Template"}
+                />
+                <SingleMenuNavLink
+                  handleDrawerToggle={handleDrawerToggle}
                   icon={<GrDocumentText />}
-                  to={"#"}
+                  to={"/dashboard/invitees"}
                   linkText={"Invitees"}
                 />
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}
                   icon={<GoMailRead />}
-                  to={"/"}
+                  to={"/dashboard/mailing-responses"}
                   linkText={"Mailing Response"}
-                />  
+                />
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}
                   icon={<GoMail />}
@@ -417,12 +423,6 @@ const UserDashboard = () => {
                   icon={<TbAddressBook />}
                   to={"/"}
                   linkText={"Address Book"}
-                />
-                <SingleMenuNavLink
-                  handleDrawerToggle={handleDrawerToggle}
-                  icon={<FiSettings />}
-                  to={"/"}
-                  linkText={"My Template"}
                 />
                 <SingleMenuNavLink
                   handleDrawerToggle={handleDrawerToggle}

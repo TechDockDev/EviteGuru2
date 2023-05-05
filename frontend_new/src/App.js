@@ -6,9 +6,9 @@ import BrowseTemplate from "./screens/BrowseTemplate/BrowseTemplate";
 import UserDashboard from "./components/UserDashboard/UserDashboard";
 import CustomizationPage from "./screens/CustomizationPage/CustomizationPage";
 import Preview from "./screens/CustomizationPage/Preview";
-import MyTemplates from "./screens/MyTemplates/MyTemplates";
 import Invitees from "./screens/Invitees/Invitees";
 import AccountSettings from "./screens/AccountSettings/AccountSettings";
+import MailingReponses from "./screens/CustomizationPage/MailingReponses";
 
 // import FooterSection from "./screens/HomeScreen/FooterSection";
 // import EmailsendOtp from "./screens/EmailotpScreen";
@@ -16,7 +16,6 @@ import AccountSettings from "./screens/AccountSettings/AccountSettings";
 // import LogInModal from "./screens/LoginModal/LogInModal";
 // import React, { useState, useEffect } from "react";
 // import RegisterModal from "./screens/RegisterModal/RegisterModal";
-
 
 const App = () => {
   return (
@@ -29,11 +28,18 @@ const App = () => {
       </Routes>
       <Routes>
         <Route path="/dashboard" element={<UserDashboard />}>
-          <Route  path="/dashboard/edit/:id" element={<CustomizationPage />} />
+          <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
           <Route path="/dashboard/preview/:id" element={<Preview />} />
-          <Route path="/dashboard/myTemplates/:id" element={<MyTemplates />} />
+
           <Route path="/dashboard/invitees" element={<Invitees />} />
-          <Route path="/dashboard/account-setting" element={<AccountSettings />} />
+          <Route
+            path="/dashboard/account-setting"
+            element={<AccountSettings />}
+          />
+          <Route
+            path="/dashboard/mailing-responses"
+            element={<MailingReponses />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

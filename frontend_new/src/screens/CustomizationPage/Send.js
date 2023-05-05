@@ -1,6 +1,10 @@
 import { Box, Button, Stack, Modal, Menu, MenuItem, Grid } from "@mui/material";
 import React, { useState } from "react";
-import { DataGrid, GridToolbar, GridToolbarQuickFilter } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbar,
+  GridToolbarQuickFilter,
+} from "@mui/x-data-grid";
 import AddGuests from "./AddGuests";
 import BulkUpload from "./BulkUpload";
 import { useSelector } from "react-redux";
@@ -27,6 +31,16 @@ const Send = () => {
     setOpenAddUserModal(!openAddUserModal);
   };
 
+
+  // ==========handle send ===============
+  const handleSend = () =>{
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+  // =====================================
   // ========== customized toolbar ============
   function CustomeToolBar() {
     return (
@@ -95,21 +109,22 @@ const Send = () => {
       headerName: "Status",
       width: 120,
     },
-    // {
-    //    field: "attending",
-    //    headerName: "Attending",
-    //    width: 100,
-    // },
-    // {
-    //    field: "notAttending",
-    //    headerName: "Not Attending",
-    //    width: 100,
-    // },
-    // {
-    //    field: "pending",
-    //    headerName: "Pending",
-    //    width: 80,
-    // },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <Stack direction={"row"} spacing={1} alignItems={"center"}>
+            <Button variant="contained" onClick={()=>handleSend()} >Send</Button>
+            <Button variant="contained" disabled>
+              Edit
+            </Button>
+          </Stack>
+        );
+      },
+    },
+    
   ];
 
   const rows = [
@@ -233,9 +248,8 @@ const Send = () => {
         </Box>
         <DataGrid
           rows={rows}
-          
           columns={columns}
-          components={{Toolbar:CustomeToolBar}}
+          components={{ Toolbar: CustomeToolBar }}
           initialState={{
             pagination: {
               paginationModel: {
@@ -248,7 +262,7 @@ const Send = () => {
           checkboxSelection
           disableRowSelectionOnClick
           getRowClassName={(params) =>
-            params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+            params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
           }
           sx={{
             border: "none",
