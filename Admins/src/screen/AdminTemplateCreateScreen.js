@@ -517,26 +517,74 @@ const AdminTemplateCreateScreen = () => {
 
   const addImage = (e) => {
     const reader = new FileReader();
+    // console.log(e.target.files[0]);
     reader.onload = function (event) {
       var imgObj = new Image();
+      console.log(event.target.result);
       imgObj.src = event.target.result;
       imgObj.onload = function () {
         var image = new fabric.Image(imgObj);
         editor.canvas.centerObject(image);
         editor.canvas.add(image);
-        image.set({ height: 300, width: 300, left: 100, top: 100,objectFit:"contain" });
-        image.filters.push(
-          new fabric.Image.filters.BlendColor({
-            color: "orange", // change this color to your desired color
-            mode: "multiply",
-          })
-        );
-        image.applyFilters();
+        image.set({
+          scaleX: editor?.canvas.getWidth() / image.width / 2,
+          scaleY: editor?.canvas.getHeight() / image.height / 2,
+          top: 0,
+          left: 0,
+          // originX: "left",
+          // originY: "top",
+          // srcFromAttribute: true,
+        });
+        // image.filters.push(
+        //   new fabric.Image.filters.BlendColor({
+        //     color: "orange", // change this color to your desired color
+        //     mode: "multiply",
+        //   })
+        // );
+        // image.applyFilters();
+        // var dataURL = editor?.canvas.toDataURL({
+        //   format: "png",
+        //   quality: 0.8,
+        // });
+        // console.log(dataURL);
         editor?.canvas.renderAll();
       };
     };
     reader.readAsDataURL(e.target.files[0]);
   };
+
+  const addImagePath = (e) => {
+    console.log(URL.createObjectURL(e.target.files[0]));
+    fabric.Image.fromURL(
+      URL.createObjectURL(e.target.files[0]),
+      function (img) {
+        var img1 = img.set({
+          scaleX: editor?.canvas.getWidth() / img.width / 2,
+          scaleY: editor?.canvas.getHeight() / img.height / 2,
+          top: 0,
+          left: 0,
+          originX: "left",
+          originY: "top",
+          srcFromAttribute: true,
+        });
+        // img1 = img1.setSourcePath('h');
+        editor?.canvas.add(img1);
+      }
+    );
+    // const file = e.target.files[0];
+    // const reader = new FileReader();
+    // reader.onload = function (event) {
+    //   const img = new Image();
+    //   img.onload = function () {
+    //     const fabricImg = new fabric.Image(img);
+    //     editor?.canvas.add(fabricImg);
+    //     editor?.canvas.renderAll();
+    //   };
+    //   img.src = event.target.result;
+    // };
+    // reader.readAsDataURL(file);
+  };
+
   const addText = () => {
     const text = new fabric.Textbox("text", {
       editable: true,
@@ -589,23 +637,76 @@ const AdminTemplateCreateScreen = () => {
   }
   async function saveTemplate() {
     try {
+      fabric.Image.prototype.toObject = (function (toObject) {
+        return function () {
+          return fabric.util.object.extend(toObject.call(this), {
+            src: "/assets/heroImage2.png",
+          });
+        };
+      })(fabric.Image.prototype.toObject);
+      // "assets" + this.getSrc().split(":3000")[1]
       const response = await axios.post("/template/create", {
         name: "badhiya template",
         description: "arre bahut badhiya template",
+        // templateJson: JSON.stringify(editor?.canvas.toJSON()),
         templateJson: JSON.stringify(editor?.canvas.toJSON()),
       });
-
       console.log(response);
+      // console.log(JSON.stringify(editor?.canvas.toDatalessJSON()));
+      console.log(JSON.stringify(editor?.canvas.toJSON()));
+      // console.log(JSON.stringify(editor?.canvas.toObject()));
+      // console.log(JSON.stringify(editor?.canvas.toDataURL()));
+      // console.log(JSON.stringify(editor?.canvas.toDatalessObject()));
+      // console.log(response);
     } catch (error) {
       console.log(error);
     }
   }
+  const addImageSomewhere = (e) => {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function (f) {
+      var data = f.target.result;
+      fabric.Image.fromURL(
+        data,
+        function (img) {
+          var oImg = img
+            .set({ left: 0, top: 0, angle: 0, width: 100, height: 100 })
+            .scale(0.9);
+          editor?.canvas.add(oImg).renderAll();
+          var a = editor?.canvas.setActiveObject(oImg);
+          var dataURL = editor?.canvas.toDataURL({
+            format: "png",
+            quality: 0.8,
+          });
+          var dataURL = editor?.canvas.toDataURL({
+            format: "jpg",
+            quality: 0.8,
+          });
+          var dataURL = editor?.canvas.toDataURL({
+            format: "jpeg",
+            quality: 0.8,
+          });
+          console.log(dataURL);
+        },
+        { crossOrigin: "anonymous" }
+      );
+    };
+    reader.readAsDataURL(file);
+  };
+  const addImageSvg = (e) => {
+    console.log(URL.createObjectURL(e.target.files[0]));
+
+    var myImage = new fabric.Image();
+
+    myImage.set("src", URL.createObjectURL(e.target.files[0]));
+    editor.canvas.add(myImage);
+  };
   return (
     <div>
       <button onClick={onAddCircle}>Add circle</button>
       <button onClick={onAddRectangle}>Add Rectangle</button>
       <button onClick={deleteAll}>Delete all</button>
-      {/* <button onClick={addImage}>Add Image</button> */}
       <button onClick={addText}>Add Text</button>
       <button onClick={layerDown}>Layer Down</button>
       <button onClick={layerUp}>Layer Up</button>
@@ -617,8 +718,31 @@ const AdminTemplateCreateScreen = () => {
       <input
         type="file"
         id="img"
-        // name="favcolor"
+        accept="image/png, image/jpeg ,image/jpg"
         onChange={addImage}
+      ></input>
+      <label htmlFor="img">Add Svg Image</label>
+      <input
+        type="file"
+        id="img"
+        // accept="image/png, image/jpeg ,image/jpg"
+        accept=".svg"
+        onChange={addImageSvg}
+      ></input>
+      <label htmlFor="img">Add Image Path</label>
+      <input
+        type="file"
+        id="img"
+        accept="image/png, image/jpeg ,image/jpg"
+        onChange={addImagePath}
+      ></input>
+      <label htmlFor="img">Add Image from somewhere</label>
+      <input
+        type="file"
+        id="img"
+        accept="image/png, image/jpeg ,image/jpg"
+        crossOrigin="anonymous"
+        onChange={addImageSomewhere}
       ></input>
       <label htmlFor="favcolor">Select your favorite color:</label>
       <input
