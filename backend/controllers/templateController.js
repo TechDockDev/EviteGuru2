@@ -10,23 +10,6 @@ import EventDetails from "../models/eventModels.js";
  * @access  private Only Admin
  */
 
-const createTemplate = asyncHandler(async (req, res) => {
-  // const { name, description, sampleimage, backgroundimage, envelope} = req.body;
-  const { name, description } = req.body;
-
-  const data = Template.create({
-    name,
-    description,
-  });
-
-  if (data) {
-    res.status(200);
-    res.json(data);
-  } else {
-    res.status(400).json("Not create");
-  }
-});
-
 /**
  * @dec get all template
  * @route GET /template/categories
@@ -150,24 +133,21 @@ const userTemplate = asyncHandler(async (req, res) => {
 
 // Storage
 
-const create_Template = asyncHandler(async (req, res) => {
-  const { name, description, sampleimage, backgroundimage } = req.files;
-  // const { name, description } = req.body;
-  const templateExists = await Template.findOne({ name });
-
-  if (templateExists) {
-    res.json("Something went wrong please try again ");
-  } else {
-    const template = await Template.create({
-      name: name,
-      description: description,
-      // sampleimage: sampleimage[0].buffer,
-      // backgroundimage: backgroundimage[0].buffer,
-      // sampleimage: req.file.buffer,
-      // backgroundimage: req.file.buffer,
+const createTemplate = asyncHandler(async (req, res) => {
+  const { name, description, templateJson } = req.body;
+  try {
+    let template = await Template.create({
+      name,
+      description,
+      templateJson,
     });
-
-    res.json(" template is created");
+    res.json({
+      status: "success",
+      message: "Template has been created successfully",
+      template,
+    });
+  } catch (err) {
+    res.json(err);
   }
 });
 
@@ -219,17 +199,11 @@ const createEvent = asyncHandler(async (req, res) => {
  */
 
 const deleteTemplate = asyncHandler(async (req, res) => {
-  const template = await Template.findById(req.params.id);
-  try {
-    if (!template) {
-      res.json("Template not found ");
-    } else {
-      await template.remove();
-      res.json({ message: "Template is deleted" });
-    }
-  } catch (err) {
-    res.json(err);
-  }
+  const template = await Template.findByIdAndRemove(req.params.id);
+  res.json({
+    status: "success",
+    message: "Template has been deleted",
+  });
 });
 
 /**
@@ -241,7 +215,6 @@ const deleteTemplate = asyncHandler(async (req, res) => {
 const allTemplate = asyncHandler(async (req, res) => {
   try {
     const template = await Template.find({});
-
     res.json({ template });
   } catch (err) {
     console.log("not showing all template", err);
@@ -274,4 +247,5 @@ export {
   deleteTemplate,
   allTemplate,
   singleTemplate,
+  createTemplate,
 };
