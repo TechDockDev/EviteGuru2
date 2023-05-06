@@ -31,7 +31,6 @@ const Send = () => {
     setOpenAddUserModal(!openAddUserModal);
   };
 
-
   // ==========handle send ===============
   const handleSend = () =>{
     try {
@@ -40,7 +39,7 @@ const Send = () => {
       
     }
   }
-  // =====================================
+
   // ========== customized toolbar ============
   function CustomeToolBar() {
     return (
