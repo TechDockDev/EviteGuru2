@@ -7,7 +7,22 @@ import {
   deleteTemplate,
   singleTemplate,
   createTemplate,
+  saveImage,
+  sendImage,
 } from "../controllers/templateController.js";
+
+// const upload = multer({ dest: "uploads/" });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    // const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    console.log(file);
+    cb(null, file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 
 const templateRouter = express.Router();
 
@@ -18,24 +33,6 @@ const templateRouter = express.Router();
  * @access private /admin
  */
 
-templateRouter.post("/create", async (req, res) => {
-  const { name, description, templateJson } = req.body;
-  try {
-    let template = await Template.create({
-      name,
-      description,
-      templateJson,
-    });
-    res.json({
-      status: "success",
-      message: "Template has been created successfully",
-      template,
-    });
-  } catch (err) {
-    res.json(err);
-  }
-});
-
 /**
  * @dec update  Template in admin panel
  * @route PUT /update/ :id
@@ -43,6 +40,8 @@ templateRouter.post("/create", async (req, res) => {
  */
 
 templateRouter.get("/", allTemplate);
+templateRouter.post("/saveImage", upload.array("image"), saveImage);
+templateRouter.get("/sendImage/:imgName", sendImage);
 templateRouter.get("/:id", singleTemplate);
 templateRouter.post("/create", createTemplate);
 templateRouter.delete("/delete/:id", deleteTemplate);

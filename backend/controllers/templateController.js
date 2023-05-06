@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 import Template from "../models/templateModels.js";
 import generateToken from "../utils/generateToken.js";
 import EventDetails from "../models/eventModels.js";
-
+import path from "path";
 /**
  * @des     upload Template Name and Image
  * @route   POST    /template/create
@@ -192,6 +192,10 @@ const createEvent = asyncHandler(async (req, res) => {
   await EventDetails.insertMany(eventDetails);
 });
 
+const saveImage = asyncHandler(async (req, res) => {
+  res.json("Image saved");
+});
+
 /**
  * @desc delete template by id
  * @route DELETE /:id
@@ -222,6 +226,15 @@ const allTemplate = asyncHandler(async (req, res) => {
   }
 });
 
+const sendImage = asyncHandler((req, res) => {
+  // console.log(path.dirname("/uploads/"));
+  // console.log(path.join(path.dirname() + "desktop_assignment[33].png"));
+  // res.sendFile(
+  //   path.join(path.dirname("/uploads") + "desktop_assignment[33].png")
+  // );
+  res.sendFile(`/uploads/${req.params.imgName}`, { root: "." });
+});
+
 /**
  * @dec get single Template in admin panel
  * @route GET /id
@@ -248,4 +261,6 @@ export {
   allTemplate,
   singleTemplate,
   createTemplate,
+  saveImage,
+  sendImage,
 };
