@@ -4,7 +4,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { register } from '../../redux/action/userAction';
+import { register } from '../../oldredux/action/userAction';
 // '../redux/action/userAction';
 const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
    // const [formData, setFormData] = useState({ username:"",email: "", password: "" });

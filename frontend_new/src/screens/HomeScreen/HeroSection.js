@@ -2,6 +2,7 @@ import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import React from "react";
 
 const HeroSection = () => {
+   
    return (
       <Box
          sx={{

@@ -21,7 +21,7 @@ import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 // import { Dis } from '@headlessui/react';
 import SettingsIcon from "@mui/icons-material/Settings";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import { logout } from "../redux/action/userAction";
+import { logout } from "../oldredux/action/userAction";
 import SmallScreenDrawerMenu from "./SmallScreenDrawerMenu";
 import LogInModal from "../screens/LoginModal/LogInModal";
 import RegisterModal from "../screens/RegisterModal/RegisterModal";
@@ -53,16 +53,16 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userLogin = useSelector((state) => state.userLogin);
+  const userLogin = useSelector((state) => state);
+  console.log("User Login:->",userLogin);
   const { userInfo } = userLogin;
 
-  const usergooglefacebookLogin = useSelector(
-    (state) => state.usergooglefacebookLogin
-  );
-  const { googlefacebookInfo } = usergooglefacebookLogin;
-  console.log("google login:->", googlefacebookInfo);
+  // const usergooglefacebookLogin = useSelector(
+  //   (state) => state.usergooglefacebookLogin
+  // );
+  // const { googlefacebookInfo } = usergooglefacebookLogin;
+  // console.log("google login:->", googlefacebookInfo);
 
-  console.log("User Login:->", userInfo);
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -183,7 +183,7 @@ const Header = () => {
                            </IconButton> */}
                   <IconButton>
                     <Typography variant="h6" component="p" fontSize="10px">
-                      {/* {userInfo.email} */}
+                      {/* {userInfo?.email} */}
                     </Typography>
                   </IconButton>
                 </Box>
@@ -200,7 +200,7 @@ const Header = () => {
                   </IconButton>
                 </Tooltip>
                 {/* <Typography variant="h6" component="h6" fontSize="10px">
-                              {userInfo.email}
+                              {userInfo?.email}
                            </Typography> */}
                 {/* =========================================== */}
                 <Menu
@@ -260,153 +260,150 @@ const Header = () => {
                       borderBottom: "2px solid grey",
                     }}
                   >
-                    {/* {userInfo.email} */}
-                    {userInfo.email}
+                    {/* {userInfo?.email} */}
+                    {userInfo?.email}
                   </MenuItem>
                   <MenuItem onClick={handleClose}>My account</MenuItem>
                   <MenuItem onClick={logoutHandler}>Logout</MenuItem>
                 </Menu>
                 {/* ==================================================== */}
               </Box>
-            ) : googlefacebookInfo ? (
-              <Box
-                sx={{
-                  width: "150px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  //   border: "1px solid green",
-                }}
-              >
-                <Box
-                  sx={{
-                    width: "90px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    //    border: "1px solid green",
-                  }}
-                >
-                  {/* <IconButton>
-                    <SettingsIcon />
-                  </IconButton> */}
-                  {/* <IconButton>
-                          <NotificationsActiveIcon />    
-                       </IconButton> */}
-                  <IconButton>
-                    <Typography variant="h6" component="p" fontSize="10px">
-                      {/* {userInfo.email} */}
-                    </Typography>
-                  </IconButton>
-                </Box>
-                <Tooltip>
-                  <IconButton
-                    onClick={handleClick}
-                    size="small"
-                    sx={{ ml: 2 }}
-                    aria-controls={open ? "account-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "true" : undefined}
-                  >
-                    <Avatar src="./assets/avatarDefault.svg" />
-                  </IconButton>
-                </Tooltip>
-                {/* <Typography variant="h6" component="h6" fontSize="10px">
-                          {userInfo.email}
-                       </Typography> */}
-                {/* =========================================== */}
-                <Menu
-                  anchorEl={anchorEl}
-                  id="account-menu"
-                  open={open}
-                  // open={true}
-                  onClose={handleClose}
-                  onClick={handleClose}
-                  PaperProps={{
-                    elevation: 0,
-                    sx: {
-                      overflow: "visible",
-                      filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                      mt: 1.5,
-                      "&:before": {
-                        content: '""',
-                        display: "block",
-                        position: "absolute",
-                        top: 0,
-                        right: 24,
-                        width: 20,
-                        height: 20,
-                        bgcolor: "background.paper",
-                        transform: "translateY(-50%) rotate(45deg)",
-                        borderTop: "1px solid #3B285B",
-                        borderLeft: "1px solid #3B285B",
+            ) 
+            // : 
+            // googlefacebookInfo ? (
+            //   <Box
+            //     sx={{
+            //       width: "150px",
+            //       display: "flex",
+            //       justifyContent: "space-between",
+            //       alignItems: "center",
+            //       //   border: "1px solid green",
+            //     }}
+            //   >
+            //     <Box
+            //       sx={{
+            //         width: "90px",
+            //         display: "flex",
+            //         justifyContent: "space-between",
+            //         alignItems: "center",
+            //         //    border: "1px solid green",
+            //       }}
+            //     >
+                 
+            //       <IconButton>
+            //         <Typography variant="h6" component="p" fontSize="10px">
+                   
+            //         </Typography>
+            //       </IconButton>
+            //     </Box>
+            //     <Tooltip>
+            //       <IconButton
+            //         onClick={handleClick}
+            //         size="small"
+            //         sx={{ ml: 2 }}
+            //         aria-controls={open ? "account-menu" : undefined}
+            //         aria-haspopup="true"
+            //         aria-expanded={open ? "true" : undefined}
+            //       >
+            //         <Avatar src="./assets/avatarDefault.svg" />
+            //       </IconButton>
+            //     </Tooltip>
+               
+            //     <Menu
+            //       anchorEl={anchorEl}
+            //       id="account-menu"
+            //       open={open}
+            //       // open={true}
+            //       onClose={handleClose}
+            //       onClick={handleClose}
+            //       PaperProps={{
+            //         elevation: 0,
+            //         sx: {
+            //           overflow: "visible",
+            //           filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+            //           mt: 1.5,
+            //           "&:before": {
+            //             content: '""',
+            //             display: "block",
+            //             position: "absolute",
+            //             top: 0,
+            //             right: 24,
+            //             width: 20,
+            //             height: 20,
+            //             bgcolor: "background.paper",
+            //             transform: "translateY(-50%) rotate(45deg)",
+            //             borderTop: "1px solid #3B285B",
+            //             borderLeft: "1px solid #3B285B",
 
-                        //  borderRadius:"8px",
-                        //  bgcolor:"transparent",
-                        zIndex: 0,
-                      },
-                    },
-                  }}
-                  sx={{
-                    bgcolor: "transparent",
-                    "& ul": {
-                      p: 2,
-                      bgcolor: "rgba(206, 197, 220, 0.46)",
-                    },
-                    "& .MuiPaper-root": {
-                      bgcolor: "transparent",
-                      border: "1px solid #3B285B",
-                      borderRadius: "8px",
-                    },
-                  }}
-                  transformOrigin={{ horizontal: "right", vertical: "top" }}
-                  anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                >
-                  {" "}
-                  <MenuItem
-                    onClick={handleClose}
-                    sx={{
-                      color: "#3B285B",
-                      fontWeight: "800",
-                      padding: "10px",
-                      borderBottom: "2px solid grey",
-                    }}
-                  >
-                    {/* {userInfo.email} */}
-                    {googlefacebookInfo.email}
-                  </MenuItem>
-                  <MenuItem onClick={handleClose}>My account</MenuItem>
-                  <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-                </Menu>
-                {/* ==================================================== */}
-              </Box>
-            ) : (
-              <Box
-                sx={{
-                  width: "200px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  //   border: "1px solid green",
-                }}
-              >
-                <Button
-                  disableElevation
-                  variant="contained"
-                  sx={{ color: "#fff" }}
-                  onClick={toggleLogInModal}
-                >
-                  Login
-                </Button>
-                <Button
-                  disableElevation
-                  variant="outlined"
-                  onClick={toggleRegisterModal}
-                >
-                  Sign up
-                </Button>
-              </Box>
-            )}
+            //             //  borderRadius:"8px",
+            //             //  bgcolor:"transparent",
+            //             zIndex: 0,
+            //           },
+            //         },
+            //       }}
+            //       sx={{
+            //         bgcolor: "transparent",
+            //         "& ul": {
+            //           p: 2,
+            //           bgcolor: "rgba(206, 197, 220, 0.46)",
+            //         },
+            //         "& .MuiPaper-root": {
+            //           bgcolor: "transparent",
+            //           border: "1px solid #3B285B",
+            //           borderRadius: "8px",
+            //         },
+            //       }}
+            //       transformOrigin={{ horizontal: "right", vertical: "top" }}
+            //       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            //     >
+            //       {" "}
+            //       <MenuItem
+            //         onClick={handleClose}
+            //         sx={{
+            //           color: "#3B285B",
+            //           fontWeight: "800",
+            //           padding: "10px",
+            //           borderBottom: "2px solid grey",
+            //         }}
+            //       >
+            //         {/* {userInfo?.email} */}
+            //         {googlefacebookInfo.email}
+            //       </MenuItem>
+            //       <MenuItem onClick={handleClose}>My account</MenuItem>
+            //       <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+            //     </Menu>
+            //     {/* ==================================================== */}
+            //   </Box>
+            // ) 
+            : ""
+            // (
+            //   <Box
+            //     sx={{
+            //       width: "200px",
+            //       display: "flex",
+            //       justifyContent: "space-between",
+            //       alignItems: "center",
+            //       //   border: "1px solid green",
+            //     }}
+            //   >
+            //     <Button
+            //       disableElevation
+            //       variant="contained"
+            //       sx={{ color: "#fff" }}
+            //       onClick={toggleLogInModal}
+            //     >
+            //       Login
+            //     </Button>
+            //     <Button
+            //       disableElevation
+            //       variant="outlined"
+            //       onClick={toggleRegisterModal}
+            //     >
+            //       Sign up
+            //     </Button>
+            //   </Box>
+            // )
+            }
             {/*👆 topbar right buttons👆 */}
           </Toolbar>
         </AppBar>
@@ -524,7 +521,7 @@ export default Header;
 // 							as={Button}
 // 							rightIcon={<IoChevronDown />}
 // 							_hover={{ textDecor: 'none', opacity: '0.7' }}>
-// 							{userInfo.email}
+// 							{userInfo?.email}
 // 						</MenuButton>
 // 						<MenuList>
 // 							<MenuItem as={RouterLink} to='/profile'>

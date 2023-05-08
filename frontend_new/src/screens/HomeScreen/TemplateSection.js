@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
-import { ATemplateList } from "../../redux/action/userAction";
+import { ATemplateList } from "../../oldredux/action/userAction";
 
 const TemplateSection = () => {
   // const [templateData, setTemplateData] = useState();

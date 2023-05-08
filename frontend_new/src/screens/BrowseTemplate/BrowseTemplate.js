@@ -36,8 +36,8 @@ const BrowseTemplate = () => {
     try {
       setLoadingTemplate(true);
       const res = await axios.get(`template/`);
-      console.log(res.data.template);
-      setTemplateData(res.data.template[0].templateJson);
+      console.log(res?.data?.template);
+      setTemplateData(res?.data?.template[0]?.templateJson);
       setLoadingTemplate(false);
       navigate(`/dashboard/edit/${res.data.template[0]._id}`);
       // setTotalPages(Math.ceil(res.data.total / 6));
@@ -65,7 +65,7 @@ const BrowseTemplate = () => {
         const res = await axios.get(
           `template/template-list?page=${page + 1}&limit=6`
         );
-        setTemplateData([...templateData, ...res.data.template]);
+        setTemplateData([...templateData, ...res?.data?.template]);
         setLoadingTemplate(false);
       } catch (error) {
         console.log(error);

@@ -23,8 +23,8 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { ATemplateDetails } from "../../redux/action/userAction";
-import { EditTemplate } from "../../redux/action/userAction";
+import { ATemplateDetails } from "../../oldredux/action/userAction";
+import { EditTemplate } from "../../oldredux/action/userAction";
 import Details from "./Details";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddGuests from "./AddGuests";
@@ -188,7 +188,7 @@ const Design = () => {
     editor.canvas.renderAll();
   };
   // =====================================================
-  //   ========add stickers =======================
+  // ========add stickers =======================
   const addStickers = (e) => {
     fabric.Image.fromURL(e.target.value, (img) => {
       img.scale(0.2);

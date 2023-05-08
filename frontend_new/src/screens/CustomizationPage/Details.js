@@ -2,7 +2,7 @@ import { Stack , Button } from "@mui/material";
 import React, { useState } from "react";
 import SingleInput from "./SingleInput";
 import { useSelector, useDispatch } from "react-redux";
-import { EventDetailsTemplate } from "../../redux/action/userAction";
+import { EventDetailsTemplate } from "../../oldredux/action/userAction";
 
 const Details = () => {
 

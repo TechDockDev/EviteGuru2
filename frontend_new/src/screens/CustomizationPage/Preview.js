@@ -1,6 +1,6 @@
 import { Grid, Typography, Stack, Button, Box } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
-import { GetSingleDetails } from "../../redux/action/userAction"; 
+import { GetSingleDetails } from "../../oldredux/action/userAction"; 
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
