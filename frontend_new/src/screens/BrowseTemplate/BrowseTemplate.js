@@ -35,11 +35,11 @@ const BrowseTemplate = () => {
   const getTemplate = async () => {
     try {
       setLoadingTemplate(true);
-      const res = await axios.get(`template/`);
+      const res = await axios.get(`/template/`);
       console.log(res?.data?.template);
-      setTemplateData(res?.data?.template[0]?.templateJson);
+      setTemplateData(res?.data?.template);
       setLoadingTemplate(false);
-      navigate(`/dashboard/edit/${res.data.template[0]._id}`);
+      // navigate(`/dashboard/edit/${res.data.template[0]._id}`);
       // setTotalPages(Math.ceil(res.data.total / 6));
     } catch (error) {
       console.log(error);
@@ -171,7 +171,8 @@ const BrowseTemplate = () => {
                 borderRadius="10px"
                 component="img"
                 width="100%"
-                src={`data:image/*;base64, ${singleTemplate.sampleimage}`}
+                src={`/template/previewImage/${singleTemplate?.previewImage}`}
+                // /template/previewImage/${singleTemplate?.previewImage
               />
             </Grid>
           );
@@ -210,9 +211,9 @@ const BrowseTemplate = () => {
         {page === totalPages ? "Nothing more to display" : "see more template"}
       </Button>
       <TemplatePreview
-        // carouselClick={carouselClick}
+        carouselClick={carouselClick}
         toggleTemplatePreviewModal={toggleTemplatePreviewModal}
-        // singleTemplateId={singleTemplateId}
+        singleTemplateId={singleTemplateId}
         data={templateData}
         openTemplatePreviewModal={openTemplatePreviewModal}
       />

@@ -54,13 +54,13 @@ const LogInModal = ({
     password: "",
   });
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo, error, loading } = userLogin;
+  const{ userDetail} = useSelector((state) => state);
+ 
 
-  const usergooglefacebookLogin = useSelector(
-    (state) => state.usergooglefacebookLogin
-  );
-  const { googlefacebookInfo } = usergooglefacebookLogin;
+  // const usergooglefacebookLogin = useSelector(
+  //   (state) => state.usergooglefacebookLogin
+  // );
+  // const { googlefacebookInfo } = usergooglefacebookLogin;
 
   // useEffect(() => {
   //   if (googlefacebookInfo) {

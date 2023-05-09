@@ -13,10 +13,10 @@ const TemplatePreviewCarousel = ({carouselClick}) => {
    // ================
    const getTemplate = async () => {
       try {
-         const res = await axios.get("/template/template-list?page=1&limit=6");
-         // console.log(res.data);
+         const res = await axios.get("/template");
+         console.log(res.data);
 
-         setTemplateData(res.data);
+         setTemplateData(res?.data);
       } catch (error) {
          console.log(error);
       }
@@ -47,7 +47,8 @@ const TemplatePreviewCarousel = ({carouselClick}) => {
                 scale:"0.95", "&:active":{
                     scale:"1"
                 }
-               } }} src={`data:image/*;base64, ${singleTemplate.sampleimage}`} />;
+               } }} src={`/template/previewImage/${singleTemplate?.previewImage}`} />;
+            
             })}
 
          </ItemsCarousel>

@@ -21,17 +21,23 @@ export const register = (data) => {
   };
 };
 
-export const templateList = (data) => {
+export const setTemplateList = (data) => {
   return {
     type: ActionTypes.GET_ALL_TEMPLATES,
     payload: data,
   };
 };
 
-export const templateDetails = (data) => {
+export const getSingleTemplate = (data) => {
   return {
     type: ActionTypes.GET_TEMPLATE,
     payload: data,
   };
 };
 
+export const setEventDetails = (data) => {
+  return {
+    type: ActionTypes.EVENT_DETAIL,
+    payload: data,
+  };
+};

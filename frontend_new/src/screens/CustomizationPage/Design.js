@@ -37,6 +37,7 @@ import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRound
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import testOutputObject from "./test";
+import { getSingleTemplate } from "../../redux/action/userActions";
 const Design = () => {
   const [color, setColor] = useState("");
   const { editor, onReady } = useFabricJSEditor();
@@ -58,29 +59,31 @@ const Design = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const templateDetails = useSelector((state) => state.templateDetails);
-  const { template, loading, error } = templateDetails;
+  console.log("id...", id);
 
+  const templateDetails = useSelector((state) => state.templateData);
+  // const { template, loading, error } = templateDetails;
+  console.log("template data", templateDetails);
   // =========================== Dynamic BackGround Images Render
-  const _onReady = () => {
-    fabric.Image.fromURL(
-      `data:image/*;base64,${templateDetails?.template?.backgroundimage} `,
-      (img) => {
-        // This is For Image H & W Set
-        // img.scale(1);
-        // img.set({
-        //   width: 200,
-        //   height: 600,
-        // });
-        // editor.canvas.add(img);
-        editor.canvas.set("backgroundImage", img);
-        editor.canvas?.renderAll();
-        // if (canvas) {
-        //   fabric?.onReady(canvas);
-        // }
-      }
-    );
-  };
+  // const _onReady = () => {
+  //   fabric.Image.fromURL(
+  //     `data:image/*;base64,${templateDetails?.template?.backgroundimage} `,
+  //     (img) => {
+  //       // This is For Image H & W Set
+  //       // img.scale(1);
+  //       // img.set({
+  //       //   width: 200,
+  //       //   height: 600,
+  //       // });
+  //       // editor.canvas.add(img);
+  //       editor.canvas.set("backgroundImage", img);
+  //       editor.canvas?.renderAll();
+  //       // if (canvas) {
+  //       //   fabric?.onReady(canvas);
+  //       // }
+  //     }
+  //   );
+  // };
   // ====================================
 
   // ====================================
@@ -274,17 +277,14 @@ const Design = () => {
   //   ====load canvas from json =====
   const loadCanvasFromJson = () => {
     let object = new fabric.Canvas("canvas");
-    editor?.canvas?.loadFromJSON(
-      templateData,
-      editor?.canvas?.renderAll.bind()
-    );
+    // editor?.canvas?.loadFromJSON(
+    //   templateData,
+    //   editor?.canvas?.renderAll.bind()
+    // );
     // Load canvas from JSON
-    object.loadFromJSON(templateData, function () {
-      // Callback function that runs after the canvas is loaded
-      console.log("Canvas loaded from JSON");
-      editor.canvas.renderAll();
-    });
-    editor?.canvas?.renderAll();
+    console.log(templateData);
+    editor?.canvas.loadFromJSON(templateData);
+    // editor?.canvas?.renderAll();
     // fabric.loadSVGFromString(testSvg, (objects, options) => {
     //   const svgObject = fabric.util.groupSVGElements(objects, options);
     //   svgObject.selectable = false;
@@ -297,7 +297,7 @@ const Design = () => {
   // =================== This is YOur Handler + Image Downloader
   const downloadImage = (e) => {
     e.preventDefault();
-    const ext = "jpg";
+    const ext = "svg";
     const base64 = editor?.canvas?.toDataURL({
       format: ext,
       enableRetinaScaling: true,
@@ -318,26 +318,27 @@ const Design = () => {
   };
   // ==================
   const getTemplate = async () => {
-    const s = await axios.get(`/template/`);
-    console.log(s.data.template[0].templateJson); //
-    console.log("template data=>", s);
-    const latest = s?.data?.template.length - 1;
-    setTemplateData(s?.data?.template[latest]?.templateJson);
+    const res = await axios.get(`/template/single/${id}`);
+    // console.log(s.data.template[0].templateJson);
+    console.log(
+      "template data=>",
+      res?.data?.template?.templateJson,
+      "id =>",
+      id
+    );
+    dispatch(getSingleTemplate(res?.data?.template));
+    // const latest = s?.data?.template.length - 1;
+    setTemplateData(JSON.parse(res?.data?.template?.templateJson));
   };
   // ===============
   useEffect(() => {
-    // dispatch(ATemplateDetails(id));
-    // _onReady();
-    // loadCanvasFromJson();
-  }, [dispatch, id]);
+    getTemplate();
+  }, []);
   // =============
 
   useEffect(() => {
-    // _onReady(document.getElementsByClassName("fabCanvas")[0]);
-    getTemplate();
-    console.log("---->", templateDetails.template);
     loadCanvasFromJson();
-  }, [templateDetails, templateData]);
+  }, [templateData]);
   // ================
 
   return (

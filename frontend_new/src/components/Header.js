@@ -53,9 +53,9 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userLogin = useSelector((state) => state);
-  console.log("User Login:->",userLogin);
-  const { userInfo } = userLogin;
+  const {userDetail} = useSelector((state) => state);
+  console.log("User Login:->",userDetail);
+  
 
   // const usergooglefacebookLogin = useSelector(
   //   (state) => state.usergooglefacebookLogin
@@ -155,7 +155,7 @@ const Header = () => {
             {/* ============================================ */}
             {/*👇 topbar right buttons 👇 */}
             {/* {isLoggedInd ? ( */}
-            {userInfo ? (
+            {userDetail? (
               <Box
                 sx={{
                   width: "150px",
@@ -183,7 +183,7 @@ const Header = () => {
                            </IconButton> */}
                   <IconButton>
                     <Typography variant="h6" component="p" fontSize="10px">
-                      {/* {userInfo?.email} */}
+                      {/* {userDetail?.?.email} */}
                     </Typography>
                   </IconButton>
                 </Box>
@@ -200,7 +200,7 @@ const Header = () => {
                   </IconButton>
                 </Tooltip>
                 {/* <Typography variant="h6" component="h6" fontSize="10px">
-                              {userInfo?.email}
+                              {userDetail?.?.email}
                            </Typography> */}
                 {/* =========================================== */}
                 <Menu
@@ -260,8 +260,8 @@ const Header = () => {
                       borderBottom: "2px solid grey",
                     }}
                   >
-                    {/* {userInfo?.email} */}
-                    {userInfo?.email}
+                    {/* {userDetail?.?.email} */}
+                    {userDetail?.email}
                   </MenuItem>
                   <MenuItem onClick={handleClose}>My account</MenuItem>
                   <MenuItem onClick={logoutHandler}>Logout</MenuItem>
@@ -366,7 +366,7 @@ const Header = () => {
             //           borderBottom: "2px solid grey",
             //         }}
             //       >
-            //         {/* {userInfo?.email} */}
+            //         {/* {userDetail?.?.email} */}
             //         {googlefacebookInfo.email}
             //       </MenuItem>
             //       <MenuItem onClick={handleClose}>My account</MenuItem>
@@ -463,9 +463,9 @@ export default Header;
 //     const [show, setShow] = useState(false);
 
 //     const userLogin = useSelector((state) => state.userLogin);
-//     const { userInfo } = userLogin;
+//     const { userDetail?. } = userLogin;
 
-// 	console.log(userInfo)
+// 	console.log(userDetail?.)
 
 //     const logoutHandler = () => {
 //         dispatch(logout());
@@ -514,14 +514,14 @@ export default Header;
 // 				width={{ base: 'full', md: 'auto' }}
 // 				alignItems='center'>
 // 					{/* { adminInfo */}
-// 				{userInfo
+// 				{userDetail?.
 // 				? (
 // 					<Menu>
 // 						<MenuButton
 // 							as={Button}
 // 							rightIcon={<IoChevronDown />}
 // 							_hover={{ textDecor: 'none', opacity: '0.7' }}>
-// 							{userInfo?.email}
+// 							{userDetail?.?.email}
 // 						</MenuButton>
 // 						<MenuList>
 // 							<MenuItem as={RouterLink} to='/profile'>
