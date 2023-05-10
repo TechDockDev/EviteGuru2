@@ -23,9 +23,8 @@ const BrowseTemplate = () => {
 
   const getTemplate = async () => {
     try {
-      const res = await axios.get(
-        `template/template-list?page=${page}&limit=6`
-      );
+      console.log('d');
+      const res = await axios.get(`/template`);
       setTemplateData(res.data.template);
       setTotalPages(Math.ceil(res.data.total / 6));
     } catch (error) {
@@ -48,9 +47,7 @@ const BrowseTemplate = () => {
 
     if (page !== totalPages) {
       try {
-        const res = await axios.get(
-          `template/template-list?page=${page + 1}&limit=6`
-        );
+        const res = await axios.get(`/template`);
         setTemplateData([...templateData, ...res.data.template]);
       } catch (error) {
         console.log(error);

@@ -28,6 +28,7 @@ import {
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AdminTemplateEditScreen from "./AdminTemplateEditScreen";
+import { url } from "../url";
 
 // ======================
 
@@ -55,9 +56,7 @@ const AdminTemplateListScreen = () => {
   const getTemplateData = async (page, res) => {
     try {
       setLoading(true);
-      const res = await axios.get(
-        `/template/template-list?page=${page}&limit=6`
-      );
+      const res = await axios.get(`/template`);
       console.log(res.data);
       setTemplate([...res.data.template]);
       setTotal(res.data.total);
@@ -137,7 +136,7 @@ const AdminTemplateListScreen = () => {
           <>
             <Box
               component="img"
-              src={`data:image/*;base64,${params?.row?.sampleimage}`}
+              src={`${url}/template/previewImage/${params?.row?.previewImage}`}
               alt=""
               sx={{ width: "50px", maxHeight: "50px" }}
             />
@@ -244,8 +243,8 @@ const AdminTemplateListScreen = () => {
           columns={columns}
           rows={template}
           //  rowCount={rowCountState}
-           rowCount={total}
-           autoHeight={true}
+          rowCount={total}
+          autoHeight={true}
           pageSizeOptions={[6]}
           paginationModel={paginationModel}
           paginationMode="server"
@@ -266,7 +265,7 @@ const AdminTemplateListScreen = () => {
         // open={true}
         onClose={toggleAddUserModal}
         closeAfterTransition
-        sx={{ bgcolor: "transparent", overflow: "scroll" }}
+        // sx={{ bgcolor: "transparent", overflow: "scroll" }}
       >
         <>
           <AdminTemplateEditScreen template={resEdit} />
