@@ -2,7 +2,7 @@ import { Box, Button, Grid, IconButton, Stack, TextField, Typography } from "@mu
 import React, { useState } from "react";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useDispatch ,useSelector } from "react-redux";
-import { SingleAndMultipalGuest } from "../../redux/action/userAction";
+import { SingleAndMultipalGuest } from "../../oldredux/action/userAction";
 
 const AddGuests = ({ toggleAddUserModal }) => {
 

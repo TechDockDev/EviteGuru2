@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
-import { ATemplateList } from "../../redux/action/userAction";
+import { ATemplateList } from "../../oldredux/action/userAction";
+import { setTemplateList } from "../../redux/action/userActions";
 
 const TemplateSection = () => {
   // const [templateData, setTemplateData] = useState();
@@ -14,14 +15,24 @@ const TemplateSection = () => {
 
   const dispatch = useDispatch();
 
-  const templateList = useSelector((state) => state.templateList);
-  const { template, error, loading } = templateList;
+  const templateList = useSelector((state) => state?.allTemplates);
+  // const { template, error, loading } = templateList;
 
-  console.log("Data :->", template);
+  console.log("Data :->", templateList);
+
+  // get templatesList
+  const getAllTemplates = async () => {
+    try {
+      const res = await axios.get("/template");
+      console.log("res", res);
+      dispatch(setTemplateList(res?.data?.template));
+    } catch (error) {}
+  };
 
   useEffect(() => {
-    dispatch(ATemplateList());
-  }, [dispatch]);
+    // dispatch(ATemplateList());
+    getAllTemplates();
+  }, []);
 
   const navigate = useNavigate();
   const toggleTemplatePreviewModal = (e, templateId) => {
@@ -86,7 +97,8 @@ const TemplateSection = () => {
           borderRadius: "20px",
         }}
       >
-        {template?.map((singleTemplate, index) => {
+        {templateList?.map((singleTemplate, index) => {
+          // console.log("templates...", singleTemplate);
           return (
             <Grid
               component={"button"}
@@ -153,7 +165,7 @@ const TemplateSection = () => {
                 display="block"
                 component="img"
                 width="100%"
-                src={`data:image/*;base64, ${singleTemplate.sampleimage}`}
+                src={`/template/previewImage/${singleTemplate?.previewImage}`}
                 borderRadius="10px"
               />
             </Grid>

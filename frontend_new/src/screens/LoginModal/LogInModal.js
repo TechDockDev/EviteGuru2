@@ -15,8 +15,8 @@ import {
 // import React, { useState } from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../redux/action/userAction";
-import { GoogleFacebookLogin } from "../../redux/action/userAction";
+import { login } from "../../oldredux/action/userAction";
+import { GoogleFacebookLogin } from "../../oldredux/action/userAction";
 // import { Authentication } from '../firebaseAuth/firebase';
 import { Authentication } from "../../firebaseAuth/firebase";
 import {
@@ -28,12 +28,13 @@ import {
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import axios from "axios";
 
-
-
-
-const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) => {
-
+const LogInModal = ({
+  openLoginModal,
+  toggleLogInModal,
+  toggleRegisterModal,
+}) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -48,29 +49,34 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
   // let [searchParam] = useSearchParams();
   // let redirect = searchParam.get("redirect") || "/";
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [userValues, setUserValues] = useState({
+    email: "",
+    password: "",
+  });
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo, error, loading } = userLogin;
+  const{ userDetail} = useSelector((state) => state);
+ 
 
-  const usergooglefacebookLogin = useSelector((state) => state.usergooglefacebookLogin);
-  const { googlefacebookInfo } = usergooglefacebookLogin;
+  // const usergooglefacebookLogin = useSelector(
+  //   (state) => state.usergooglefacebookLogin
+  // );
+  // const { googlefacebookInfo } = usergooglefacebookLogin;
 
   // useEffect(() => {
   //   if (googlefacebookInfo) {
   //     // navigate(redirect);
-      
+
   //   }else if (userInfo){
   //     // navigate(redirect)
   //   }
   // }, [googlefacebookInfo,userInfo,navigate, redirect]);
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("cred->", email, password);
-    dispatch(login(email, password));
-    toggleLogInModal();
+    console.log("cred->", userValues);
+    const res = await axios.post("/users/login", userValues);
+    // dispatch(login(userValues));
+    // toggleLogInModal();
   };
 
   const googleHandler = () => {
@@ -83,9 +89,9 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
             data.user.uid,
             data.user.emailVerified,
             data.user.displayName
-            )
           )
-          toggleLogInModal();
+        );
+        toggleLogInModal();
       })
       .catch((err) => {
         console.log(err);
@@ -102,9 +108,9 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
             data.user.uid,
             data.user.emailVerified,
             data.user.displayName
-            )
           )
-          toggleLogInModal();
+        );
+        toggleLogInModal();
       })
       .catch((err) => {
         console.log(err);
@@ -149,7 +155,9 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
                   top: "20px",
                 }}
               >
-                <CancelOutlinedIcon sx={{ bgcolor: "transparent" }} />
+                <CancelOutlinedIcon
+                  sx={{ bgcolor: "transparent", color: "white" }}
+                />
               </IconButton>
               {/*👆 Cross icon to close the modal👆  */}
 
@@ -189,7 +197,7 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
             {/* 👇 Form container 👇 */}
             <Box
               component={"form"}
-              bgcolor={"transparent"}
+              // bgcolor={"transparent"}
               onSubmit={submitHandler}
             >
               {/* 👇 E-MAIL 👇 */}
@@ -212,15 +220,20 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
                 <InputBase
                   type="email"
                   name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  focused
+                  value={userValues?.email}
+                  onChange={(e) =>
+                    setUserValues({ ...userValues, email: e.target.value })
+                  }
                   sx={{
                     padding: "2px 10px",
                     borderRadius: "5px",
                     fontWeight: "500",
+                    bgcolor: "white",
                   }}
                   placeholder={"Your e-mail"}
                   required
+                  onblur="this.placeholder='enter your text'" 
                 />
               </FormControl>
               {/*👆 E-MAIL👆 */}
@@ -245,13 +258,16 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
                 <InputBase
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={userValues?.password}
+                  onChange={(e) =>
+                    setUserValues({ ...userValues, password: e.target.value })
+                  }
                   id="password"
                   sx={{
                     padding: "2px 10px",
                     borderRadius: "5px",
                     fontWeight: "500",
+                    bgcolor: "white",
                   }}
                   placeholder="Your password"
                   required
@@ -264,7 +280,7 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
                         edge="end"
                       >
                         {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
-                        {showPassword ? <Visibility /> : <VisibilityOff /> } 
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
                   }
@@ -321,16 +337,16 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
                   },
                 }}
               >
-              <Stack 
-              // onChange={submit}
-              // onClick={submit}
-              >
-                <Box
-                  component="img"
-                  bgcolor={"transparent"}
-                  onClick={googleHandler}
-                  src="./assets/google_color_icon.svg"
-                />
+                <Stack
+                // onChange={submit}
+                // onClick={submit}
+                >
+                  <Box
+                    component="img"
+                    bgcolor={"transparent"}
+                    onClick={googleHandler}
+                    src="./assets/google_color_icon.svg"
+                  />
                 </Stack>
               </Button>
               <Button
@@ -362,7 +378,10 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
             >
               Don’t have an account yet?{" "}
               <Button
-                  onClick={()=>{toggleLogInModal();toggleRegisterModal();}}
+                onClick={() => {
+                  toggleLogInModal();
+                  toggleRegisterModal();
+                }}
                 disableElevation={true}
                 disableRipple={true}
                 disableFocusRipple={true}
@@ -372,10 +391,10 @@ const LogInModal = ({ openLoginModal, toggleLogInModal, toggleRegisterModal }) =
                   color: "white",
                   fontWeight: "600",
                   textTransform: "capitalize",
-                  padding:"0",
-                  "&:hover":{
-                     textDecoration:"underline"
-                  }
+                  padding: "0",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
                 }}
               >
                 Register for free

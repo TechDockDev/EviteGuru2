@@ -12,14 +12,15 @@ import Preview from "./Preview";
 import Details from "./Details";
 import Send from "./Send";
 import Track from "./MailingReponses";
+import { useNavigate } from "react-router-dom";
 
 const CustomizationPage = () => {
   const [value, setValue] = React.useState(0);
 
-  // const templateEdit = useSelector((state) => state.templateEdit);
+  const singleTemplateData = useSelector((state) => state.singleTemplate);
   // const { temp } = templateEdit
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   // const id = temp._id
 
   const handleChange = (event, newValue) => {

@@ -19,7 +19,7 @@ import {
     EventDetailsReducer,
     GuestSingleAndMultipalDetailsReducer,
     SingleDetailsReducer,
-} from "./redux/reducer/userReducer";
+} from "./oldredux/reducer/userReducer";
 
 
 
