@@ -1,4 +1,6 @@
 import asyncHandler from "express-async-handler";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 //import file
 import Otp from "../models/otpModel.js";
@@ -7,13 +9,6 @@ import generateToken from "../utils/generateToken.js";
 import emailConfig from "../utils/nodeMailer.js";
 import userGooglefbs from "../models/userGoogleFbSchema.js";
 import Subscription from "../models/subscriptions.js";
-
-/**
- * @des     goo-face auth by user
- * @router   POST /auth
- * @access  public
- */
-
 const googlefacebookAuth = asyncHandler(async (req, res) => {
   const { email, uid, emailverify, name } = req.body;
 
@@ -52,12 +47,6 @@ const googlefacebookAuth = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @dec   User Login
- * @route   POST /login
- * @access  public
- */
-
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -75,57 +64,77 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @desc    Register new user
- * @route   POST  /user
- * @access  public
- */
-
-const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, phone, password, email_verify, subscriptionId } =
-    req.body;
-
-  const userExists = await User.findOne({ email });
-
-  if (userExists) {
-    res.status(400); // Bad request
-    throw new Error("User already exists");
-  }
-
-  const user = await User.create({
-    name,
-    email,
-    phone,
-    password,
-    email_verify,
-    subscriptionId: subscriptionId || null,
+// authenticated
+const authenticated = asyncHandler(async (req, res) => {
+  res.json({
+    status: "success",
+    message: "user is authenticated",
   });
-
-  if (user) {
-    // Successfully created
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      password: user.password,
-      email_verify: user.email_verify,
-      subscriptionId: user.subscriptionId,
-    });
-    // emailVerify(email, name, _id);
-  } else {
-    res.status(400);
-    throw new Error("Invalid user data");
-  }
-
-  await User.insertMany(user);
 });
 
-/**
- * @des    Get user in token
- * @routes  GET /profile/:id
- * @access  private
- */
+// Generating token with user ID
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
+
+// controller for sending creating token for future authorization
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user.id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+  res.cookie("bearerToken", token, cookieOptions);
+  res.status(statusCode).json({
+    status: "success",
+    message: "Login Successfully",
+    data: {
+      user,
+      token,
+    },
+  });
+};
+
+// sign up controller
+const signUp = async (req, res, next) => {
+  try {
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const user = await User.create({ ...req.body, password: hash });
+    createSendToken(user, 200, res);
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+};
+
+// login controller
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email }).select("+password");
+    if (user) {
+      const checkPassword = await bcrypt.compare(password, user.password);
+      if (checkPassword) {
+        createSendToken(user, 200, res);
+      } else {
+        throw new Error("Credentials are incorrect");
+      }
+    } else {
+      throw new Error("User not found");
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
 const getUser = asyncHandler(async (req, res) => {
   let user = await User.findById(req.params.id);
@@ -142,12 +151,6 @@ const getUser = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @des    Get user in token
- * @routes  GET /profile/:id
- * @access  private
- */
-
 const allUser = asyncHandler(async (req, res) => {
   let user = await User.find({});
   try {
@@ -161,12 +164,6 @@ const allUser = asyncHandler(async (req, res) => {
     res.json(err);
   }
 });
-
-/**
- * @dec     email send
- * @routes  /email-send
- * @access  private /user
- */
 
 const emailSend = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
@@ -186,12 +183,6 @@ const emailSend = asyncHandler(async (req, res) => {
     throw new Error("Email Id Not Exist");
   }
 });
-
-/**
- * @des     Change Password & otpVerify
- * @routes  post /change-password
- * @access  private
- */
 
 const changePassword = asyncHandler(async (req, res) => {
   const data = await Otp.findOne({
@@ -216,12 +207,6 @@ const changePassword = asyncHandler(async (req, res) => {
     throw new Error("Invalid Otp");
   }
 });
-
-/**
- * @desc Update user profile by id
- * @route PUT /:id
- * @access private /user
- */
 
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -259,7 +244,6 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Subscription
 // Update user's subscription plan
 const userPlans = asyncHandler(async (req, res) => {
   let user = await User.findById(req.params.id);
@@ -298,10 +282,12 @@ export {
   authUser,
   updateUser,
   changePassword,
-  registerUser,
+  login,
+  signUp,
   getUser,
   emailSend,
   googlefacebookAuth,
   allUser,
   userPlans,
+  authenticated,
 };

@@ -1,42 +1,31 @@
 import mongoose from "mongoose";
 
-const eventDetailsSchema = mongoose.Schema(
+const eventSchema = mongoose.Schema(
   {
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-
-    event_name: {
+    name: {
       type: String,
-      require: true,
+      required: true,
     },
-    host_name: {
+    hostName: {
       type: String,
-      require: true,
+      required: true,
     },
     date: {
-      type: String,
-      require: true,
+      type: Date,
+      required: true,
     },
-    time: {
-      type: String,
-      require: true,
-    },
-    venue_name: {
+    venue: {
       type: String,
       required: true,
     },
-    venue_address: {
+    address: {
       type: String,
       required: true,
     },
-    virtual_link: {
+    addionalInfo: {
       type: String,
       default: null,
     },
-    add_info: {
-      type: String,
-      default: null,
-    },
-
     guest: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "guestDetails",
@@ -45,6 +34,6 @@ const eventDetailsSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const EventDetails = mongoose.model("eventDetails", eventDetailsSchema);
+const EventDetails = mongoose.model("events", eventSchema);
 
 export default EventDetails;

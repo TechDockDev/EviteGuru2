@@ -492,6 +492,7 @@ import React, { useEffect, useState } from "react";
 import { fabric } from "fabric";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import axios from "axios";
+import { Buffer } from "buffer";
 
 const AdminTemplateCreateScreen = () => {
   const { editor, onReady, selectedObjects } = useFabricJSEditor();
@@ -615,8 +616,9 @@ const AdminTemplateCreateScreen = () => {
     }
     editor?.deleteSelected();
   };
-  useEffect(() => {
-    editor?.canvas?.setDimensions({ height: 600, width: 900 });
+  const setBackgroundImage = (e) => {
+    const reader = new FileReader();
+    setAllImages([...allImages, e.target.files[0]]);
     // set background image options
     var bgImgOptions = {
       // set the background color to white
@@ -624,19 +626,25 @@ const AdminTemplateCreateScreen = () => {
       // set the scaling mode to "cover"
       backgroundScaleMode: "cover",
     };
-
     // load the background image
-    fabric.Image.fromURL(
-      "https://thumbs.dreamstime.com/b/landscape-nature-view-background-view-window-landscape-nature-view-background-view-window-wonderful-landscape-121459679.jpg",
-      function (img) {
+    reader.onload = function (event) {
+      var imgObj = new Image();
+      imgObj.src = event.target.result;
+      imgObj.onload = function () {
+        var image = new fabric.Image(imgObj);
+        image.name = e.target.files[0].name;
         // set the image as the background of the canvas
         editor?.canvas?.setBackgroundImage(
-          img,
+          image,
           editor.canvas.renderAll.bind(editor.canvas),
           bgImgOptions
         );
-      }
-    );
+      };
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+  useEffect(() => {
+    editor?.canvas?.setDimensions({ height: 600, width: 900 });
   }, [editor]);
 
   function toSvg() {
@@ -645,31 +653,24 @@ const AdminTemplateCreateScreen = () => {
   function toJson() {
     console.log(editor?.canvas.toJSON());
   }
-  async function saveTemplate() {
+  async function saveTemplate(file) {
     try {
       fabric.Image.prototype.toObject = (function (toObject) {
         return function () {
           return fabric.util.object.extend(toObject.call(this), {
             name: this.name,
-            src: `http://localhost:8085/template/sendImage/${this.name}`,
+            src: `http://192.168.29.249:8085/template/sendImage/${this.name}`,
           });
         };
       })(fabric.Image.prototype.toObject);
-      // fabric.Object.prototype.toObject = (function (toObject) {
-      //   return function () {
-      //     return fabric.util.object.extend(toObject.call(this), {
-      //       name: this.name,
-      //     });
-      //   };
-      // })(fabric.Object.prototype.toObject);
-      // "assets" + this.getSrc().split(":3000")[1]
-      // const response = await axios.post("/template/create", {
-      //   name: "badhiya template",
-      //   description: "arre bahut badhiya template",
-      //   templateJson: JSON.stringify(editor?.canvas.toJSON()),
-      // });
-      // console.log(response);
-      console.log(JSON.stringify(editor?.canvas.toJSON()));
+      const formData = new FormData();
+      formData.append("name", "badhiya template");
+      formData.append("description", "arre bahut badhiya template");
+      formData.append("templateJson", JSON.stringify(editor?.canvas.toJSON()));
+      formData.append("previewImage", file);
+      const response = await axios.post("/template/create", formData);
+      console.log(editor?.canvas.toJSON());
+      console.log(response);
     } catch (error) {
       console.log(error);
     }
@@ -728,13 +729,15 @@ const AdminTemplateCreateScreen = () => {
     }
   };
   const getImages = () => {
-    fabric.Object.prototype.toObject = (function (toObject) {
-      return function () {
-        return fabric.util.object.extend(toObject.call(this), {
-          name: this.name,
-        });
-      };
-    })(fabric.Object.prototype.toObject);
+    console.log(allImages);
+    // fabric.Object.prototype.toObject = (function (toObject) {
+    //   return function () {
+    //     return fabric.util.object.extend(toObject.call(this), {
+    //       name: this.name,
+    //     });
+    //   };
+    // })(fabric.Object.prototype.toObject);
+    console.log(editor?.canvas.toJSON());
     editor?.canvas.loadFromJSON(
       editor?.canvas.toJSON(),
       editor?.canvas.renderAll.bind(editor?.canvas),
@@ -749,6 +752,21 @@ const AdminTemplateCreateScreen = () => {
       }
     );
   };
+  const getPreviewImage = async () => {
+    const canvasPng = editor?.canvas.toDataURL({
+      format: "png",
+      // quality: 0.8,
+    });
+    function dataURLtoFile(dataurl, filename) {
+      const uint8Buffer = Buffer.from(dataurl.split(",")[1], "base64");
+      return new File([uint8Buffer], filename, { type: "image/png" });
+    }
+
+    // Usage example:
+    var file = dataURLtoFile(canvasPng, "previewImage.png");
+    saveTemplate(file);
+    // const res = await axios.post("/template/previewImage", formData);
+  };
   return (
     <div>
       <button onClick={onAddCircle}>Add circle</button>
@@ -762,6 +780,7 @@ const AdminTemplateCreateScreen = () => {
       <button onClick={toJson}>To JSON</button>
       <button onClick={getImages}>Get Images</button>
       <button onClick={uploadImage}>Upload Images</button>
+      <button onClick={getPreviewImage}>Preview Image</button>
       <button onClick={saveTemplate}>Save Template</button>
       <label htmlFor="img">Add Image</label>
       <input
@@ -792,6 +811,14 @@ const AdminTemplateCreateScreen = () => {
         accept="image/png, image/jpeg ,image/jpg"
         crossOrigin="anonymous"
         onChange={addImageSomewhere}
+      ></input>
+      <label htmlFor="img">Add Backgroud Image</label>
+      <input
+        type="file"
+        id="img"
+        accept="image/png, image/jpeg ,image/jpg"
+        crossOrigin="anonymous"
+        onChange={setBackgroundImage}
       ></input>
       <label htmlFor="favcolor">Select your favorite color:</label>
       <input

@@ -9,41 +9,43 @@ import {
   createTemplate,
   saveImage,
   sendImage,
+  previewImage,
+  editTemplate,
 } from "../controllers/templateController.js";
 
 // const upload = multer({ dest: "uploads/" });
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/");
+    cb(null, "uploads/templateImages");
   },
   filename: function (req, file, cb) {
-    // const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     console.log(file);
     cb(null, file.originalname);
   },
 });
+const previewImages = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/previewImages");
+  },
+  filename: function (req, file, cb) {
+    const fileName = file.originalname.split(".");
+    console.log(file);
+    cb(null, fileName[0] + Date.now() + "." + fileName[1]);
+  },
+});
 const upload = multer({ storage: storage });
+const preview = multer({ storage: previewImages });
 
 const templateRouter = express.Router();
 
-// templateRouter.use(express.static("public"));
-/**
- * @desc Create template by admin
- * @route POST /create
- * @access private /admin
- */
-
-/**
- * @dec update  Template in admin panel
- * @route PUT /update/ :id
- * @access public admin
- */
-
 templateRouter.get("/", allTemplate);
 templateRouter.post("/saveImage", upload.array("image"), saveImage);
+templateRouter.post("/previewImage", upload.single("previewImage"), saveImage);
 templateRouter.get("/sendImage/:imgName", sendImage);
-templateRouter.get("/:id", singleTemplate);
-templateRouter.post("/create", createTemplate);
+templateRouter.get("/single/:id", singleTemplate);
+templateRouter.patch("/edit/:id", editTemplate);
+templateRouter.post("/create", preview.single("previewImage"), createTemplate);
+templateRouter.get("/previewImage/:imgName", previewImage);
 templateRouter.delete("/delete/:id", deleteTemplate);
 
 export default templateRouter;
