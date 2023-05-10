@@ -4,6 +4,8 @@ const templateSchema = mongoose.Schema({
   description: { type: String },
   templateJson: { type: String, select: false },
   previewImage: { type: String },
+  user: { type: mongoose.Types.ObjectId, ref: "user" },
+  admin: { type: mongoose.Types.ObjectId, ref: "admin" },
 });
 
 const Template = mongoose.model("template", templateSchema);

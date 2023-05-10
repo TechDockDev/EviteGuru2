@@ -136,7 +136,7 @@ const AdminTemplateListScreen = () => {
           <>
             <Box
               component="img"
-              src={`${url}/template/previewImage/${params?.row?.previewImage}`}
+              src={`${url}/images/getImage?path=${params?.row?.previewImage}`}
               alt=""
               sx={{ width: "50px", maxHeight: "50px" }}
             />

@@ -11,8 +11,8 @@ import {
   viewSingle_guest,
   view_Card,
 } from "../controllers/guestController.js";
-import EventDetails from "../models/eventModels.js";
-import Subscription from "../models/subscriptions.js";
+import EventDetails from "../models/eventModel.js";
+import Subscription from "../models/subscriptionModel.js";
 import User from "../models/userModel.js";
 import userGooglefbs from "../models/userGoogleFbSchema.js";
 import { body } from "express-validator";

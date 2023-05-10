@@ -1,16 +1,7 @@
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import { DataGrid } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useEffect, useState } from "react";
-import MuiPagination from "@mui/material/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AuserList, Adeleteuser } from "../redux/action/adminAction"; // deleteuser
@@ -31,16 +22,6 @@ const UserListScreen = () => {
 
   const [openTemplatePreviewModal, seTopenTemplatePreviewModal] =
     useState(false);
-
-  const [anchorEl, setAnchorEl] = useState(null);
-  const adminList = useSelector((state) => state.adminList);
-  const { error, users } = adminList;
-  const [filteredArray, setFilteredArray] = useState(null);
-
-  // const adminDelete = useSelector((state) => state.adminDelete);
-  // const { success: successDelete } = adminDelete ;
-
-  // console.log(userDelete)
 
   useEffect(() => {
     setLoading(true);
@@ -126,30 +107,6 @@ const UserListScreen = () => {
         );
       },
     },
-
-    // {
-    //   headerName: "Delete",
-    //   width: 100,
-    //   renderCell: (params) => {
-    //     return (
-    //       <>
-    //         <IconButton
-    //           onClick={(e) => {
-    //             // deleteHandler(e, params.row._id);
-    //           }}
-    //         >
-    //           <DeleteForeverIcon
-    //             sx={{
-    //               color: "#FFFFFF",
-    //               backgroundColor: "#795DA8",
-    //               borderRadius: "50%",
-    //             }}
-    //           />
-    //         </IconButton>
-    //       </>
-    //     );
-    //   },
-    // },
   ];
 
   return (

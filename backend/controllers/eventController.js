@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import EventDetails from "../models/eventModels.js";
+import EventDetails from "../models/eventModel.js";
 import User from "../models/userModel.js";
 import userGooglefbs from "../models/userGoogleFbSchema.js";
 
@@ -13,11 +13,16 @@ const createEvent = asyncHandler(async (req, res) => {
     venue,
     address,
     additionalInfo,
+    user: req.user.id,
   });
-  res.json({ eventDetails });
+  res.json({
+    status: "success",
+    message: "Event has been created successfully",
+    eventDetails,
+  });
 });
 
-const getallevent = asyncHandler(async (req, res) => {
+const getAllEvents = asyncHandler(async (req, res) => {
   const event = await EventDetails.find({});
   res.json(event);
 });
@@ -28,6 +33,15 @@ const getEventById = asyncHandler(async (req, res) => {
     status: "success",
     message: "Event has been fetched",
     event,
+  });
+});
+
+const getEventsByUser = asyncHandler(async (req, res) => {
+  const events = await EventDetails.find({ user: req.user.id });
+  res.json({
+    status: "success",
+    message: "Event has been fetched",
+    events,
   });
 });
 
@@ -47,4 +61,11 @@ const deleteEvent = asyncHandler(async (req, res) => {
   });
 });
 
-export { editEvent, deleteEvent, getEventById, createEvent, getallevent };
+export {
+  editEvent,
+  deleteEvent,
+  getEventById,
+  createEvent,
+  getAllEvents,
+  getEventsByUser,
+};

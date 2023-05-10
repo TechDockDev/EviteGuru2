@@ -20,7 +20,6 @@ import {
   singleAdminId,
 } from "../controllers/adminController.js";
 
-import { getallevent } from "../controllers/eventController.js";
 
 import { createPlans } from "../controllers/adminController.js";
 
@@ -52,7 +51,7 @@ adminRouter
   .get(singleAdminId); //single admin by id
 // event controller routes
 
-adminRouter.get("/users/all-events", getallevent);
+// adminRouter.get("/users/all-events", getallevent);
 
 //Plans route
 adminRouter.post("/create-plan", createPlans);

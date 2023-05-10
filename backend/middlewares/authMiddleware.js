@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 
 // controller for checking authorization
-const protect = async (req, res, next) => {
+const userAuth = async (req, res, next) => {
   try {
     if (req.headers.cookie) {
       const value = req.headers.cookie.split("bearerToken=")[1];
@@ -41,4 +41,4 @@ const protect = async (req, res, next) => {
   }
 };
 
-export { protect };
+export { userAuth };

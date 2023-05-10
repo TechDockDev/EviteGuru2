@@ -1,12 +1,12 @@
 import asyncHandler from "express-async-handler";
 import userGooglefbs from "../models/userGoogleFbSchema.js";
-import Admin from "../models/adminModels.js";
+import Admin from "../models/adminModel.js";
 import Otp from "../models/otpModel.js";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
 import emailConfig from "../utils/nodeMailer.js";
-import Subscription from "../models/subscriptions.js";
-import Template from "../models/templateModels.js";
+import Subscription from "../models/subscriptionModel.js";
+import Template from "../models/templateModel.js";
 /**
  * @dec     Auth Admin
  * @route   POST /adminlogin
