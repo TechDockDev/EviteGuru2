@@ -1,17 +1,15 @@
 import express from "express";
 import {
-  authUser,
   changePassword,
   emailSend,
   getUser,
-  googlefacebookAuth,
   login,
   signUp,
   updateUser,
   userPlans,
 } from "../controllers/userController.js";
 
-import { protect } from "../middlewares/authMiddleware.js";
+import { userAuth } from "../middlewares/authMiddleware.js";
 import {
   createEvent,
   deleteEvent,
@@ -23,15 +21,13 @@ import stripeUsers from "../utils/stripeConroller.js";
 const userRouter = express.Router();
 //users routes
 userRouter.route("/register").post(signUp); // for registration
-userRouter.post("/auths", googlefacebookAuth); // for google&facebook registration
 userRouter.post("/login", login); // for login
 userRouter.route("/profile/:id").get(getUser); // for checking auth user
 userRouter.post("/email-send", emailSend); //  user send otp by email for password verify
 userRouter.post("/change-password", changePassword); // checking otp and change Password
-userRouter.put("/:id", updateUser); // user edit his information
+userRouter.patch("/:id", updateUser); // user edit his information
 
 // Event route for user
-userRouter.post("/event/:id", createEvent); //add event details by users
 userRouter
   .route("/event-details/:id")
   .delete(deleteEvent) // delete event by users

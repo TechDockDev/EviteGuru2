@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
 import bodyParser from "body-parser";
-import Template from "../models/templateModels.js";
+import Template from "../models/templateModel.js";
 import {
   allTemplate,
   deleteTemplate,
@@ -9,7 +9,6 @@ import {
   createTemplate,
   saveImage,
   sendImage,
-  previewImage,
   editTemplate,
 } from "../controllers/templateController.js";
 
@@ -41,11 +40,10 @@ const templateRouter = express.Router();
 templateRouter.get("/", allTemplate);
 templateRouter.post("/saveImage", upload.array("image"), saveImage);
 templateRouter.post("/previewImage", upload.single("previewImage"), saveImage);
-templateRouter.get("/sendImage/:imgName", sendImage);
+templateRouter.get("/sendImage", sendImage);
 templateRouter.get("/single/:id", singleTemplate);
 templateRouter.patch("/edit/:id", editTemplate);
 templateRouter.post("/create", preview.single("previewImage"), createTemplate);
-templateRouter.get("/previewImage/:imgName", previewImage);
 templateRouter.delete("/delete/:id", deleteTemplate);
 
 export default templateRouter;

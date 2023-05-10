@@ -8,44 +8,7 @@ import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
 import emailConfig from "../utils/nodeMailer.js";
 import userGooglefbs from "../models/userGoogleFbSchema.js";
-import Subscription from "../models/subscriptions.js";
-const googlefacebookAuth = asyncHandler(async (req, res) => {
-  const { email, uid, emailverify, name } = req.body;
-
-  const userExist = await userGooglefbs.findOne({ email });
-  try {
-    if (userExist) {
-      // user is already exist
-      res.json({
-        _id: userExist._id,
-        email: userExist.email,
-        uid: userExist.uid,
-        emailverify: userExist.emailverify,
-        name: userExist.name,
-        token: generateToken(userExist._id),
-      });
-    } else {
-      // Successfully created
-      const user = await userGooglefbs.create({
-        email,
-        uid,
-        emailverify,
-        name,
-      });
-
-      res.status(201).json({
-        _id: user._id,
-        email: user.email,
-        uid: user.uid,
-        emailverify: user.emailverify,
-        name: user.name,
-        token: generateToken(user._id),
-      });
-    }
-  } catch (err) {
-    res.json(err);
-  }
-});
+import Subscription from "../models/subscriptionModel.js";
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -137,18 +100,12 @@ const login = async (req, res, next) => {
 };
 
 const getUser = asyncHandler(async (req, res) => {
-  let user = await User.findById(req.params.id);
-
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      email: user.email,
-      email_verify: user.email_verify,
-    });
-  } else {
-    res.status(404); // Not Found
-    throw new Error("User not Found");
-  }
+  const user = await User.findById(req.params.id);
+  res.json({
+    status: "success",
+    message: "user has been fetched",
+    user,
+  });
 });
 
 const allUser = asyncHandler(async (req, res) => {
@@ -286,7 +243,6 @@ export {
   signUp,
   getUser,
   emailSend,
-  googlefacebookAuth,
   allUser,
   userPlans,
   authenticated,

@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import Template from "../models/templateModels.js";
+import Template from "../models/templateModel.js";
 
 const getTemplateById = asyncHandler(async (req, res) => {
   try {
@@ -32,7 +32,7 @@ const createTemplate = asyncHandler(async (req, res) => {
       name,
       description,
       templateJson,
-      previewImage: req.file.filename,
+      previewImage: req.file.path,
     });
     res.json({
       status: "success",
@@ -45,6 +45,7 @@ const createTemplate = asyncHandler(async (req, res) => {
 });
 
 const saveImage = asyncHandler(async (req, res) => {
+  console.log(req.files);
   res.json("Image saved");
 });
 
@@ -70,7 +71,9 @@ const allTemplate = asyncHandler(async (req, res) => {
 });
 
 const sendImage = asyncHandler((req, res) => {
-  res.sendFile(`/uploads/templateImages/${req.params.imgName}`, { root: "." });
+  console.log(req.query.path);
+  res.sendFile(`${req.query.path}`, { root: "." });
+  // res.sendFile(`/uploads/templateImages/${req.params.imgName}`, { root: "." });
 });
 
 const singleTemplate = asyncHandler(async (req, res) => {
@@ -84,10 +87,6 @@ const singleTemplate = asyncHandler(async (req, res) => {
   });
 });
 
-const previewImage = asyncHandler(async (req, res) => {
-  res.sendFile(`/uploads/previewImages/${req.params.imgName}`, { root: "." });
-});
-
 export {
   getTemplateById,
   deleteTemplate,
@@ -97,5 +96,4 @@ export {
   createTemplate,
   saveImage,
   sendImage,
-  previewImage,
 };
