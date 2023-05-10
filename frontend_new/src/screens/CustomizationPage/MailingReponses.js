@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Grid, Pagination, Stack, Typography } from "@mui/material";
 import {
   DataGrid,
   GridToolbar,
@@ -265,6 +265,21 @@ const MailingReponses = () => {
               fontWeight: "800",
             },
           }}
+        />
+      </Stack>
+      <Stack spacing={2} alignItems={"center"}>
+        <Pagination
+          count={10}
+          siblingCount={1}
+          variant="outlined"
+          defaultPage={1}
+          // type={"first"}
+          shape="rounded"
+          boundaryCount={0}
+          sx={{ "& .MuiPagination-ul li": {color:"red"} }}
+          // hideNextButton={true}
+          // hidePrevButton={true}
+          // page={1}
         />
       </Stack>
 

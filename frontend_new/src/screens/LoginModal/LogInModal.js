@@ -15,7 +15,7 @@ import {
 // import React, { useState } from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../oldredux/action/userAction";
+// import { login } from "../../oldredux/action/userAction";
 import { GoogleFacebookLogin } from "../../oldredux/action/userAction";
 // import { Authentication } from '../firebaseAuth/firebase';
 import { Authentication } from "../../firebaseAuth/firebase";
@@ -29,6 +29,7 @@ import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
+import { login } from "../../redux/action/userActions";
 
 const LogInModal = ({
   openLoginModal,
@@ -48,14 +49,13 @@ const LogInModal = ({
 
   // let [searchParam] = useSearchParams();
   // let redirect = searchParam.get("redirect") || "/";
-
-  const [userValues, setUserValues] = useState({
+  const tempValues = {
     email: "",
     password: "",
-  });
+  };
+  const [userValues, setUserValues] = useState(tempValues);
 
-  const{ userDetail} = useSelector((state) => state);
- 
+  const { userDetail } = useSelector((state) => state);
 
   // const usergooglefacebookLogin = useSelector(
   //   (state) => state.usergooglefacebookLogin
@@ -74,9 +74,14 @@ const LogInModal = ({
   const submitHandler = async (e) => {
     e.preventDefault();
     console.log("cred->", userValues);
-    const res = await axios.post("/users/login", userValues);
-    // dispatch(login(userValues));
-    // toggleLogInModal();
+    const res = await axios.post("/user/login", userValues);
+    if (res.status === 200) {
+      toggleLogInModal();
+      dispatch(login(res?.data?.data?.user));
+      setUserValues(tempValues);
+    } else {
+      toggleLogInModal();
+    }
   };
 
   const googleHandler = () => {
@@ -233,7 +238,7 @@ const LogInModal = ({
                   }}
                   placeholder={"Your e-mail"}
                   required
-                  onblur="this.placeholder='enter your text'" 
+                  onblur="this.placeholder='enter your text'"
                 />
               </FormControl>
               {/*👆 E-MAIL👆 */}

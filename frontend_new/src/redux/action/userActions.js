@@ -2,7 +2,7 @@ import { ActionTypes } from "../constants/action-types";
 
 export const login = (data) => {
   return {
-    type: ActionTypes.USER_LOGIN_REQUEST,
+    type: ActionTypes.USER_LOGIN,
     payload: data,
   };
 };
@@ -16,7 +16,7 @@ export const logout = () => {
 
 export const register = (data) => {
   return {
-    type: ActionTypes.USER_LOGIN_REQUEST,
+    type: ActionTypes.USER_REGISTER,
     payload: data,
   };
 };
