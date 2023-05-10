@@ -101,6 +101,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                   position: "absolute",
                   right: "35px",
                   top: "20px",
+                  color: "white",
                 }}
               >
                 <CancelOutlinedIcon sx={{ bgcolor: "transparent" }} />
@@ -172,6 +173,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                     padding: "2px 10px",
                     borderRadius: "5px",
                     fontWeight: "500",
+                    bgcolor: "white",
                   }}
                   placeholder={"Your full name"}
                   id="username"
@@ -204,6 +206,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                     padding: "2px 10px",
                     borderRadius: "5px",
                     fontWeight: "500",
+                    bgcolor: "white",
                   }}
                   placeholder={"Your e-mail"}
                   id="email"
@@ -236,6 +239,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                     padding: "2px 10px",
                     borderRadius: "5px",
                     fontWeight: "500",
+                    bgcolor: "white",
                   }}
                   placeholder={"Your Number"}
                   id="phone"
@@ -270,6 +274,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                     padding: "2px 10px",
                     borderRadius: "5px",
                     fontWeight: "500",
+                    bgcolor: "white",
                   }}
                   placeholder="Your password"
                   required
@@ -317,6 +322,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                     padding: "2px 10px",
                     borderRadius: "5px",
                     fontWeight: "500",
+                    bgcolor: "white",
                   }}
                   placeholder="Confirm password"
                   required

@@ -23,7 +23,7 @@ const TemplateSection = () => {
   // get templatesList
   const getAllTemplates = async () => {
     try {
-      const res = await axios.get("/template");
+      const res = await axios.get("/images/getImage");
       console.log("res", res);
       dispatch(setTemplateList(res?.data?.template));
     } catch (error) {}
@@ -101,7 +101,7 @@ const TemplateSection = () => {
           // console.log("templates...", singleTemplate);
           return (
             <Grid
-              component={"button"}
+              // component={"button"}
               boxShadow=" 7px 7px 10px 5px grey"
               item
               key={index}

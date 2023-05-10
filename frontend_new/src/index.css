@@ -1,5 +1,13 @@
-body{
-    background: white;
-    margin:0;
-    padding: 0;
+body {
+  background: white;
+  margin: 0;
+  padding: 0;
+}
+.css-1edmlat-MuiModal-root-MuiPopover-root-MuiMenu-root ul {
+  border-radius: 8px !important;
+  background-color: rgba(206, 197, 220, 1) !important;
+  /* background-color: white) !important; */
+  box-shadow: 5px 5px 5px rgb(90, 86, 96) !important;
+  
+
 }
