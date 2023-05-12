@@ -1,14 +1,11 @@
 import {
-  Box,
   Grid,
   Button,
-  IconButton,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  TextField,
-  Typography,
+
   Stack,
   FormControl,
   InputLabel,
@@ -297,7 +294,7 @@ const Design = () => {
   // =================== This is YOur Handler + Image Downloader
   const downloadImage = (e) => {
     e.preventDefault();
-    const ext = "svg";
+    const ext = "png";
     const base64 = editor?.canvas?.toDataURL({
       format: ext,
       enableRetinaScaling: true,

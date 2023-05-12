@@ -47,7 +47,7 @@ const TemplatePreviewCarousel = ({carouselClick}) => {
                 scale:"0.95", "&:active":{
                     scale:"1"
                 }
-               } }} src={`/template/previewImage/${singleTemplate?.previewImage}`} />;
+               } }} src={`/images/getImage?path=/${singleTemplate?.previewImage}`} />;
             
             })}
 

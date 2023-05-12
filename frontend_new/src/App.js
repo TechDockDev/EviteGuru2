@@ -9,7 +9,7 @@ import Preview from "./screens/CustomizationPage/Preview";
 import Invitees from "./screens/Invitees/Invitees";
 import AccountSettings from "./screens/AccountSettings/AccountSettings";
 import MailingReponses from "./screens/CustomizationPage/MailingReponses";
-
+import Pricing from "./screens/pricing/Pricing";
 
 // import FooterSection from "./screens/HomeScreen/FooterSection";
 // import EmailsendOtp from "./screens/EmailotpScreen";
@@ -18,7 +18,6 @@ import MailingReponses from "./screens/CustomizationPage/MailingReponses";
 // import React, { useState, useEffect } from "react";
 // import RegisterModal from "./screens/RegisterModal/RegisterModal";
 
-
 const App = () => {
   return (
     <BrowserRouter>
@@ -26,11 +25,12 @@ const App = () => {
         <Route path="/" element={<Header />}>
           <Route index element={<HomeScreen />} />
           <Route path="/browse_template" element={<BrowseTemplate />} />
+          <Route path="/pricing" element={<Pricing />} />
         </Route>
       </Routes>
       <Routes>
         <Route path="/dashboard" element={<UserDashboard />}>
-          <Route  path="/dashboard/edit/:id" element={<CustomizationPage />} />
+          <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
           <Route path="/dashboard/preview/:id" element={<Preview />} />
 
           <Route path="/dashboard/invitees" element={<Invitees />} />

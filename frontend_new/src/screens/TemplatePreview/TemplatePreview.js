@@ -128,7 +128,7 @@ const TemplatePreview = ({
                   component="img"
                   height="100%"
                   maxWidth="100%"
-                  src={`/template/previewImage/${singleTemplateData?.previewImage}`}
+                  src={`/images/getImage?path=/${singleTemplateData?.previewImage}`}
                   // /template/previewImage/${singleTemplate?.previewImage}
                   sx={{ display: "block" }}
                 />

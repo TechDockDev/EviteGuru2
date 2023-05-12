@@ -124,8 +124,31 @@ const Header = () => {
               {/* ==== 👆 EVITEGURU topbar logo 👆   ===== */}
 
               {/*👇 topbar left menu list 👇 */}
-              <List disablePadding={true} dense sx={{ display: "flex" }}>
-                <ListItem onClick={() => navigate("/")}>
+              <List
+                disablePadding={true}
+                dense
+                component={"nav"}
+                sx={{
+                  display: "flex",
+                  "& .MuiListItemButton-root": {
+                    color: "black",
+                  },
+                  "& : hover	.MuiListItemButton-root": {
+                    borderBottom: "4px solid rgba(121, 93, 168, 1)",
+                    transition: "all .5s ease-in",
+                  },
+                  "& .active 	.MuiListItemButton-root": {
+                    // scale: ".95",
+                    borderBottom: "4px solid rgba(121, 93, 168, 1)",
+                    // color: "black !important",
+                  },
+                }}
+              >
+                <ListItem
+                  // onClick={() => navigate("/")}
+                  component={NavLink}
+                  to="/"
+                >
                   <ListItemButton
                     disableGutters
                     sx={{ "&:hover": { bgcolor: "white" } }}
@@ -133,12 +156,28 @@ const Header = () => {
                     <ListItemText>Home</ListItemText>
                   </ListItemButton>
                 </ListItem>
-                <ListItem onClick={() => navigate("/browse_template")}>
+                <ListItem
+                  // onClick={() => navigate("/browse_template")}
+                  component={NavLink}
+                  to="/browse_template"
+                >
                   <ListItemButton
                     disableGutters
                     sx={{ "&:hover": { bgcolor: "white" } }}
                   >
                     <ListItemText>Template</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  // onClick={() => navigate("/pricing")}
+                  component={NavLink}
+                  to="/pricing"
+                >
+                  <ListItemButton
+                    disableGutters
+                    sx={{ "&:hover": { bgcolor: "white" } }}
+                  >
+                    <ListItemText>Pricing</ListItemText>
                   </ListItemButton>
                 </ListItem>
               </List>
@@ -206,9 +245,10 @@ const Header = () => {
                       sx: {
                         overflow: "visible",
                         // bgcolor: "#CEC5DC",
-                       
-                        filter: "drop-shadow(0px 2px 8px rgba(206, 197, 220, 1))",
-                        borderRadius:"16px",
+
+                        filter:
+                          "drop-shadow(0px 2px 8px rgba(206, 197, 220, 1))",
+                        borderRadius: "16px",
                         mt: 1.5,
                         "&:before": {
                           content: '""',

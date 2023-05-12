@@ -1,4 +1,5 @@
 import { Box, Grid, Pagination, Stack, Typography } from "@mui/material";
+
 import {
   DataGrid,
   GridToolbar,
@@ -7,6 +8,14 @@ import {
 import React from "react";
 
 const MailingReponses = () => {
+  // const useStyles = makeStyles((theme) => ({
+  //   root: {
+  //     "& .Mui-selected": {
+  //       backgroundColor: "transparent",
+  //       color: "#19D5C6",
+  //     },
+  //   },
+  // }));
   function CustomeToolBar() {
     return (
       <Grid container>
@@ -276,7 +285,7 @@ const MailingReponses = () => {
           // type={"first"}
           shape="rounded"
           boundaryCount={0}
-          sx={{ "& .MuiPagination-ul li": {color:"red"} }}
+
           // hideNextButton={true}
           // hidePrevButton={true}
           // page={1}
