@@ -9,99 +9,48 @@ import {
   Select,
   MenuItem,
   IconButton,
+  TextField,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Link as RouterLink, useNavigate, NavLink } from "react-router-dom";
 
-import { FormProvider, useForm } from "react-hook-form";
-import SingleInput from "./SingleInput";
-const defaultValues = {
-  textValue: "",
-
-  dropdownValue: "One",
-  sliderValue: 0,
-};
-
 export const AddPriceContent = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: [""],
-    price: "",
-    withdrawalMonths: "",
-    templateLimits: "",
-    guestLimits: "",
-  });
-
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [descriptionNumber, setDescriptionNumber] = useState([Math.random()]);
+  const [value, setValue] = useState();
+  const [description, setDescription] = useState([]);
 
-  const adminLogin = useSelector((state) => state.adminLogin);
-  const { adminInfo, loading, error } = adminLogin;
+  const addDescription = () => {
+    setDescriptionNumber([...descriptionNumber, Math.random()]);
+  };
 
-  const addSubscriptions = async (res, req) => {
-    try {
-      const { data } = await axios.post("/admin/create-plan", {
-        name: formData.name,
-        description: formData.description,
-        price: formData.price,
-        withdrawalMonths: formData.withdrawalMonths,
-        templateLimits: formData.templateLimits,
-        guestLimits: formData.guestLimits,
+  const handleChange = (e) => {
+    if (e.target.name === "monthly" || e.target.name === "yearly") {
+      return setValue({
+        ...value,
+        price: { ...value.price, [e.target.name]: e.target.value },
       });
-
-      // setAddPlan(req.data);
-      console.log("singleData->", data);
-    } catch (error) {
-      console.log(error);
     }
+    setValue({ ...value, [e.target.name]: e.target.value });
+  };
+  const handleDescription = (e) => {
+    setDescription({ ...description, [e.target.name]: e.target.value });
   };
 
-  const handleChange = (e, index) => {
-    if (e.target.name === "description") {
-      let tempDesc = [...formData.description];
-      tempDesc[index] = e.target.value;
-      setFormData({ ...formData, description: tempDesc });
-    } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-      console.log(formData);
-    }
+  const removeDescription = (index) => {
+    setDescriptionNumber(descriptionNumber.filter((item, i) => i !== index));
   };
 
-  // const handleChanges = (event) => {
-  //   setWithdrawalMonths(event.target.value);
-  // };
-  const methods = useForm({ defaultValues: defaultValues });
-  const { handleSubmit, reset, control, setValue } = methods;
-  // const onSubmit = (data: "csdcsc") => console.log(data);
-
-  const submitHandler = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addSubscriptions(
-      formData.name,
-      formData.description,
-      formData.price,
-      formData.withdrawalMonths,
-      formData.templateLimits,
-      formData.guestLimits
-    );
-
+    const data = { ...value, description: Object.values(description) };
+    const res = await axios.post("/admin/create-plan", data);
+    console.log(res);
     navigate("/admin/pricing");
   };
-
-  // useEffect(() => {
-  //   addSubscriptions(
-  //     formData.name,
-  //     formData.description,
-  //     formData.price,
-  //     formData.withdrawalMonths,
-  //     formData.templateLimits,
-  //     formData.guestLimits
-  //   );
-  // }, []);
 
   return (
     <Stack width="100%" margin="auto" alignItems={"center"} p={2}>
@@ -109,225 +58,138 @@ export const AddPriceContent = () => {
         sx={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "center",
           flexDirection: "column",
-          p: 2,
+          p: 5,
           bgcolor: "white",
-          width: "80%",
-
           borderRadius: "20px",
         }}
         elevation={10}
       >
-        {/* title */}
-        <Typography
-          variant="h4"
-          align="center"
-          fontWeight="800"
-          mb={2}
-          sx={{
-            color: "#795da8",
-            width: "100%",
-          }}
-        >
-          Add Plans
-        </Typography>
-        {/* title */}
-
-        {/* form element */}
-
-        <Grid
-          // border="1px solid green"
-          width="90%"
-          p={1}
-          container
+        <Box
           component="form"
-          onSubmit={submitHandler}
           sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
+            "& > :not(style)": { m: 1 },
           }}
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit}
         >
-          {/* == 👇 Plan Name 👇  ==*/}
-          <SingleInput
-            labelText={"Plan Name"}
-            inputType={"text"}
-            inputName={"name"}
-            inputValue={formData.name}
-            onChangeHandler={handleChange}
-            labelInputId={"name"}
-            requiredTrue={true}
-            placeholderText={"Name Plan type"}
-          />
-          {/* == 👆 Plan Name 👆   ==*/}
-          {/* == 👇 Plan Description 👇  ==*/}
-          <Stack width="100%">
-            {formData.description.map((li, index) => {
-              return (
+          <Typography
+            variant="h4"
+            color="primary"
+            gutterBottom
+            sx={{ fontWeight: "800", textTransform: "uppercase" }}
+          >
+            Add Subscription
+          </Typography>
+          <Stack direction={"column"} spacing={2}>
+            <TextField
+              label="Name"
+              name="name"
+              variant="outlined"
+              sx={{ width: "40ch" }}
+              onChange={handleChange}
+            />
+
+            {descriptionNumber.map((v, i) => (
+              <Stack
+                direction={"row"}
+                alignItems={"center"}
+                spacing={1}
+                key={v}
+              >
                 <>
-                  <SingleInput
-                    key={index}
-                    labelText={`Description Line ${index + 1}`}
-                    inputType={"text"}
-                    inputName={"description"}
-                    inputValue={formData[index]}
-                    onChangeHandler={(e) => handleChange(e, index)}
-                    labelInputId={"description"}
-                    requiredTrue={true}
-                    placeholderText={"Plan description"}
+                  <TextField
+                    label="Description"
+                    name={`description${i}`}
+                    onChange={handleDescription}
+                    variant="outlined"
+                    fullWidth
                   />
+                  <Box>
+                    <IconButton
+                      aria-label="remove"
+                      size="small"
+                      onClick={() => removeDescription(i)}
+                      sx={{
+                        transition: ".3s ease all",
+                        backgroundColor: "#795DA8",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#CEC5DC",
+                          color: "#795DA8",
+                        },
+                      }}
+                    >
+                      <RemoveIcon />
+                    </IconButton>
+                  </Box>
                 </>
-              );
-            })}
-            <Box
-              sx={{
-                width: "100%",
-                textAlign: "right",
-              }}
-            >
-              <IconButton>
-                <AddIcon
-                  onClick={() => {
-                    let temp = [...formData.description];
-                    temp.push("");
-                    setFormData({ ...formData, description: temp });
-                  }}
-                />
-              </IconButton>
-              <IconButton>
-                <RemoveIcon
-                  onClick={() => {
-                    if (formData.description.length !== 1) {
-                      let temp = [...formData.description];
-                      temp.pop();
-                      setFormData({ ...formData, description: temp });
-                    } else {
-                    }
-                  }}
-                />
+              </Stack>
+            ))}
+            <Box>
+              <IconButton
+                aria-label="add"
+                size="small"
+                onClick={addDescription}
+                sx={{
+                  transition: ".3s ease all",
+                  backgroundColor: "#795DA8",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#CEC5DC",
+                    color: "#795DA8",
+                  },
+                }}
+              >
+                <AddIcon />
               </IconButton>
             </Box>
           </Stack>
-
-          {/* == 👆 Plan Description 👆   ==*/}
-          {/* == 👇 Price 👇  ==*/}
-          <SingleInput
-            labelText={"Price"}
-            inputType={"number"}
-            inputName={"price"}
-            inputValue={formData.price}
-            onChangeHandler={handleChange}
-            labelInputId={"price"}
-            requiredTrue={true}
-            placeholderText={"Set Price"}
-          />
-          {/* == 👆 Price👆   ==*/}
-          {/* == 👇 Template Limit 👇  ==*/}
-          <SingleInput
-            labelText={"Template Limit"}
-            inputType={"number"}
-            inputName={"templateLimits"}
-            inputValue={formData.templateLimits}
-            onChangeHandler={handleChange}
-            labelInputId={"templateLimits"}
-            requiredTrue={true}
-            placeholderText={"Set template limit"}
-          />
-          {/* == 👆 Template Limit   ==*/}
-          {/* == 👇 Validity(months) 👇  ==*/}
-          <Grid container mt={2}>
-            <Grid
-              component={"label"}
-              htmlFor={"validity"}
-              item
-              xl={4}
-              lg={4}
-              md={4}
-              sm={4}
-              xs={12}
-              sx={{
-                fontFamily: "Montserrat",
-                fontSize: "20px",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              validity *
-            </Grid>
-            <Grid
-              component={"select"}
-              required={true}
-              name="withdrawalMonths"
-              value={formData.withdrawalMonths}
+          <Stack spacing={2} direction={"row"}>
+            <TextField
+              label="Monthly Price"
+              name="monthly"
+              variant="outlined"
+              type="number"
               onChange={handleChange}
-              id={"validity"}
-              item
-              xl={8}
-              lg={8}
-              md={8}
-              sm={8}
-              xs={12}
-              sx={{
-                height: "50px",
-                outline: "none",
-                border: "1px solid black",
-                borderRadius: "8px",
-                paddingX: "10px",
-                fontSize: "18px",
-                "&:focus": { border: "2px solid #795DA8" },
-              }}
-            >
-              <option value={null}>Please choose an option</option>
-              <option value={1}>1 Month</option>
-              <option value={12}>12 Month</option>
-            </Grid>
-          </Grid>
-          {/* == 👆 Validity(months)   ==*/}
-          {/* == 👇 Guest Limit 👇  ==*/}
-          <SingleInput
-            labelText={"Guest Limit"}
-            inputType={"number"}
-            inputName={"guestLimits"}
-            inputValue={formData.guestLimits}
-            onChangeHandler={handleChange}
-            labelInputId={"guestLimits"}
-            requiredTrue={true}
-            placeholderText={"Set guest limit"}
-          />
-          {/* == 👆 Guest Limit   ==*/}
-
-          {/* buttons container */}
-          <Grid item mt={2} xs={12} width="100%" textAlign="center">
-            <Button
-              variant={"contained"}
-              type="submit"
-              sx={{
-                color: "white",
-                width: "100%",
-                mb: 1,
-              }}
-              size="large"
-            >
-              Submit
-            </Button>
-          </Grid>
-
-          {/* buttons container */}
+              sx={{ width: "20ch" }}
+            />
+            <TextField
+              label="Yearly Price"
+              name="yearly"
+              type="number"
+              variant="outlined"
+              onChange={handleChange}
+              sx={{ width: "20ch" }}
+            />
+          </Stack>
+          <Stack spacing={2} direction={"row"}>
+            <TextField
+              label="Template Limit"
+              name="templateLimit"
+              variant="outlined"
+              type="number"
+              onChange={handleChange}
+              sx={{ width: "20ch" }}
+            />
+            <TextField
+              label="Guest Limit"
+              name="guestLimit"
+              type="number"
+              variant="outlined"
+              onChange={handleChange}
+              sx={{ width: "20ch" }}
+            />
+          </Stack>
           <Button
-            fullWidth
-            variant={"contained"}
-            sx={{ color: "white" }}
-            component={NavLink}
-            to="/admin/pricing"
+            variant="contained"
+            type="submit"
+            sx={{ color: "white", my: "20px" }}
           >
-            Back
-            {/* {plan.buttonText} */}
+            Submit
           </Button>
-        </Grid>
-
-        {/* form element */}
+        </Box>
       </Paper>
     </Stack>
   );

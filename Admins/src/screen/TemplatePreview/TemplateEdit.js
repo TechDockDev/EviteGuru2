@@ -1,281 +1,220 @@
 import React, { useEffect, useState } from "react";
-import Modal from "@mui/material/Modal";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { fabric } from "fabric";
+import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import axios from "axios";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import { Buffer } from "buffer";
+import { useParams } from "react-router-dom";
 
-const TemplateEdit = ({
-  carouselClick,
-  singleTemplateId,
-  toggleTemplatePreviewModal,
-  openTemplatePreviewModal,
-}) => {
-  const [singleTemplateData, setSingleTemplateData] = useState({});
-  // /template/:id
-
-  const closeModal = () => {
-    if (openTemplatePreviewModal) {
-      setSingleTemplateData({});
-      toggleTemplatePreviewModal();
-    } else {
-      toggleTemplatePreviewModal();
-    }
+const TemplateEdit = () => {
+  const { editor, onReady, selectedObjects } = useFabricJSEditor();
+  const [allImages, setAllImages] = useState([]);
+  const [templateJson, setTemplateJson] = useState();
+  const { templateId } = useParams();
+  const onAddCircle = () => {
+    editor?.addCircle();
+  };
+  const onAddRectangle = () => {
+    const rectangle = new fabric.Rect({
+      left: 100,
+      top: 100,
+      width: 200,
+      height: 100,
+    });
+    editor?.canvas?.add(rectangle);
+  };
+  const deleteAll = () => {
+    setAllImages([]);
+    editor?.deleteAll();
+  };
+  const setFillColor = (e) => {
+    editor?.setFillColor(e.target.value);
   };
 
-  const getPreviewTemplate = async (res) => {
-    if (singleTemplateId != "") {
-      try {
-        const res = await axios.get(`/template/${singleTemplateId}`);
-        setSingleTemplateData(res.data);
-        console.log("singleData->", res.data);
-      } catch (error) {
-        console.log(error);
-      }
+  const addImage = (e) => {
+    const reader = new FileReader();
+    console.log(e.target.files[0]);
+    setAllImages([...allImages, e.target.files[0]]);
+    reader.onload = function (event) {
+      var imgObj = new Image();
+      imgObj.src = event.target.result;
+      imgObj.setAttribute("crossOrigin", "anonymous");
+      imgObj.onload = function () {
+        var image = new fabric.Image(imgObj);
+        editor.canvas.centerObject(image);
+        image.set({
+          scaleX: editor?.canvas.getWidth() / image.width / 2,
+          scaleY: editor?.canvas.getHeight() / image.height / 2,
+          top: 0,
+          left: 0,
+          srcFromAttribute: true,
+        });
+        image.name = e.target.files[0].name;
+        editor.canvas.add(image);
+        editor?.canvas.renderAll();
+      };
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+  const addText = () => {
+    const text = new fabric.Textbox("text", {
+      editable: true,
+    });
+    editor?.canvas?.add(text);
+  };
+  const layerDown = () => {
+    editor?.canvas?.sendBackwards(selectedObjects[0]);
+    editor?.canvas?.sendToBack(selectedObjects[0]);
+    editor?.canvas.discardActiveObject();
+  };
+  const layerUp = () => {
+    console.log(selectedObjects);
+    editor?.canvas?.bringForward(selectedObjects[0]);
+    editor?.canvas?.bringToFront(selectedObjects[0]);
+    editor?.canvas.discardActiveObject();
+  };
+  const deleteSelected = () => {
+    console.log(selectedObjects[0].get("type") === "image");
+    if (selectedObjects[0] && selectedObjects[0].get("type") === "image") {
+      console.log(selectedObjects[0].name);
+      setAllImages(
+        allImages.filter((file) => file.name !== selectedObjects[0].name)
+      );
+    }
+    editor?.deleteSelected();
+  };
+  const setBackgroundImage = (e) => {
+    const reader = new FileReader();
+    setAllImages([...allImages, e.target.files[0]]);
+    // set background image options
+    var bgImgOptions = {
+      // set the background color to white
+      backgroundColor: "red",
+      // set the scaling mode to "cover"
+      backgroundScaleMode: "cover",
+    };
+    // load the background image
+    reader.onload = function (event) {
+      var imgObj = new Image();
+      imgObj.src = event.target.result;
+      imgObj.setAttribute("crossOrigin", "anonymous");
+      imgObj.onload = function () {
+        var image = new fabric.Image(imgObj);
+        image.name = e.target.files[0].name;
+        // set the image as the background of the canvas
+        editor?.canvas?.setBackgroundImage(
+          image,
+          editor.canvas.renderAll.bind(editor.canvas),
+          bgImgOptions
+        );
+      };
+    };
+    reader.readAsDataURL(e.target.files[0]);
+  };
+  const getTemplateJson = async () => {
+    try {
+      const { data } = await axios.get(`/template/${templateId}`);
+      setTemplateJson(data.template.templateJson);
+    } catch (error) {
+      console.log(error);
     }
   };
+  useEffect(() => {
+    editor?.canvas?.setDimensions({ height: 600, width: 900 });
+  }, [editor]);
 
   useEffect(() => {
-    getPreviewTemplate();
-  }, [singleTemplateId]);
+    editor?.canvas.loadFromJSON(templateJson);
+  }, [templateJson]);
+  useEffect(() => {
+    getTemplateJson();
+  }, []);
+  async function saveTemplate(file) {
+    try {
+      fabric.Image.prototype.toObject = (function (toObject) {
+        return function () {
+          return fabric.util.object.extend(toObject.call(this), {
+            name: this.name,
+            src: `http://192.168.29.249:8085/template/sendImage/${this.name}`,
+          });
+        };
+      })(fabric.Image.prototype.toObject);
+      const formData = new FormData();
+      formData.append("name", "badhiya template");
+      formData.append("description", "arre bahut badhiya template hai");
+      formData.append("templateJson", JSON.stringify(editor?.canvas.toJSON()));
+      formData.append("previewImage", file);
+      console.log(formData);
+      const response = await axios.patch(`/template/${templateId}`, formData);
+      console.log(editor?.canvas.toJSON());
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const uploadImage = async (e) => {
+    try {
+      const formData = new FormData();
+      allImages.forEach((v) => {
+        console.log(v);
+        formData.append("image", v);
+      });
+      const res = await axios.post("/template/saveImage", formData);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getPreviewImage = async () => {
+    const canvasPng = editor?.canvas.toDataURL({
+      format: "png",
+    });
 
-  // console.log("templateData->", singleTemplateData);
+    // Making file object from the base64 string
+    function dataURLtoFile(dataurl, filename) {
+      const uint8Buffer = Buffer.from(dataurl.split(",")[1], "base64");
+      return new File([uint8Buffer], filename, { type: "image/png" });
+    }
 
-  // ==============================
+    // Usage example:
+    var file = dataURLtoFile(canvasPng, "previewImage.png");
+    saveTemplate(file);
+  };
   return (
-    <Modal
-      open={openTemplatePreviewModal}
-      onClose={closeModal}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      sx={{ bgcolor: "transparent", backdropFilter: "blur(3px)" }}
-    >
-      <Grid
-        container
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          maxHeight: "90vh",
-          width: "90%",
-          maxWidth: "900px",
-          boxShadow: 24,
-          p: 4,
-          borderRadius: "10px",
-          border: "1px solid purple",
-        }}
-      >
-        {/* 👇Cross icon to close the modal👇  */}
-        <IconButton
-          onClick={closeModal}
-          sx={{
-            color: "black",
-            position: "absolute",
-            right: "35px",
-            top: "20px",
-          }}
-        >
-          <CancelOutlinedIcon sx={{ bgcolor: "transparent" }} />
-        </IconButton>
-        {/*👆 Cross icon to close the modal👆  */}
-
-        {/*== 👇 container grid for left sample image and description text 👇==*/}
-        <Grid container item xl={11}>
-          <Grid item xl={6} lg={6} md={6} sm={6}>
-            <Box
-              sx={{
-                height: "300px",
-                // border: "1px solid red",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                boxSizing: "border-box",
-                padding: "10px",
-              }}
-            >
-              {singleTemplateData.sampleimage ? (
-                <Box
-                  component="img"
-                  height="100%"
-                  maxWidth="100%"
-                  src={`data:image/*;base64, ${singleTemplateData.sampleimage}`}
-                  sx={{ display: "block" }}
-                />
-              ) : (
-                <CircularProgress />
-              )}
-            </Box>
-          </Grid>
-          <Grid item xl={6} lg={6} md={6} sm={6}>
-            <Box
-              sx={{
-                height: "300px",
-                // border: "1px solid red",
-                display: "flex",
-                justifyContent: "space-around",
-                alignItems: "center",
-                flexDirection: "column",
-                padding: "20px 10px",
-                boxSizing: "border-box",
-              }}
-            >
-              <Typography
-                variant="h1"
-                fontSize="28px"
-                fontWeight="600"
-                width="100%"
-                textAlign="left"
-              >
-                {singleTemplateData?.name}
-              </Typography>
-              <Typography
-                variant="h2"
-                fontSize="20px"
-                width="100%"
-                textAlign="left"
-              >
-                Description
-              </Typography>
-              <Typography
-                variant="body"
-                fontSize="16px"
-                fontFamily={"Montserrat"}
-                width="100%"
-                textAlign="left"
-              >
-                {singleTemplateData?.description}
-              </Typography>
-              {/* <Button
-                disableElevation
-                variant="contained"
-                sx={{
-                  width: "70%",
-                  color: "#fff",
-                  marginRight: { sm: "20px", xs: "0px" },
-                  marginBottom: { sm: "0px", xs: "10px" },
-                }}
-              >
-                Customize
-              </Button> */}
-            </Box>
-          </Grid>
-        </Grid>
-        {/*== 👆 container grid for left sample image and description text 👆==*/}
-        {/* ==================================== */}
-        {/*== 👇 container grid for bottom carousel👇==*/}
-
-        <Grid container item xl={11} sx={{ padding: "20px 0" }}>
-          {/* <Typography variant="h2" fontSize="20px" fontWeight="600" mb={2}>
-            More like this
-          </Typography> */}
-          <Box
-            sx={{
-              height: "300px",
-              // border: "1px solid red",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              boxSizing: "border-box",
-              padding: "10px",
-            }}
-          >
-            {singleTemplateData.sampleimage1 ? (
-              <Box
-                component="img"
-                height="50%"
-                maxWidth="50%"
-                src={`data:image/*;base64, ${singleTemplateData.sampleimage1}`}
-                sx={{
-                  display: "block",
-                  "&hover": { "background-color": "black" },
-                }}
-              />
-            ) : (
-              <CircularProgress />
-            )}
-          </Box>
-          <Box
-            sx={{
-              height: "300px",
-              // border: "1px solid red",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              boxSizing: "border-box",
-              padding: "10px",
-            }}
-          >
-            {singleTemplateData.sampleimage2 ? (
-              <Box
-                component="img"
-                height="50%"
-                maxWidth="50%"
-                src={`data:image/*;base64, ${singleTemplateData.sampleimage2}`}
-                sx={{ display: "block" }}
-              />
-            ) : (
-              <CircularProgress />
-            )}
-          </Box>
-          <Box
-            sx={{
-              height: "300px",
-              // border: "1px solid red",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              boxSizing: "border-box",
-              padding: "10px",
-            }}
-          >
-            {singleTemplateData.sampleimage3 ? (
-              <Box
-                component="img"
-                height="50%"
-                maxWidth="50%"
-                src={`data:image/*;base64, ${singleTemplateData.sampleimage3}`}
-                sx={{ display: "block" }}
-              />
-            ) : (
-              <CircularProgress />
-            )}
-          </Box>
-          <Box
-            sx={{
-              height: "300px",
-              // border: "1px solid red",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              boxSizing: "border-box",
-              padding: "10px",
-            }}
-          >
-            {/*== 👆 Box for image👆==*/}
-            {singleTemplateData.backgroundimage ? (
-              <Box
-                component="img"
-                height="50%"
-                maxWidth="50%"
-                src={`data:image/*;base64, ${singleTemplateData?.backgroundimage}`}
-                sx={{ display: "block" }}
-              />
-            ) : (
-              <CircularProgress />
-            )}
-          </Box>
-        </Grid>
-        {/*== 👆 container grid for bottom carousel👆==*/}
-      </Grid>
-    </Modal>
+    <div>
+      <button onClick={onAddCircle}>Add circle</button>
+      <button onClick={onAddRectangle}>Add Rectangle</button>
+      <button onClick={deleteAll}>Delete all</button>
+      <button onClick={addText}>Add Text</button>
+      <button onClick={layerDown}>Layer Down</button>
+      <button onClick={layerUp}>Layer Up</button>
+      <button onClick={deleteSelected}>Delete</button>
+      <button onClick={uploadImage}>Upload Images</button>
+      <button onClick={getPreviewImage}>Preview Image</button>
+      <label htmlFor="img">Add Image</label>
+      <input
+        type="file"
+        id="img"
+        accept="image/png, image/jpeg ,image/jpg"
+        onChange={addImage}
+      ></input>
+      <label htmlFor="img">Add Background Image</label>
+      <input
+        type="file"
+        id="img"
+        accept="image/png, image/jpeg ,image/jpg"
+        crossOrigin="anonymous"
+        onChange={setBackgroundImage}
+      ></input>
+      <label htmlFor="favcolor">Select your favorite color:</label>
+      <input
+        type="color"
+        id="favcolor"
+        name="favcolor"
+        // value=
+        onChange={setFillColor}
+      ></input>
+      <FabricJSCanvas className="sample-canvas" onReady={onReady} />
+    </div>
   );
 };
-
 export default TemplateEdit;

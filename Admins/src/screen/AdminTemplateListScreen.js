@@ -1,119 +1,47 @@
-import * as React from "react";
-import TemplatePreview from "./TemplatePreview/TemplatePreview";
-// import TemplateEdit from "./TemplatePreview/TemplateEdit";
-import {
-  Box,
-  Button,
-  IconButton,
-  Typography,
-  Stack,
-  Modal,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, IconButton, Typography, Modal } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import {
-  Link as RouterLink,
-  redirect,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
 import axios from "axios";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  ATemplateList,
-  ATemplateDelete,
-  ATemplateEdits,
-} from "../redux/action/adminAction";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AdminTemplateEditScreen from "./AdminTemplateEditScreen";
-import { url } from "../url";
-
-// ======================
+import { useNavigate } from "react-router-dom";
 
 const AdminTemplateListScreen = () => {
-  const dispatch = useDispatch();
-  const adminTemplateList = useSelector((state) => state.adminTemplateList);
-  const [total, setTotal] = useState(0);
-
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 6,
-    page: 0,
-  });
-  const [template, setTemplate] = useState([]);
-  const [rowCountState, setRowCountState] = useState();
-  const [ATemplateDeletes, setATemplateDeletes] = useState("");
-  const [openTemplatePreviewModal, setOpenTemplatePreviewModal] =
-    useState(false);
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const [openAddUserModal, setOpenAddUserModal] = useState(false);
-
-  const [singleTemplateId, setSingleTemplateId] = useState("");
+  const [templates, setTemplates] = useState([]);
+  const [openEditTemplate, setOpenEditTemplate] = useState(false);
+  const [selectedTemplateId, setSelectedTemplateId] = useState();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const getTemplateData = async (page, res) => {
+  const getTemplateData = async () => {
     try {
       setLoading(true);
       const res = await axios.get(`/template`);
-      console.log(res.data);
-      setTemplate([...res.data.template]);
-      setTotal(res.data.total);
+      setTemplates(res.data.template);
       setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // =================
-  const toggleTemplatePreviewModal = (e, templateId) => {
-    if (!openTemplatePreviewModal) {
-      setSingleTemplateId(templateId);
-      setOpenTemplatePreviewModal(!openTemplatePreviewModal);
-    } else {
-      setSingleTemplateId("");
-      setOpenTemplatePreviewModal(!openTemplatePreviewModal);
-    }
-  };
-  // =================
-  // console.log(template);
-  console.log("paginationModel->", paginationModel.page);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  let resEdit = template.find((item) => {
-    return item._id == singleTemplateId;
-  });
-
-  const toggleAddUserModal = (rowTemplateId) => {
-    if (openAddUserModal) {
-      setSingleTemplateId("");
-      setOpenAddUserModal(!openAddUserModal);
-    } else {
-      setSingleTemplateId(rowTemplateId);
-      setOpenAddUserModal(!openAddUserModal);
-    }
-  };
-  const editTemplate = (e, singleTemplateId) => {
-    toggleAddUserModal(singleTemplateId);
+  const toggleEditTemplate = (templateId) => {
+    console.log(templateId);
+    setSelectedTemplateId(templateId);
+    setOpenEditTemplate(!openEditTemplate);
   };
 
   /// Delete handler for template delete
-  const deleteHandler = (e, templateId) => {
-    if (window.confirm("Are you sure you want to delete this template?")) {
-      dispatch(ATemplateDelete(templateId));
-      getTemplateData(paginationModel.page + 1);
-      window.alert("template Deleted");
+  const deleteHandler = async (templateId) => {
+    try {
+      if (window.confirm("Are you sure you want to delete this template?")) {
+        const res = await axios.delete(`/admin/template/${templateId}`);
+        console.log("deleted");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
-
-  //=======
 
   const columns = [
     {
@@ -123,48 +51,27 @@ const AdminTemplateListScreen = () => {
     },
     {
       field: "description",
-      headerName: "description",
       headerName: "Description",
       width: 250,
     },
     {
-      field: "sampleimage",
-      headerName: "Image",
-      width: 150,
+      field: "preview",
+      headerName: "Preview",
       renderCell: (params) => {
         return (
-          <>
-            <Box
-              component="img"
-              src={`${url}/images/getImage?path=${params?.row?.previewImage}`}
-              alt=""
-              sx={{ width: "50px", maxHeight: "50px" }}
-            />
-          </>
-        );
-      },
-    },
-
-    {
-      field: "view",
-      headerName: "View",
-      width: 100,
-      renderCell: (params) => {
-        return (
-          <>
-            <IconButton
-              onClick={(e) => {
-                toggleTemplatePreviewModal(e, params?.row?._id);
-              }}
-              sx={{
-                color: "#FFFFFF",
-                backgroundColor: "#795DA8",
-                borderRadius: "70%",
-              }}
-            >
-              <VisibilityIcon />
-            </IconButton>
-          </>
+          <Box
+            component="img"
+            src={`/images/getImage?path=${params?.row?.previewImage}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              window.open(
+                `http://localhost:8085/images/getImage?path=${params?.row?.previewImage}`,
+                "_blank"
+              );
+            }}
+            alt="Prevew Image"
+            sx={{ width: "50px", maxHeight: "50px", cursor: "pointer" }}
+          />
         );
       },
     },
@@ -177,7 +84,8 @@ const AdminTemplateListScreen = () => {
           <>
             <IconButton
               onClick={(e) => {
-                editTemplate(e, params?.row?._id);
+                e.stopPropagation();
+                toggleEditTemplate(params?.row?._id);
               }}
               sx={{
                 color: "#FFFFFF",
@@ -200,7 +108,8 @@ const AdminTemplateListScreen = () => {
           <>
             <IconButton
               onClick={(e) => {
-                deleteHandler(e, params?.row?._id);
+                e.stopPropagation();
+                deleteHandler(params?.row?._id);
               }}
               sx={{
                 color: "#FFFFFF",
@@ -217,11 +126,8 @@ const AdminTemplateListScreen = () => {
   ];
 
   useEffect(() => {
-    getTemplateData(paginationModel.page + 1);
-    setRowCountState((prevRowCountState) =>
-      total !== undefined ? total : prevRowCountState
-    );
-  }, [total]);
+    getTemplateData();
+  }, []);
 
   return (
     <>
@@ -241,35 +147,29 @@ const AdminTemplateListScreen = () => {
         </Typography>
         <DataGrid
           columns={columns}
-          rows={template}
-          //  rowCount={rowCountState}
-          rowCount={total}
+          rows={templates}
           autoHeight={true}
           pageSizeOptions={[6]}
-          paginationModel={paginationModel}
-          paginationMode="server"
-          onPaginationModelChange={setPaginationModel}
           getRowId={(row) => row?._id}
           loading={loading}
-          //  GridToolbar={GridToolbar}
+          disableRowSelectionOnClick={true}
+          onRowClick={(row) => navigate(`/admin/template-edit/${row.id}`)}
+          sx={{
+            "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+              outline: "none !important",
+            },
+          }}
         />
       </Box>
-      <TemplatePreview
-        toggleTemplatePreviewModal={toggleTemplatePreviewModal}
-        singleTemplateId={singleTemplateId}
-        openTemplatePreviewModal={openTemplatePreviewModal}
-      />
-
       <Modal
-        open={openAddUserModal}
-        // open={true}
-        onClose={toggleAddUserModal}
+        open={openEditTemplate}
+        onClose={toggleEditTemplate}
         closeAfterTransition
-        // sx={{ bgcolor: "transparent", overflow: "scroll" }}
       >
-        <>
-          <AdminTemplateEditScreen template={resEdit} />
-        </>
+        <AdminTemplateEditScreen
+          templateId={selectedTemplateId}
+          closeModal={toggleEditTemplate}
+        />
       </Modal>
     </>
   );

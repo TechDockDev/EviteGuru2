@@ -2,32 +2,30 @@ import { DataGrid } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AuserList, Adeleteuser } from "../redux/action/adminAction"; // deleteuser
-import {
-  Box,
-  InputLabel,
-  TextField,
-  Typography,
-  IconButton,
-} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, IconButton } from "@mui/material";
+import axios from "axios";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
+import PersonIcon from "@mui/icons-material/Person";
+import { useNavigate } from "react-router-dom";
 
 const UserListScreen = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const [openTemplatePreviewModal, seTopenTemplatePreviewModal] =
-    useState(false);
+  const [users, setUsers] = useState();
+  const navigate = useNavigate();
+  const getUsers = async () => {
+    try {
+      const res = await axios.get("/admin/all-users");
+      setUsers(res.data.users);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    setLoading(true);
-    dispatch(AuserList());
-    setLoading(false);
-  }, [dispatch]);
+    getUsers();
+  }, []);
 
   const columns = [
     {
@@ -48,45 +46,45 @@ const UserListScreen = () => {
       width: 150,
     },
     {
-      field: "template_num",
+      field: "templateNum",
       headerName: "Template",
     },
     {
-      field: "guest_num",
+      field: "guestNum",
       headerName: "guests",
       width: 100,
     },
     {
-      field: "subscriptionName",
+      field: "subscription",
       headerName: "subscription",
       width: 150,
+      renderCell: (params) => {
+        return <div>{params?.value?.name}</div>;
+      },
     },
     {
-      field: "view",
-      headerName: "View",
+      field: "suspended",
+      headerName: "Suspend",
       width: 80,
       renderCell: (params) => {
         return (
           <>
             <IconButton
-              onClick={(e) => {
-                // toggleTemplatePreviewModal(e, params.row._id);
-              }}
               sx={{
                 color: "#FFFFFF",
                 backgroundColor: "#795DA8",
                 borderRadius: "70%",
               }}
             >
-              <VisibilityIcon />
+              {params.value === false ? <PersonOffIcon /> : <PersonIcon />}
             </IconButton>
           </>
         );
       },
     },
     {
-      field: "edit",
-      headerName: "Edit",
+      field: "delete",
+      headerName: "Delete",
       width: 80,
       renderCell: (params) => {
         return (
@@ -101,7 +99,7 @@ const UserListScreen = () => {
                 borderRadius: "70%",
               }}
             >
-              <EditIcon />
+              <DeleteIcon />
             </IconButton>
           </>
         );
@@ -112,22 +110,31 @@ const UserListScreen = () => {
   return (
     <>
       <Box sx={{ height: 400, width: "98%" }}>
-        <DataGrid
-          width={"98%"}
-          rows={users}
-          columns={columns}
-          autoHeight={true}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+        {users && (
+          <DataGrid
+            width={"98%"}
+            rows={users}
+            getRowId={(row) => row._id}
+            columns={columns}
+            disableRowSelectionOnClick={true}
+            autoHeight={true}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          getRowId={(row) => row._id}
-          loading={loading}
-          pageSizeOptions={[5]}
-        />
+            }}
+            loading={loading}
+            onRowClick={(row) => navigate(`/admin/user/${row.id}`)}
+            pageSizeOptions={[5]}
+            sx={{
+              "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                outline: "none !important",
+              },
+            }}
+          />
+        )}
       </Box>
     </>
   );
