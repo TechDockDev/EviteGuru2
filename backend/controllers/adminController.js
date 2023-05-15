@@ -1,9 +1,10 @@
 import asyncHandler from "express-async-handler";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken"
 import userGooglefbs from "../models/userGoogleFbSchema.js";
 import Admin from "../models/adminModel.js";
 import Otp from "../models/otpModel.js";
 import User from "../models/userModel.js";
-import generateToken from "../utils/generateToken.js";
 import emailConfig from "../utils/nodeMailer.js";
 import Subscription from "../models/subscriptionModel.js";
 import Template from "../models/templateModel.js";
@@ -15,27 +16,47 @@ import Template from "../models/templateModel.js";
 
 const authAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
-  const admin = await Admin.findOne({ email });
-
-  if (admin && (await admin.matchPassword(password))) {
-    res.json({
-      _id: admin._id,
-      name: admin.name,
-      email: admin.email,
-      superAdmin: admin.superAdmin,
-      adminLastLogin: admin.adminLastLogin,
-      token: generateToken(admin._id),
-    });
-
-    let update = await Admin.findOneAndUpdate(email, {
-      adminLastLogin: new Date().toString("YYYY-MM-dd"),
-    });
+  const user = await Admin.findOne({ email }).select("+password");
+  if (user) {
+    const checkPassword = await bcrypt.compare(password, user.password);
+    if (checkPassword) {
+      createSendToken(user, 200, res);
+    } else {
+      throw new Error("Credentials are incorrect");
+    }
   } else {
-    res.status(401); // unauthorized
-    throw new Error("Invalid email or password");
+    throw new Error("User not found");
   }
 });
+
+// Generating token with user ID
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
+
+// controller for sending creating token for future authorization
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user.id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+  res.cookie("bearerToken", token, cookieOptions);
+  res.status(statusCode).json({
+    status: "success",
+    message: "Login Successfully",
+    data: {
+      user,
+      token,
+    },
+  });
+};
 
 /**
  * @desc    Register new admin
@@ -217,10 +238,12 @@ const updateAdmin = asyncHandler(async (req, res) => {
  */
 
 const getallUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({}).select("-password"); //select all other then password
-  const usergooglefb = await userGooglefbs.find({});
-  const allusers = usergooglefb.concat(users);
-  res.json(allusers);
+  const users = await User.find({}).populate("subscription", "name");
+  res.json({
+    status: "success",
+    message: "Users have been fetched successfully",
+    users,
+  });
 });
 
 /**
@@ -352,34 +375,13 @@ const admindeleteTemplate = asyncHandler(async (req, res) => {
  * @access private/admin
  */
 const createPlans = asyncHandler(async (req, res) => {
-  let {
-    name,
-    description,
-    price,
-
-    withdrawalMonths,
-    templateLimits,
-    guestLimits,
-  } = req.body;
-  // const nameExist = await Subscription.find({ name });
-  // console.log(nameExist);
-  try {
-    if (!req.body) {
-      res.json("please enter properly exist plan");
-    } else if (req.body) {
-      let data = await Subscription.create({
-        name,
-        description,
-        price,
-        withdrawalMonths,
-        templateLimits,
-        guestLimits,
-      });
-      res.json(data);
-    }
-  } catch (err) {
-    res.json(err);
-  }
+  console.log(req.body);
+  const data = await Subscription.create(req.body);
+  res.json({
+    status: "success",
+    message: "Subscription Plan has been created Successfully",
+    data,
+  });
 });
 
 /**
@@ -388,26 +390,11 @@ const createPlans = asyncHandler(async (req, res) => {
  * @access private/admin
  */
 const updatePlans = asyncHandler(async (req, res) => {
-  const plans = await Subscription.findById(req.params.id);
-
-  try {
-    if (plans) {
-      plans.name = req.body.name || plans.name;
-      plans.description = req.body.description || plans.description;
-      plans.price = req.body.price || plans.price;
-      plans.depositLimit = req.body.depositLimit || plans.depositLimit;
-      plans.withdrawalMonths =
-        req.body.withdrawalMonths || plans.withdrawalMonths;
-      plans.templateLimits = req.body.templateLimits || plans.templateLimits;
-      plans.guestLimits = req.body.guestLimits || plans.guestLimits;
-      const updatedPlans = await plans.save();
-      res.json(updatedPlans);
-    } else {
-      res.json("no such plan found");
-    }
-  } catch (err) {
-    res.json(err);
-  }
+  await Subscription.findByIdAndUpdate(req.params.id, req.body);
+  res.json({
+    status: "success",
+    message: "Subscription Plan updated Successfully",
+  });
 });
 
 /**

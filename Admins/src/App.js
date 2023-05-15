@@ -20,6 +20,9 @@ import AddPriceContent from "./screen/subscription/AddPriceContent";
 import EditPricingContent from "./screen/subscription/EditPricingContent";
 import AccountSettings from "./screen/adminProfile/AccountSettings";
 import AlertMessage from "./component/AlertMessage";
+import Events from "./screen/Events";
+import UserDetails from "./screen/Users/UserDetails";
+import TemplateEdit from "./screen/TemplatePreview/TemplateEdit";
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [alertMessage, setAlertMessage] = useState(null);
@@ -40,6 +43,8 @@ const App = () => {
         <Route element={<AdminDashboard />}>
           <Route element={<AlertMessage alertMessage={alertMessage} />} />
           <Route path="/admin/user-list" element={<UserListScreen />} />
+          <Route path="/admin/user/:id" element={<UserDetails />} />
+          <Route path="/admin/events" element={<Events />} />
           <Route
             path="/admin/template-create"
             element={<AdminTemplateCreate showAlertBar={showAlertBar} />}
@@ -48,6 +53,10 @@ const App = () => {
             path="/admin/template-edit"
             element={<AdminTemplateEditScreen showAlertBar={showAlertBar} />}
           />
+          <Route
+            path="/admin/template-edit/:templateId"
+            element={<TemplateEdit />}
+          />
 
           <Route
             path="/admin/template-list"
@@ -55,7 +64,6 @@ const App = () => {
           />
 
           <Route path="/admin/admin_list" element={<SubAdminListScreen />} />
-
           <Route path="/admin/pricing" element={<PricingContent />} />
           <Route path="/admin/create-subadmin" element={<AddSubAdmins />} />
           <Route path="/admin/:id" element={<EditSubAdmin />} />

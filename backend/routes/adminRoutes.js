@@ -20,13 +20,13 @@ import {
   singleAdminId,
 } from "../controllers/adminController.js";
 
-
 import { createPlans } from "../controllers/adminController.js";
+import { getUser } from "../controllers/userController.js";
 
 const adminRouter = express.Router();
 adminRouter.use(express.json());
 //admin routers
-adminRouter.post("/adminlogin", authAdmin); // for login admin
+adminRouter.post("/login", authAdmin); // for login admin
 adminRouter.post("/create-subadmin", registerAdmin); // for registration
 adminRouter.post("/email-send", emailSendAdmin); //  user send otp by email
 adminRouter.post("/change-password", changePassword); // checking otp and change Password
@@ -40,6 +40,7 @@ adminRouter
 adminRouter.get("/all-users", getallUsers); //get all users in admin panel
 adminRouter
   .route("/user/:id")
+  .get(getUser)
   .put(updateUser) // update user by id
   .delete(deleteUser); // delete users by admin panel
 
@@ -58,7 +59,7 @@ adminRouter.post("/create-plan", createPlans);
 adminRouter.get("/plans/subscriptions", viewallPlans);
 adminRouter
   .route("/plans/:id")
-  .put(updatePlans) //update plan
+  .patch(updatePlans) //update plan
   .delete(deletePlans) //delete plan
   .get(viewPlans); //view single plans by id
 

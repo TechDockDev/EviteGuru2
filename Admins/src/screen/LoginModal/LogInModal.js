@@ -1,5 +1,4 @@
 import {
-  Alert,
   Box,
   Button,
   FormControl,
@@ -7,55 +6,38 @@ import {
   InputAdornment,
   InputBase,
   InputLabel,
-  Link,
-  Modal,
   Paper,
   Stack,
   Typography,
 } from "@mui/material";
-// import React, { useState } from "react";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Alogin } from "../../redux/action/adminAction";
 
-import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
-import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import axios from "axios";
 
 const LogInModal = (props) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [value, setValue] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
-  let [searchParam] = useSearchParams();
-  let redirect = searchParam.get("redirect") || "/admin/template-list";
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
+  const handleChange = (e) => {
+    setValue({ ...value, [e.target.name]: e.target.value });
   };
-  const adminLogin = useSelector((state) => state.adminLogin);
-  const { adminInfo, error, loading } = adminLogin;
-  // console.log(adminLogin);
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(Alogin(email, password));
-  };
-  useEffect(() => {
-    if (adminInfo) {
-      navigate(redirect);
-
-      // {
-      //   alert(`logged in successfully ${adminInfo.name}`);
-      // }
-
-      // props.showAlertBar("logged in successfully", "success");
+  const submitHandler = async (e) => {
+    try {
+      e.preventDefault();
+      const res = await axios.post("/admin/login", value);
+      if (res.status === 200) {
+        navigate("/admin/template-list");
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }, []);
+  };
+  useEffect(() => {}, []);
   return (
     <>
       <Paper
@@ -74,20 +56,6 @@ const LogInModal = (props) => {
         <Stack bgcolor={"transparent"} mt={6}>
           {/* 👇container for heading text and logo img's container👇  */}
           <Box bgcolor={"transparent"}>
-            {/* 👇Cross icon to close the modal👇  */}
-            {/* <IconButton
-              onClick={toggleLogInModal}
-              sx={{
-                color: "black",
-                position: "absolute",
-                right: "35px",
-                top: "20px",
-              }}
-            >
-              <CancelOutlinedIcon sx={{ bgcolor: "transparent" }} />
-            </IconButton> */}
-            {/*👆 Cross icon to close the modal👆  */}
-
             {/* 👇container for logo img👇  */}
             <Box
               bgcolor={"transparent"}
@@ -107,7 +75,6 @@ const LogInModal = (props) => {
               />
             </Box>
             {/*👆 container for logo img👆  */}
-
             <Typography
               bgcolor={"transparent"}
               fontSize="30px"
@@ -146,8 +113,8 @@ const LogInModal = (props) => {
               <InputBase
                 type="email"
                 name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={value.email}
+                onChange={handleChange}
                 sx={{
                   padding: "2px 10px",
                   borderRadius: "5px",
@@ -178,8 +145,8 @@ const LogInModal = (props) => {
               <InputBase
                 type={showPassword ? "text" : "password"}
                 name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={value.password}
+                onChange={handleChange}
                 id="password"
                 sx={{
                   padding: "2px 10px",
@@ -193,10 +160,8 @@ const LogInModal = (props) => {
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
                       edge="end"
                     >
-                      {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
@@ -228,33 +193,6 @@ const LogInModal = (props) => {
             {/*👆 LogIn button👆 */}
           </Box>
           {/*👆 Form Container👆 */}
-          {/* <Typography
-              variant="p"
-              fontFamily="Montserrat"
-              fontSize="14px"
-              bgcolor="transparent"
-              color="white"
-              sx={{ margin: "20px auto" }}
-            >
-              or continue with
-            </Typography> */}
-          {/* <Stack
-            direction="row"
-            justifyContent="space-around"
-            bgcolor={"transparent"}
-          >
-            <Button
-              variant="contained"
-              sx={{
-                bgcolor: "white",
-                width: "40%",
-                "&:hover": {
-                  bgcolor: "white",
-                  scale: "1.05",
-                },
-              }}
-            ></Button>
-          </Stack> */}
         </Stack>
       </Paper>
     </>

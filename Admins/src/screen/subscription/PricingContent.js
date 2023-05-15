@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import EditPricingContent from "./EditPricingContent";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Stack } from "@mui/material";
 function Copyright(props) {
   return (
     <Typography
@@ -156,24 +157,45 @@ function PricingContent() {
                       }}
                     />
                     <CardContent>
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "baseline",
-                          mb: 2,
-                        }}
-                      >
-                        <Typography
-                          component="h2"
-                          variant="h3"
-                          color="text.primary"
+                      <Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "baseline",
+                            mb: 2,
+                          }}
                         >
-                          ${plan?.price}
-                        </Typography>
-                        <Typography variant="h6" color="text.secondary">
-                          /mo
-                        </Typography>
+                          <Typography
+                            component="h2"
+                            variant="h4"
+                            color="text.primary"
+                          >
+                            ${plan?.price?.monthly}
+                          </Typography>
+                          <Typography variant="h6" color="text.secondary">
+                            /month
+                          </Typography>
+                        </Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "baseline",
+                            mb: 2,
+                          }}
+                        >
+                          <Typography
+                            component="h2"
+                            variant="h4"
+                            color="text.primary"
+                          >
+                            ${plan?.price?.yearly}
+                          </Typography>
+                          <Typography variant="h6" color="text.secondary">
+                            /year
+                          </Typography>
+                        </Box>
                       </Box>
                       <ul>
                         {plan?.description?.map((line) => (
@@ -188,19 +210,6 @@ function PricingContent() {
                         ))}
                       </ul>
                     </CardContent>
-                    {/* ===== Delete button==== */}
-                    <CardActions>
-                      <Button
-                        fullWidth
-                        variant={"contained"}
-                        sx={{ color: "white" }}
-                        id={plan?._id}
-                        onClick={() => deleteHandler(plan?._id)}
-                      >
-                        Delete
-                        {/* {plan.buttonText} */}
-                      </Button>
-                    </CardActions>
                     {/* ===== update button==== */}
                     <CardActions>
                       <Button
@@ -211,7 +220,18 @@ function PricingContent() {
                         to={`/admin/plans/${plan?._id}`}
                       >
                         Edit
-                        {/* {plan.buttonText} */}
+                      </Button>
+                    </CardActions>
+                    {/* ===== Delete button==== */}
+                    <CardActions>
+                      <Button
+                        fullWidth
+                        variant={"contained"}
+                        sx={{ color: "white" }}
+                        id={plan?._id}
+                        onClick={() => deleteHandler(plan?._id)}
+                      >
+                        Delete
                       </Button>
                     </CardActions>
                   </Card>
