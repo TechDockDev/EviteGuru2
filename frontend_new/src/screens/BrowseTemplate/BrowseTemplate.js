@@ -105,7 +105,7 @@ const BrowseTemplate = () => {
         {templateData?.map((singleTemplate, index) => {
           return (
             <Grid
-              component={"button"}
+              // component={"button"}
               boxShadow=" 7px 7px 10px 5px grey"
               item
               key={index}
@@ -171,8 +171,9 @@ const BrowseTemplate = () => {
                 borderRadius="10px"
                 component="img"
                 width="100%"
-                src={`/template/previewImage/${singleTemplate?.previewImage}`}
+                src={` /images/getImage?path=/${singleTemplate?.previewImage}`}
                 // /template/previewImage/${singleTemplate?.previewImage
+                // /images/getImage?path=/
               />
             </Grid>
           );

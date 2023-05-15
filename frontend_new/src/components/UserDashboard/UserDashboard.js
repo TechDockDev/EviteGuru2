@@ -2,27 +2,23 @@ import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import {
   AppBar,
+  Avatar,
   Box,
-  Button,
   Drawer,
   IconButton,
-  List,
   Toolbar,
+  Typography,
 } from "@mui/material";
-import SingleMenuNavLink from "./SingleMenuNavLink";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
-import { FiSettings } from "react-icons/fi";
-import { GrDocumentText } from "react-icons/gr";
-import { GoMailRead } from "react-icons/go";
-import { GoMail } from "react-icons/go";
-import { TbAddressBook } from "react-icons/tb";
-import { MdLogout } from "react-icons/md";
+import SidebarMenu from "./SidebarMenu";
+import { useSelector } from "react-redux";
 
 const UserDashboard = () => {
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
-
+  // useSelector to use Title
+  const pageTitle = useSelector((state) => state.pageTitle);
   //👇 onClick function for hamburger menu to open left drawer on small screen  👇
 
   const handleDrawerToggle = () => {
@@ -88,16 +84,17 @@ const UserDashboard = () => {
           <Box
             sx={{
               height: {
-                xl: "70px",
-                lg: "70px",
                 md: "70px",
+                lg: "70px",
+                xl: "70px",
                 sm: "60px",
                 xs: "60px",
               },
               // border: "1px solid green",
               // margin: " 0 auto",
               // bgcolor: "#795DA8",
-              bgcolor: "#white",
+
+              bgcolor: "rgba(121, 93, 168, 1)",
               width: "100%",
               textAlign: "center",
               boxSizing: "border-box",
@@ -107,7 +104,10 @@ const UserDashboard = () => {
               component={"img"}
               bgcolor="transparent"
               src={"/assets/EviteGuruLogoWhite.svg"}
-              sx={{ height: "100%" }}
+              sx={{
+                height: "100%",
+                width: "100%",
+              }}
             />
           </Box>
           {/* == left eviteguru logo ==*/}
@@ -127,50 +127,7 @@ const UserDashboard = () => {
               scrollbarWidth: "none",
             }}
           >
-            <List
-              sx={{
-                // border:"1px solid blue",
-                height: "fit-content",
-                bgcolor: "transparent",
-                "& .active": {
-                  color: "#000",
-                  borderLeft: "10px solid #795DA8",
-                  bgcolor: "#CDB5EA",
-                  borderRadius: "4px 0px 0px 4px",
-                },
-              }}
-            >
-              <SingleMenuNavLink
-                icon={<GrDocumentText />}
-                to={"/dashboard/edit/642bb01d64a71238dab88d9e"}
-                linkText={"My Template"}
-              />
-              <SingleMenuNavLink
-                icon={<GoMailRead />}
-                to={"/dashboard/invitees"}
-                linkText={"Invitees"}
-              />
-              <SingleMenuNavLink
-                icon={<GoMail />}
-                to={"/dashboard/mailing-responses"}
-                linkText={"Mailing Response"}
-              />
-              <SingleMenuNavLink
-                icon={<TbAddressBook />}
-                to={"/"}
-                linkText={"Address Book"}
-              />
-              <SingleMenuNavLink
-                icon={<FiSettings />}
-                to={"/dashboard/account-setting"}
-                linkText={"Account settings"}
-              />
-              <SingleMenuNavLink
-                icon={<MdLogout />}
-                to={"/"}
-                linkText={"Log out"}
-              />
-            </List>
+            <SidebarMenu />
           </Box>
           {/* 👆 Left nav menu container  👆   */}
         </Toolbar>
@@ -210,6 +167,22 @@ const UserDashboard = () => {
           },
           alignItems: "center",
           borderBottom: "1px solid black",
+          // borderBottom:{
+          //   xl: "none",
+          //   lg: "none",
+          //   md: "none",
+          //   sm: "1px solid black",
+          //   xs: "1px solid black",
+          // }
+          //
+          // boxShadow: "black 0px 05px 5px",
+          // display: {
+          //   xl: "none",
+          //   lg: "none",
+          //   md: "none",
+          //   sm: "block",
+          //   xs: "block",
+          // },
         }}
       >
         {/* hamburger icon for opening menu on small screens */}
@@ -239,6 +212,7 @@ const UserDashboard = () => {
             width: "100%",
             textAlign: "center",
             // border: "1px solid green",
+            // backgroundColor: "rgba(121, 93, 168, 1)",
             display: {
               xl: "none",
               lg: "none",
@@ -286,11 +260,6 @@ const UserDashboard = () => {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            // top:"100px",
-            // position: "fixed",
-            // marginTop: "100px",
-            // border:"1px solid pink",
-
             display: {
               xl: "none",
               lg: "none",
@@ -306,9 +275,7 @@ const UserDashboard = () => {
               // borderBottom: "1px solid white",
               display: "flex",
               flexDirection: "column",
-              // justifyContent: "center",
-              // alignItems: "start",
-              // width: "248px",
+
               width: {
                 xl: "250px",
                 lg: "250px",
@@ -331,6 +298,7 @@ const UserDashboard = () => {
                 // flexDirection: "column",
                 justifyContent: "space-between",
                 alignItems: "center",
+                backgroundColor: "rgba(121, 93, 168, 1)",
               }}
             >
               <Box
@@ -347,7 +315,7 @@ const UserDashboard = () => {
               >
                 <Box
                   component={"img"}
-                  src={"/assets/EviteGuruLogo.svg"}
+                  src={"/assets/EviteGuruLogoWhite.svg"}
                   sx={{ height: "100%" }}
                 />
               </Box>
@@ -366,6 +334,7 @@ const UserDashboard = () => {
                     sm: "block",
                     xs: "block",
                   },
+                  color: "white",
                 }}
               >
                 <AiOutlineClose />
@@ -388,55 +357,7 @@ const UserDashboard = () => {
                 scrollbarWidth: "none",
               }}
             >
-              <List
-                sx={{
-                  // border:"1px solid blue",
-                  height: "100%",
-                }}
-              >
-                <SingleMenuNavLink
-                  handleDrawerToggle={handleDrawerToggle}
-                  icon={<FiSettings />}
-                  to={"/dashboard/edit/642bb01d64a71238dab88d9e"}
-                  linkText={"My Template"}
-                />
-                <SingleMenuNavLink
-                  handleDrawerToggle={handleDrawerToggle}
-                  icon={<GrDocumentText />}
-                  to={"/dashboard/invitees"}
-                  linkText={"Invitees"}
-                />
-                <SingleMenuNavLink
-                  handleDrawerToggle={handleDrawerToggle}
-                  icon={<GoMailRead />}
-                  to={"/dashboard/mailing-responses"}
-                  linkText={"Mailing Response"}
-                />  
-                <SingleMenuNavLink
-                  handleDrawerToggle={handleDrawerToggle}
-                  icon={<GoMail />}
-                  to={"/dashboard/subscription"}
-                  linkText={"Subscription"}
-                />
-                <SingleMenuNavLink
-                  handleDrawerToggle={handleDrawerToggle}
-                  icon={<TbAddressBook />}
-                  to={"/"}
-                  linkText={"Address Book"}
-                />
-                <SingleMenuNavLink
-                  handleDrawerToggle={handleDrawerToggle}
-                  icon={<FiSettings />}
-                  to={"/"}
-                  linkText={"My Template"}
-                />
-                <SingleMenuNavLink
-                  handleDrawerToggle={handleDrawerToggle}
-                  icon={<MdLogout />}
-                  to={"/"}
-                  linkText={"Log out"}
-                />
-              </List>
+              <SidebarMenu handleDrawerToggle={handleDrawerToggle} />
             </Box>
             {/* 👆 Left nav menu container  👆   */}
           </Toolbar>
@@ -449,8 +370,7 @@ const UserDashboard = () => {
           sx={{
             height: "100%",
             width: `calc(100% - 250px)`,
-            // bgcolor: "rgba(245, 200, 145, 0.5)",
-            // display: "flex",
+
             display: {
               xl: "flex",
               lg: "flex",
@@ -458,27 +378,51 @@ const UserDashboard = () => {
               sm: "none",
               xs: "none",
             },
-            justifyContent: "end",
-            borderBottom: "1px solid black",
+            justifyContent: "space-between",
           }}
         >
           <Box
             sx={{
+              minWidth: "180px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              // marginRight: "20px",
+              boxSizing: "border-box",
+            }}
+            pl={2.8}
+          >
+            <Typography
+              sx={{
+                bgcolor: "transparent",
+                fontWeight: "bold",
+                // fontSize: "16px",
+                marginLeft: "2vw",
+                textShadow: "2px 2px rgba(205, 181, 234, 1)",
+              }}
+              variant="h5"
+            >
+              {pageTitle?.title}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
               width: "180px",
               display: "flex",
-              justifyContent: "space-between",
+              justifyContent: "end",
               alignItems: "center",
               marginRight: "20px",
               boxSizing: "border-box",
-              //   border: "1px solid green",
             }}
           >
-            <Button disableElevation variant="outlined">
+            {/* <Button disableElevation variant="outlined">
               Cancel
             </Button>
             <Button disableElevation variant="contained" sx={{ color: "#fff" }}>
               Next
-            </Button>
+            </Button> */}
+
+            <Avatar sx={{ bgcolor: "rgba(121, 93, 168, 1)" }}>N</Avatar>
           </Box>
         </Box>
         {/* ================ 👆 container for appbar components👆    ==================== */}

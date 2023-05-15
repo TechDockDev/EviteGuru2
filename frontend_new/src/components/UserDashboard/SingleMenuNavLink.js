@@ -7,6 +7,7 @@ const SingleMenuNavLink = ({ linkText, icon, to, handleDrawerToggle }) => {
       <ListItem
          onClick={handleDrawerToggle}
          component={NavLink}
+      
          to={to}
          sx={{
             color: "black",

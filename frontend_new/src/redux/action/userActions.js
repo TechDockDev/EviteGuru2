@@ -37,7 +37,7 @@ export const getSingleTemplate = (data) => {
 
 export const setEventDetails = (data) => {
   return {
-    type: ActionTypes.EVENT_DETAIL,
+    type: ActionTypes.EVENT_DETAILS,
     payload: data,
   };
 };

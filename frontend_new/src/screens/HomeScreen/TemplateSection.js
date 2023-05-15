@@ -23,10 +23,12 @@ const TemplateSection = () => {
   // get templatesList
   const getAllTemplates = async () => {
     try {
-      const res = await axios.get("/images/getImage");
+      const res = await axios.get("/template");
       console.log("res", res);
       dispatch(setTemplateList(res?.data?.template));
-    } catch (error) {}
+    } catch (error) {
+      console.log("error=>", error);
+    }
   };
 
   useEffect(() => {
@@ -165,7 +167,7 @@ const TemplateSection = () => {
                 display="block"
                 component="img"
                 width="100%"
-                src={`/template/previewImage/${singleTemplate?.previewImage}`}
+                src={`/images/getImage?path=/${singleTemplate?.previewImage}`}
                 borderRadius="10px"
               />
             </Grid>

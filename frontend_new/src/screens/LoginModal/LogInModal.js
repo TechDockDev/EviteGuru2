@@ -176,9 +176,10 @@ const LogInModal = ({
                   left: "30px",
                 }}
               >
+                {/* EviteGuruLogoWhite */}
                 <Box
                   component={"img"}
-                  src="./assets/EviteGuruLogo.svg"
+                  src="./assets/EviteGuruLogoWhite.svg"
                   width="100%"
                   height="100%"
                   bgcolor="transparent"
@@ -225,8 +226,8 @@ const LogInModal = ({
                 <InputBase
                   type="email"
                   name="email"
-                  focused
-                  value={userValues?.email}
+                  focused="true"
+                  value={userValues?.email || ""}
                   onChange={(e) =>
                     setUserValues({ ...userValues, email: e.target.value })
                   }
@@ -236,9 +237,12 @@ const LogInModal = ({
                     fontWeight: "500",
                     bgcolor: "white",
                   }}
-                  placeholder={"Your e-mail"}
+                  // placeholder={"Your e-mail"}
                   required
-                  onblur="this.placeholder='enter your text'"
+                  // onBlur="this.placeholder='enter your text'"
+                  // onBlur={() => {
+                  //   this.placeholder = "enter your text";
+                  // }}
                 />
               </FormControl>
               {/*👆 E-MAIL👆 */}
@@ -246,7 +250,7 @@ const LogInModal = ({
               <FormControl fullWidth sx={{ bgcolor: "transparent", mt: 1 }}>
                 <InputLabel
                   component={"label"}
-                  focused={true}
+                  // focused
                   sx={{
                     transform: "none",
                     position: "static",
@@ -263,7 +267,7 @@ const LogInModal = ({
                 <InputBase
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  value={userValues?.password}
+                  value={userValues?.password || ""}
                   onChange={(e) =>
                     setUserValues({ ...userValues, password: e.target.value })
                   }
@@ -275,6 +279,9 @@ const LogInModal = ({
                     bgcolor: "white",
                   }}
                   placeholder="Your password"
+                  // onBlur={() => {
+                  //   this.placeholder = "enter your text";
+                  // }}
                   required
                   endAdornment={
                     <InputAdornment position="end">

@@ -1,12 +1,27 @@
 import { Box, Grid, Pagination, Stack, Typography } from "@mui/material";
+
 import {
   DataGrid,
   GridToolbar,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setPageTitle } from "../../redux/action/defaultActions";
 
 const MailingReponses = () => {
+  // const useStyles = makeStyles((theme) => ({
+  //   root: {
+  //     "& .Mui-selected": {
+  //       backgroundColor: "transparent",
+  //       color: "#19D5C6",
+  //     },
+  //   },
+  // }));
+
+  const pageTitle = useSelector((state) => state.pageTitle);
+  const dispatch = useDispatch();
   function CustomeToolBar() {
     return (
       <Grid container>
@@ -203,6 +218,11 @@ const MailingReponses = () => {
       responseRate: 10,
     },
   ];
+  // useEffect
+  useEffect(() => {
+    dispatch(setPageTitle("Mailing Responses"));
+  }, []);
+
   return (
     <Box
       sx={{
@@ -221,17 +241,17 @@ const MailingReponses = () => {
       }}
     >
       {/* title */}
-      <Box
+      {/* <Box
         sx={{
-          //  border: "1px solid green",
+         
           m: 1,
         }}
-      >
-        <Typography variant="h1" sx={{ fontSize: "25px", fontWeight: "800" }}>
+      > */}
+      {/* <Typography variant="h1" sx={{ fontSize: "25px", fontWeight: "800" }}>
           Mailing Responses
-        </Typography>
-        {/* <Typography>Sunder ki shadi</Typography> */}
-      </Box>
+        </Typography> */}
+
+      {/* </Box> */}
       {/* title */}
 
       <Stack mt={2}>
@@ -276,7 +296,7 @@ const MailingReponses = () => {
           // type={"first"}
           shape="rounded"
           boundaryCount={0}
-          sx={{ "& .MuiPagination-ul li": {color:"red"} }}
+
           // hideNextButton={true}
           // hidePrevButton={true}
           // page={1}
