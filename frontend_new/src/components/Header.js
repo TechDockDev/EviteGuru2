@@ -186,266 +186,132 @@ const Header = () => {
             {/* ============================================ */}
             {/*👇 topbar right buttons 👇 */}
             {/* {isLoggedInd ? ( */}
-            {
-              userDetail ? (
+            {userDetail ? (
+              <Box
+                sx={{
+                  // width: "150px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  //   border: "1px solid green",
+                }}
+              >
                 <Box
                   sx={{
-                    width: "150px",
+                    width: "90px",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    //   border: "1px solid green",
                   }}
-                >
-                  <Box
-                    sx={{
-                      width: "90px",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      //    border: "1px solid green",
-                    }}
-                  >
-                    {/* <IconButton>
-                    <SettingsIcon />
-                  </IconButton> */}
-                    {/* <IconButton>
-                              <NotificationsActiveIcon />
-                             
-                           </IconButton> */}
-                    <IconButton>
-                      {/* <Typography variant="h6" component="p" fontSize="20px">
-                        {userDetail?.email}
-                      </Typography> */}
+                ></Box>
+
+                {!userDetail.isUser ? (
+                  <Stack spacing={1} direction={"row"}>
+                    <Button
+                      variant="contained"
+                      onClick={toggleLogInModal}
+                      sx={{ color: "white" }}
+                    >
+                      LOGIN
+                    </Button>
+                    <Button variant="outlined" onClick={toggleRegisterModal}>
+                      SIGN UP
+                    </Button>
+                  </Stack>
+                ) : (
+                  <>
+                    <IconButton
+                      onClick={handleClick}
+                      size="small"
+                      sx={{ ml: 2 }}
+                      aria-controls={open ? "account-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open ? "true" : undefined}
+                    >
+                      <Avatar src="./assets/avatarDefault.svg" />
                     </IconButton>
-                  </Box>
-                  {/* <Tooltip> */}
-                  <IconButton
-                    onClick={handleClick}
-                    size="small"
-                    sx={{ ml: 2 }}
-                    aria-controls={open ? "account-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "true" : undefined}
-                  >
-                    <Avatar src="./assets/avatarDefault.svg" />
-                  </IconButton>
-                  {/* </Tooltip> */}
+                  </>
+                )}
 
-                  {/* =========================================== */}
-                  <Menu
-                    anchorEl={anchorEl}
-                    id="account-menu"
-                    open={open}
-                    // open={true}
-                    onClose={handleClose}
-                    onClick={handleClose}
-                    PaperProps={{
-                      elevation: 0,
-                      sx: {
-                        overflow: "visible",
-                        // bgcolor: "#CEC5DC",
+                {/* =========================================== */}
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={open}
+                  // open={true}
+                  onClose={handleClose}
+                  onClick={handleClose}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      overflow: "visible",
+                      // bgcolor: "#CEC5DC",
 
-                        filter:
-                          "drop-shadow(0px 2px 8px rgba(206, 197, 220, 1))",
-                        borderRadius: "16px",
-                        mt: 1.5,
-                        "&:before": {
-                          content: '""',
-                          display: "block",
-                          position: "absolute",
-                          top: 0,
-                          right: 24,
-                          width: 20,
-                          height: 20,
-                          bgcolor: "background.paper",
-                          transform: "translateY(-50%) rotate(45deg)",
-                          borderTop: "1px solid #3B285B",
-                          borderLeft: "1px solid #3B285B",
+                      filter: "drop-shadow(0px 2px 8px rgba(206, 197, 220, 1))",
+                      borderRadius: "16px",
+                      mt: 1.5,
+                      "&:before": {
+                        content: '""',
+                        display: "block",
+                        position: "absolute",
+                        top: 0,
+                        right: 24,
+                        width: 20,
+                        height: 20,
+                        bgcolor: "background.paper",
+                        transform: "translateY(-50%) rotate(45deg)",
+                        borderTop: "1px solid #3B285B",
+                        borderLeft: "1px solid #3B285B",
 
-                          //  borderRadius:"8px",
-                          //  bgcolor:"transparent",
-                          zIndex: 0,
-                        },
+                        //  borderRadius:"8px",
+                        //  bgcolor:"transparent",
+                        zIndex: 0,
                       },
-                    }}
-                    sx={{
+                    },
+                  }}
+                  sx={{
+                    bgcolor: "transparent",
+                    "& ul": {
+                      p: 2,
+                      bgcolor: "rgba(206, 197, 220, 0.46)",
+                    },
+                    "& .MuiPaper-root": {
                       bgcolor: "transparent",
-                      "& ul": {
-                        p: 2,
-                        bgcolor: "rgba(206, 197, 220, 0.46)",
-                      },
-                      "& .MuiPaper-root": {
-                        bgcolor: "transparent",
-                        border: "1px solid #3B285B",
-                        borderRadius: "8px",
-                      },
-                    }}
-                    transformOrigin={{ horizontal: "right", vertical: "top" }}
-                    anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                  >
-                    {" "}
-                    {!userDetail.isUser ? (
-                      <div>
-                        <MenuItem onClick={toggleLogInModal}>Login</MenuItem>
-                      </div>
-                    ) : (
-                      <div>
-                        <MenuItem
-                          onClick={handleClose}
-                          sx={{
-                            color: "#3B285B",
-                            fontWeight: "800",
-                            padding: "10px",
-                            borderBottom: "2px solid grey",
-                          }}
-                        >
-                          {userDetail?.email}
-                        </MenuItem>
-                        <MenuItem onClick={handleClose}>My account</MenuItem>
-                        <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-                      </div>
-                    )}
-                  </Menu>
-                  {/* ==================================================== */}
-                </Box>
-              ) : (
-                // :
-                // googlefacebookInfo ? (
-                //   <Box
-                //     sx={{
-                //       width: "150px",
-                //       display: "flex",
-                //       justifyContent: "space-between",
-                //       alignItems: "center",
-                //       //   border: "1px solid green",
-                //     }}
-                //   >
-                //     <Box
-                //       sx={{
-                //         width: "90px",
-                //         display: "flex",
-                //         justifyContent: "space-between",
-                //         alignItems: "center",
-                //         //    border: "1px solid green",
-                //       }}
-                //     >
-
-                //       <IconButton>
-                //         <Typography variant="h6" component="p" fontSize="10px">
-
-                //         </Typography>
-                //       </IconButton>
-                //     </Box>
-                //     <Tooltip>
-                //       <IconButton
-                //         onClick={handleClick}
-                //         size="small"
-                //         sx={{ ml: 2 }}
-                //         aria-controls={open ? "account-menu" : undefined}
-                //         aria-haspopup="true"
-                //         aria-expanded={open ? "true" : undefined}
-                //       >
-                //         <Avatar src="./assets/avatarDefault.svg" />
-                //       </IconButton>
-                //     </Tooltip>
-
-                //     <Menu
-                //       anchorEl={anchorEl}
-                //       id="account-menu"
-                //       open={open}
-                //       // open={true}
-                //       onClose={handleClose}
-                //       onClick={handleClose}
-                //       PaperProps={{
-                //         elevation: 0,
-                //         sx: {
-                //           overflow: "visible",
-                //           filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                //           mt: 1.5,
-                //           "&:before": {
-                //             content: '""',
-                //             display: "block",
-                //             position: "absolute",
-                //             top: 0,
-                //             right: 24,
-                //             width: 20,
-                //             height: 20,
-                //             bgcolor: "background.paper",
-                //             transform: "translateY(-50%) rotate(45deg)",
-                //             borderTop: "1px solid #3B285B",
-                //             borderLeft: "1px solid #3B285B",
-
-                //             //  borderRadius:"8px",
-                //             //  bgcolor:"transparent",
-                //             zIndex: 0,
-                //           },
-                //         },
-                //       }}
-                //       sx={{
-                //         bgcolor: "transparent",
-                //         "& ul": {
-                //           p: 2,
-                //           bgcolor: "rgba(206, 197, 220, 0.46)",
-                //         },
-                //         "& .MuiPaper-root": {
-                //           bgcolor: "transparent",
-                //           border: "1px solid #3B285B",
-                //           borderRadius: "8px",
-                //         },
-                //       }}
-                //       transformOrigin={{ horizontal: "right", vertical: "top" }}
-                //       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                //     >
-                //       {" "}
-                //       <MenuItem
-                //         onClick={handleClose}
-                //         sx={{
-                //           color: "#3B285B",
-                //           fontWeight: "800",
-                //           padding: "10px",
-                //           borderBottom: "2px solid grey",
-                //         }}
-                //       >
-                //         {/* {userDetail?.?.email} */}
-                //         {googlefacebookInfo.email}
-                //       </MenuItem>
-                //       <MenuItem onClick={handleClose}>My account</MenuItem>
-                //       <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-                //     </Menu>
-                //     {/* ==================================================== */}
-                //   </Box>
-                // )
-                ""
-              )
-              // (
-              //   <Box
-              //     sx={{
-              //       width: "200px",
-              //       display: "flex",
-              //       justifyContent: "space-between",
-              //       alignItems: "center",
-              //       //   border: "1px solid green",
-              //     }}
-              //   >
-              //     <Button
-              //       disableElevation
-              //       variant="contained"
-              //       sx={{ color: "#fff" }}
-              //       onClick={toggleLogInModal}
-              //     >
-              //       Login
-              //     </Button>
-              //     <Button
-              //       disableElevation
-              //       variant="outlined"
-              //       onClick={toggleRegisterModal}
-              //     >
-              //       Sign up
-              //     </Button>
-              //   </Box>
-              // )
-            }
+                      border: "1px solid #3B285B",
+                      borderRadius: "8px",
+                    },
+                  }}
+                  transformOrigin={{ horizontal: "right", vertical: "top" }}
+                  anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                >
+                  {" "}
+                  {!userDetail.isUser ? (
+                    <div>
+                      <MenuItem onClick={toggleLogInModal}>Login</MenuItem>
+                    </div>
+                  ) : (
+                    <div>
+                      <MenuItem
+                        onClick={handleClose}
+                        sx={{
+                          color: "#3B285B",
+                          fontWeight: "800",
+                          padding: "10px",
+                          borderBottom: "2px solid grey",
+                        }}
+                      >
+                        {userDetail?.email}
+                      </MenuItem>
+                      <MenuItem onClick={handleClose}>My account</MenuItem>
+                      <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+                    </div>
+                  )}
+                </Menu>
+                {/* ==================================================== */}
+              </Box>
+            ) : (
+              ""
+            )}
             {/*👆 topbar right buttons👆 */}
           </Toolbar>
         </AppBar>

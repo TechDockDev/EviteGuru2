@@ -48,6 +48,29 @@ function Pricing() {
       ],
     },
   ];
+
+  const allFaqs = [
+    {
+      question: "Where can I watch?",
+      description:
+        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
+    },
+    {
+      question: "Where can I watch?",
+      description:
+        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
+    },
+    {
+      question: "Where can I watch?",
+      description:
+        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
+    },
+    {
+      question: "Where can I watch?",
+      description:
+        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
+    },
+  ];
   return (
     <Box
       sx={{
@@ -78,15 +101,15 @@ function Pricing() {
           {allPlans &&
             allPlans.map((plan, index) => {
               return (
-                <Grid item md={4} sm={6} xs={12} p={2} key={index}>
+                <Grid item lg={3} md={4} sm={5.5} xs={11.5} p={2} key={index}>
                   <PricingCard plan={plan} />
                 </Grid>
               );
             })}
         </Grid>
       </Stack>
-      <Stack p={1} mt={1}>
-        <Faqs />
+      <Stack p={1} mt={2} alignItems={"center"}>
+        <Faqs content={allFaqs} />
       </Stack>
     </Box>
   );

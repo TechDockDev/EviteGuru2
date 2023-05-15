@@ -5,7 +5,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-
   Stack,
   FormControl,
   InputLabel,
@@ -35,6 +34,7 @@ import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import testOutputObject from "./test";
 import { getSingleTemplate } from "../../redux/action/userActions";
+import { setPageTitle } from "../../redux/action/defaultActions";
 const Design = () => {
   const [color, setColor] = useState("");
   const { editor, onReady } = useFabricJSEditor();
@@ -329,6 +329,7 @@ const Design = () => {
   };
   // ===============
   useEffect(() => {
+    dispatch(setPageTitle("My Events"));
     getTemplate();
   }, []);
   // =============

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import React from "react";
-import HttpsIcon from '@mui/icons-material/Https';
+import HttpsIcon from "@mui/icons-material/Https";
 
 const PricingCard = (props) => {
   return (
@@ -21,7 +21,7 @@ const PricingCard = (props) => {
       sx={{
         minWidth: 275,
         backgroundColor: "#FAFAFA",
-        boxShadow: "0px 6px 25px",
+        boxShadow: "0px 6px 25px rgba(0, 0, 0, 0.25)",
       }}
     >
       <CardContent>
