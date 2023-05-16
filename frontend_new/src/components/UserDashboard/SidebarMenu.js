@@ -17,7 +17,11 @@ import { TbAddressBook } from "react-icons/tb";
 import { MdLogout } from "react-icons/md";
 import { useState } from "react";
 import ArchitectureIcon from "@mui/icons-material/Architecture";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useSelector } from "react-redux";
 const SidebarMenu = (props) => {
+  const tempTemplate = useSelector((state) => state.tempTemplate);
+  console.log("template=>", tempTemplate);
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
 
@@ -39,22 +43,49 @@ const SidebarMenu = (props) => {
           borderRadius: "4px 0px 0px 4px",
         },
       }}
-      // subheader={
-      //   <ListSubheader color="red" component={"div"}>
-      //     jjjjj
-      //   </ListSubheader>
-      // }
     >
-      {/* <Divider /> */}
+      {tempTemplate?.active ? (
+        <>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
+                <ArchitectureIcon />
+              </Avatar>
+            </ListItemAvatar>
+
+            <ListItemText
+              primary={`temp${tempTemplate?.template?.id}`}
+              sx={{ fontWeight: "800" }}
+              primaryTypographyProps={{
+                sx: {
+                  bgcolor: "transparent",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                },
+              }}
+            />
+          </ListItem>
+          <Divider />
+        </>
+      ) : (
+        ""
+      )}
+
+      <SingleMenuNavLink
+        handleDrawerToggle={props?.handleDrawerToggle}
+        icon={<GrDocumentText />}
+        to={"/dashboard/my-events/"}
+        linkText={"My Events"}
+      />
       <ListItem>
         <ListItemAvatar>
           <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
-            <ArchitectureIcon />
+            <VisibilityIcon />
           </Avatar>
         </ListItemAvatar>
 
         <ListItemText
-          primary="New Event(15/05/2023)"
+          primary="Brij Ki Shaadi"
           sx={{ fontWeight: "800" }}
           primaryTypographyProps={{
             sx: {
@@ -65,13 +96,6 @@ const SidebarMenu = (props) => {
           }}
         />
       </ListItem>
-      <Divider />
-      <SingleMenuNavLink
-        handleDrawerToggle={props?.handleDrawerToggle}
-        icon={<GrDocumentText />}
-        to={"/dashboard/edit/642bb01d64a71238dab88d9e"}
-        linkText={"My Events"}
-      />
       {/* <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}
         icon={<GrDocumentText />}

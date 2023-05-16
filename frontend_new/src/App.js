@@ -10,6 +10,7 @@ import Invitees from "./screens/Invitees/Invitees";
 import AccountSettings from "./screens/AccountSettings/AccountSettings";
 import MailingReponses from "./screens/CustomizationPage/MailingReponses";
 import Pricing from "./screens/pricing/Pricing";
+import MyEvents from "./screens/MyEvents/MyEvents";
 
 // import FooterSection from "./screens/HomeScreen/FooterSection";
 // import EmailsendOtp from "./screens/EmailotpScreen";
@@ -30,10 +31,14 @@ const App = () => {
       </Routes>
       <Routes>
         <Route path="/dashboard" element={<UserDashboard />}>
+          <Route path="/dashboard/my-events" element={<MyEvents />}>
+
+          </Route>
+
+          <Route path="/dashboard/invitees" element={<Invitees />} />
           <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
           <Route path="/dashboard/preview/:id" element={<Preview />} />
 
-          <Route path="/dashboard/invitees" element={<Invitees />} />
           <Route
             path="/dashboard/account-setting"
             element={<AccountSettings />}

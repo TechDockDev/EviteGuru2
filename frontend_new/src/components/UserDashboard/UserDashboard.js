@@ -204,6 +204,7 @@ const UserDashboard = () => {
         >
           <RxHamburgerMenu />
         </IconButton>
+
         {/* hamburger icon for opening menu on small screens */}
         {/* == topbar right eviteguru logo |vsisible on small screen ==*/}
         <Box
@@ -211,6 +212,8 @@ const UserDashboard = () => {
             height: "100%",
             width: "100%",
             textAlign: "center",
+            display: "flex",
+            direction: "row",
             // border: "1px solid green",
             // backgroundColor: "rgba(121, 93, 168, 1)",
             display: {
@@ -221,8 +224,6 @@ const UserDashboard = () => {
               xs: "block",
             },
 
-            // padding: "5px",
-            // margin: " 0 20px",
           }}
         >
           <Box
@@ -231,6 +232,7 @@ const UserDashboard = () => {
             sx={{ height: "100%" }}
           />
         </Box>
+
         {/* == tobar right eviteguru logo | vsisible on small screen==*/}
 
         {/* ============ 👇left navigation drawer for small screens👇  ============= */}
