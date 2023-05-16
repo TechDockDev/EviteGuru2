@@ -31,11 +31,9 @@ const App = () => {
       </Routes>
       <Routes>
         <Route path="/dashboard" element={<UserDashboard />}>
-          <Route path="/dashboard/my-events" element={<MyEvents />}>
+          <Route path="/dashboard/my-events" element={<MyEvents />}/>
 
-          </Route>
-
-          <Route path="/dashboard/invitees" element={<Invitees />} />
+          <Route path="/dashboard/view-event" element={<Invitees />} />
           <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
           <Route path="/dashboard/preview/:id" element={<Preview />} />
 

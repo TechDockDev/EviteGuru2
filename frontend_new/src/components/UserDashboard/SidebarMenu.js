@@ -20,8 +20,8 @@ import ArchitectureIcon from "@mui/icons-material/Architecture";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useSelector } from "react-redux";
 const SidebarMenu = (props) => {
-  const tempTemplate = useSelector((state) => state.tempTemplate);
-  console.log("template=>", tempTemplate);
+  const { tempTemplate, viewEventDetails } = useSelector((state) => state);
+  console.log("event=>", viewEventDetails);
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
 
@@ -77,25 +77,37 @@ const SidebarMenu = (props) => {
         to={"/dashboard/my-events/"}
         linkText={"My Events"}
       />
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
-            <VisibilityIcon />
-          </Avatar>
-        </ListItemAvatar>
-
-        <ListItemText
-          primary="Brij Ki Shaadi"
-          sx={{ fontWeight: "800" }}
-          primaryTypographyProps={{
-            sx: {
-              bgcolor: "transparent",
-              fontWeight: "bold",
-              fontSize: "16px",
-            },
+      {viewEventDetails?.open ? (
+        <ListItem
+          sx={{
+            color: "#000",
+            borderLeft: "10px solid #795DA8",
+            bgcolor: "#CDB5EA",
+            borderRadius: "4px 0px 0px 4px",
           }}
-        />
-      </ListItem>
+        >
+          <ListItemAvatar>
+            <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
+              <VisibilityIcon />
+            </Avatar>
+          </ListItemAvatar>
+
+          <ListItemText
+            primary="Brij Ki Shaadi"
+            sx={{ fontWeight: "800" }}
+            primaryTypographyProps={{
+              sx: {
+                bgcolor: "transparent",
+                fontWeight: "bold",
+                fontSize: "16px",
+              },
+            }}
+          />
+        </ListItem>
+      ) : (
+        ""
+      )}
+
       {/* <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}
         icon={<GrDocumentText />}

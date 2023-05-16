@@ -19,8 +19,11 @@ import { setPageTitle } from "../../redux/action/defaultActions";
 import SearchIcon from "@mui/icons-material/Search";
 import { GrDocumentText } from "react-icons/gr";
 import AddIcon from "@mui/icons-material/Add";
+import { useNavigate } from "react-router-dom";
 const MyEvents = () => {
   const dispatch = useDispatch();
+  const [page, setPage] = React.useState(10);
+  const navigate = useNavigate();
   const events = [
     {
       name: "Phla",
@@ -43,13 +46,12 @@ const MyEvents = () => {
       src: "",
     },
   ];
-  const handleSearch = () => {
-    console.log("seaching...");
-  };
-  const [page, setPage] = React.useState(10);
 
   const handleChange = (event) => {
     setPage(event.target.value);
+  };
+  const handleSearch = () => {
+    console.log("seaching...");
   };
 
   //  ================
@@ -199,6 +201,9 @@ const MyEvents = () => {
                       opacity: "1",
                     },
                   }}
+                  onClick={() =>
+                    navigate("/dashboard/view-event", { state: { event } })
+                  }
                 >
                   <Box
                     sx={{

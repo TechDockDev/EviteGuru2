@@ -16,9 +16,20 @@ import {
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
 import PieChart2 from "./PieChart2";
+import { useEffect } from "react";
+import {
+  resetEventDetails,
+  setEventDetails,
+  setPageTitle,
+} from "../../redux/action/defaultActions";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 //=============================
 const Invitees = () => {
+  const { state } = useLocation();
+  // console.log("state",state)
+  const dispatch = useDispatch();
   function CustomeToolBar() {
     return (
       <Grid container>
@@ -176,6 +187,16 @@ const Invitees = () => {
       status: "pending",
     },
   ];
+  // ============================
+  useEffect(() => {
+    if (state) {
+      dispatch(setEventDetails(state));
+      dispatch(setPageTitle(state?.event?.name));
+    }
+    return () => {
+      dispatch(resetEventDetails({}));
+    };
+  }, []);
 
   return (
     <Box

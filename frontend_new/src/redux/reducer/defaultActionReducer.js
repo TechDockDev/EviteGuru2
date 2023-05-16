@@ -22,3 +22,17 @@ export const tempTemplateReducer = (
       return state;
   }
 };
+
+export const setEventDetailsReducer = (
+  state = { event: {}, open: false },
+  { type, payload }
+) => {
+  switch (type) {
+    case ActionTypes.SET_EVENT_DETAILS:
+      return { event: { ...payload }, open: true };
+    case ActionTypes.RESET_EVENT_DETAILS:
+      return { event: {}, open: false };
+    default:
+      return state;
+  }
+};
