@@ -329,7 +329,8 @@ const Design = () => {
   };
   // ===============
   useEffect(() => {
-    dispatch(setPageTitle("My Events"));
+    // dispatch(setPageTitle("My Events"));
+   
     getTemplate();
   }, []);
   // =============

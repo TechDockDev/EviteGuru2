@@ -17,7 +17,11 @@ import { TbAddressBook } from "react-icons/tb";
 import { MdLogout } from "react-icons/md";
 import { useState } from "react";
 import ArchitectureIcon from "@mui/icons-material/Architecture";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useSelector } from "react-redux";
 const SidebarMenu = (props) => {
+  const { tempTemplate, viewEventDetails } = useSelector((state) => state);
+  console.log("event=>", viewEventDetails);
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
 
@@ -39,39 +43,71 @@ const SidebarMenu = (props) => {
           borderRadius: "4px 0px 0px 4px",
         },
       }}
-      // subheader={
-      //   <ListSubheader color="red" component={"div"}>
-      //     jjjjj
-      //   </ListSubheader>
-      // }
     >
-      {/* <Divider /> */}
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
-            <ArchitectureIcon />
-          </Avatar>
-        </ListItemAvatar>
+      {tempTemplate?.active ? (
+        <>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
+                <ArchitectureIcon />
+              </Avatar>
+            </ListItemAvatar>
 
-        <ListItemText
-          primary="New Event(15/05/2023)"
-          sx={{ fontWeight: "800" }}
-          primaryTypographyProps={{
-            sx: {
-              bgcolor: "transparent",
-              fontWeight: "bold",
-              fontSize: "16px",
-            },
-          }}
-        />
-      </ListItem>
-      <Divider />
+            <ListItemText
+              primary={`temp${tempTemplate?.template?.id}`}
+              sx={{ fontWeight: "800" }}
+              primaryTypographyProps={{
+                sx: {
+                  bgcolor: "transparent",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                },
+              }}
+            />
+          </ListItem>
+          <Divider />
+        </>
+      ) : (
+        ""
+      )}
+
       <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}
         icon={<GrDocumentText />}
-        to={"/dashboard/edit/642bb01d64a71238dab88d9e"}
+        to={"/dashboard/my-events/"}
         linkText={"My Events"}
       />
+      {viewEventDetails?.open ? (
+        <ListItem
+          sx={{
+            color: "#000",
+            borderLeft: "10px solid #795DA8",
+            bgcolor: "#CDB5EA",
+            borderRadius: "4px 0px 0px 4px",
+          }}
+        >
+          <ListItemAvatar>
+            <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
+              <VisibilityIcon />
+            </Avatar>
+          </ListItemAvatar>
+
+          <ListItemText
+            primary="Brij Ki Shaadi"
+            sx={{ fontWeight: "800" }}
+            primaryTypographyProps={{
+              sx: {
+                bgcolor: "transparent",
+                fontWeight: "bold",
+                fontSize: "16px",
+              },
+            }}
+          />
+        </ListItem>
+      ) : (
+        ""
+      )}
+
       {/* <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}
         icon={<GrDocumentText />}

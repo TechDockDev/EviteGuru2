@@ -5,7 +5,11 @@ import {
   singleTemplateReducer,
   templateReducer,
 } from "./templateReducer";
-import { titleReducer } from "./defaultActionReducer";
+import {
+  setEventDetailsReducer,
+  tempTemplateReducer,
+  titleReducer,
+} from "./defaultActionReducer";
 
 const user_reducer = combineReducers({
   userDetail: userReducer,
@@ -13,6 +17,8 @@ const user_reducer = combineReducers({
   templateData: singleTemplateReducer,
   eventDetails: eventReducer,
   pageTitle: titleReducer,
+  tempTemplate: tempTemplateReducer,
+  viewEventDetails: setEventDetailsReducer,
 });
 
 export default user_reducer;
