@@ -360,7 +360,7 @@ export const SubAdminList = () => async (dispatch) => {
   try {
     dispatch({ type: SUB_ADMIN_LIST_REQUEST });
 
-    const { data } = await axios.get("/admin/admin_list");
+    const { data } = await axios.get("/admin-list");
     // console.log("axios data action>>>", data);
     dispatch({ type: SUB_ADMIN_LIST_SUCCESS, payload: data });
   } catch (err) {

@@ -26,9 +26,6 @@ const SubAdminListScreen = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  // const [admins, setadmins] = useState([]);
-  const [openTemplatePreviewModal, seTopenTemplatePreviewModal] =
-    useState(false);
 
   const subAdminList = useSelector((state) => state.subAdminList);
   const { error, adminId, admins } = subAdminList;

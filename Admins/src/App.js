@@ -1,4 +1,5 @@
 import { React, useState } from "react";
+import axios from "axios";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "@fontsource/montserrat";
 
@@ -24,7 +25,6 @@ import Events from "./screen/Events";
 import UserDetails from "./screen/Users/UserDetails";
 import TemplateEdit from "./screen/TemplatePreview/TemplateEdit";
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [alertMessage, setAlertMessage] = useState(null);
 
   const showAlertBar = (message, type) => {
@@ -36,6 +36,7 @@ const App = () => {
       setAlertMessage(null);
     }, 1000);
   };
+  axios.defaults.baseURL = "/api/v1/admin";
   return (
     <BrowserRouter>
       <Routes>
@@ -50,7 +51,7 @@ const App = () => {
             element={<AdminTemplateCreate showAlertBar={showAlertBar} />}
           />
           <Route
-            path="/admin/template-edit"
+            path="/template-edit"
             element={<AdminTemplateEditScreen showAlertBar={showAlertBar} />}
           />
           <Route
@@ -59,7 +60,7 @@ const App = () => {
           />
 
           <Route
-            path="/admin/template-list"
+            path="/template-list"
             element={<AdminTemplateListScreen />}
           />
 

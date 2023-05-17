@@ -10,11 +10,9 @@ const connectDb = async () => {
 
     //gfs initialization code
     const gfs = new Grid(Db, mongo);
-    console.log(
-      `MongoDB Connected: ${conn.connection.host}`.cyan.bold.underline
-    );
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (err) {
-    console.error(`Error: ${err.message}`.red.bold);
+    console.error(`Error: ${err.message}`);
     process.exit(1);
   }
 };

@@ -17,7 +17,7 @@ const AdminTemplateListScreen = () => {
   const getTemplateData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`/template`);
+      const res = await axios.get(`/template/all`);
       setTemplates(res.data.template);
       setLoading(false);
     } catch (error) {

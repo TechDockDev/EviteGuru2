@@ -1,18 +1,10 @@
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken"
-import userGooglefbs from "../models/userGoogleFbSchema.js";
+import jwt from "jsonwebtoken";
 import Admin from "../models/adminModel.js";
-import Otp from "../models/otpModel.js";
 import User from "../models/userModel.js";
-import emailConfig from "../utils/nodeMailer.js";
 import Subscription from "../models/subscriptionModel.js";
 import Template from "../models/templateModel.js";
-/**
- * @dec     Auth Admin
- * @route   POST /adminlogin
- * @access  private
- */
 
 const authAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -58,12 +50,6 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-/**
- * @desc    Register new admin
- * @route   POST  /adminregister
- * @access  public
- */
-
 const registerAdmin = asyncHandler(async (req, res) => {
   const { name, email, phone, password, superAdmin, permission } = req.body;
 
@@ -100,11 +86,6 @@ const registerAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @des    Get admin in token
- * @routes  GET /admin_list
- * @access  private
- */
 
 const getAdmin = asyncHandler(async (req, res) => {
   const admin = await Admin.findById(req.admin._id);
@@ -117,69 +98,9 @@ const getAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @dec     email send
- * @routes  /email-send
- * @access  private /admin
- */
-
-const emailSendAdmin = asyncHandler(async (req, res) => {
-  const admin = await Admin.findOne({ email: req.body.email });
-
-  if (admin) {
-    const otp = Math.floor(Math.random() * 10000 + 1);
-    const otpData = Otp({
-      email: admin.email,
-      code: otp,
-      expiresIn: new Date().getTime() + 180000,
-    });
-    await otpData.save();
-    emailConfig(req.body.email, otp);
-    res.status(201).json("Email Send Successful");
-  } else {
-    res.status(404);
-    throw new Error("Email Id Not Exist");
-  }
-});
-
-/**
- * @des     Change Password & otpVerify
- * @routes  post /change-password
- * @access  private
- */
-
-const changePassword = asyncHandler(async (req, res) => {
-  const data = await Otp.findOne({
-    email: req.body.email,
-    code: req.body.code,
-  });
-  if (data) {
-    const currentTime = new Date().getTime();
-    let diff = data.expiresIn - currentTime;
-    if (diff < 0) {
-      res.status(404);
-      throw new Error("OTP Expire");
-    } else {
-      data.code = req.body.code;
-      const admin = await Admin.findOne({ email: req.body.email });
-      admin.password = req.body.password;
-      admin.save();
-      res.status(200).json("Password Changed SuccessFully");
-    }
-  } else {
-    res.status(404);
-    throw new Error("Invalid Otp");
-  }
-});
-
-/**
- * @dec get all admindetais in adminpanel
- * @route GET /admins
- * @access private /admin
- */
 
 const getallAdmin = asyncHandler(async (req, res) => {
-  const admin = await Admin.find({}).select("-password"); //select all other then password
+  const admin = await Admin.find({});
   let admins = admin;
   res.json(admins);
 });
@@ -246,28 +167,9 @@ const getallUsers = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * @dec get all google and facebook users
- * @route  GET /users
- * @access private
- */
-const googlefacebookGetData = asyncHandler(async (req, res) => {
-  const user = await userGooglefbs.find({});
-
-  res.json(user);
-});
-
-/**
- * @desc delete user  and admins by id
- * @route DELETE /users/:id
- * @access private/admin
- */
-
 const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   const admin = await Admin.findById(req.body.id);
-  const googleuser = await userGooglefbs.findById(req.params.id);
-
   if (user) {
     await user.remove();
     res.json({ message: "user is deleted" });
@@ -291,7 +193,6 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
-  const googleuser = await userGooglefbs.findById(req.params.id);
 
   if (user) {
     user.name = req.body.name || user.name;
@@ -459,17 +360,14 @@ const viewallPlans = asyncHandler(async (req, res) => {
 
 export {
   authAdmin,
-  googlefacebookGetData,
   deleteAdmin,
   updateAdmin,
   getallAdmin,
   getAdmin,
   singleAdminId,
   registerAdmin,
-  emailSendAdmin,
   deleteUser,
   updateUser,
-  changePassword,
   getallUsers,
   createPlans,
   updatePlans,

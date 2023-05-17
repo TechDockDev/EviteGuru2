@@ -15,7 +15,7 @@ const UserListScreen = () => {
   const navigate = useNavigate();
   const getUsers = async () => {
     try {
-      const res = await axios.get("/admin/all-users");
+      const res = await axios.get("/user/all-users");
       setUsers(res.data.users);
       console.log(res);
     } catch (error) {
