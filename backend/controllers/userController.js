@@ -3,11 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 //import file
-import Otp from "../models/otpModel.js";
 import User from "../models/userModel.js";
-import generateToken from "../utils/generateToken.js";
-import emailConfig from "../utils/nodeMailer.js";
-import userGooglefbs from "../models/userGoogleFbSchema.js";
 import Subscription from "../models/subscriptionModel.js";
 
 const authUser = asyncHandler(async (req, res) => {
@@ -122,49 +118,6 @@ const allUser = asyncHandler(async (req, res) => {
   }
 });
 
-const emailSend = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-
-  if (user) {
-    const otp = Math.floor(Math.random() * 10000 + 1);
-    const otpData = Otp({
-      email: user.email,
-      code: otp,
-      expiresIn: new Date().getTime() + 180000,
-    });
-    await otpData.save();
-    emailConfig(req.body.email, otp);
-    res.status(201).json("Email Send Successful");
-  } else {
-    res.status(404);
-    throw new Error("Email Id Not Exist");
-  }
-});
-
-const changePassword = asyncHandler(async (req, res) => {
-  const data = await Otp.findOne({
-    email: req.body.email,
-    code: req.body.code,
-  });
-  if (data) {
-    const currentTime = new Date().getTime();
-    let diff = data.expiresIn - currentTime;
-    if (diff < 0) {
-      res.status(404);
-      throw new Error("OTP Expire");
-    } else {
-      data.code = req.body.code;
-      const user = await User.findOne({ email: req.body.email });
-      user.password = req.body.password;
-      user.save();
-      res.status(200).json("Password Changed SuccessFully");
-    }
-  } else {
-    res.status(404);
-    throw new Error("Invalid Otp");
-  }
-});
-
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
@@ -238,11 +191,9 @@ const userPlans = asyncHandler(async (req, res) => {
 export {
   authUser,
   updateUser,
-  changePassword,
   login,
   signUp,
   getUser,
-  emailSend,
   allUser,
   userPlans,
   authenticated,

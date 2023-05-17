@@ -1,20 +1,17 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
-const adminSchema = mongoose.Schema(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    phone: { type: String, required: true },
-    password: { type: String, required: true },
-    superAdmin: { type: Boolean, default: false },
-    permission: { type: Array },
-    adminLastLogin: {
-      type: String,
-    },
+const adminSchema = mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  phone: { type: String, required: true },
+  password: { type: String, required: true, select: false },
+  superAdmin: { type: Boolean, default: false },
+  permission: { type: Array },
+  adminLastLogin: {
+    type: String,
   },
-  { timestamps: true }
-);
+});
 
 adminSchema.methods.matchPassword = async function (enterdPassword) {
   return await bcrypt.compare(enterdPassword, this.password);

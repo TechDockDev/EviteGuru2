@@ -10,7 +10,7 @@ import {
   createVariation,
   saveImage,
   sendImage,
-} from "../controllers/variationController.js";
+} from "../../controllers/variationController.js";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

@@ -29,9 +29,9 @@ const LogInModal = (props) => {
   const submitHandler = async (e) => {
     try {
       e.preventDefault();
-      const res = await axios.post("/admin/login", value);
+      const res = await axios.post("/login", value);
       if (res.status === 200) {
-        navigate("/admin/template-list");
+        navigate("/template-list");
       }
     } catch (error) {
       console.log(error);

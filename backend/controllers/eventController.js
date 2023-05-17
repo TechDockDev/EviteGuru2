@@ -1,7 +1,5 @@
 import asyncHandler from "express-async-handler";
 import EventDetails from "../models/eventModel.js";
-import User from "../models/userModel.js";
-import userGooglefbs from "../models/userGoogleFbSchema.js";
 
 const createEvent = asyncHandler(async (req, res) => {
   let { name, hostName, date, venue, address, additionalInfo } = req.body;
