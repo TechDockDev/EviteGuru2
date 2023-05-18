@@ -221,6 +221,9 @@ const MailingReponses = () => {
   // useEffect
   useEffect(() => {
     dispatch(setPageTitle("Mailing Responses"));
+    return () => {
+      dispatch(setPageTitle(""));
+    };
   }, []);
 
   return (

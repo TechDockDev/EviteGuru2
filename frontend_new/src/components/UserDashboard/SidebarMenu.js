@@ -46,7 +46,14 @@ const SidebarMenu = (props) => {
     >
       {tempTemplate?.active ? (
         <>
-          <ListItem>
+          <ListItem
+            sx={{
+              color: "#000",
+              borderLeft: "10px solid #795DA8",
+              bgcolor: "#CDB5EA",
+              borderRadius: "4px 0px 0px 4px",
+            }}
+          >
             <ListItemAvatar>
               <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
                 <ArchitectureIcon />
@@ -93,7 +100,7 @@ const SidebarMenu = (props) => {
           </ListItemAvatar>
 
           <ListItemText
-            primary="Brij Ki Shaadi"
+            primary={`${viewEventDetails?.event?.name}`}
             sx={{ fontWeight: "800" }}
             primaryTypographyProps={{
               sx: {
@@ -129,14 +136,14 @@ const SidebarMenu = (props) => {
       <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}
         icon={<GoMail />}
-        to={"/dashboard/subscription"}
+        to={"/dashboard/subscriptions"}
         linkText={"Subscription"}
       />
       <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}
         icon={<FiSettings />}
-        to={"/"}
-        linkText={"Account Setting"}
+        to={"/dashboard/account-setting"}
+        linkText={"Account Settings"}
       />
       <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}

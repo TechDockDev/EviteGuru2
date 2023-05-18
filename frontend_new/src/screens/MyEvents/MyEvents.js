@@ -57,6 +57,9 @@ const MyEvents = () => {
   //  ================
   useEffect(() => {
     dispatch(setPageTitle("My Events"));
+    return () => {
+      dispatch(setPageTitle(""));
+    };
   }, []);
 
   return (

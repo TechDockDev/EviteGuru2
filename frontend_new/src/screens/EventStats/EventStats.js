@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   FormControl,
   Grid,
   InputAdornment,
@@ -22,13 +23,14 @@ import {
   setEventDetails,
   setPageTitle,
 } from "../../redux/action/defaultActions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
 //=============================
-const Invitees = () => {
+const EventStats = () => {
   const { state } = useLocation();
-  // console.log("state",state)
+  const pageTitle = useSelector((state) => state.pageTitle);
+  // console.log("pageTitle",pageTitle)
   const dispatch = useDispatch();
   function CustomeToolBar() {
     return (
@@ -215,25 +217,38 @@ const Invitees = () => {
         boxSizing: "border-box",
       }}
     >
-      {/* title */}
-      <Box
-        sx={{
-          //  border: "1px solid green",
-          m: 1,
-        }}
-      >
-        <Typography variant="h1" sx={{ fontSize: "25px", fontWeight: "800" }}>
-          Invitees
-        </Typography>
-        <Typography>Sunder ki shadi</Typography>
-      </Box>
-      {/* title */}
       {/* ============ 👇container for RSVP  summary and pie chart👇  ============= */}
       <Grid
         container
         mt={3}
+        spacing={1}
         sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
+        {/* ============ 👇 design card👇  ============= */}
+
+        <Grid
+          item
+          xl={5}
+          lg={5}
+          md={5}
+          sm={11}
+          xs={11}
+          sx={{
+            display: { md: "flex", xs: "flex" },
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "transparent",
+            m: 2,
+          }}
+        >
+          <Box
+            component={"img"}
+            alt="template design"
+            width={"100%"}
+            maxHeight={"290px"}
+            src="https://marketplace.canva.com/EAE-xvRBZdQ/1/0/1600w/canva-beige-blue-wedding-invitation-square-floral-watercolor-arrangement-bFL2AFVrwpY.jpg"
+          />
+        </Grid>
         {/* ============ 👇 RSVP  summary card👇  ============= */}
 
         <Grid
@@ -251,28 +266,30 @@ const Invitees = () => {
           <RSVPSummaryCard />
         </Grid>
         {/* ============  👆 RSVP  summary card👆============= */}
-        {/* ============ 👇 PieChart card👇  ============= */}
 
-        <Grid
-          item
-          xl={5}
-          lg={5}
-          md={5}
-          sm={11}
-          xs={11}
-          sx={{
-            display: { md: "flex", xs: "none" },
-            justifyContent: "center",
-            alignItems: "center",
-            bgcolor: "transparent",
-            m: 2,
-          }}
-        >
-          <PieChart2 />
-        </Grid>
         {/* ============  👆 PieChart card👆============= */}
       </Grid>
       {/* ============  👆container for RSVP  summary and pie chart👆============= */}
+      {/* title */}
+      <Stack
+        mt={1}
+        direction={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+      >
+        <Box>
+          <Typography variant="h1" sx={{ fontSize: "25px", fontWeight: "800" }}>
+            Invitees
+          </Typography>
+          <Typography>{pageTitle?.title}</Typography>
+        </Box>
+        <Box>
+          <Button variant="contained" sx={{ color: "white" }}>
+            + SEND MORE
+          </Button>
+        </Box>
+      </Stack>
+      {/* title */}
       {/* ============ 👇 Guests list table👇  ============= */}
       <Stack mt={2}>
         <DataGrid
@@ -313,4 +330,4 @@ const Invitees = () => {
   );
 };
 
-export default Invitees;
+export default EventStats;
