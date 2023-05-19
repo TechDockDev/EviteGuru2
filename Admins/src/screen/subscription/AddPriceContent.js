@@ -47,7 +47,7 @@ export const AddPriceContent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = { ...value, description: Object.values(description) };
-    const res = await axios.post("/admin/create-plan", data);
+    const res = await axios.post("/create-plan", data);
     console.log(res);
     navigate("/admin/pricing");
   };

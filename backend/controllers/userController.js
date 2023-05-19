@@ -96,7 +96,10 @@ const login = async (req, res, next) => {
 };
 
 const getUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const user = await User.findById(req.params.id).populate(
+    "subscription",
+    "name"
+  );
   res.json({
     status: "success",
     message: "user has been fetched",

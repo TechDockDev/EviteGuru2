@@ -1,12 +1,19 @@
 import express from "express";
+import {
+  createPlans,
+  deletePlans,
+  updatePlans,
+  viewPlan,
+  viewallPlans,
+} from "../../controllers/adminController.js";
 const subscriptionRouter = express.Router();
 
 subscriptionRouter.post("/create-plan", createPlans);
-subscriptionRouter.get("/plans/subscriptions", viewallPlans);
+subscriptionRouter.get("/all", viewallPlans);
 subscriptionRouter
-  .route("/plans/:id")
+  .route("/:id")
   .patch(updatePlans) //update plan
   .delete(deletePlans) //delete plan
-  .get(viewPlans); //view single plans by id
+  .get(viewPlan); //view single plans by id
 
 export default subscriptionRouter;

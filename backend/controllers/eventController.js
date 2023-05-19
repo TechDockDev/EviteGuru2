@@ -43,6 +43,17 @@ const getEventsByUser = asyncHandler(async (req, res) => {
   });
 });
 
+const getTotalEventsByUser = asyncHandler(async (req, res) => {
+  const totalEventsByUser = await EventDetails.find({
+    user: req.params.userId,
+  }).count();
+  res.json({
+    status: "success",
+    message: "Event has been fetched",
+    totalEventsByUser,
+  });
+});
+
 const editEvent = asyncHandler(async (req, res) => {
   const event = await EventDetails.findByIdAndUpdate(req.params.id, req.body);
   res.json({
@@ -66,4 +77,5 @@ export {
   createEvent,
   getAllEvents,
   getEventsByUser,
+  getTotalEventsByUser,
 };

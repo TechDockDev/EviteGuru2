@@ -22,8 +22,9 @@ import EditPricingContent from "./screen/subscription/EditPricingContent";
 import AccountSettings from "./screen/adminProfile/AccountSettings";
 import AlertMessage from "./component/AlertMessage";
 import Events from "./screen/Events";
-import UserDetails from "./screen/Users/UserDetails";
+import UserDetails from "./screen/Users/UserDetails.js";
 import TemplateEdit from "./screen/TemplatePreview/TemplateEdit";
+import Promotion from "./screen/Coupons and promotions/Promotion";
 const App = () => {
   const [alertMessage, setAlertMessage] = useState(null);
 
@@ -59,10 +60,7 @@ const App = () => {
             element={<TemplateEdit />}
           />
 
-          <Route
-            path="/template-list"
-            element={<AdminTemplateListScreen />}
-          />
+          <Route path="/template-list" element={<AdminTemplateListScreen />} />
 
           <Route path="/admin/admin_list" element={<SubAdminListScreen />} />
           <Route path="/admin/pricing" element={<PricingContent />} />
@@ -71,6 +69,7 @@ const App = () => {
           <Route path="/admin/profile" element={<AccountSettings />} />
           <Route path="/admin/plans/:id" element={<EditPricingContent />} />
           <Route path="/admins/create-plan" element={<AddPriceContent />} />
+          <Route path="/admin/promotions" element={<Promotion />} />
         </Route>
       </Routes>
     </BrowserRouter>

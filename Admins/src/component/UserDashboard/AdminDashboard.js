@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import {
   Alert,
@@ -24,6 +24,7 @@ import { MdLogout } from "react-icons/md";
 import AdminTemplateListScreen from "../../screen/AdminTemplateListScreen";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import { CircularProgress } from "@mui/material";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 
 const AdminDashboard = () => {
   //👇  state for open small screen left drawer  👇
@@ -33,9 +34,7 @@ const AdminDashboard = () => {
   const handleDrawerToggle = () => {
     setOpenLeftDrawer(!openLeftDrawer);
   };
-
   const logout = () => {};
-  useEffect(() => {}, []);
   return (
     <>
       <Box
@@ -178,6 +177,11 @@ const AdminDashboard = () => {
                   icon={<SubscriptionsIcon />}
                   to={"/admin/pricing"}
                   linkText={"subscriptions"}
+                />
+                <SingleMenuNavLink
+                  icon={<LocalOfferIcon />}
+                  to={"/admin/promotions"}
+                  linkText={"Coupons and Promotions"}
                 />
                 <SingleMenuNavLink
                   icon={<PaymentsIcon />}

@@ -14,15 +14,10 @@ const createGuest = asyncHandler(async (req, res) => {
 });
 
 const addGuest = asyncHandler(async (req, res) => {
-  const { name, email, phone, membersAllowed } = req.body;
-  await Guest.findByIdAndUpdate(req.params.guestId, {
-    guests: {
-      name,
-      email,
-      phone,
-      membersAllowed,
-    },
-  });
+  const { name, email, phone, membersAllowed, guestId } = req.body;
+  const guest = await Guest.findById(guestId);
+  guest.guests.push({ name, email, phone, membersAllowed });
+  await guest.save();
   res.json({
     status: "success",
     message: "Guest has been added in the list",
@@ -45,19 +40,45 @@ const addGuestInBulk = asyncHandler(async (req, res) => {
   });
 });
 
-const guestResponse = asyncHandler(async (req, res) => {
-  const { adult, child, attending } = req.body;
-  await Guest.updateMany(req.params.guestId, {
-    guests: {
-      adult,
-      child,
-      attending,
-    },
+const openStatus = asyncHandler(async (req, res) => {
+  const { guestId, singleGuestId } = req.body;
+  const guest = await Guest.findById(guestId);
+  const singleGuest = guest.guests.id(singleGuestId);
+  singleGuest.set({ status: true });
+  await guest.save();
+  res.json({
+    status: "success",
+    message: "Guest has opened the invitation",
   });
+});
+
+const getSingleGuest = asyncHandler(async (req, res) => {
+  const guest = await Guest.findById(req.params.guestId);
+  const singleGuest = guest.guests.id(req.params.singleGuestId);
+  res.json({
+    status: "success",
+    message: "Guest has been fetched successfully",
+    singleGuest,
+  });
+});
+
+const guestResponse = asyncHandler(async (req, res) => {
+  const { adult, child, attending, guestId, singleGuestId } = req.body;
+  const guest = await Guest.findById(guestId);
+  const singleGuest = guest.guests.id(singleGuestId);
+  singleGuest.set({ adult, child, attending });
+  await guest.save();
   res.json({
     status: "success",
     message: "Guest Response has been taken successfully",
   });
 });
 
-export  { createGuest, addGuest, addGuestInBulk, guestResponse };
+export {
+  createGuest,
+  addGuest,
+  addGuestInBulk,
+  openStatus,
+  getSingleGuest,
+  guestResponse,
+};
