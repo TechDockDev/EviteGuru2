@@ -47,7 +47,7 @@ const TemplatePreview = ({
   const getPreviewTemplate = async () => {
     if (singleTemplateId != "") {
       try {
-        const res = await axios.get(`template/single/${singleTemplateId}`);
+        const res = await axios.get(`/api/v1/user/template/${singleTemplateId}`);
         setSingleTemplateData(res?.data?.template);
         console.log("singleData->", res.data);
       } catch (error) {

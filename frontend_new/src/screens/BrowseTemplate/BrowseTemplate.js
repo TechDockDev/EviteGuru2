@@ -35,7 +35,7 @@ const BrowseTemplate = () => {
   const getTemplate = async () => {
     try {
       setLoadingTemplate(true);
-      const res = await axios.get(`/template/`);
+      const res = await axios.get(`/api/v1/user/template/all`);
       console.log(res?.data?.template);
       setTemplateData(res?.data?.template);
       setLoadingTemplate(false);

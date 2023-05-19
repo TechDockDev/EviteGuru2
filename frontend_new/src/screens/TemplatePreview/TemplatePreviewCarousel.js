@@ -13,7 +13,7 @@ const TemplatePreviewCarousel = ({carouselClick}) => {
    // ================
    const getTemplate = async () => {
       try {
-         const res = await axios.get("/template");
+         const res = await axios.get("/api/v1/user/template/all");
          console.log(res.data);
 
          setTemplateData(res?.data);

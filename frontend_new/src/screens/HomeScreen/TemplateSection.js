@@ -23,7 +23,7 @@ const TemplateSection = () => {
   // get templatesList
   const getAllTemplates = async () => {
     try {
-      const res = await axios.get("/template");
+      const res = await axios.get("/api/v1/user/template/all");
       console.log("res", res);
       dispatch(setTemplateList(res?.data?.template));
     } catch (error) {

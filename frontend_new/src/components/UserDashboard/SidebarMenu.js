@@ -6,6 +6,7 @@ import {
   ListItemAvatar,
   ListItemText,
   ListSubheader,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -59,18 +60,28 @@ const SidebarMenu = (props) => {
                 <ArchitectureIcon />
               </Avatar>
             </ListItemAvatar>
-
-            <ListItemText
-              primary={`temp${tempTemplate?.template?.id}`}
-              sx={{ fontWeight: "800" }}
-              primaryTypographyProps={{
-                sx: {
-                  bgcolor: "transparent",
-                  fontWeight: "bold",
-                  fontSize: "16px",
+            <Tooltip
+              title={`temp${tempTemplate?.template?.id}`}
+              arrow={true}
+              enterDelay={100}
+              sx={{
+                "& .MuiTooltip-tooltip": {
+                  color: "red",
                 },
               }}
-            />
+            >
+              <ListItemText
+                primary={`temp${tempTemplate?.template?.id.substring(0, 8)}...`}
+                sx={{ fontWeight: "800" }}
+                primaryTypographyProps={{
+                  sx: {
+                    bgcolor: "transparent",
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                  },
+                }}
+              />
+            </Tooltip>
           </ListItem>
           <Divider />
         </>
