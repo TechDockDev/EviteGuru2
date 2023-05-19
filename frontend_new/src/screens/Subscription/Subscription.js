@@ -1,9 +1,13 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
 import React from "react";
-import PricingCard from "./PricingCard";
-import Faqs from "./Faqs";
 
-function Pricing() {
+import { Grid, Stack, Typography } from "@mui/material";
+import PricingCard from "../pricing/PricingCard";
+import { useEffect } from "react";
+import { setPageTitle } from "../../redux/action/defaultActions";
+import { useDispatch } from "react-redux";
+
+const Subscriptions = () => {
+  const dispatch = useDispatch();
   const allPlans = [
     {
       name: "Starter",
@@ -48,44 +52,25 @@ function Pricing() {
       ],
     },
   ];
+  // ============
+  useEffect(() => {
+    dispatch(setPageTitle("Subscription"));
 
-  const allFaqs = [
-    {
-      question: "Where can I watch?",
-      description:
-        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-    },
-    {
-      question: "Where can I watch?",
-      description:
-        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-    },
-    {
-      question: "Where can I watch?",
-      description:
-        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-    },
-    {
-      question: "Where can I watch?",
-      description:
-        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-    },
-  ];
+    return () => {
+      dispatch(setPageTitle(""));
+    };
+  }, []);
+
   return (
-    <Box
-      sx={{
-        marginTop: { md: "85px", xs: "70px" },
-        // display: "flex",
-        width: "100%",
-        height: "100%",
-        justifyContent: "center",
-        alignItems: "center",
-        // border:"1px solid blue "
-      }}
-    >
-      <Stack mt={4} alignItems={"center"}>
+    <>
+      <Stack
+        width={"100%"}
+        mt={2}
+        textAlign={"center"}
+        justifyContent={"cnter"}
+      >
         <Typography
-          mt={{ md: 4, xs: 0 }}
+          mt={{ md: 3, xs: 0 }}
           variant="h5"
           fontSize={{ md: "38px" }}
           fontWeight={"900"}
@@ -96,37 +81,34 @@ function Pricing() {
           Start now for free, upgrade later. No hidden fees.
         </Typography>
       </Stack>
-      <Stack mt={4}>
+      <Stack
+        mt={3}
+        alignItems={"center"}
+        justifyContent={"center"}
+        alignContent={"center"}
+        p={1}
+      >
         <Grid
           container
           display={"flex"}
           justifyContent={"space-between"}
+          spacing={1}
+          width={"100%"}
+          // alignContent={"center"}
           alignItems={"center"}
         >
           {allPlans &&
             allPlans.map((plan, index) => {
               return (
-                <Grid
-                  item
-                  lg={3.5}
-                  md={4}
-                  sm={5.5}
-                  xs={12}
-                  p={2}
-                  key={index}
-                  
-                >
+                <Grid item lg={3.5} md={4} sm={5.5} xs={12} key={index}>
                   <PricingCard plan={plan} />
                 </Grid>
               );
             })}
         </Grid>
       </Stack>
-      <Stack p={1} mt={2} alignItems={"center"}>
-        <Faqs content={allFaqs} />
-      </Stack>
-    </Box>
+    </>
   );
-}
+};
 
-export default Pricing;
+export default Subscriptions;

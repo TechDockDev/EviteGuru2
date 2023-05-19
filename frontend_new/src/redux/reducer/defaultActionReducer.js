@@ -29,7 +29,7 @@ export const setEventDetailsReducer = (
 ) => {
   switch (type) {
     case ActionTypes.SET_EVENT_DETAILS:
-      return { event: { ...payload }, open: true };
+      return { ...payload, open: true };
     case ActionTypes.RESET_EVENT_DETAILS:
       return { event: {}, open: false };
     default:

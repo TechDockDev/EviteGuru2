@@ -74,7 +74,7 @@ const LogInModal = ({
   const submitHandler = async (e) => {
     e.preventDefault();
     console.log("cred->", userValues);
-    const res = await axios.post("/user/login", userValues);
+    const res = await axios.post("/api/user/login", userValues);
     if (res.status === 200) {
       toggleLogInModal();
       dispatch(login(res?.data?.data?.user));
