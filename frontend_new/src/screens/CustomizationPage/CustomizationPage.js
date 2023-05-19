@@ -43,10 +43,10 @@ const CustomizationPage = () => {
       // to set the temp name fot the event
       dispatch(setPageTitle(`temp${id}`));
       // will create temp route for new event along with temp data
-      dispatch(setTempTemplateData({id: id }));
+      dispatch(setTempTemplateData({ id: id }));
     }
     return () => {
-      dispatch(resetTempTemplateData({ }));
+      dispatch(resetTempTemplateData({}));
     };
   }, []);
 
@@ -205,7 +205,7 @@ const CustomizationPage = () => {
         id={`design-tabpanel-${0}`}
         aria-labelledby={`design-tab-${0}`}
       >
-        {value === 0 && <Design />}
+        {value === 0 && <Design tabChange={handleChange} />}
       </div>
       {/* === 👆 tab-0 Design tab button👆  ===*/}
 

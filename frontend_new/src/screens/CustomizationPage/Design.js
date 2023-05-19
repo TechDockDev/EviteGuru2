@@ -34,8 +34,10 @@ import {
   getSingleTemplate,
   setEventTemplateJson,
 } from "../../redux/action/userActions";
+import html2canvas from "html2canvas";
+import { SaveAs } from "@mui/icons-material";
 
-const Design = () => {
+const Design = (props) => {
   const [color, setColor] = useState("");
   const { editor, onReady } = useFabricJSEditor();
   const [data, setData] = useState();
@@ -187,15 +189,25 @@ const Design = () => {
   };
   // =====save event template json ====
   const saveTemplateData = () => {
-    const json = editor.canvas.toJSON();
+    console.log("canvas data", editor?.canvas);
+    const json = editor?.canvas?.toJSON();
     const data = JSON.stringify(json);
     const ext = "png";
-    const image = editor?.canvas?.toDataURL({
-      format: ext,
-      enableRetinaScaling: true,
+    // ================================
+    html2canvas(json).then((canvas) => {
+      const dataURL = canvas?.toDataURL("image/png");
+      console.log("dataurl", dataURL);
+      SaveAs(dataURL, "canvas_image.png");
     });
-    console.log("data=>", data, "image Preview =>", image);
-    // dispatch(setEventTemplateJson({...data,previewImage:}))
+    // const temp = {...editor.canvas,backgroundImage:""}
+    // const image = editor?.canvas?.toDataURL({
+    //   format: ext,
+    //   multiplier: 2,
+    //   enableRetinaScaling: true,
+    // });
+    // console.log("data=>", data, "image Preview =>", image);
+    // dispatch(setEventTemplateJson({ ...data, previewImage: image }));
+    // props.tabChange({}, 1);
   };
   // ==================================
   //=================== This Fnc For Adding Extra Image
