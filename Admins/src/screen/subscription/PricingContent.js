@@ -63,7 +63,7 @@ function PricingContent() {
   const getplanlist = async (res) => {
     try {
       setLoading(true);
-      const res = await axios.get("/admin/plans/subscriptions");
+      const res = await axios.get("/plans/all");
       setPlanList(res.data);
       setLoading(false);
     } catch (error) {
@@ -84,7 +84,7 @@ function PricingContent() {
   let deletesingleplanlist = async (singlePlan, res) => {
     try {
       setLoading(true);
-      const res = await axios.delete(`/admin/plans/${singlePlan}`);
+      const res = await axios.delete(`/plans/${singlePlan}`);
       setLoading(false);
     } catch (error) {
       console.log(error);

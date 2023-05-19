@@ -15,7 +15,6 @@ const eventRouter = express.Router();
 // Event route for user
 eventRouter.post("/create", userAuth, createEvent); //add event details by users
 
-eventRouter.get("/all", getAllEvents);
 eventRouter.get("/user", userAuth, getEventsByUser);
 eventRouter
   .route("/:id")

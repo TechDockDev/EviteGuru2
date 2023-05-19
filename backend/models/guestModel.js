@@ -17,6 +17,10 @@ const singleGuestSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  status: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const guestSchema = mongoose.Schema({

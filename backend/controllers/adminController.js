@@ -86,7 +86,6 @@ const registerAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-
 const getAdmin = asyncHandler(async (req, res) => {
   const admin = await Admin.findById(req.admin._id);
 
@@ -97,7 +96,6 @@ const getAdmin = asyncHandler(async (req, res) => {
     throw new Error("Admin not Found");
   }
 });
-
 
 const getallAdmin = asyncHandler(async (req, res) => {
   const admin = await Admin.find({});
@@ -324,7 +322,7 @@ const deletePlans = asyncHandler(async (req, res) => {
  * @access public/admin
  */
 
-const viewPlans = asyncHandler(async (req, res) => {
+const viewPlan = asyncHandler(async (req, res) => {
   const plans = await Subscription.findById(req.params.id);
 
   try {
@@ -346,16 +344,11 @@ const viewPlans = asyncHandler(async (req, res) => {
 
 const viewallPlans = asyncHandler(async (req, res) => {
   const plans = await Subscription.find({});
-  console.log(plans);
-  try {
-    if (plans) {
-      res.json(plans);
-    } else {
-      res.json("This plan not exist please check id again");
-    }
-  } catch (err) {
-    res.json(err);
-  }
+  res.json({
+    status: "success",
+    message: "Plans have been fetched successfully",
+    plans,
+  });
 });
 
 export {
@@ -372,7 +365,7 @@ export {
   createPlans,
   updatePlans,
   deletePlans,
-  viewPlans,
+  viewPlan,
   viewallPlans,
   singleTemplateId,
   admindeleteTemplate,
