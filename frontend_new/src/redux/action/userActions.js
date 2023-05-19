@@ -41,3 +41,12 @@ export const setEventDetails = (data) => {
     payload: data,
   };
 };
+
+
+export const setEventTemplateJson = (data) => {
+  return {
+    type: ActionTypes.SET_EVENT_TEMPLATE_JSON,
+    payload: data,
+  };
+};
+

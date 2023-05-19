@@ -1,4 +1,3 @@
-
 import { ActionTypes } from "../constants/action-types";
 
 const initialState = { isAuthenticated: false, isUser: false };
@@ -17,3 +16,11 @@ export const userReducer = (state = initialState, { type, payload }) => {
   }
 };
 
+export const userEventReducer = (state = {}, { type, payload }) => {
+  switch (type) {
+    case ActionTypes.SET_EVENT_TEMPLATE_JSON:
+      return { ...payload };
+    default:
+      return state;
+  }
+};

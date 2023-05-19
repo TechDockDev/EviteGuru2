@@ -19,12 +19,9 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { ATemplateDetails } from "../../oldredux/action/userAction";
-import { EditTemplate } from "../../oldredux/action/userAction";
-import Details from "./Details";
+
 import DeleteIcon from "@mui/icons-material/Delete";
-import AddGuests from "./AddGuests";
-import FontDownloadIcon from "@mui/icons-material/FontDownload";
+
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
@@ -33,8 +30,11 @@ import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRound
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import testOutputObject from "./test";
-import { getSingleTemplate } from "../../redux/action/userActions";
-import { setPageTitle } from "../../redux/action/defaultActions";
+import {
+  getSingleTemplate,
+  setEventTemplateJson,
+} from "../../redux/action/userActions";
+
 const Design = () => {
   const [color, setColor] = useState("");
   const { editor, onReady } = useFabricJSEditor();
@@ -61,29 +61,7 @@ const Design = () => {
   const templateDetails = useSelector((state) => state.templateData);
   // const { template, loading, error } = templateDetails;
   console.log("template data", templateDetails);
-  // =========================== Dynamic BackGround Images Render
-  // const _onReady = () => {
-  //   fabric.Image.fromURL(
-  //     `data:image/*;base64,${templateDetails?.template?.backgroundimage} `,
-  //     (img) => {
-  //       // This is For Image H & W Set
-  //       // img.scale(1);
-  //       // img.set({
-  //       //   width: 200,
-  //       //   height: 600,
-  //       // });
-  //       // editor.canvas.add(img);
-  //       editor.canvas.set("backgroundImage", img);
-  //       editor.canvas?.renderAll();
-  //       // if (canvas) {
-  //       //   fabric?.onReady(canvas);
-  //       // }
-  //     }
-  //   );
-  // };
-  // ====================================
 
-  // ====================================
   // =================== Ading Text Fuc
   const addText = () => {
     const object = new fabric.IText("Text Message", {
@@ -103,29 +81,6 @@ const Design = () => {
     editor?.setStrokeColor(e.target.value);
     editor?.canvas.renderAll();
   };
-
-  // =========== This Fnc For Changing TExt in Bold
-  // const addBold = (i) => {
-  //    const object = new fabric.IText("Text Message Bold");
-  //    object.set("fontWeight", "bold");
-  //    editor.canvas.add(object);
-  //    editor.canvas.renderAll();
-  // };
-
-  //=================== This Fnc For Changing TExt in Italic
-  // const additalic = (i) => {
-  //    const object = new fabric.IText("Text Message Bold");
-  //    object.set("fontStyle", "italic");
-  //    editor.canvas.add(object);
-  //    editor.canvas.renderAll();
-  // };
-
-  //=================== To Convert Svg
-  // const toSVG = () => {
-  //     const svg = editor.canvas.toSVG();
-  //     console.log(svg);
-  //     setData(svg);
-  // };
 
   //   ===========groupselected object to single group ====
   const groupSelectedLayers = () => {
@@ -192,10 +147,6 @@ const Design = () => {
   const addStickers = (e) => {
     fabric.Image.fromURL(e.target.value, (img) => {
       img.scale(0.2);
-      // img.set({
-      //   width: 150,
-      //   height: 150
-      // });
       editor.canvas.add(img);
       editor.canvas.renderAll();
     });
@@ -234,26 +185,24 @@ const Design = () => {
     console.log(data);
     setData(data);
   };
-
+  // =====save event template json ====
+  const saveTemplateData = () => {
+    const json = editor.canvas.toJSON();
+    const data = JSON.stringify(json);
+    const ext = "png";
+    const image = editor?.canvas?.toDataURL({
+      format: ext,
+      enableRetinaScaling: true,
+    });
+    console.log("data=>", data, "image Preview =>", image);
+    // dispatch(setEventTemplateJson({...data,previewImage:}))
+  };
+  // ==================================
   //=================== This Fnc For Adding Extra Image
   const onUploadImage = (e) => {
     console.log("clicked");
-    // imageRef.current.click();
-    // const image = imageRef.current?.files[0];
     const image = e.target.files[0];
     if (image) {
-      // fabric?.Image?.fromURL(
-      //   URL.createObjectURL(imageRef?.current?.files[0]),
-      //   (img) => {
-      //     img.scale(0.2);
-      //     // img.set({
-      //     //   width: 200,
-      //     //   height: 250,
-      //     // });
-      //     editor?.canvas?.add(img);
-      //     editor?.canvas?.renderAll();
-      //   }
-      // );
       setImageFunc(URL.createObjectURL(e.target.files[0]));
     }
   };
@@ -261,10 +210,7 @@ const Design = () => {
   const setImageFunc = (imgUrl) => {
     fabric.Image.fromURL(imgUrl, (img) => {
       img.scale(0.2);
-      // img.set({
-      //   width: 150,
-      //   height: 150
-      // });
+
       editor.canvas.add(img);
       editor.canvas.renderAll();
     });
@@ -274,21 +220,8 @@ const Design = () => {
   //   ====load canvas from json =====
   const loadCanvasFromJson = () => {
     let object = new fabric.Canvas("canvas");
-    // editor?.canvas?.loadFromJSON(
-    //   templateData,
-    //   editor?.canvas?.renderAll.bind()
-    // );
-    // Load canvas from JSON
     console.log(templateData);
     editor?.canvas.loadFromJSON(templateData);
-    // editor?.canvas?.renderAll();
-    // fabric.loadSVGFromString(testSvg, (objects, options) => {
-    //   const svgObject = fabric.util.groupSVGElements(objects, options);
-    //   svgObject.selectable = false;
-    //   editor.canvas.add(svgObject);
-
-    //   editor.canvas.renderAll();
-    // });
   };
   // ==================================
   // =================== This is YOur Handler + Image Downloader
@@ -301,7 +234,7 @@ const Design = () => {
     });
     const link = document.createElement("a");
     link.href = base64;
-    link.download = `eraser_example.${ext}`;
+    link.download = `Template_Example.${ext}`;
     console.log("Running", base64);
     // dispatch(EditTemplate(base64));
     // { THis link.Click For Dowload Editd Image , Whene You remove That Commit And that Image will Download}
@@ -315,7 +248,7 @@ const Design = () => {
   };
   // ==================
   const getTemplate = async () => {
-    const res = await axios.get(`/template/single/${id}`);
+    const res = await axios.get(`/api/v1/user/template/${id}`);
     // console.log(s.data.template[0].templateJson);
     console.log(
       "template data=>",
@@ -327,10 +260,9 @@ const Design = () => {
     // const latest = s?.data?.template.length - 1;
     setTemplateData(JSON.parse(res?.data?.template?.templateJson));
   };
+
   // ===============
   useEffect(() => {
-    // dispatch(setPageTitle("My Events"));
-   
     getTemplate();
   }, []);
   // =============
@@ -726,7 +658,8 @@ const Design = () => {
           disableElevation
           variant="contained"
           //  onClick={downloadImage}
-          onClick={toJSON}
+          // onClick={toJSON}
+          onClick={saveTemplateData}
           sx={{ color: "#fff", mt: 2 }}
         >
           Next
