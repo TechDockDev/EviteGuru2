@@ -1,12 +1,16 @@
 import React from "react";
 import AddCoupon from "./AddCoupon";
 import CouponTable from "./CouponTable";
+import DealsAndOffers from "./DealsAndOffers";
+import UserListEmail from "./UserListEmail";
 
 const Promotion = () => {
   return (
     <div>
-      <AddCoupon />
-      <CouponTable />
+      {/* <AddCoupon /> */}
+      {/* <CouponTable /> */}
+      {/* <DealsAndOffers /> */}
+      <UserListEmail />
     </div>
   );
 };

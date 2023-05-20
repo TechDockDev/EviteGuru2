@@ -38,13 +38,8 @@ const preview = multer({ storage: previewImages });
 
 const variationRouter = express.Router();
 
-variationRouter
-  .route("/:id")
-  .get(singleVariation)
-  .post(createVariation)
-  .patch(editVariation)
-  .delete(deleteVariation);
-variationRouter.get("/all/:userId", allVariationOfUser);
+variationRouter.get("/all", allVariationOfUser);
+variationRouter.post("/create", preview.single("preview"), createVariation);
 variationRouter.post("/saveImage", upload.array("image"), saveImage);
 variationRouter.post(
   "/previewImage",
@@ -52,5 +47,10 @@ variationRouter.post(
   saveImage
 );
 variationRouter.get("/sendImage/:imgName", sendImage);
+variationRouter
+  .route("/:id")
+  .get(singleVariation)
+  .patch(editVariation)
+  .delete(deleteVariation);
 
 export default variationRouter;

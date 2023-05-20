@@ -64,7 +64,7 @@ function PricingContent() {
     try {
       setLoading(true);
       const res = await axios.get("/plans/all");
-      setPlanList(res.data);
+      setPlanList(res?.data?.plans);
       setLoading(false);
     } catch (error) {
       console.log(error);

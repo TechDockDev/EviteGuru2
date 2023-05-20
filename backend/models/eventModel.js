@@ -41,6 +41,14 @@ const eventSchema = mongoose.Schema({
     ref: "User",
     required: true,
   },
+  variation: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "variation",
+  },
+  variation: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "template",
+  },
 });
 
 const Event = mongoose.model("events", eventSchema);

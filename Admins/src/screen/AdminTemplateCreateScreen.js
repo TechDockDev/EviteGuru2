@@ -659,7 +659,7 @@ const AdminTemplateCreateScreen = () => {
         return function () {
           return fabric.util.object.extend(toObject.call(this), {
             name: this.name,
-            src: `http://192.168.29.249:8085/template/sendImage/${this.name}`,
+            src: `http://192.168.29.249:8085/api/v1/user/template/sendImage/${this.name}`,
           });
         };
       })(fabric.Image.prototype.toObject);

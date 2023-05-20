@@ -2,7 +2,8 @@ import asyncHandler from "express-async-handler";
 import EventDetails from "../models/eventModel.js";
 
 const createEvent = asyncHandler(async (req, res) => {
-  let { name, hostName, date, venue, address, additionalInfo } = req.body;
+  let { name, hostName, date, venue, address, additionalInfo, variationId } =
+    req.body;
 
   const eventDetails = await EventDetails.create({
     name,
@@ -12,6 +13,7 @@ const createEvent = asyncHandler(async (req, res) => {
     address,
     additionalInfo,
     user: req.user.id,
+    variation: variationId,
   });
   res.json({
     status: "success",

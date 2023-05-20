@@ -29,7 +29,7 @@ app.use("/images", imageRouter);
 
 //user routes
 app.use("/api/v1/user", userRoutes);
-app.use("/api/v1/user/events", eventRoutes);
+app.use("/api/v1/user/event", eventRoutes);
 app.use("/api/v1/user/template", templateRoutes);
 app.use("/api/v1/user/variation", variationRoutes);
 app.use("/api/v1/user/guests", guestRoutes);
