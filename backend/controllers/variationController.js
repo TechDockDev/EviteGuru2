@@ -24,7 +24,7 @@ const createVariation = asyncHandler(async (req, res) => {
     name,
     description,
     variationJson,
-    previewImage: req.file.filename,
+    previewImage: req.file.path,
     user: req.user.id,
   });
   res.json({

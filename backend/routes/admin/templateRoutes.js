@@ -40,11 +40,11 @@ templateRouter.get("/all", allTemplate);
 templateRouter.post("/saveImage", upload.array("image"), saveImage);
 templateRouter.post("/previewImage", upload.single("previewImage"), saveImage);
 templateRouter.get("/sendImage/:imgName", sendImage);
+templateRouter.post("/create", preview.single("previewImage"), createTemplate);
 templateRouter
   .route("/:id")
   .get(singleTemplate)
   .patch(preview.single("previewImage"), editTemplate)
   .delete(deleteTemplate);
-templateRouter.post("/create", preview.single("previewImage"), createTemplate);
 
 export default templateRouter;

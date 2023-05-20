@@ -24,15 +24,6 @@ const columns = [
     headerName: "Plans",
     // type: "string",
     width: 1800,
-    renderCell: (params) => {
-      return <Typography>{params.value.map(async()=>{
-        try {
-          // const res = await axios.
-        } catch (error) {
-          console.log(error);
-        }
-      })}</Typography>;
-    },
   },
   {
     field: "edit",
@@ -88,7 +79,6 @@ export default function CouponTable() {
     })();
   }, []);
 
-  console.log(coupons);
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
