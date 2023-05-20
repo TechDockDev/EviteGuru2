@@ -3,30 +3,38 @@ import React, { useState } from "react";
 import SingleInput from "./SingleInput";
 import { useSelector, useDispatch } from "react-redux";
 import { EventDetailsTemplate } from "../../oldredux/action/userAction";
+import axios from "axios";
 
 const Details = () => {
   const dispatch = useDispatch();
 
-  const [singleEvent, setSingleEvent] = useState({});
-  const [event_name, setEventName] = useState("");
-  const [host_name, setHostName] = useState("");
-  const [venue_name, setVenueName] = useState("");
-  const [venue_address, setVenueAddress] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [add_info, setAddInfo] = useState("");
+  const [eventDetailsData, setEventDetailsData] = useState({
+    event_name: "",
+    host_name: "",
+    venue_name: "",
+    venue_address: "",
+    date: "",
+    add_info: "",
+  });
 
-  const { eventDetails } = useSelector((state) => state);
+  const { eventDetails,userEventTemplate } = useSelector((state) => state);
   // const { events , loading , error } = EventDetails;
   // console.log("🚀 ~ file: Details.js:24 ~ Details ~ eve̥nts:", events)
 
-  const { userDetail } = useSelector((state) => state);
+  // const { userDetail } = useSelector((state) => state);
   // const { userInfo } = userLogin;
 
-  const id = userDetail?._id;
+  // const id = userDetail?._id;
+  console.log("userEventTemplate =>",userEventTemplate)
 
-  const submitHandler = (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault();
+    console.log("data=>", eventDetailsData);
+    try {
+      const response = await axios.post("api/v1/user/variation/create",)
+    } catch (error) {
+      console.log("eventId=>",error)
+    }
     //  dispatch(
     //    EventDetailsTemplate(
     //      id,
@@ -51,8 +59,13 @@ const Details = () => {
           inputType={"text"}
           inputName={"eventName"}
           labelInputId={"eventName"}
-          inputValue={event_name}
-          onChangeHandler={(e) => setEventName(e.target.value)}
+          inputValue={eventDetailsData?.event_name || ""}
+          onChangeHandler={(e) =>
+            setEventDetailsData({
+              ...eventDetailsData,
+              ["event_name"]: e.target.value,
+            })
+          }
           requiredTrue={true}
           placeholderText={"e.g. Wedding"}
         />
@@ -63,8 +76,13 @@ const Details = () => {
           inputType={"text"}
           inputName={"senderName"}
           labelInputId={"senderName"}
-          inputValue={host_name}
-          onChangeHandler={(e) => setHostName(e.target.value)}
+          inputValue={eventDetailsData?.host_name || ""}
+          onChangeHandler={(e) =>
+            setEventDetailsData({
+              ...eventDetailsData,
+              ["host_name"]: e.target.value,
+            })
+          }
           requiredTrue={true}
           placeholderText={"Your name"}
         />
@@ -82,8 +100,13 @@ const Details = () => {
           inputType={"text"}
           inputName={"venueName"}
           labelInputId={"venueName"}
-          inputValue={venue_name}
-          onChangeHandler={(e) => setVenueName(e.target.value)}
+          inputValue={eventDetailsData?.venue_name || ""}
+          onChangeHandler={(e) =>
+            setEventDetailsData({
+              ...eventDetailsData,
+              ["venue_name"]: e.target.value,
+            })
+          }
           requiredTrue={true}
           placeholderText={"e.g. The Oberoi"}
         />
@@ -93,8 +116,13 @@ const Details = () => {
           labelText={"Venue Address"}
           inputType={"text"}
           inputName={"venueAddress"}
-          inputValue={venue_address}
-          onChangeHandler={(e) => setVenueAddress(e.target.value)}
+          inputValue={eventDetailsData?.venue_address || ""}
+          onChangeHandler={(e) =>
+            setEventDetailsData({
+              ...eventDetailsData,
+              ["venue_address"]: e.target.value,
+            })
+          }
           labelInputId={"venueAddress"}
           requiredTrue={true}
           placeholderText={"Full address here"}
@@ -105,8 +133,13 @@ const Details = () => {
           labelText={"Event Date"}
           inputType={"date"}
           inputName={"eventDate"}
-          inputValue={date}
-          onChangeHandler={(e) => setDate(e.target.value)}
+          inputValue={eventDetailsData?.date || ""}
+          onChangeHandler={(e) =>
+            setEventDetailsData({
+              ...eventDetailsData,
+              ["date"]: e.target.value,
+            })
+          }
           labelInputId={"eventDate"}
           requiredTrue={true}
           placeholderText={""}
@@ -117,8 +150,13 @@ const Details = () => {
           labelText={"Event time"}
           inputType={"time"}
           inputName={"eventTime"}
-          inputValue={time}
-          onChangeHandler={(e) => setTime(e.target.value)}
+          inputValue={eventDetailsData?.time || ""}
+          onChangeHandler={(e) =>
+            setEventDetailsData({
+              ...eventDetailsData,
+              ["time"]: e.target.value,
+            })
+          }
           labelInputId={"eventTime"}
           requiredTrue={true}
           placeholderText={""}
@@ -130,8 +168,13 @@ const Details = () => {
           labelText={"Additional Information for Location"}
           inputType={"textarea"}
           inputName={"additionalInfo"}
-          inputValue={add_info}
-          onChangeHandler={(e) => setAddInfo(e.target.value)}
+          inputValue={eventDetailsData?.add_info || ""}
+          onChangeHandler={(e) =>
+            setEventDetailsData({
+              ...eventDetailsData,
+              ["add_info"]: e.target.value,
+            })
+          }
           labelInputId={"additionalInfo"}
           requiredTrue={true}
           placeholderText={"e.g Opposite sapna clark inn"}
