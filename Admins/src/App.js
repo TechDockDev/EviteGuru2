@@ -25,6 +25,10 @@ import Events from "./screen/Events";
 import UserDetails from "./screen/Users/UserDetails.js";
 import TemplateEdit from "./screen/TemplatePreview/TemplateEdit";
 import Promotion from "./screen/Coupons and promotions/Promotion";
+import UserListEmail from "./screen/Coupons and promotions/UserListEmail";
+import AddCoupon from "./screen/Coupons and promotions/AddCoupon";
+import CouponTable from "./screen/Coupons and promotions/CouponTable";
+import PromotionalMail from "./screen/Coupons and promotions/PromotionalMail";
 const App = () => {
   const [alertMessage, setAlertMessage] = useState(null);
 
@@ -52,7 +56,7 @@ const App = () => {
             element={<AdminTemplateCreate showAlertBar={showAlertBar} />}
           />
           <Route
-            path="/template-edit"
+            path="/admin/template-edit"
             element={<AdminTemplateEditScreen showAlertBar={showAlertBar} />}
           />
           <Route
@@ -60,7 +64,10 @@ const App = () => {
             element={<TemplateEdit />}
           />
 
-          <Route path="/template-list" element={<AdminTemplateListScreen />} />
+          <Route
+            path="/admin/template-list"
+            element={<AdminTemplateListScreen />}
+          />
 
           <Route path="/admin/admin_list" element={<SubAdminListScreen />} />
           <Route path="/admin/pricing" element={<PricingContent />} />
@@ -69,7 +76,10 @@ const App = () => {
           <Route path="/admin/profile" element={<AccountSettings />} />
           <Route path="/admin/plans/:id" element={<EditPricingContent />} />
           <Route path="/admins/create-plan" element={<AddPriceContent />} />
-          <Route path="/admin/promotions" element={<Promotion />} />
+          <Route path="/admin/promotions" element={<CouponTable />} />
+          <Route path="/admin/add-coupon" element={<AddCoupon />} />
+          <Route path="/admin/promotional-mail" element={<PromotionalMail />} />
+          <Route path="/admin/send-promotion-message" element={<UserListEmail />} />
         </Route>
       </Routes>
     </BrowserRouter>

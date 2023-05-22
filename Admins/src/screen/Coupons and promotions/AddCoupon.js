@@ -38,7 +38,6 @@ const AddCoupon = () => {
   return (
     <div>
       <Box>
-        <Typography variant="h3">Coupons</Typography>
         <Stack
           direction={{ lg: "row", md: "column" }}
           spacing={3}

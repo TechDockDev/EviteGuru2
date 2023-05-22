@@ -31,7 +31,7 @@ const LogInModal = (props) => {
       e.preventDefault();
       const res = await axios.post("/login", value);
       if (res.status === 200) {
-        navigate("/template-list");
+        navigate("/admin/template-list");
       }
     } catch (error) {
       console.log(error);

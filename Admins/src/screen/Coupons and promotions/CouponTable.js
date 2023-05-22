@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import { useState } from "react";
-import { Box, IconButton, Typography } from "@mui/material";
+import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useNavigate } from "react-router-dom";
 
 const columns = [
   {
@@ -23,7 +24,7 @@ const columns = [
     field: "plans",
     headerName: "Plans",
     // type: "string",
-    width: 1800,
+    width: 300,
   },
   {
     field: "edit",
@@ -72,6 +73,7 @@ const columns = [
 
 export default function CouponTable() {
   const [coupons, setCoupons] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     (async () => {
       const { data } = await axios.get("/coupon/all");
@@ -79,8 +81,32 @@ export default function CouponTable() {
     })();
   }, []);
 
+  function toolbar() {
+    return (
+      <Stack direction={"row"} justifyContent={"space-between"} m={2}>
+        <Button
+          variant="contained"
+          sx={{ color: "white" }}
+          onClick={() => navigate("/admin/promotional-mail")}
+        >
+          Send Mails
+        </Button>
+        <Button
+          variant="contained"
+          sx={{ color: "white" }}
+          onClick={() => navigate("/admin/add-coupon")}
+        >
+          Add Coupon
+        </Button>
+      </Stack>
+    );
+  }
+
   return (
     <Box sx={{ height: 400, width: "100%" }}>
+      <Typography variant="h3" m={2}>
+        Coupons
+      </Typography>
       <DataGrid
         rows={coupons}
         getRowId={(row) => row._id}
@@ -88,6 +114,7 @@ export default function CouponTable() {
         pageSize={1}
         disableRowSelectionOnClick={true}
         onRowClick={(row) => console.log(row.id)}
+        slots={{ toolbar }}
         // rowsPerPageOptions={[20]}
         sx={{
           "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {

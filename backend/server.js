@@ -14,6 +14,8 @@ import imageRouter from "./utils/Images.js";
 import adminUserRoutes from "./routes/admin/adminUserRoutes.js";
 import subscriptionRoutes from "./routes/admin/subscriptionRoutes.js";
 import couponRoutes from "./routes/admin/couponRoutes.js";
+import promotionRoutes from "./routes/admin/promotionRoutes.js";
+import subscriptionUserRoutes from "./routes/user/subscriptionRoutes.js";
 
 //connecting database
 dotenv.config();
@@ -33,15 +35,17 @@ app.use("/api/v1/user/event", eventRoutes);
 app.use("/api/v1/user/template", templateRoutes);
 app.use("/api/v1/user/variation", variationRoutes);
 app.use("/api/v1/user/guests", guestRoutes);
+app.use("/api/v1/user/plan", subscriptionUserRoutes);
 
 // admin routes
 app.use("/api/v1/admin", adminRoutes);
-app.use("/api/v1/user/guests", guestRoutes);
+app.use("/api/v1/admin/guests", guestRoutes);
 app.use("/api/v1/admin/events", adminEventRoutes);
 app.use("/api/v1/admin/user", adminUserRoutes);
 app.use("/api/v1/admin/template", templateRoutes);
-app.use("/api/v1/admin/plans", subscriptionRoutes);
+app.use("/api/v1/admin/plan", subscriptionRoutes);
 app.use("/api/v1/admin/coupon", couponRoutes);
+app.use("/api/v1/admin/promotion", promotionRoutes);
 
 // port using env file
 const PORT = process.env.PORT || 8080; // port No.

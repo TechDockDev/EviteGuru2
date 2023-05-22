@@ -24,14 +24,6 @@ const eventSchema = mongoose.Schema({
   additionalInfo: {
     type: String,
   },
-  template: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "template",
-  },
-  template: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "variation",
-  },
   guest: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "guestDetails",
@@ -45,7 +37,7 @@ const eventSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "variation",
   },
-  variation: {
+  template: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "template",
   },

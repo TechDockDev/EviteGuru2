@@ -9,6 +9,7 @@ import {
   saveImage,
   sendImage,
   editTemplate,
+  addSticker,
 } from "../../controllers/templateController.js";
 
 // const upload = multer({ dest: "uploads/" });
@@ -31,6 +32,7 @@ const previewImages = multer.diskStorage({
     cb(null, fileName[0] + Date.now() + "." + fileName[1]);
   },
 });
+
 const upload = multer({ storage: storage });
 const preview = multer({ storage: previewImages });
 
@@ -41,6 +43,7 @@ templateRouter.post("/saveImage", upload.array("image"), saveImage);
 templateRouter.post("/previewImage", upload.single("previewImage"), saveImage);
 templateRouter.get("/sendImage/:imgName", sendImage);
 templateRouter.post("/create", preview.single("previewImage"), createTemplate);
+templateRouter.post("/addSticker", upload.single("sticker"), addSticker);
 templateRouter
   .route("/:id")
   .get(singleTemplate)

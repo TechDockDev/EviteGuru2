@@ -3,13 +3,14 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const UserListEmail = () => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState();
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const navigate = useNavigate();
   const getUsers = async () => {
     try {
@@ -20,6 +21,58 @@ const UserListEmail = () => {
       console.log(error);
     }
   };
+
+  const sendMail = async () => {
+    try {
+      const res = await axios.post("/promotion/sendMail", {
+        subject: JSON.parse(sessionStorage.getItem("email"))?.subject,
+        body: JSON.parse(sessionStorage.getItem("email"))?.body,
+        emails: selectedUsers,
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const sendMessage = async () => {
+    try {
+      const numbers = selectedUsers.map((v) => "+" + v);
+      const res = await axios.post("/promotion/sendSms", {
+        message: JSON.parse(sessionStorage.getItem("message"))?.message,
+        numbers,
+      });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  function toolbar() {
+    return (
+      <Stack direction={"row"} justifyContent={"space-between"} m={2}>
+        <GridToolbarQuickFilter />
+        {sessionStorage.getItem("email") ? (
+          <Button
+            variant="contained"
+            sx={{ color: "white" }}
+            disabled={selectedUsers.length === 0}
+            onClick={sendMail}
+          >
+            Send E-Mail
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            sx={{ color: "white" }}
+            disabled={selectedUsers.length === 0}
+            onClick={sendMessage}
+          >
+            Send Message
+          </Button>
+        )}
+      </Stack>
+    );
+  }
 
   useEffect(() => {
     getUsers();
@@ -56,32 +109,9 @@ const UserListEmail = () => {
       field: "subscription",
       headerName: "Subscription",
       width: 150,
-      renderCell: (params) => {
-        return <div>{params?.value?.name}</div>;
-      },
       valueGetter: (params) => params.value.name,
     },
-    {
-      field: "mail",
-      headerName: "",
-      width: 120,
-      renderCell: (params) => {
-        return (
-          <>
-            <Button
-              sx={{
-                color: "#FFFFFF",
-                backgroundColor: "#795DA8",
-              }}
-            >
-              Send Email
-            </Button>
-          </>
-        );
-      },
-    },
   ];
-
   return (
     <>
       <Box sx={{ height: 400, width: "98%" }}>
@@ -89,13 +119,15 @@ const UserListEmail = () => {
           <DataGrid
             width={"98%"}
             rows={users}
-            getRowId={(row) => row._id}
+            getRowId={(row) =>
+              sessionStorage.getItem("email") ? row.email : row.phone
+            }
             columns={columns}
-            slots={{ toolbar: GridToolbarQuickFilter }}
+            slots={{ toolbar }}
             disableRowSelectionOnClick={true}
             autoHeight={true}
             checkboxSelection
-            onRowSelectionModelChange={(selected) => console.log(selected)}
+            onRowSelectionModelChange={(selected) => setSelectedUsers(selected)}
             initialState={{
               pagination: {
                 paginationModel: {

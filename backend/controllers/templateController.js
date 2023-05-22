@@ -1,5 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Template from "../models/templateModel.js";
+import expressAsyncHandler from "express-async-handler";
+import Sticker from "../models/stickerModel.js";
 
 const getTemplateById = asyncHandler(async (req, res) => {
   try {
@@ -45,6 +47,17 @@ const createTemplate = asyncHandler(async (req, res) => {
   } catch (err) {
     res.json(err);
   }
+});
+
+const addSticker = expressAsyncHandler(async (req, res) => {
+  await Sticker.create({
+    name: req.body.name,
+    image: req.file.path,
+  });
+  res.json({
+    status: "success",
+    message: "Sticker has been added successfully",
+  });
 });
 
 const saveImage = asyncHandler(async (req, res) => {
@@ -97,4 +110,5 @@ export {
   createTemplate,
   saveImage,
   sendImage,
+  addSticker,
 };
