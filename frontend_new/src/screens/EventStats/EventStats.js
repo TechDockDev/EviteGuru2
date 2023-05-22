@@ -87,6 +87,8 @@ const EventStats = () => {
       headerName: "Phone Number",
       type: "number",
       width: 150,
+      valueGetter: (params) =>
+        `${params.value || ""} ${params.value || ""}`,
     },
     {
       field: "date",

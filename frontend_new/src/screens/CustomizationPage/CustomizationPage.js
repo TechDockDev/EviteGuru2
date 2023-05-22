@@ -4,14 +4,12 @@ import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlin
 import FormatAlignLeftOutlinedIcon from "@mui/icons-material/FormatAlignLeftOutlined";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
 import { AiOutlineFileSearch } from "react-icons/ai";
-import ChecklistOutlinedIcon from "@mui/icons-material/ChecklistOutlined";
 import { useDispatch, useSelector } from "react-redux";
 // import { useNavigate } from "react-router-dom";
 import Design from "./Design";
 import Preview from "./Preview";
 import Details from "./Details";
 import Send from "./Send";
-import Track from "./MailingReponses";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import {
@@ -19,17 +17,15 @@ import {
   setPageTitle,
   setTempTemplateData,
 } from "../../redux/action/defaultActions";
+import { reSetEventTemplate } from "../../redux/action/userActions";
 
 const CustomizationPage = () => {
   const { id } = useParams();
   // use selector
-  const pageTitle = useSelector((state) => state.pageTitle);
+  const { userEventTemplate } = useSelector((state) => state);
   // dispatch
   const dispatch = useDispatch();
   const [value, setValue] = React.useState(0);
-
-  const singleTemplateData = useSelector((state) => state.singleTemplate);
-  // const { temp } = templateEdit
 
   const navigate = useNavigate();
   // const id = temp._id
@@ -47,6 +43,7 @@ const CustomizationPage = () => {
     }
     return () => {
       dispatch(resetTempTemplateData({}));
+      dispatch(reSetEventTemplate({}));
     };
   }, []);
 
@@ -105,6 +102,7 @@ const CustomizationPage = () => {
             id={`design-tab-0`}
             aria-controls={`design-tabpanel-0`}
             icon={<DesignServicesOutlinedIcon />}
+            disabled={value === 3 ? true : false}
             iconPosition="start"
             sx={{
               color: "black",
@@ -124,6 +122,7 @@ const CustomizationPage = () => {
             label="Details"
             id={`details-tab-1`}
             aria-controls={`details-tabpanel-1`}
+            disabled={value === 3 ? true : false}
             icon={<FormatAlignLeftOutlinedIcon />}
             iconPosition="start"
             sx={{
@@ -145,6 +144,9 @@ const CustomizationPage = () => {
             aria-controls={`preview-tabpanel-2`}
             icon={<AiOutlineFileSearch />}
             iconPosition="start"
+            disabled={
+              userEventTemplate && userEventTemplate?.eventDetails ? false : true
+            }
             sx={{
               color: "black",
               minHeight: "0",
@@ -163,6 +165,9 @@ const CustomizationPage = () => {
             id={`send-tab-3`}
             aria-controls={`send-tabpanel-3`}
             icon={<MailOutlinedIcon />}
+            disabled={
+              userEventTemplate && userEventTemplate?.eventDetails ? false : true
+            }
             iconPosition="start"
             sx={{
               color: "black",
@@ -173,25 +178,6 @@ const CustomizationPage = () => {
               width: "150px",
             }}
           />
-          {/* === 👆Send tab button👆  ===*/}
-          {/* === 👇Send tab button👇  ===*/}
-
-          {/* <Tab
-            component={Button}
-            label="Track"
-            id={`track-tab-4`}
-            aria-controls={`track-tabpanel-4`}
-            icon={<ChecklistOutlinedIcon />}
-            iconPosition="start"
-            sx={{
-              color: "black",
-              minHeight: "0",
-              textTransform: "none",
-              "& svg": { fontSize: "20px", bgcolor: "transparent" },
-              "&:hover": { border: "none", bgcolor: "#E7E2ED" },
-              width: "150px",
-            }}
-          /> */}
           {/* === 👆Send tab button👆  ===*/}
         </Tabs>
         {/* ======================================================================= */}
@@ -216,7 +202,7 @@ const CustomizationPage = () => {
         id={`details-tabpanel-${1}`}
         aria-labelledby={`details-tab-${1}`}
       >
-        {value === 1 && <Details />}
+        {value === 1 && <Details tabChange={handleChange} />}
       </div>
       {/* === 👆 tab-1 Details tab button👆  ===*/}
 
@@ -227,7 +213,7 @@ const CustomizationPage = () => {
         id={`preview-tabpanel-${2}`}
         aria-labelledby={`preview-tab-${2}`}
       >
-        {value === 2 && <Preview />}
+        {value === 2 && <Preview tabChange={handleChange} />}
       </div>
       {/* === 👆 tab-2 Preview tab button👆  ===*/}
 
@@ -238,19 +224,9 @@ const CustomizationPage = () => {
         id={`send-tabpanel-${3}`}
         aria-labelledby={`send-tab-${3}`}
       >
-        {value === 3 && <Send />}
+        {value === 3 && <Send tabChange={handleChange} />}
       </div>
       {/* === 👆 tab-4 send tab button👆  ===*/}
-      {/* === 👇 tab-4 track tab button👇  ===*/}
-      {/* <div
-        role="tabpanel"
-        hidden={value !== 4}
-        id={`track-tabpanel-${4}`}
-        aria-labelledby={`track-tab-${4}`}
-      >
-        {value === 4 && <Track />}
-      </div> */}
-      {/* === 👆 tab-4 track tab button👆  ===*/}
     </Box>
   );
 };

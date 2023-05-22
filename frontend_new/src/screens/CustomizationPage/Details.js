@@ -2,51 +2,71 @@ import { Stack, Button } from "@mui/material";
 import React, { useState } from "react";
 import SingleInput from "./SingleInput";
 import { useSelector, useDispatch } from "react-redux";
-import { EventDetailsTemplate } from "../../oldredux/action/userAction";
 import axios from "axios";
+import { useParams } from "react-router-dom";
+import {
+  setEventDetailsPreviewData,
+  setEventTemplate,
+} from "../../redux/action/userActions";
+import { useEffect } from "react";
+import { setPageTitle } from "../../redux/action/defaultActions";
 
-const Details = () => {
+const Details = (props) => {
   const dispatch = useDispatch();
+  const { id } = useParams();
+  console.log("id=>", id);
 
   const [eventDetailsData, setEventDetailsData] = useState({
-    event_name: "",
-    host_name: "",
-    venue_name: "",
-    venue_address: "",
+    name: "",
+    hostName: "",
+    venue: "",
+    address: "",
     date: "",
-    add_info: "",
+    additionalInfo: "",
+    time: "",
   });
 
-  const { eventDetails,userEventTemplate } = useSelector((state) => state);
-  // const { events , loading , error } = EventDetails;
-  // console.log("🚀 ~ file: Details.js:24 ~ Details ~ eve̥nts:", events)
+  const { userEventTemplate } = useSelector((state) => state);
 
-  // const { userDetail } = useSelector((state) => state);
-  // const { userInfo } = userLogin;
+  console.log("userEventTemplate =>", userEventTemplate);
 
-  // const id = userDetail?._id;
-  console.log("userEventTemplate =>",userEventTemplate)
-
-  const submitHandler = async(e) => {
+  // submit event details and create template variation along with event creation
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("data=>", eventDetailsData);
-    try {
-      const response = await axios.post("api/v1/user/variation/create",)
-    } catch (error) {
-      console.log("eventId=>",error)
+    if (userEventTemplate && userEventTemplate.jsonData) {
+      const dt = new Date(eventDetailsData.date);
+
+      dt.setHours(
+        eventDetailsData.time.split(":")[0],
+        eventDetailsData.time.split(":")[1]
+      );
+      dispatch(
+        setEventTemplate({
+          ...userEventTemplate,
+          eventDetails: { ...eventDetailsData, dateFormat: dt },
+        })
+      );
+      dispatch(setPageTitle(eventDetailsData.name));
+      props.tabChange({}, 2);
+    } else {
+      console.log("please save design firts");
+      alert("please save design firts");
     }
-    //  dispatch(
-    //    EventDetailsTemplate(
-    //      id,
-    //      event_name,
-    //      host_name,
-    //      venue_name,
-    //      venue_address,
-    //      date,
-    //      time,
-    //      add_info
-    //    )
-    //  );
+    console.log("data=>", eventDetailsData, "=>user", userEventTemplate);
+    // try {
+    //   const form = new FormData();
+    //   form.append("variationJson", userEventTemplate?.jsonData);
+    //   form.append("preview", userEventTemplate?.previewImage);
+    //   form.append("templateId", id);
+    //   const response = await axios.post("/api/v1/user/variation/create", form);
+    //   if (response.status === 200) {
+    //     console.log("response=>", response?.data?.variation?._id);
+    //     await createEvent(response?.data?.variation?._id);
+    //   } else {
+    //   }
+    // } catch (error) {
+    //   console.log("eventId=>", error);
+    // }
   };
 
   return (
@@ -59,11 +79,11 @@ const Details = () => {
           inputType={"text"}
           inputName={"eventName"}
           labelInputId={"eventName"}
-          inputValue={eventDetailsData?.event_name || ""}
+          inputValue={eventDetailsData?.name || ""}
           onChangeHandler={(e) =>
             setEventDetailsData({
               ...eventDetailsData,
-              ["event_name"]: e.target.value,
+              ["name"]: e.target.value,
             })
           }
           requiredTrue={true}
@@ -76,11 +96,11 @@ const Details = () => {
           inputType={"text"}
           inputName={"senderName"}
           labelInputId={"senderName"}
-          inputValue={eventDetailsData?.host_name || ""}
+          inputValue={eventDetailsData?.hostName || ""}
           onChangeHandler={(e) =>
             setEventDetailsData({
               ...eventDetailsData,
-              ["host_name"]: e.target.value,
+              ["hostName"]: e.target.value,
             })
           }
           requiredTrue={true}
@@ -100,11 +120,11 @@ const Details = () => {
           inputType={"text"}
           inputName={"venueName"}
           labelInputId={"venueName"}
-          inputValue={eventDetailsData?.venue_name || ""}
+          inputValue={eventDetailsData?.venue || ""}
           onChangeHandler={(e) =>
             setEventDetailsData({
               ...eventDetailsData,
-              ["venue_name"]: e.target.value,
+              ["venue"]: e.target.value,
             })
           }
           requiredTrue={true}
@@ -116,11 +136,11 @@ const Details = () => {
           labelText={"Venue Address"}
           inputType={"text"}
           inputName={"venueAddress"}
-          inputValue={eventDetailsData?.venue_address || ""}
+          inputValue={eventDetailsData?.address || ""}
           onChangeHandler={(e) =>
             setEventDetailsData({
               ...eventDetailsData,
-              ["venue_address"]: e.target.value,
+              ["address"]: e.target.value,
             })
           }
           labelInputId={"venueAddress"}
@@ -149,7 +169,7 @@ const Details = () => {
         <SingleInput
           labelText={"Event time"}
           inputType={"time"}
-          inputName={"eventTime"}
+          inputName={"time"}
           inputValue={eventDetailsData?.time || ""}
           onChangeHandler={(e) =>
             setEventDetailsData({
@@ -157,7 +177,7 @@ const Details = () => {
               ["time"]: e.target.value,
             })
           }
-          labelInputId={"eventTime"}
+          labelInputId={"time"}
           requiredTrue={true}
           placeholderText={""}
           helperText={"Timezone : (GMT+05:30) Kolkata"}
@@ -168,11 +188,11 @@ const Details = () => {
           labelText={"Additional Information for Location"}
           inputType={"textarea"}
           inputName={"additionalInfo"}
-          inputValue={eventDetailsData?.add_info || ""}
+          inputValue={eventDetailsData?.additionalInfo || ""}
           onChangeHandler={(e) =>
             setEventDetailsData({
               ...eventDetailsData,
-              ["add_info"]: e.target.value,
+              ["additionalInfo"]: e.target.value,
             })
           }
           labelInputId={"additionalInfo"}
@@ -187,7 +207,7 @@ const Details = () => {
           type="submit"
           disableElevation
           variant="contained"
-          sx={{ color: "#fff" }}
+          sx={{ color: "#fff", mt: 1 }}
         >
           Save
         </Button>
@@ -196,7 +216,7 @@ const Details = () => {
          //       Next
           </Button> */}
       {/* <>
-         <Preview host_name={jack}/>
+         <Preview hostName={jack}/>
          </> */}
       {/* == 👆 form container 👆   ==*/}
     </Stack>

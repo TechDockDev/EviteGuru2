@@ -12,6 +12,7 @@ import Pricing from "./screens/pricing/Pricing";
 import MyEvents from "./screens/MyEvents/MyEvents";
 import EventStats from "./screens/EventStats/EventStats";
 import Subscriptions from "./screens/Subscription/Subscription";
+import PaymentGateway from "./screens/pricing/PaymentGateway";
 
 // import FooterSection from "./screens/HomeScreen/FooterSection";
 // import EmailsendOtp from "./screens/EmailotpScreen";
@@ -28,11 +29,12 @@ const App = () => {
           <Route index element={<HomeScreen />} />
           <Route path="/browse_template" element={<BrowseTemplate />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/paymentGateway" element={<PaymentGateway />} />
         </Route>
       </Routes>
       <Routes>
         <Route path="/dashboard" element={<UserDashboard />}>
-          <Route path="/dashboard/my-events" element={<MyEvents />}/>
+          <Route path="/dashboard/my-events" element={<MyEvents />} />
 
           <Route path="/dashboard/view-event" element={<EventStats />} />
           <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
@@ -42,10 +44,7 @@ const App = () => {
             path="/dashboard/account-setting"
             element={<AccountSettings />}
           />
-           <Route
-            path="/dashboard/subscriptions"
-            element={<Subscriptions />}
-          />
+          <Route path="/dashboard/subscriptions" element={<Subscriptions />} />
           <Route
             path="/dashboard/mailing-responses"
             element={<MailingReponses />}

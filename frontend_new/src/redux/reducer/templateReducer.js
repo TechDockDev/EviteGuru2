@@ -21,7 +21,7 @@ export const singleTemplateReducer = (state = {}, { type, payload }) => {
 export const eventReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case ActionTypes.EVENT_DETAILS:
-      return { eventDetails: payload };
+      return { ...payload };
     default:
       return state;
   }

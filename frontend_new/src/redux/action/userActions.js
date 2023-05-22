@@ -35,18 +35,23 @@ export const getSingleTemplate = (data) => {
   };
 };
 
-export const setEventDetails = (data) => {
+export const setEventDetailsPreviewData = (data) => {
   return {
     type: ActionTypes.EVENT_DETAILS,
     payload: data,
   };
 };
 
-
-export const setEventTemplateJson = (data) => {
+export const setEventTemplate = (data) => {
   return {
     type: ActionTypes.SET_EVENT_TEMPLATE_JSON,
     payload: data,
   };
 };
 
+export const reSetEventTemplate = () => {
+  return {
+    type: ActionTypes.RESET_EVENT_TEMPLATE_JSON,
+    payload: {},
+  };
+};

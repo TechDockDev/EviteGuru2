@@ -1,60 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Grid, Stack, Typography } from "@mui/material";
 import PricingCard from "../pricing/PricingCard";
 import { useEffect } from "react";
 import { setPageTitle } from "../../redux/action/defaultActions";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 
 const Subscriptions = () => {
   const dispatch = useDispatch();
-  const allPlans = [
-    {
-      name: "Starter",
-      description: "For personal and non-commercial use",
-      features: [
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: false },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: false },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: false },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-      ],
-      price: {
-        month: "$ 499 / 3 Months",
-        year: " $ 999 / Year",
-      },
-    },
-    {
-      name: "Professional",
-      description:
-        "Everything you need for building successful voice applications",
-      features: [
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: false },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        {
-          name: "Lorem ipsum dolor sit amet,consectetur",
-          status: true,
-        },
-      ],
-      price: {
-        month: "$ 895 / 3 Months",
-        year: " $ 3000 / Year",
-      },
-    },
-    {
-      name: "Enterprise",
-      description: "Great for building serious voice applications at scale",
-      features: [
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-      ],
-    },
-  ];
-  // ============
+  const [allPlans, setallPlans] = useState();
+
+  // ====get subscritpiton list
+  const getAllSubscritptions = async () => {
+    try {
+      const res = await axios.get("/api/v1/user/plan/all");
+      if (res.status === 200) {
+        console.log("res=>", res?.data?.plans);
+        setallPlans(res?.data?.plans);
+      }
+    } catch (error) {}
+  };
+  // ===========================
   useEffect(() => {
     dispatch(setPageTitle("Subscription"));
+    getAllSubscritptions();
 
     return () => {
       dispatch(setPageTitle(""));
@@ -100,7 +70,7 @@ const Subscriptions = () => {
           {allPlans &&
             allPlans.map((plan, index) => {
               return (
-                <Grid item lg={3.5} md={4} sm={5.5} xs={12} key={index}>
+                <Grid item lg={3.5} md={4.5} sm={5.5} xs={12} key={index}>
                   <PricingCard plan={plan} />
                 </Grid>
               );

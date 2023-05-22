@@ -15,7 +15,7 @@ const user_reducer = combineReducers({
   userDetail: userReducer,
   allTemplates: templateReducer,
   templateData: singleTemplateReducer,
-  eventDetails: eventReducer,
+  eventDetailsPreviewData: eventReducer,
   pageTitle: titleReducer,
   tempTemplate: tempTemplateReducer,
   viewEventDetails: setEventDetailsReducer,

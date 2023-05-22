@@ -1,53 +1,17 @@
 import { Box, Grid, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PricingCard from "./PricingCard";
 import Faqs from "./Faqs";
+import axios from "axios";
 
 function Pricing() {
-  const allPlans = [
-    {
-      name: "Starter",
-      description: "For personal and non-commercial use",
-      features: [
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: false },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: false },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: false },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-      ],
-      price: {
-        month: "$ 499 / 3 Months",
-        year: " $ 999 / Year",
-      },
-    },
-    {
-      name: "Professional",
-      description:
-        "Everything you need for building successful voice applications",
-      features: [
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: false },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        {
-          name: "Lorem ipsum dolor sit amet,consectetur",
-          status: true,
-        },
-      ],
-      price: {
-        month: "$ 895 / 3 Months",
-        year: " $ 3000 / Year",
-      },
-    },
-    {
-      name: "Enterprise",
-      description: "Great for building serious voice applications at scale",
-      features: [
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-        { name: "Lorem ipsum dolor sit amet,consectetur", status: true },
-      ],
-    },
-  ];
+  const [allPlans, setallPlans] = useState();
+  const [open, setOpen] = useState(false);
+  const [browsePlanDetails, setBrowsePlanDetails] = useState(null);
+  const handleShow = () => setOpen(!open);
+  const handleModalOpen = (plan) => {
+    setBrowsePlanDetails(plan);
+  };
 
   const allFaqs = [
     {
@@ -71,6 +35,21 @@ function Pricing() {
         "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
     },
   ];
+
+  // ====get subscritpiton list
+  const getAllSubscritptions = async () => {
+    try {
+      const res = await axios.get("/api/v1/user/plan/all");
+      if (res.status === 200) {
+        console.log("res=>", res?.data?.plans);
+        setallPlans(res?.data?.plans);
+      }
+    } catch (error) {}
+  };
+  // ===========================
+  useEffect(() => {
+    getAllSubscritptions();
+  }, []);
   return (
     <Box
       sx={{
@@ -106,17 +85,13 @@ function Pricing() {
           {allPlans &&
             allPlans.map((plan, index) => {
               return (
-                <Grid
-                  item
-                  lg={3.5}
-                  md={4}
-                  sm={5.5}
-                  xs={12}
-                  p={2}
-                  key={index}
-                  
-                >
-                  <PricingCard plan={plan} />
+                <Grid item lg={3.5} md={4} sm={5.5} xs={12} p={2} key={index}>
+                  <PricingCard
+                    plan={plan}
+                    handleModalOpen={handleModalOpen}
+                    handleShow={handleShow}
+                    open={open}
+                  />
                 </Grid>
               );
             })}
