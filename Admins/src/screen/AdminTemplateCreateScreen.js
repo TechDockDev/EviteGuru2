@@ -524,6 +524,7 @@ const AdminTemplateCreateScreen = () => {
     setAllImages([...allImages, e.target.files[0]]);
     reader.onload = function (event) {
       var imgObj = new Image();
+      imgObj.crossOrigin = "Anonymous";
       imgObj.src = event.target.result;
       imgObj.onload = function () {
         var image = new fabric.Image(imgObj);
@@ -629,6 +630,7 @@ const AdminTemplateCreateScreen = () => {
     // load the background image
     reader.onload = function (event) {
       var imgObj = new Image();
+      imgObj.crossOrigin = "Anonymous";
       imgObj.src = event.target.result;
       imgObj.onload = function () {
         var image = new fabric.Image(imgObj);
@@ -653,6 +655,7 @@ const AdminTemplateCreateScreen = () => {
   function toJson() {
     console.log(editor?.canvas.toJSON());
   }
+
   async function saveTemplate(file) {
     try {
       fabric.Image.prototype.toObject = (function (toObject) {
@@ -787,6 +790,7 @@ const AdminTemplateCreateScreen = () => {
         type="file"
         id="img"
         accept="image/png, image/jpeg ,image/jpg"
+        crossOrigin="anonymous"
         onChange={addImage}
       ></input>
       <label htmlFor="img">Add Svg Image</label>
@@ -809,7 +813,6 @@ const AdminTemplateCreateScreen = () => {
         type="file"
         id="img"
         accept="image/png, image/jpeg ,image/jpg"
-        crossOrigin="anonymous"
         onChange={addImageSomewhere}
       ></input>
       <label htmlFor="img">Add Backgroud Image</label>
@@ -817,7 +820,7 @@ const AdminTemplateCreateScreen = () => {
         type="file"
         id="img"
         accept="image/png, image/jpeg ,image/jpg"
-        crossOrigin="anonymous"
+        // crossOrigin="anonymous"
         onChange={setBackgroundImage}
       ></input>
       <label htmlFor="favcolor">Select your favorite color:</label>
@@ -825,7 +828,6 @@ const AdminTemplateCreateScreen = () => {
         type="color"
         id="favcolor"
         name="favcolor"
-        // value=
         onChange={setFillColor}
       ></input>
       <FabricJSCanvas className="sample-canvas" onReady={onReady} />

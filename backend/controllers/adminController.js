@@ -268,89 +268,6 @@ const admindeleteTemplate = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @desc Create Subscription by admin
- * @route POST /create-plan
- * @access private/admin
- */
-const createPlans = asyncHandler(async (req, res) => {
-  console.log(req.body);
-  const data = await Subscription.create(req.body);
-  res.json({
-    status: "success",
-    message: "Subscription Plan has been created Successfully",
-    data,
-  });
-});
-
-/**
- * @desc update Subscription by admin
- * @route PUT /plans/:id
- * @access private/admin
- */
-const updatePlans = asyncHandler(async (req, res) => {
-  await Subscription.findByIdAndUpdate(req.params.id, req.body);
-  res.json({
-    status: "success",
-    message: "Subscription Plan updated Successfully",
-  });
-});
-
-/**
- * @desc delete Subscription by admin
- * @route  /plan
- * @access private/admin
- */
-
-const deletePlans = asyncHandler(async (req, res) => {
-  const plans = await Subscription.findById(req.params.id);
-  try {
-    if (plans) {
-      await plans.remove();
-      res.json("this plan in deleted");
-    } else {
-      res.json("This plan not exist please check id again");
-    }
-  } catch (err) {
-    res.json(err);
-  }
-});
-
-/**
- * @desc view single Subscription by admin
- * @route  /plan
- * @access public/admin
- */
-
-const viewPlan = asyncHandler(async (req, res) => {
-  const plans = await Subscription.findById(req.params.id);
-
-  try {
-    if (plans) {
-      res.json(plans);
-    } else {
-      res.json("This plan not exist please check id again");
-    }
-  } catch (err) {
-    res.json(err);
-  }
-});
-
-/**
- * @desc delete Subscription by admin
- * @route  /plan
- * @access private/admin
- */
-
-const viewallPlans = asyncHandler(async (req, res) => {
-  const plans = await Subscription.find({});
-  res.json({
-    status: "success",
-    message: "Plans have been fetched successfully",
-    plans,
-  });
-});
-
 export {
   authAdmin,
   deleteAdmin,
@@ -362,11 +279,6 @@ export {
   deleteUser,
   updateUser,
   getallUsers,
-  createPlans,
-  updatePlans,
-  deletePlans,
-  viewPlan,
-  viewallPlans,
   singleTemplateId,
   admindeleteTemplate,
 };

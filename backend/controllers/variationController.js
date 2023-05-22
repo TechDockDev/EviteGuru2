@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Variation from "../models/variationModel.js";
+import Sticker from "../models/stickerModel.js";
 
 const getVariationById = asyncHandler(async (req, res) => {
   const variation = await Variation.findById(req.params._id);
@@ -19,12 +20,12 @@ const editVariation = asyncHandler(async (req, res) => {
 });
 
 const createVariation = asyncHandler(async (req, res) => {
-  const { name, description, variationJson } = req.body;
-  let variation = await Variation.create({
+  const { name, variationJson, templateId } = req.body;
+  const variation = await Variation.create({
     name,
-    description,
     variationJson,
     previewImage: req.file.path,
+    template: templateId,
     user: req.user.id,
   });
   res.json({
@@ -73,6 +74,15 @@ const singleVariation = asyncHandler(async (req, res) => {
   });
 });
 
+const getStickers = asyncHandler(async (req, res) => {
+  const stickers = await Sticker.find({});
+  res.json({
+    status: "success",
+    message: "Stickers have been successfully fetched",
+    stickers,
+  });
+});
+
 export {
   getVariationById,
   deleteVariation,
@@ -82,4 +92,5 @@ export {
   createVariation,
   saveImage,
   sendImage,
+  getStickers,
 };

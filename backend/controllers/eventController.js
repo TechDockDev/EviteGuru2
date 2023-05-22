@@ -4,7 +4,6 @@ import EventDetails from "../models/eventModel.js";
 const createEvent = asyncHandler(async (req, res) => {
   let { name, hostName, date, venue, address, additionalInfo, variationId } =
     req.body;
-
   const eventDetails = await EventDetails.create({
     name,
     hostName,
