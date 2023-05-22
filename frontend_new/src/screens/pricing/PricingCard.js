@@ -14,8 +14,12 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import React from "react";
 import HttpsIcon from "@mui/icons-material/Https";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import App from "./PaymentGateway";
 
 const PricingCard = (props) => {
+  const navigate = useNavigate();
   return (
     <Card
       sx={{
@@ -42,31 +46,32 @@ const PricingCard = (props) => {
         <Typography
           variant="body2"
           component={"p"}
-          fontSize={"600"}
+          fontWeight={"600"}
           textAlign={"center"}
           mt={1}
         >
-          {props?.plan?.description}
+          Guest Limit : {props?.plan?.guestLimit} Template Limit :{" "}
+          {props?.plan?.templateLimit}
         </Typography>
 
         <List sx={{ mt: 3 }}>
-          {props?.plan?.features &&
-            props?.plan?.features?.map((item, index) => {
+          {props?.plan?.description &&
+            props?.plan?.description?.map((item, index) => {
               return (
                 <ListItem disablePadding key={index}>
                   <ListItemIcon>
-                    {item.status ? (
-                      <CheckCircleIcon
-                        sx={{ color: "rgba(59, 40, 91, 1)", fontSize: "30px" }}
-                      />
-                    ) : (
+                    {/* {item.status ? ( */}
+                    <CheckCircleIcon
+                      sx={{ color: "rgba(59, 40, 91, 1)", fontSize: "30px" }}
+                    />
+                    {/* ) : (
                       <HttpsIcon
                         sx={{
                           color: "rgba(164, 164, 164, 1)",
                           fontSize: "30px",
                         }}
                       />
-                    )}
+                    )} */}
                   </ListItemIcon>
 
                   <ListItemText
@@ -74,7 +79,7 @@ const PricingCard = (props) => {
                       wordSpacing: "8px",
                       p: "0px",
                     }}
-                    primary={item?.name}
+                    primary={item}
                   />
                 </ListItem>
               );
@@ -93,8 +98,9 @@ const PricingCard = (props) => {
                 color: "white",
                 p: 1,
               }}
+              onClick={() => navigate("/paymentGateway")}
             >
-              {props?.plan?.price?.month}
+              $ {props?.plan?.price?.monthly} -/ month
             </Button>
             <Button
               fullWidth
@@ -104,8 +110,10 @@ const PricingCard = (props) => {
                 color: "white",
                 p: 1,
               }}
+              // onClick={() => props.handleModalOpen(props?.plan)}
+              onClick={() => navigate("/paymentGateway")}
             >
-              {props?.plan?.price?.year}
+              $ {props?.plan?.price?.yearly} -/year
             </Button>
           </Stack>
         ) : (

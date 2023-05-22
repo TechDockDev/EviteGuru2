@@ -46,7 +46,12 @@ const ActiveCardInfo = () => {
         </Stack>
       </CardContent>
       <CardActions sx={{ justifyContent: "center" }}>
-        <Button size="small" variant="contained" sx={{ color: "white", py: 1 }}>
+        <Button
+          size="small"
+          variant="contained"
+          sx={{ color: "white", py: 1 }}
+          onClick={() => {}}
+        >
           Change Plan
         </Button>
       </CardActions>

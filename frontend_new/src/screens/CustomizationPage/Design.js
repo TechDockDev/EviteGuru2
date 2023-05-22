@@ -19,9 +19,8 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { Buffer } from "buffer";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CopyAllIcon from "@mui/icons-material/CopyAll";
 import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded";
@@ -32,16 +31,16 @@ import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import testOutputObject from "./test";
 import {
   getSingleTemplate,
+  setEventTemplate,
   setEventTemplateJson,
 } from "../../redux/action/userActions";
-import html2canvas from "html2canvas";
-import { SaveAs } from "@mui/icons-material";
 
 const Design = (props) => {
   const [color, setColor] = useState("");
   const { editor, onReady } = useFabricJSEditor();
   const [data, setData] = useState();
   const [groupCanvas, setGroupCanvas] = useState();
+  const [sticker, setSticker] = useState();
   const [templateData, setTemplateData] = useState();
   const fonts = [
     "Pacifico",
@@ -58,11 +57,13 @@ const Design = (props) => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  console.log("id...", id);
+  // console.log("id...", id);
 
-  const templateDetails = useSelector((state) => state.templateData);
+  const { templateDetails, userDetail } = useSelector(
+    (state) => state.templateData
+  );
   // const { template, loading, error } = templateDetails;
-  console.log("template data", templateDetails);
+  // console.log("template data", templateDetails);
 
   // =================== Ading Text Fuc
   const addText = () => {
@@ -103,7 +104,7 @@ const Design = (props) => {
 
     // Group the objects
     let newGroup = editor.canvas.getActiveObject().toGroup();
-    setGroupCanvas(newGroup);
+    // setGroupCanvas(newGroup);
     console.log("group", newGroup);
     editor.canvas.renderAll();
   }
@@ -148,6 +149,8 @@ const Design = (props) => {
   // ========add stickers =======================
   const addStickers = (e) => {
     fabric.Image.fromURL(e.target.value, (img) => {
+      img.name = e.target.value.split("/").slice(-1)[0];
+      console.log(e.target.value.split("/").slice(-1)[0]);
       img.scale(0.2);
       editor.canvas.add(img);
       editor.canvas.renderAll();
@@ -189,25 +192,43 @@ const Design = (props) => {
   };
   // =====save event template json ====
   const saveTemplateData = () => {
+    // ================================
+    fabric.Image.prototype.toObject = (function (toObject) {
+      return function () {
+        return fabric.util.object.extend(toObject.call(this), {
+          name: this.name,
+          src: `http://192.168.29.249:8085/api/v1/user/template/sendImage/${this.name}`,
+        });
+      };
+    })(fabric.Image.prototype.toObject);
+    // ================================
     console.log("canvas data", editor?.canvas);
     const json = editor?.canvas?.toJSON();
     const data = JSON.stringify(json);
     const ext = "png";
-    // ================================
-    html2canvas(json).then((canvas) => {
-      const dataURL = canvas?.toDataURL("image/png");
-      console.log("dataurl", dataURL);
-      SaveAs(dataURL, "canvas_image.png");
+    const image = editor?.canvas?.toDataURL({
+      format: "png",
+      // multiplier: 2,
+      // enableRetinaScaling: true,
     });
-    // const temp = {...editor.canvas,backgroundImage:""}
-    // const image = editor?.canvas?.toDataURL({
-    //   format: ext,
-    //   multiplier: 2,
-    //   enableRetinaScaling: true,
-    // });
-    // console.log("data=>", data, "image Preview =>", image);
-    // dispatch(setEventTemplateJson({ ...data, previewImage: image }));
-    // props.tabChange({}, 1);
+    // ========================================
+    function dataURLtoFile(dataurl, filename) {
+      const uint8Buffer = Buffer.from(dataurl.split(",")[1], "base64");
+      return new File([uint8Buffer], filename, { type: "image/png" });
+    }
+    // Usage example:
+    var file = dataURLtoFile(image, "previewImage.png");
+    // ========================================
+    // console.log("data=>", data, "image Preview =>",file);
+    console.log(json);
+    dispatch(
+      setEventTemplate({
+        jsonData: data,
+        previewImage: file,
+        tempPreviewImage: image,
+      })
+    );
+    props.tabChange({}, 1);
   };
   // ==================================
   //=================== This Fnc For Adding Extra Image
@@ -215,14 +236,14 @@ const Design = (props) => {
     console.log("clicked");
     const image = e.target.files[0];
     if (image) {
-      setImageFunc(URL.createObjectURL(e.target.files[0]));
+      setImageFunc(URL.createObjectURL(e.target.files[0]), image);
     }
   };
   // ======================
-  const setImageFunc = (imgUrl) => {
+  const setImageFunc = (imgUrl, file) => {
     fabric.Image.fromURL(imgUrl, (img) => {
       img.scale(0.2);
-
+      img.name = file.name;
       editor.canvas.add(img);
       editor.canvas.renderAll();
     });
@@ -232,7 +253,7 @@ const Design = (props) => {
   //   ====load canvas from json =====
   const loadCanvasFromJson = () => {
     let object = new fabric.Canvas("canvas");
-    console.log(templateData);
+    // console.log(templateData);
     editor?.canvas.loadFromJSON(templateData);
   };
   // ==================================
@@ -262,19 +283,28 @@ const Design = (props) => {
   const getTemplate = async () => {
     const res = await axios.get(`/api/v1/user/template/${id}`);
     // console.log(s.data.template[0].templateJson);
-    console.log(
-      "template data=>",
-      res?.data?.template?.templateJson,
-      "id =>",
-      id
-    );
+    // console.log(
+    //   "template data=>",
+    //   res?.data?.template?.templateJson,
+    //   "id =>",
+    //   id
+    // );
     dispatch(getSingleTemplate(res?.data?.template));
     // const latest = s?.data?.template.length - 1;
     setTemplateData(JSON.parse(res?.data?.template?.templateJson));
   };
-
+  // ============================
+  const getAllStickers = async () => {
+    try {
+      const res = await axios.get("/api/v1/user/variation/stickers");
+      if (res.status === 200) {
+        console.log("response=>", res);
+      }
+    } catch (error) {}
+  };
   // ===============
   useEffect(() => {
+    getAllStickers();
     getTemplate();
   }, []);
   // =============
@@ -671,7 +701,13 @@ const Design = (props) => {
           variant="contained"
           //  onClick={downloadImage}
           // onClick={toJSON}
-          onClick={saveTemplateData}
+          onClick={
+            userDetail?.isUser
+              ? () => {}
+              : () => {
+                  saveTemplateData();
+                }
+          }
           sx={{ color: "#fff", mt: 2 }}
         >
           Next

@@ -21,8 +21,10 @@ import ArchitectureIcon from "@mui/icons-material/Architecture";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useSelector } from "react-redux";
 const SidebarMenu = (props) => {
-  const { tempTemplate, viewEventDetails } = useSelector((state) => state);
-  console.log("event=>", viewEventDetails);
+  const { tempTemplate, viewEventDetails, pageTitle } = useSelector(
+    (state) => state
+  );
+  // console.log("event=>", viewEventDetails);
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
 
@@ -61,7 +63,11 @@ const SidebarMenu = (props) => {
               </Avatar>
             </ListItemAvatar>
             <Tooltip
-              title={`temp${tempTemplate?.template?.id}`}
+              title={
+                pageTitle
+                  ? pageTitle?.title
+                  : `temp${tempTemplate?.template?.id}`
+              }
               arrow={true}
               enterDelay={100}
               sx={{
@@ -71,7 +77,11 @@ const SidebarMenu = (props) => {
               }}
             >
               <ListItemText
-                primary={`temp${tempTemplate?.template?.id.substring(0, 8)}...`}
+                primary={
+                  pageTitle
+                    ? pageTitle?.title
+                    : `temp${tempTemplate?.template?.id.substring(0, 8)}...`
+                }
                 sx={{ fontWeight: "800" }}
                 primaryTypographyProps={{
                   sx: {

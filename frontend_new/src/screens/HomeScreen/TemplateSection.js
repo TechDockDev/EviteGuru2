@@ -93,10 +93,11 @@ const TemplateSection = () => {
           justifyContent: "space-around",
           alignItems: "center",
           bgcolor: "#f1eef6",
-          backgroundImage: "url(./assets/leaves2.png)",
+          // backgroundImage: "url(./assets/leaves2.png)",
           padding: "20px 10px",
-          border: "1px solid #795DA8",
+          // border: "1px solid #795DA8",
           borderRadius: "20px",
+          backgroundColor:"transparent"
         }}
       >
         {templateList?.map((singleTemplate, index) => {

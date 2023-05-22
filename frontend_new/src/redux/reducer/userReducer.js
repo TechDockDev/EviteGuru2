@@ -20,6 +20,8 @@ export const userEventReducer = (state = {}, { type, payload }) => {
   switch (type) {
     case ActionTypes.SET_EVENT_TEMPLATE_JSON:
       return { ...payload };
+    case ActionTypes.RESET_EVENT_TEMPLATE_JSON:
+      return {};
     default:
       return state;
   }
