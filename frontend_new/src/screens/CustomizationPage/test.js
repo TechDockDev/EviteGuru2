@@ -1,319 +1,41 @@
 import React from "react";
-// export const testSvg = (
-//   <svg
-//     xmlns="http://www.w3.org/2000/svg"
-//     xmlns:xlink="http://www.w3.org/1999/xlink"
-//     version="1.1"
-//     width="900"
-//     height="600"
-//     viewBox="0 0 900 600"
-//     xml:space="preserve"
-//   >
-//     <desc>Created with Fabric.js 5.3.0</desc>
-//     <defs></defs>
-//     <g transform="matrix(1 0 0 1 1000 496)">
-//       <image
-//         style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"
-//         xlink:href="https://img.freepik.com/free-photo/abstract-grunge-decorative-relief-navy-blue-stucco-wall-texture-wide-angle-rough-colored-background_1258-28311.jpg?w=2000"
-//         x="-1000"
-//         y="-496"
-//         width="2000"
-//         height="992"
-//       ></image>
-//     </g>
-//     <g transform="matrix(1 0 0 1 120.5 120.5)">
-//       <rect
-//         style="stroke: rgb(0,0,0); stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(156,22,22); fill-rule: nonzero; opacity: 1;"
-//         x="-20"
-//         y="-20"
-//         rx="0"
-//         ry="0"
-//         width="40"
-//         height="40"
-//       />
-//     </g>
-//   </svg>
-// );
-export const textText = {};
-export const testOutputObject = {
-  version: "5.3.0",
-  objects: [
-    {
-      type: "group",
-      version: "5.3.0",
-      originX: "left",
-      originY: "top",
-      left: 229.85,
-      top: 38.63,
-      width: 332.57,
-      height: 465.6,
-      fill: "rgb(0,0,0)",
-      stroke: null,
-      strokeWidth: 0,
-      strokeDashArray: null,
-      strokeLineCap: "butt",
-      strokeDashOffset: 0,
-      strokeLineJoin: "miter",
-      strokeUniform: false,
-      strokeMiterLimit: 4,
-      scaleX: 1,
-      scaleY: 1,
-      angle: 0,
-      flipX: false,
-      flipY: false,
-      opacity: 1,
-      shadow: null,
-      visible: true,
-      backgroundColor: "",
-      fillRule: "nonzero",
-      paintFirst: "fill",
-      globalCompositeOperation: "source-over",
-      skewX: 0,
-      skewY: 0,
-      objects: [
-        {
-          type: "i-text",
-          version: "5.3.0",
-          originX: "left",
-          originY: "top",
-          left: -140.38,
-          top: -48.59,
-          width: 2,
-          height: 40.68,
-          fill: "rgb(0,0,0)",
-          stroke: null,
-          strokeWidth: 1,
-          strokeDashArray: null,
-          strokeLineCap: "butt",
-          strokeDashOffset: 0,
-          strokeLineJoin: "miter",
-          strokeUniform: false,
-          strokeMiterLimit: 4,
-          scaleX: 0.84,
-          scaleY: 0.84,
-          angle: 0,
-          flipX: false,
-          flipY: false,
-          opacity: 1,
-          shadow: null,
-          visible: true,
-          backgroundColor: "",
-          fillRule: "nonzero",
-          paintFirst: "fill",
-          globalCompositeOperation: "source-over",
-          skewX: 0,
-          skewY: 0,
-          fontFamily: "Helvetica",
-          fontWeight: "normal",
-          fontSize: 36,
-          text: "",
-          underline: false,
-          overline: false,
-          linethrough: false,
-          textAlign: "left",
-          fontStyle: "normal",
-          lineHeight: 1.16,
-          textBackgroundColor: "",
-          charSpacing: 0,
-          styles: [],
-          direction: "ltr",
-          path: null,
-          pathStartOffset: 0,
-          pathSide: "left",
-          pathAlign: "baseline",
-        },
-        {
-          type: "image",
-          version: "5.3.0",
-          originX: "left",
-          originY: "top",
-          left: -166.28,
-          top: -232.8,
-          width: 1500,
-          height: 2100,
-          fill: "rgb(0,0,0)",
-          stroke: null,
-          strokeWidth: 0,
-          strokeDashArray: null,
-          strokeLineCap: "butt",
-          strokeDashOffset: 0,
-          strokeLineJoin: "miter",
-          strokeUniform: false,
-          strokeMiterLimit: 4,
-          scaleX: 0.22,
-          scaleY: 0.22,
-          angle: 0,
-          flipX: false,
-          flipY: false,
-          opacity: 1,
-          shadow: null,
-          visible: true,
-          backgroundColor: "",
-          fillRule: "nonzero",
-          paintFirst: "fill",
-          globalCompositeOperation: "source-over",
-          skewX: 0,
-          skewY: 0,
-          cropX: 0,
-          cropY: 0,
-          src: "blob:http://localhost:3000/7582db07-71a1-4f23-b5aa-5beb9e62a1b6",
-          crossOrigin: null,
-          filters: [],
-        },
-        {
-          type: "i-text",
-          version: "5.3.0",
-          originX: "left",
-          originY: "top",
-          left: -64.35,
-          top: -114.48,
-          width: 142.08,
-          height: 40.68,
-          fill: "#e8a496",
-          stroke: "#e8a496",
-          strokeWidth: 1,
-          strokeDashArray: null,
-          strokeLineCap: "butt",
-          strokeDashOffset: 0,
-          strokeLineJoin: "miter",
-          strokeUniform: false,
-          strokeMiterLimit: 4,
-          scaleX: 1,
-          scaleY: 1,
-          angle: 0,
-          flipX: false,
-          flipY: false,
-          opacity: 1,
-          shadow: null,
-          visible: true,
-          backgroundColor: "",
-          fillRule: "nonzero",
-          paintFirst: "fill",
-          globalCompositeOperation: "source-over",
-          skewX: 0,
-          skewY: 0,
-          fontFamily: "Helvetica",
-          fontWeight: "normal",
-          fontSize: 36,
-          text: "invitation",
-          underline: false,
-          overline: false,
-          linethrough: false,
-          textAlign: "left",
-          fontStyle: "normal",
-          lineHeight: 1.16,
-          textBackgroundColor: "",
-          charSpacing: 0,
-          styles: [],
-          direction: "ltr",
-          path: null,
-          pathStartOffset: 0,
-          pathSide: "left",
-          pathAlign: "baseline",
-        },
-        {
-          type: "i-text",
-          version: "5.3.0",
-          originX: "left",
-          originY: "top",
-          left: -65.97,
-          top: 6.3,
-          width: 222.1,
-          height: 40.68,
-          fill: "#ecaa91",
-          stroke: "#ecaa91",
-          strokeWidth: 1,
-          strokeDashArray: null,
-          strokeLineCap: "butt",
-          strokeDashOffset: 0,
-          strokeLineJoin: "miter",
-          strokeUniform: false,
-          strokeMiterLimit: 4,
-          scaleX: 0.64,
-          scaleY: 0.64,
-          angle: 0,
-          flipX: false,
-          flipY: false,
-          opacity: 1,
-          shadow: null,
-          visible: true,
-          backgroundColor: "",
-          fillRule: "nonzero",
-          paintFirst: "fill",
-          globalCompositeOperation: "source-over",
-          skewX: 0,
-          skewY: 0,
-          fontFamily: "Helvetica",
-          fontWeight: "normal",
-          fontSize: 36,
-          text: "Text Message",
-          underline: false,
-          overline: false,
-          linethrough: false,
-          textAlign: "left",
-          fontStyle: "normal",
-          lineHeight: 1.16,
-          textBackgroundColor: "",
-          charSpacing: 0,
-          styles: [],
-          direction: "ltr",
-          path: null,
-          pathStartOffset: 0,
-          pathSide: "left",
-          pathAlign: "baseline",
-        },
-        {
-          type: "i-text",
-          version: "5.3.0",
-          originX: "left",
-          originY: "top",
-          left: -73.71,
-          top: -52.94,
-          width: 324.23,
-          height: 40.68,
-          fill: "rgb(0,0,0)",
-          stroke: null,
-          strokeWidth: 1,
-          strokeDashArray: null,
-          strokeLineCap: "butt",
-          strokeDashOffset: 0,
-          strokeLineJoin: "miter",
-          strokeUniform: false,
-          strokeMiterLimit: 4,
-          scaleX: 0.51,
-          scaleY: 0.51,
-          angle: 0,
-          flipX: false,
-          flipY: false,
-          opacity: 1,
-          shadow: null,
-          visible: true,
-          backgroundColor: "",
-          fillRule: "nonzero",
-          paintFirst: "fill",
-          globalCompositeOperation: "source-over",
-          skewX: 0,
-          skewY: 0,
-          fontFamily: "Helvetica",
-          fontWeight: "normal",
-          fontSize: 36,
-          text: "venue: Banquet Hall",
-          underline: false,
-          overline: false,
-          linethrough: false,
-          textAlign: "left",
-          fontStyle: "normal",
-          lineHeight: 1.16,
-          textBackgroundColor: "",
-          charSpacing: 0,
-          styles: [],
-          direction: "ltr",
-          path: null,
-          pathStartOffset: 0,
-          pathSide: "left",
-          pathAlign: "baseline",
-        },
-      ],
-    },
-  ],
+import { Menu, MenuItem, IconButton, Paper, Box } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import Draggable from "react-draggable";
+import { useState } from "react";
+
+const DraggableMenu = () => {
+  const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
+  const [position, setPosition] = useState({ x: 20, y:100 });
+  const handleDrag = (_, { x, y }) => {
+    setMenuPosition({ x, y });
+  };
+
+  return (
+    <Draggable onDrag={handleDrag}>
+      <Paper
+        style={{
+          position: "absolute",
+          left: position.x,
+          top: position.y,
+        }}
+      >
+        <Box p={2}>
+          {/* Menu content */}
+          <p>Draggable Menu</p>
+        </Box>
+      </Paper>
+    </Draggable>
+  );
 };
+
+const Test = () => {
+  return (
+    <div style={{ marginTop: "200px" }}>
+      {/* Other components */}
+      <DraggableMenu />
+    </div>
+  );
+};
+
+export default Test;

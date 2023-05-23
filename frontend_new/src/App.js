@@ -13,6 +13,7 @@ import MyEvents from "./screens/MyEvents/MyEvents";
 import EventStats from "./screens/EventStats/EventStats";
 import Subscriptions from "./screens/Subscription/Subscription";
 import PaymentGateway from "./screens/pricing/PaymentGateway";
+import Test from "./screens/CustomizationPage/test";
 
 // import FooterSection from "./screens/HomeScreen/FooterSection";
 // import EmailsendOtp from "./screens/EmailotpScreen";
@@ -30,6 +31,8 @@ const App = () => {
           <Route path="/browse_template" element={<BrowseTemplate />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/paymentGateway" element={<PaymentGateway />} />
+          <Route path="/test" element={<Test />} />
+
         </Route>
       </Routes>
       <Routes>
