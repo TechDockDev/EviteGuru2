@@ -218,6 +218,7 @@ const AdminDashboard = () => {
             left: "auto",
             right: "auto",
             width: "100%",
+            borderBottom:"2px solid black",
             height: {
               xl: "70px",
               lg: "70px",
@@ -265,7 +266,7 @@ const AdminDashboard = () => {
               height: "100%",
               width: "100%",
               textAlign: "center",
-              // border: "1px solid green",
+
               display: {
                 xl: "none",
                 lg: "none",
@@ -330,7 +331,7 @@ const AdminDashboard = () => {
             <Toolbar
               sx={{
                 // marginTop:"100px",
-                // borderBottom: "1px solid white",
+                // borderBottom: "1px solid black",
                 display: "flex",
                 flexDirection: "column",
                 // justifyContent: "center",

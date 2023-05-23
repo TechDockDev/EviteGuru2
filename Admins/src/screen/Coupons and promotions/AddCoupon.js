@@ -28,8 +28,8 @@ const AddCoupon = () => {
   useEffect(() => {
     (async () => {
       try {
-        const res = await axios.get("/plans/all");
-        setPlans(res.data.plans);
+        const res = await axios.get("/plan/all");
+        setPlans(res.data.plan);
       } catch (error) {
         console.log(error);
       }
