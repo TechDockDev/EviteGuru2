@@ -840,6 +840,7 @@ const Design = (props) => {
               item
               mt={2}
               // component={Paper}
+              md={4}
               xs={12}
               overflow={"auto"}
               bgcolor={"white"}

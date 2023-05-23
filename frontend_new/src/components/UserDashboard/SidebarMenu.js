@@ -66,7 +66,7 @@ const SidebarMenu = (props) => {
               title={
                 pageTitle
                   ? pageTitle?.title
-                  : `temp${tempTemplate?.template?.id}`
+                  : `${tempTemplate?.template?.id}`
               }
               arrow={true}
               enterDelay={100}
@@ -79,8 +79,8 @@ const SidebarMenu = (props) => {
               <ListItemText
                 primary={
                   pageTitle
-                    ? pageTitle?.title
-                    : `temp${tempTemplate?.template?.id.substring(0, 8)}...`
+                    ? `${pageTitle?.title.substring(0, 8)}...`
+                    : `${tempTemplate?.template?.id.substring(0, 8)}...`
                 }
                 sx={{ fontWeight: "800" }}
                 primaryTypographyProps={{

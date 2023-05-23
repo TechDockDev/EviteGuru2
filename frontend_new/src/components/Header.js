@@ -19,18 +19,15 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 // import { Dis } from '@headlessui/react';
-import SettingsIcon from "@mui/icons-material/Settings";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import { logout } from "../oldredux/action/userAction";
+
 import SmallScreenDrawerMenu from "./SmallScreenDrawerMenu";
 import LogInModal from "../screens/LoginModal/LogInModal";
 import RegisterModal from "../screens/RegisterModal/RegisterModal";
 import FooterSection from "../screens/HomeScreen/FooterSection";
+import axios from "axios";
+import { logout } from "../redux/action/userActions";
 
 const Header = () => {
-  // temp state to controle topbar right corner controls
-  // const [isLoggedInd, setIsLoggedInd] = useState(false);
-  // temp state to controle topbar right corner controls
   // =====================================
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
@@ -62,9 +59,17 @@ const Header = () => {
   // const { googlefacebookInfo } = usergooglefacebookLogin;
   // console.log("google login:->", googlefacebookInfo);
 
-  const logoutHandler = () => {
-    dispatch(logout());
-    navigate("/");
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.post("/api/v1/user/logout");
+      if (res.status === 200) {
+        console.log("response=>", res);
+        dispatch(logout());
+        navigate("/");
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
   };
 
   return (
@@ -196,14 +201,14 @@ const Header = () => {
                   //   border: "1px solid green",
                 }}
               >
-                <Box
+                {/* <Box
                   sx={{
                     width: "90px",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                   }}
-                ></Box>
+                ></Box> */}
 
                 {!userDetail.isUser ? (
                   <Stack spacing={1} direction={"row"}>
@@ -262,9 +267,6 @@ const Header = () => {
                         transform: "translateY(-50%) rotate(45deg)",
                         borderTop: "1px solid #3B285B",
                         borderLeft: "1px solid #3B285B",
-
-                        //  borderRadius:"8px",
-                        //  bgcolor:"transparent",
                         zIndex: 0,
                       },
                     },
@@ -302,7 +304,13 @@ const Header = () => {
                       >
                         {userDetail?.email}
                       </MenuItem>
-                      <MenuItem onClick={handleClose}>My account</MenuItem>
+                      <MenuItem
+                        component={NavLink}
+                        to="/dashboard/account-setting"
+                        onClick={() => handleClose}
+                      >
+                        My account
+                      </MenuItem>
                       <MenuItem onClick={logoutHandler}>Logout</MenuItem>
                     </div>
                   )}
@@ -343,4 +351,3 @@ const Header = () => {
 };
 
 export default Header;
-
