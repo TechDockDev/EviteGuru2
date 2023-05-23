@@ -27,10 +27,10 @@ export const EditPricingContent = () => {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(`/admin/plans/${params.id}`);
-        setValue(data);
-        let temp = null;
-        data.description.forEach((element, index) => {
+        const { data } = await axios.get(`/plan/${params.id}`);
+        setValue(data.plan);
+        let temp = {};
+        data?.plan.description?.forEach((element, index) => {
           temp = { ...temp, [`description${index}`]: element };
         });
         setDescription(temp);
@@ -39,7 +39,6 @@ export const EditPricingContent = () => {
       }
     })();
   }, []);
-
   useEffect(() => {
     setDescriptionNumber(
       Array.from({ length: Object.keys(description)?.length }, () =>
@@ -80,7 +79,7 @@ export const EditPricingContent = () => {
     e.preventDefault();
     try {
       const data = { ...value, description: Object.values(description) };
-      const res = await axios.patch(`/admin/plans/${params.id}`, data);
+      const res = await axios.patch(`/plan/${params.id}`, data);
       console.log(res);
       navigate("/admin/pricing");
     } catch (error) {

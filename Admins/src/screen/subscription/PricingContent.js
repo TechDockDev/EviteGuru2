@@ -55,15 +55,12 @@ function PricingContent() {
 
   const [id, setId] = useState(null);
   const [loading, setLoading] = useState(false);
-  // const [plans, setplans] = useState([])
-  // const adminList = useSelector((state) => state.adminList);
-  // const { loading, error, subscription } = adminList;
 
   //data fetching from backend all template
   const getplanlist = async (res) => {
     try {
       setLoading(true);
-      const res = await axios.get("/plans/all");
+      const res = await axios.get("/plan/all");
       setPlanList(res?.data?.plans);
       setLoading(false);
     } catch (error) {
@@ -84,7 +81,7 @@ function PricingContent() {
   let deletesingleplanlist = async (singlePlan, res) => {
     try {
       setLoading(true);
-      const res = await axios.delete(`/plans/${singlePlan}`);
+      const res = await axios.delete(`/plan/${singlePlan}`);
       setLoading(false);
     } catch (error) {
       console.log(error);
