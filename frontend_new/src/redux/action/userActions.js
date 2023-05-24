@@ -21,6 +21,13 @@ export const register = (data) => {
   };
 };
 
+// user auth action
+export const userAuth = (data) => {
+  return {
+    type: ActionTypes.USER_AUTH,
+    payload: data,
+  };
+};
 export const setTemplateList = (data) => {
   return {
     type: ActionTypes.GET_ALL_TEMPLATES,
@@ -35,13 +42,25 @@ export const getSingleTemplate = (data) => {
   };
 };
 
-export const setEventDetailsPreviewData = (data) => {
+// export const setEventDetailsPreviewData = (data) => {
+//   return {
+//     type: ActionTypes.EVENT_DETAILS,
+//     payload: data,
+//   };
+// };
+export const setCreatedEventDetail = (data) => {
   return {
-    type: ActionTypes.EVENT_DETAILS,
+    type: ActionTypes.SET_CREATED_EVENT_DETAILS,
     payload: data,
   };
 };
-
+// function to set created list id =======
+export const setCreatedListId = (id) =>{
+  return {
+    type:ActionTypes.SET_CREATED_LIST_ID,
+    payload:id
+  }
+}
 export const setEventTemplate = (data) => {
   return {
     type: ActionTypes.SET_EVENT_TEMPLATE_JSON,

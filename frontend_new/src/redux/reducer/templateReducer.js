@@ -26,3 +26,14 @@ export const eventReducer = (state = {}, { type, payload }) => {
       return state;
   }
 };
+
+export const createdEventDetail = (state = {}, { type, payload }) => {
+  switch (type) {
+    case ActionTypes.SET_CREATED_EVENT_DETAILS:
+      return { ...payload };
+    case ActionTypes.SET_CREATED_LIST_ID:
+      return { ...state, guestListId: payload };
+    default:
+      return state;
+  }
+};

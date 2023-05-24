@@ -16,18 +16,27 @@ import {
 } from "@mui/x-data-grid";
 import AddGuests from "./AddGuests";
 import BulkUpload from "./BulkUpload";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { useEffect } from "react";
+import {
+  setCreatedListId,
+  setCretedListDetails,
+} from "../../redux/action/userActions";
 
 const Send = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
   const [openAddUserModal, setOpenAddUserModal] = useState(false);
   const [openBulkModal, setOpenBulkModal] = useState(false);
-
+  // created eventdetails =========
+  const { createdEventDetails } = useSelector((state) => state);
   const toggleBulkModal = () => {
     setOpenBulkModal(!openBulkModal);
   };
-
+  // =======================================
+  const dispatch = useDispatch();
+  // =======================================
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -213,11 +222,38 @@ const Send = () => {
       status: "pending",
     },
   ];
+  // =====create guest list =========
+  const createGuestList = async () => {
+    try {
+      const res = await axios.post("/api/v1/user/guest/create", {
+        eventId: createdEventDetails?._id,
+      });
+      if (res.status === 200) {
+        console.log("response=>", res);
+        dispatch(setCreatedListId(res.data.guestList?._id));
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
+  // ===end of gues list cretaion====
+  // ====useEffect =============
+  useEffect(() => {
+    createGuestList();
+  }, []);
 
+  // =====end of useEffect =====
   return (
     <>
       <Stack>
         <Box m={1} textAlign="left" marginLeft="auto">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => createGuestList()}
+          >
+            Create List
+          </Button>
           <Button
             variant="contained"
             sx={{ color: "white" }}

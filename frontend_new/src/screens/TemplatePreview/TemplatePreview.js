@@ -17,12 +17,7 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import TemplatePreviewCarousel from "./TemplatePreviewCarousel";
 // import Design from "../CustomizationPage/Design";
 
-const TemplatePreview = ({
-  carouselClick,
-  singleTemplateId,
-  toggleTemplatePreviewModal,
-  openTemplatePreviewModal,
-}) => {
+const TemplatePreview = (props) => {
   const [singleTemplateData, setSingleTemplateData] = useState({});
   // const [openLoginModal, setOpenLoginModal] = useState(false);
   // /template/:id
@@ -36,20 +31,22 @@ const TemplatePreview = ({
   //  };
 
   const closeModal = () => {
-    if (openTemplatePreviewModal) {
+    if (props?.openTemplatePreviewModal) {
       setSingleTemplateData({});
-      toggleTemplatePreviewModal();
+      props?.toggleTemplatePreviewModal();
     } else {
-      toggleTemplatePreviewModal();
+      props?.toggleTemplatePreviewModal();
     }
   };
 
   const getPreviewTemplate = async () => {
-    if (singleTemplateId != "") {
+    if (props?.singleTemplateId != "") {
       try {
-        const res = await axios.get(`/api/v1/user/template/${singleTemplateId}`);
+        const res = await axios.get(
+          `/api/v1/user/template/${props?.singleTemplateId}`
+        );
         setSingleTemplateData(res?.data?.template);
-        console.log("singleData->", res.data);
+        console.log("singleData->", res?.data);
       } catch (error) {
         console.log(error);
       }
@@ -65,14 +62,14 @@ const TemplatePreview = ({
 
   useEffect(() => {
     getPreviewTemplate();
-  }, [singleTemplateId]);
+  }, [props?.singleTemplateId]);
 
   // console.log("templateData->", singleTemplateData);
 
   // ==============================
   return (
     <Modal
-      open={openTemplatePreviewModal}
+      open={props?.openTemplatePreviewModal}
       onClose={closeModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -218,7 +215,7 @@ const TemplatePreview = ({
           <Typography variant="h2" fontSize="20px" fontWeight="600" mb={2}>
             More like this
           </Typography>
-          <TemplatePreviewCarousel carouselClick={carouselClick} />
+          <TemplatePreviewCarousel carouselClick={props?.carouselClick} />
         </Grid>
         {/*== 👆 container grid for bottom carousel👆==*/}
       </Grid>

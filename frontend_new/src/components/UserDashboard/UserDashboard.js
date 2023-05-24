@@ -18,13 +18,21 @@ const UserDashboard = () => {
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
   // useSelector to use Title
-  const pageTitle = useSelector((state) => state.pageTitle);
+  const { pageTitle, userDetail } = useSelector((state) => state);
   //👇 onClick function for hamburger menu to open left drawer on small screen  👇
 
   const handleDrawerToggle = () => {
     setOpenLeftDrawer(!openLeftDrawer);
   };
-
+  // =====to get user name letters for avatar====
+  function stringAvatar(name) {
+    const fName = name.split(" ")[0] ? name.split(" ")[0] : "";
+    const sName = name.split(" ")[1] ? name.split(" ")[1] : "";
+    return {
+      children: `${fName[0]}${sName[0]}`,
+    };
+  }
+  // ============================================
   return (
     <Box
       sx={{
@@ -167,22 +175,6 @@ const UserDashboard = () => {
           },
           alignItems: "center",
           borderBottom: "1px solid black",
-          // borderBottom:{
-          //   xl: "none",
-          //   lg: "none",
-          //   md: "none",
-          //   sm: "1px solid black",
-          //   xs: "1px solid black",
-          // }
-          //
-          // boxShadow: "black 0px 05px 5px",
-          // display: {
-          //   xl: "none",
-          //   lg: "none",
-          //   md: "none",
-          //   sm: "block",
-          //   xs: "block",
-          // },
         }}
       >
         {/* hamburger icon for opening menu on small screens */}
@@ -214,8 +206,6 @@ const UserDashboard = () => {
             textAlign: "center",
             display: "flex",
             direction: "row",
-            // border: "1px solid green",
-            // backgroundColor: "rgba(121, 93, 168, 1)",
             display: {
               xl: "none",
               lg: "none",
@@ -223,7 +213,6 @@ const UserDashboard = () => {
               sm: "block",
               xs: "block",
             },
-
           }}
         >
           <Box
@@ -423,8 +412,11 @@ const UserDashboard = () => {
             <Button disableElevation variant="contained" sx={{ color: "#fff" }}>
               Next
             </Button> */}
-
-            <Avatar sx={{ bgcolor: "rgba(121, 93, 168, 1)" }}>N</Avatar>
+            {console.log("=>", userDetail)}
+            <Avatar
+              sx={{ bgcolor: "rgba(121, 93, 168, 1)" }}
+              {...stringAvatar(`${userDetail?.name}`)}
+            />
           </Box>
         </Box>
         {/* ================ 👆 container for appbar components👆    ==================== */}

@@ -10,7 +10,7 @@ import {
 import React, { useState } from "react";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useDispatch, useSelector } from "react-redux";
-import { SingleAndMultipalGuest } from "../../oldredux/action/userAction";
+import axios from "axios";
 
 const AddGuests = ({ toggleAddUserModal }) => {
   const dispatch = useDispatch();
@@ -20,13 +20,9 @@ const AddGuests = ({ toggleAddUserModal }) => {
   // const [ single_guest , setSingle_guest] = useState({})
 
   // const userLogin = useSelector((state) => state.userLogin);
-  const { userDetail } = useSelector((state) => state);
-  // const { userInfo } = userLogin;
+  const { userDetail, createdEventDetails } = useSelector((state) => state);
 
-  const templateEdit = useSelector((state) => state.templateEdit);
-  //   const { temp } = templateEdit;
-
-  // console.log(temp)
+  console.log("eventDetails", createdEventDetails);
 
   //   const id = temp._id;
 
@@ -38,9 +34,16 @@ const AddGuests = ({ toggleAddUserModal }) => {
     console.log(tempValues);
   };
 
-  const SubmitHamdler = (e) => {
+  const SubmitHamdler = async (e) => {
     e.preventDefault();
-    //  dispatch(SingleAndMultipalGuest(id, guests));
+    try {
+      const res = await axios.post("/api/v1/user/guest/user", guests[0]);
+      if (res.status === 200) {
+        console.log("response=>", res);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
   };
 
   const addMoreContact = () => {
@@ -180,6 +183,26 @@ const AddGuests = ({ toggleAddUserModal }) => {
                 name="email"
                 value={guests[index].email || ""}
                 label={`Email`}
+                variant="standard"
+                size="small"
+                onChange={(e) => handleChange(e, index)}
+              />
+              {/* Members Allowed*/}
+              <TextField
+                type={"number"}
+                mt={1}
+                sx={{
+                  marginX: "5px",
+                  "& .MuiInput-root:before": {
+                    borderBottom: "2px dashed #0F9D58",
+                  },
+                  "& .Mui-focused": { borderColor: "yellow" },
+                }}
+                fullWidth
+                id="`members`"
+                name="members"
+                value={guests[index].members || ""}
+                label={`Members Allowed`}
                 variant="standard"
                 size="small"
                 onChange={(e) => handleChange(e, index)}

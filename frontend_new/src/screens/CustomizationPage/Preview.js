@@ -4,9 +4,11 @@ import { useEffect } from "react";
 import Moment from "react-moment";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { setCreatedEventDetail } from "../../redux/action/userActions";
 
 const Preview = (props) => {
   const { id } = useParams();
+  const dispatch = useDispatch()
   const { eventDetailsPreviewData, userEventTemplate } = useSelector(
     (state) => state
   );
@@ -42,6 +44,7 @@ const Preview = (props) => {
       });
       if (res.status === 200) {
         console.log("res=>", res);
+        dispatch(setCreatedEventDetail(res?.data?.eventDetails))
         props.tabChange({}, 3);
       } else {
         console.log("res error=>", res);
