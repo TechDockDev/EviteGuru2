@@ -44,7 +44,7 @@ const theme = createTheme({
       fontFamily:  [
          'Montserrat',
          'Comforter Brush',
-         'Abhaya Libre',
+         'Abhaya Libre','Poppins'
        ].join(','),
 
       fontSize: 14,

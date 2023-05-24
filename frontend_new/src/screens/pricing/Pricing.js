@@ -78,9 +78,12 @@ function Pricing() {
       <Stack mt={4}>
         <Grid
           container
-          display={"flex"}
+         
           justifyContent={"space-between"}
           alignItems={"center"}
+          sx={{
+            
+          }}
         >
           {allPlans &&
             allPlans.map((plan, index) => {

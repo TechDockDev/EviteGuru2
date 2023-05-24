@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import "@fontsource/montserrat";
+import "@fontsource/poppins"; 
 import Header from "./components/Header";
 import BrowseTemplate from "./screens/BrowseTemplate/BrowseTemplate";
 import UserDashboard from "./components/UserDashboard/UserDashboard";
