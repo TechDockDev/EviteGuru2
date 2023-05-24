@@ -2,6 +2,14 @@ import asyncHandler from "express-async-handler";
 import Guest from "../models/guestModel.js";
 
 const createGuest = asyncHandler(async (req, res) => {
+  const existingGuestList = await Guest.findOne({ user: req.user.id });
+  if (existingGuestList) {
+    return res.json({
+      status: "success",
+      message: "List has already been created",
+      guestList: existingGuestList,
+    });
+  }
   const guestList = await Guest.create({
     user: req.user.id,
     event: req.body.eventId,
@@ -52,6 +60,25 @@ const openStatus = asyncHandler(async (req, res) => {
   });
 });
 
+const getGuestList = asyncHandler(async (req, res) => {
+  const guestList = await Guest.findById(req.params.guestId);
+  res.json({
+    status: "success",
+    message: "Guests has been fetched successfully",
+    guestList,
+  });
+});
+
+const getGuestListByUser = asyncHandler(async (req, res) => {
+  let guestList = await Guest.find({ user: req.user.id });
+  guestList = guestList.map(({ guests }) => guests);
+  res.json({
+    status: "success",
+    message: "Guests has been fetched successfully",
+    guestList,
+  });
+});
+
 const getSingleGuest = asyncHandler(async (req, res) => {
   const guest = await Guest.findById(req.params.guestId);
   const singleGuest = guest.guests.id(req.params.singleGuestId);
@@ -79,6 +106,8 @@ export {
   addGuest,
   addGuestInBulk,
   openStatus,
+  getGuestList,
   getSingleGuest,
   guestResponse,
+  getGuestListByUser,
 };

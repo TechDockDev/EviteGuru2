@@ -221,7 +221,7 @@ const AdminTemplateCreateScreen = () => {
         editor?.canvas?.renderAll();
       }
     } else {
-      alert("No object slected");
+      alert("No object selected");
     }
   };
   // ===👆 text style STRIKE THROUGH👆
@@ -264,50 +264,34 @@ const AdminTemplateCreateScreen = () => {
       enableRetinaScaling: true,
     });
     console.log("data=>", data, "image Preview =>", image);
-    // dispatch(setEventTemplateJson({...data,previewImage:}))
   };
   // ==================================
   //=================== This Fnc For Adding Extra Image
   const onUploadImage = (e) => {
     // setAllImages([...allImages, e.target.files[0]]);
-    const addImage = (e) => {
-      const reader = new FileReader();
-      console.log(e.target.files[0]);
-      reader.onload = function (event) {
-        var imgObj = new Image();
-        imgObj.crossOrigin = "Anonymous";
-        imgObj.src = event.target.result;
-        imgObj.onload = function () {
-          var image = new fabric.Image(imgObj);
-          editor.canvas.centerObject(image);
-          image.set({
-            scaleX: editor?.canvas.getWidth() / image.width / 2,
-            scaleY: editor?.canvas.getHeight() / image.height / 2,
-            top: 0,
-            left: 0,
-            // originX: "left",
-            // originY: "top",
-            srcFromAttribute: true,
-          });
-          image.name = e.target.files[0].name;
-          editor.canvas.add(image);
-          // image.filters.push(
-          //   new fabric.Image.filters.BlendColor({
-          //     color: "orange", // change this color to your desired color
-          //     mode: "multiply",
-          //   })
-          // );
-          // image.applyFilters();
-          // var dataURL = editor?.canvas.toDataURL({
-          //   format: "png",
-          //   quality: 0.8,
-          // });
-          // console.log(dataURL);
-          editor?.canvas.renderAll();
-        };
+    const reader = new FileReader();
+    console.log(e.target.files[0]);
+    reader.onload = function (event) {
+      var imgObj = new Image();
+      imgObj.crossOrigin = "Anonymous";
+      imgObj.src = event.target.result;
+      imgObj.onload = function () {
+        var image = new fabric.Image(imgObj);
+        editor.canvas.centerObject(image);
+        image.set({
+          scaleX: editor?.canvas.getWidth() / image.width / 2,
+          scaleY: editor?.canvas.getHeight() / image.height / 2,
+          top: 0,
+          left: 0,
+          srcFromAttribute: true,
+        });
+        image.name = e.target.files[0].name;
+        editor?.canvas.add(image);
+        editor?.canvas.renderAll();
       };
-      reader.readAsDataURL(e.target.files[0]);
     };
+    reader.onerror = (err) => console.log(err);
+    reader.readAsDataURL(e.target.files[0]);
 
     // console.log("clicked");
     // const image = e.target.files[0];

@@ -115,7 +115,7 @@ const UserDetails = () => {
         </Grid>
         <Grid item xs={4}>
           <Typography sx={style}>Plan</Typography>
-          <Typography>{user?.subscription.name}</Typography>
+          <Typography>{user?.subscription?.name}</Typography>
         </Grid>
         <Grid item xs={4}>
           <Typography sx={style}>Expiring on</Typography>
