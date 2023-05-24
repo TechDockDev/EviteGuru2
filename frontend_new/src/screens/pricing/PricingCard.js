@@ -17,27 +17,37 @@ import HttpsIcon from "@mui/icons-material/Https";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import App from "./PaymentGateway";
+import { AiFillCheckCircle } from 'react-icons/ai';
 
 const PricingCard = (props) => {
   const navigate = useNavigate();
   return (
     <Card
+    elevation={4}
       sx={{
-        minWidth: 275,
-        backgroundColor: "#FAFAFA",
-        boxShadow: "0px 6px 25px rgba(0, 0, 0, 0.25)",
+        minWidth:" 300px",
+        backgroundColor: "#FAFAFA",        
+        borderRadius:"8px",
+        padding:"10px 10px",
+        bgcolor:"#FAFAFA",
+        boxSizing:"border-box"
+
       }}
     >
       <CardContent>
         <Stack
           alignItems={"center"}
-          sx={{ borderBottom: "2px solid rgba(159, 159, 159, 1)" }}
-          p={1}
+          sx={{ borderBottom: "2px solid rgba(159, 159, 159, 1)",
+        }}
+          
         >
           <Typography
             color="rgba(121, 93, 168, 1)"
             variant="h4"
+            fontSize={"28px"}
             fontWeight={"800"}
+            textTransform={"capitalize"}
+            mb={1}
           >
             {props?.plan?.name}
           </Typography>
@@ -47,22 +57,23 @@ const PricingCard = (props) => {
           variant="body2"
           component={"p"}
           fontWeight={"600"}
+          fontSize={"14px"}
           textAlign={"center"}
           mt={1}
         >
-          Guest Limit : {props?.plan?.guestLimit} Template Limit :{" "}
+          Guest Limit : {props?.plan?.guestLimit} | Template Limit :{" "}
           {props?.plan?.templateLimit}
         </Typography>
 
-        <List sx={{ mt: 3 }}>
+        <List sx={{ mt: 1 }}>
           {props?.plan?.description &&
             props?.plan?.description?.map((item, index) => {
               return (
-                <ListItem disablePadding key={index}>
-                  <ListItemIcon>
+                <ListItem disablePadding key={index} sx={{marginY:"5px"}}>
+                  <ListItemIcon sx={{minWidth:"", marginRight:"15px"}}>
                     {/* {item.status ? ( */}
-                    <CheckCircleIcon
-                      sx={{ color: "rgba(59, 40, 91, 1)", fontSize: "30px" }}
+                    <AiFillCheckCircle
+                      style={{ color: "rgba(59, 40, 91, 1)", fontSize: "20px" }}
                     />
                     {/* ) : (
                       <HttpsIcon
@@ -75,10 +86,10 @@ const PricingCard = (props) => {
                   </ListItemIcon>
 
                   <ListItemText
-                    sx={{
-                      wordSpacing: "8px",
-                      p: "0px",
-                    }}
+                    primaryTypographyProps={{sx:{
+                      fontFamily:"Poppins",
+                      color:"#333333"
+                    }}}
                     primary={item}
                   />
                 </ListItem>
@@ -90,30 +101,34 @@ const PricingCard = (props) => {
         {props?.plan?.price ? (
           <Stack width={"100%"} spacing={1}>
             <Button
-              // size="small"
+            disableElevation
               fullWidth
               variant="contained"
               sx={{
-                backgroundColor: "rgba(59, 40, 91, 1)",
+                backgroundColor: "#795DA8",
                 color: "white",
+                textTransform:"none",
                 p: 1,
               }}
               onClick={() => navigate("/paymentGateway")}
             >
-              $ {props?.plan?.price?.monthly} -/ month
+              $ {props?.plan?.price?.monthly} -/ Month
             </Button>
             <Button
+            disableElevation
+
               fullWidth
               variant="contained"
               sx={{
                 backgroundColor: "rgba(59, 40, 91, 1)",
                 color: "white",
+                textTransform:"none",
                 p: 1,
               }}
               // onClick={() => props.handleModalOpen(props?.plan)}
               onClick={() => navigate("/paymentGateway")}
             >
-              $ {props?.plan?.price?.yearly} -/year
+              $ {props?.plan?.price?.yearly} -/ Year
             </Button>
           </Stack>
         ) : (

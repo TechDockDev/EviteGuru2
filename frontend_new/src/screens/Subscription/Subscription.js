@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Grid, Stack, Typography } from "@mui/material";
+import { Grid, Stack, Typography,Box } from "@mui/material";
 import PricingCard from "../pricing/PricingCard";
 import { useEffect } from "react";
 import { setPageTitle } from "../../redux/action/defaultActions";
@@ -33,14 +33,29 @@ const Subscriptions = () => {
 
   return (
     <>
+     <Box
+      sx={{
+        // border: "2px solid red",
+        height: "100%",
+        width: {
+          xl: "calc(100vw - 250px)",
+          lg: "calc(100vw - 270px)",
+          md: "calc(100vw - 270px)",
+          sm: "100vw",
+          xs: "100vw",
+        },
+        maxWidth: "1150px",
+        padding: "0 20px 20px 20px",
+        boxSizing: "border-box",
+      }}
+    >
       <Stack
         width={"100%"}
-        mt={2}
         textAlign={"center"}
         justifyContent={"cnter"}
       >
         <Typography
-          mt={{ md: 3, xs: 0 }}
+          mt={{ md: 1, xs: 0 }}
           variant="h5"
           fontSize={{ md: "38px" }}
           fontWeight={"900"}
@@ -61,10 +76,9 @@ const Subscriptions = () => {
         <Grid
           container
           display={"flex"}
-          justifyContent={"space-between"}
+          justifyContent={"space-around"}
           spacing={1}
           width={"100%"}
-          // alignContent={"center"}
           alignItems={"center"}
         >
           {allPlans &&
@@ -77,6 +91,7 @@ const Subscriptions = () => {
             })}
         </Grid>
       </Stack>
+      </Box>
     </>
   );
 };
