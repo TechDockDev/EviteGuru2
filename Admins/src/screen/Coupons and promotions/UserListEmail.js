@@ -109,7 +109,7 @@ const UserListEmail = () => {
       field: "subscription",
       headerName: "Subscription",
       width: 150,
-      valueGetter: (params) => params.value.name,
+      valueGetter: (params) => params?.value?.name,
     },
   ];
   return (

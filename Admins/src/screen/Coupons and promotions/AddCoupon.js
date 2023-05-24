@@ -81,7 +81,7 @@ const AddCoupon = () => {
             label="Select Plan"
             sx={{ minWidth: "30ch" }}
           >
-            {plans.map((plan) => (
+            {plans?.map((plan) => (
               <MenuItem key={plan._id} value={plan.name}>
                 {plan.name}
               </MenuItem>
