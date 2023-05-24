@@ -34,7 +34,7 @@ app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/user/event", eventRoutes);
 app.use("/api/v1/user/template", templateRoutes);
 app.use("/api/v1/user/variation", variationRoutes);
-app.use("/api/v1/user/guests", guestRoutes);
+app.use("/api/v1/user/guest", guestRoutes);
 app.use("/api/v1/user/plan", subscriptionUserRoutes);
 
 // admin routes

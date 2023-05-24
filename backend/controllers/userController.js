@@ -28,6 +28,7 @@ const authenticated = asyncHandler(async (req, res) => {
   res.json({
     status: "success",
     message: "user is authenticated",
+    user: req.user,
   });
 });
 
@@ -191,6 +192,14 @@ const userPlans = asyncHandler(async (req, res) => {
   }
 });
 
+// logout
+const logOut = asyncHandler(async (req, res) => {
+  res
+    .status(200)
+    .clearCookie("bearerToken")
+    .json({ message: "Logout successfully", status: "Success" });
+});
+
 export {
   authUser,
   updateUser,
@@ -200,4 +209,5 @@ export {
   allUser,
   userPlans,
   authenticated,
+  logOut,
 };
