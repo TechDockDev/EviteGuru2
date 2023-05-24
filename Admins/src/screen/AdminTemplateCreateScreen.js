@@ -414,9 +414,10 @@ const AdminTemplateCreateScreen = () => {
   return (
     <>
       <Typography
-        variant="h4"
+        variant="h1"
         align="center"
         fontWeight="800"
+        fontSize={"28px"}
         mb={2}
         sx={{
           color: "#795da8",

@@ -29,6 +29,7 @@ import UserListEmail from "./screen/Coupons and promotions/UserListEmail";
 import AddCoupon from "./screen/Coupons and promotions/AddCoupon";
 import CouponTable from "./screen/Coupons and promotions/CouponTable";
 import PromotionalMail from "./screen/Coupons and promotions/PromotionalMail";
+import EventStats from "./screen/EventStats/EventStats";
 const App = () => {
   const [alertMessage, setAlertMessage] = useState(null);
 
@@ -50,7 +51,8 @@ const App = () => {
           <Route element={<AlertMessage alertMessage={alertMessage} />} />
           <Route path="/admin/user-list" element={<UserListScreen />} />
           <Route path="/admin/user/:id" element={<UserDetails />} />
-          <Route path="/admin/events" element={<Events />} />
+          <Route path="/admin/events/:id" element={<Events />} />
+          <Route path="/admin/event/:id" element={<EventStats />} />
           <Route
             path="/admin/template-create"
             element={<AdminTemplateCreate showAlertBar={showAlertBar} />}

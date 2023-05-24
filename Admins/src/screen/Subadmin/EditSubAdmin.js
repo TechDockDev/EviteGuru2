@@ -144,17 +144,19 @@ export const EditSubAdmin = () => {
       >
         {/* title */}
         <Typography
-          variant="h4"
-          align="center"
-          fontWeight="800"
-          mb={2}
-          sx={{
-            color: "#795da8",
-            width: "100%",
-          }}
-        >
-          Edit Admin
-        </Typography>
+            variant="h1"
+            align="center"
+            fontWeight="800"
+            fontSize={"28px"}
+            mb={2}
+            sx={{
+               color: "#795da8",
+               width: "100%",
+            }}>
+            Edit Admin
+         </Typography>
+         
+       
         {/* title */}
 
         {/* form element */}

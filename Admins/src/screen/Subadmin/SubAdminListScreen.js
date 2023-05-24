@@ -182,6 +182,18 @@ const SubAdminListScreen = () => {
           justifyItems: "right",
         }}
       >
+        <Typography
+            variant="h1"
+            align="center"
+            fontWeight="800"
+            fontSize={"28px"}
+            mb={2}
+            sx={{
+               color: "#795da8",
+               width: "100%",
+            }}>
+            Sub-Admins List
+         </Typography>
         <Button
           component={NavLink}
           to="/admin/create-subadmin"

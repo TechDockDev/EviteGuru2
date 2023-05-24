@@ -3,7 +3,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import axios from "axios";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import PersonIcon from "@mui/icons-material/Person";
@@ -110,6 +110,19 @@ const UserListScreen = () => {
   return (
     <>
       <Box sx={{ height: 400, width: "98%" }}>
+
+      <Typography
+            variant="h1"
+            align="center"
+            fontWeight="800"
+            fontSize={"28px"}
+            mb={2}
+            sx={{
+               color: "#795da8",
+               width: "100%",
+            }}>
+            List of users
+         </Typography>
         {users && (
           <DataGrid
             width={"98%"}

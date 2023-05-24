@@ -148,11 +148,11 @@ const AdminDashboard = () => {
                   to={"#"}
                   linkText={"Dashboard"}
                 />{" "}
-                <SingleMenuNavLink
+                {/* <SingleMenuNavLink
                   icon={<DashboardIcon />}
                   to={"/admin/events"}
                   linkText={"Events"}
-                />{" "}
+                />{" "} */}
                 <SingleMenuNavLink
                   icon={<CollectionsIcon />}
                   to={"/admin/template-list"}
@@ -434,11 +434,11 @@ const AdminDashboard = () => {
                     to={"#"}
                     linkText={"Dashboard"}
                   />{" "}
-                  <SingleMenuNavLink
+                  {/* <SingleMenuNavLink
                     icon={<CollectionsIcon />}
                     to={"/admin/template-list"}
                     linkText={"Events"}
-                  />
+                  /> */}
                   <SingleMenuNavLink
                     icon={<CollectionsIcon />}
                     to={"/admin/template-list"}

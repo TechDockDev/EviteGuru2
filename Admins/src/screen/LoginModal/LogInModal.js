@@ -39,7 +39,6 @@ const LogInModal = (props) => {
   };
   useEffect(() => {}, []);
   return (
-    <>
       <Paper
         sx={{
           position: "absolute",
@@ -48,7 +47,7 @@ const LogInModal = (props) => {
           transform: "translate(-50%, -50%)",
           width: { xl: 400, lg: 400, md: 400, sm: 400, xs: "70%" },
           bgcolor: " rgba(133, 103, 157, 0.47)",
-          border: "1px solid white",
+          border: "1px solid #3B285B",
           borderRadius: "20px",
           p: 5,
         }}
@@ -79,7 +78,7 @@ const LogInModal = (props) => {
               bgcolor={"transparent"}
               fontSize="30px"
               fontWeight="600"
-              color="white"
+              color="#3B285B"
               variant="h1"
               mb={2}
             >
@@ -102,7 +101,7 @@ const LogInModal = (props) => {
                   position: "static",
                   bgcolor: "transparent",
                   color: "red",
-                  "&.Mui-focused": { color: "white" },
+                  "&.Mui-focused": { color: "#3B285B", fontWeight:"600" },
                   "& span": { bgcolor: "transparent", color: "red" },
                 }}
                 required
@@ -119,6 +118,7 @@ const LogInModal = (props) => {
                   padding: "2px 10px",
                   borderRadius: "5px",
                   fontWeight: "500",
+                  bgcolor:"white"
                 }}
                 placeholder={"Your e-mail"}
               />
@@ -134,7 +134,8 @@ const LogInModal = (props) => {
                   position: "static",
                   bgcolor: "transparent",
                   color: "white",
-                  "&.Mui-focused": { color: "white" },
+                  "&.Mui-focused": { color: "#3B285B", fontWeight:"600" },
+
                   "& span": { bgcolor: "transparent", color: "red" },
                 }}
                 required
@@ -152,6 +153,7 @@ const LogInModal = (props) => {
                   padding: "2px 10px",
                   borderRadius: "5px",
                   fontWeight: "500",
+                  bgcolor:"white"
                 }}
                 placeholder="Your password"
                 required
@@ -195,7 +197,6 @@ const LogInModal = (props) => {
           {/*👆 Form Container👆 */}
         </Stack>
       </Paper>
-    </>
   );
 };
 
