@@ -5,9 +5,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-  ListSubheader,
   Tooltip,
-  Typography,
 } from "@mui/material";
 import React from "react";
 import SingleMenuNavLink from "./SingleMenuNavLink";
@@ -21,10 +19,9 @@ import ArchitectureIcon from "@mui/icons-material/Architecture";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useSelector } from "react-redux";
 const SidebarMenu = (props) => {
-  const { tempTemplate, viewEventDetails, pageTitle } = useSelector(
-    (state) => state
-  );
-  // console.log("event=>", viewEventDetails);
+  const { tempTemplate, viewEventDetails, createdEventDetails, pageTitle } =
+    useSelector((state) => state);
+  console.log("eventDetails=>", createdEventDetails);
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
 
@@ -64,9 +61,7 @@ const SidebarMenu = (props) => {
             </ListItemAvatar>
             <Tooltip
               title={
-                pageTitle
-                  ? pageTitle?.title
-                  : `${tempTemplate?.template?.id}`
+                pageTitle ? pageTitle?.title : `${tempTemplate?.template?.id}`
               }
               arrow={true}
               enterDelay={100}
@@ -142,16 +137,47 @@ const SidebarMenu = (props) => {
         to={"/dashboard/invitees"}
         linkText={"Invitees"}
       /> */}
-      <SingleMenuNavLink
+      {/* <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}
         icon={<GoMailRead />}
         to={"/dashboard/mailing-responses"}
         linkText={"Mailing Response"}
-      />
+      /> */}
+      {createdEventDetails?.name ? (
+        <ListItem
+          sx={{
+            color: "#000",
+            borderLeft: "10px solid #795DA8",
+            bgcolor: "#CDB5EA",
+            borderRadius: "4px 0px 0px 4px",
+          }}
+        >
+          <ListItemAvatar>
+            <Avatar sx={{ backgroundColor: "rgba(121, 93, 168, 1)" }}>
+              <GoMailRead />
+            </Avatar>
+          </ListItemAvatar>
+
+          <ListItemText
+            primary={`Invitees`}
+            sx={{ fontWeight: "800" }}
+            primaryTypographyProps={{
+              sx: {
+                bgcolor: "transparent",
+                fontWeight: "bold",
+                fontSize: "16px",
+              },
+            }}
+          />
+        </ListItem>
+      ) : (
+        ""
+      )}
+
       <SingleMenuNavLink
         handleDrawerToggle={props?.handleDrawerToggle}
         icon={<TbAddressBook />}
-        to={"/"}
+        to={"/dashboard/address-book"}
         linkText={"Address Book"}
       />
       <SingleMenuNavLink

@@ -7,7 +7,7 @@ import UserDashboard from "./components/UserDashboard/UserDashboard";
 import CustomizationPage from "./screens/CustomizationPage/CustomizationPage";
 import Preview from "./screens/CustomizationPage/Preview";
 import AccountSettings from "./screens/AccountSettings/AccountSettings";
-import MailingReponses from "./screens/CustomizationPage/MailingReponses";
+import MailingReponses from "./screens/CustomizationPage/AddressBook";
 import Pricing from "./screens/pricing/Pricing";
 import MyEvents from "./screens/MyEvents/MyEvents";
 import EventStats from "./screens/EventStats/EventStats";
@@ -18,6 +18,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { userAuth } from "./redux/action/userActions";
+import Send from "./screens/CustomizationPage/Send";
 
 // import FooterSection from "./screens/HomeScreen/FooterSection";
 // import EmailsendOtp from "./screens/EmailotpScreen";
@@ -65,6 +66,9 @@ const App = () => {
           <Route path="/dashboard/view-event" element={<EventStats />} />
           <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
           <Route path="/dashboard/preview/:id" element={<Preview />} />
+          <Route path="/dashboard/:id/send" element={<Send />} />
+
+          <Route path="/dashboard/address-book" element={<MailingReponses />} />
 
           <Route
             path="/dashboard/account-setting"

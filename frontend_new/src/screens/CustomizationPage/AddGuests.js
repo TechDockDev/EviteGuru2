@@ -11,15 +11,12 @@ import React, { useState } from "react";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { useEffect } from "react";
 
-const AddGuests = ({ toggleAddUserModal }) => {
+const AddGuests = (props) => {
   const dispatch = useDispatch();
 
   const [guests, setGuests] = useState([{}]);
-
-  // const [ single_guest , setSingle_guest] = useState({})
-
-  // const userLogin = useSelector((state) => state.userLogin);
   const { userDetail, createdEventDetails } = useSelector((state) => state);
 
   console.log("eventDetails", createdEventDetails);
@@ -37,9 +34,18 @@ const AddGuests = ({ toggleAddUserModal }) => {
   const SubmitHamdler = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/v1/user/guest/user", guests[0]);
+      console.log("console is coming=>")
+      const res = await axios.patch("/api/v1/user/guest/add-guest", {
+        name: `${guests[0].first_name} ${guests[0].last_name}`,
+        membersAllowed: guests[0].membersAllowed,
+        phone: guests[0].phone,
+        email: guests[0].email,
+        guestId: createdEventDetails?.guestListId,
+      });
       if (res.status === 200) {
         console.log("response=>", res);
+        await props?.getGuestListDetails();
+        props.toggleAddUserModal();
       }
     } catch (error) {
       console.log("error=>", error);
@@ -49,6 +55,9 @@ const AddGuests = ({ toggleAddUserModal }) => {
   const addMoreContact = () => {
     setGuests([...guests, {}]);
   };
+  
+
+  // =======end of useEffect ====
 
   return (
     <Stack
@@ -69,7 +78,7 @@ const AddGuests = ({ toggleAddUserModal }) => {
     >
       {/* 👇Cross icon to close the modal👇  */}
       <IconButton
-        onClick={toggleAddUserModal}
+        onClick={props?.toggleAddUserModal}
         sx={{
           color: "black",
           position: "absolute",
@@ -200,8 +209,8 @@ const AddGuests = ({ toggleAddUserModal }) => {
                 }}
                 fullWidth
                 id="`members`"
-                name="members"
-                value={guests[index].members || ""}
+                name="membersAllowed"
+                value={guests[index].membersAllowed || ""}
                 label={`Members Allowed`}
                 variant="standard"
                 size="small"
@@ -230,130 +239,3 @@ const AddGuests = ({ toggleAddUserModal }) => {
 };
 
 export default AddGuests;
-
-// import { Box, Button, Grid, IconButton,  Stack, TextField, Typography } from "@mui/material";
-// import React, { useState } from "react";
-// import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-// import { useDispatch, useSelector } from "react-redux";
-// import { SingleAndMultipalGuest } from "../../redux/action/userAction";
-
-// const AddGuests = ({toggleAddUserModal}) => {
-
-//    const dispatch = useDispatch();
-
-//    // const [ guestsDetails , setGuestsDetails ] = useState([{}]);
-
-//    const handleChange = (e, index) => {
-//       const GuestValue = [ ...guestsDetails]
-//       GuestValue[index][e.target.name] = e.target.value;
-//       setGuestsDetails(GuestValue)
-//       console.log(GuestValue)
-
-//    }
-
-//    const [ data , setData ] = useState({});
-
-//    // const [guests, setGuests] = useState([{}]);
-
-//    // const handleChange = (e, index) => {
-//    //    const tempValues = [...guests];
-//    //    tempValues[index][e.target.name] = e.target.value;
-//    //    setGuests(tempValues);
-//    //    console.log(tempValues);
-//    // };
-
-//    const addMoreContact = () => {
-//       setGuestsDetails([...guestsDetails, {}]);
-//    };
-
-//    return (
-//       <Stack
-//          sx={{
-//             position: "absolute",
-//             top: "50%",
-//             left: "50%",
-//             transform: "translate(-50%, -50%)",
-//             width: "80%",
-//             //  bgcolor: " rgba(133, 103, 157, 0.47)",
-//             bgcolor: "white",
-//             border: "1px solid white",
-//             borderRadius: "3px",
-//             p: 3,
-//          }}>
-//          {/* 👇Cross icon to close the modal👇  */}
-//          <IconButton onClick={toggleAddUserModal} sx={{ color: "black", position: "absolute", right: "15px", top: "10px" }}>
-//             <CancelOutlinedIcon sx={{ bgcolor: "transparent" }} />
-//          </IconButton>
-//          {/*👆 Cross icon to close the modal👆  */}
-
-//          <Typography variant="h1" fontSize={"20px"} fontWeight="bold" mb={1}>
-//             Add New Contact
-//          </Typography>
-
-//          <Grid container sx={{ maxHeight: "70vh", overflow: "auto" }}>
-//             {guestsDetails.map((guest, index) => {
-//                return (
-//                   <Grid item xl={12} lg={12} md={12} sm={12} xs={12} display="flex">
-//                      {/* First Name */}
-//                      <TextField
-//                      type={"text"}
-
-//                         mt={1}
-//                         sx={{ marginX: "5px", "& .MuiInput-root:before": { borderBottom: "2px dashed #1A73E8" }, "& .Mui-focused": { borderColor: "yellow" } }}
-//                         fullWidth
-//                         id="`first_name`"
-//                         name="first_name"
-//                         value={guestsDetails[index].first_name}
-//                         label={`First Name`}
-//                         variant="standard"
-//                         size="small"
-//                         onChange={(e) => handleChange(e, index)}
-//                      />
-
-//                      {/* Last Name */}
-//                      <TextField
-//                      type={"text"}
-
-//                         mt={1}
-//                         sx={{ marginX: "5px", "& .MuiInput-root:before": { borderBottom: "2px dashed #1A73E8" }, "& .Mui-focused": { borderColor: "yellow" } }}
-//                         fullWidth
-//                         id="`last_name`"
-//                         name="last_name"
-//                         value={guestsDetails[index].last_name}
-//                         label={`Last Name`}
-//                         variant="standard"
-//                         size="small"
-//                         onChange={(e) => handleChange(e, index)}
-//                      />
-
-//                      {/* Email ID*/}
-//                      <TextField
-//                      type={"text"}
-//                         mt={1}
-//                         sx={{ marginX: "5px", "& .MuiInput-root:before": { borderBottom: "2px dashed #0F9D58" }, "& .Mui-focused": { borderColor: "yellow" } }}
-//                         fullWidth
-//                         id="`email`"
-//                         name="email"
-//                         value={guestsDetails[index].email}
-//                         label={`Email`}
-//                         variant="standard"
-//                         size="small"
-//                         onChange={(e) => handleChange(e, index)}
-//                      />
-
-//                      {/* Mobile Number*/}
-//                      <TextField mt={1} type="number" sx={{ marginX: "5px", "& .MuiInput-root:before": { borderBottom: "2px dashed #DB4437" } }} fullWidth id="`phone`" name="phone" value={guestsDetails[index].phone} label={`Mobile Number`} variant="standard" size="small" onChange={(e) => handleChange(e, index)} />
-//                   </Grid>
-//                );
-//             })}
-//          </Grid>
-//          <Box mt={2} textAlign="right" width="100%">
-//             <Button variant="text" onClick={addMoreContact}>
-//                Add More
-//             </Button>
-//          </Box>
-//       </Stack>
-//    );
-// };
-
-// export default AddGuests;
