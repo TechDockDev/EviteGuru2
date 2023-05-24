@@ -7,6 +7,7 @@ import {
   MenuItem,
   Grid,
   Pagination,
+  Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import {
@@ -20,20 +21,31 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useEffect } from "react";
 import {
+  resetCreatedEventDetail,
+  setCreatedEventDetail,
   setCreatedListId,
-  setCretedListDetails,
 } from "../../redux/action/userActions";
+import { useParams } from "react-router-dom";
+import {
+  resetEventDetails,
+  setPageTitle,
+} from "../../redux/action/defaultActions";
 
 const Send = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
   const [openAddUserModal, setOpenAddUserModal] = useState(false);
   const [openBulkModal, setOpenBulkModal] = useState(false);
+  const [guestList, setguestList] = useState([]);
+  const [listStatus, setListStatus] = useState(false);
   // created eventdetails =========
   const { createdEventDetails } = useSelector((state) => state);
   const toggleBulkModal = () => {
     setOpenBulkModal(!openBulkModal);
   };
+  // =======================================
+  const { id } = useParams();
+  console.log("id=>", id);
   // =======================================
   const dispatch = useDispatch();
   // =======================================
@@ -102,11 +114,16 @@ const Send = () => {
   // ==========end of customized toolbar ======
   const columns = [
     {
+      field: "_id",
+      headerName: "ID",
+      width: 90,
+      renderCell: (index) =>
+        index?.api?.getRowIndexRelativeToVisibleRows(index?.row?._id) + 1,
+    },
+    {
       field: "name",
       headerName: "Name",
       width: 200,
-      valueGetter: (params) =>
-        `${params.row.firstName || ""} ${params.row.lastName || ""}`,
     },
     {
       field: "email",
@@ -114,19 +131,14 @@ const Send = () => {
       width: 200,
     },
     {
-      field: "phoneNumber",
+      field: "phone",
       headerName: "Phone Number",
       type: "number",
       width: 150,
     },
     {
-      field: "date",
-      headerName: "Date",
-      width: 120,
-    },
-    {
-      field: "status",
-      headerName: "Status",
+      field: "membersAllowed",
+      headerName: "Allowed Members",
       width: 120,
     },
     {
@@ -147,89 +159,31 @@ const Send = () => {
       },
     },
   ];
-
-  const rows = [
-    {
-      id: 1,
-      email: "xyz@gmail.com",
-      firstName: "Jon",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "sent",
-    },
-    {
-      id: 2,
-      email: "qwerty@gmail.com",
-      firstName: "Cersei",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "sent",
-    },
-    {
-      id: 3,
-      email: "pokl@gmail.com",
-      firstName: "Jaime",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 4,
-      email: "lmp@gmail.com",
-      firstName: "Arya",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 5,
-      email: "xyz@gmail.com",
-      firstName: "Daenerys",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "sent",
-    },
-    {
-      id: 6,
-      email: "xyz@gmail.com",
-      firstName: "Name Kuch Bhi",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 7,
-      email: "xyz@gmail.com",
-      firstName: "Ferrara",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 8,
-      email: "xyz@gmail.com",
-      firstName: "Rossini",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "sent",
-    },
-    {
-      id: 9,
-      email: "xyz@gmail.com",
-      firstName: "Harvey",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-  ];
+  // ==get single event details =======
+  const getSingleEventDetails = async () => {
+    try {
+      const res = await axios.get(`/api/v1/user/event/${id}`);
+      if (res.status === 200) {
+        console.log("response=>", res);
+        dispatch(setCreatedEventDetail(res?.data?.event));
+        dispatch(setPageTitle(`${res?.data?.event?.name}`));
+        await createGuestList();
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
+  // ==end of single event details ====
   // =====create guest list =========
   const createGuestList = async () => {
     try {
       const res = await axios.post("/api/v1/user/guest/create", {
-        eventId: createdEventDetails?._id,
+        eventId: id,
       });
       if (res.status === 200) {
         console.log("response=>", res);
+        setListStatus(true);
+        await getGuestListDetails(res.data.guestList?._id);
         dispatch(setCreatedListId(res.data.guestList?._id));
       }
     } catch (error) {
@@ -237,23 +191,54 @@ const Send = () => {
     }
   };
   // ===end of gues list cretaion====
+  // =function to fetch geustList==
+  const getGuestListDetails = async (guestListId) => {
+    try {
+      const res = await axios.get(`/api/v1/user/guest/single/${guestListId}`);
+      if (res.status === 200) {
+        console.log("response=>", res);
+        setguestList(res?.data?.guestList?.guests);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
+  // ===end of function ===========
   // ====useEffect =============
   useEffect(() => {
-    createGuestList();
+    if (id) {
+      getSingleEventDetails();
+    }
+    if (createdEventDetails?.guestListId) {
+      getGuestListDetails(createdEventDetails?.guestListId);
+    }
+    return () => {
+      dispatch(resetCreatedEventDetail({}));
+    };
   }, []);
 
   // =====end of useEffect =====
   return (
     <>
-      <Stack>
+      <Stack width={"100%"} p={1}>
+        <Stack>
+          <Typography variant="h5" fontWeight={"800"} textAlign={"center"}>
+            Add Invitees , Send Inivitation
+          </Typography>
+        </Stack>
         <Box m={1} textAlign="left" marginLeft="auto">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => createGuestList()}
-          >
-            Create List
-          </Button>
+          {listStatus ? (
+            ""
+          ) : (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => createGuestList()}
+            >
+              Create List
+            </Button>
+          )}
+          &nbsp; &nbsp;
           <Button
             variant="contained"
             sx={{ color: "white" }}
@@ -262,7 +247,7 @@ const Send = () => {
           >
             Send All
           </Button>
-          &nbsp;
+          &nbsp; &nbsp;
           <Button
             variant="contained"
             disableElevation={true}
@@ -312,7 +297,7 @@ const Send = () => {
           </Menu>
         </Box>
         <DataGrid
-          rows={rows}
+          rows={guestList}
           columns={columns}
           components={{ Toolbar: CustomeToolBar }}
           initialState={{
@@ -322,6 +307,7 @@ const Send = () => {
               },
             },
           }}
+          getRowId={(row) => row._id}
           rowSelection={true}
           autoHeight={true}
           pageSizeOptions={[5]}
@@ -329,7 +315,7 @@ const Send = () => {
           onRowSelectionModelChange={(newRowSelectionModel) => {
             setRowSelectionModel(newRowSelectionModel);
           }}
-          rowSelectionModel={rowSelectionModel}
+          // rowSelectionModel={rowSelectionModel}
           disableRowSelectionOnClick
           getRowClassName={(params) =>
             params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
@@ -354,31 +340,24 @@ const Send = () => {
             // type={"first"}
             shape="rounded"
             boundaryCount={0}
-
-            // hideNextButton={true}
-            // hidePrevButton={true}
-            // page={1}
           />
         </Stack>
         <Modal
           open={openAddUserModal}
-          // open={true}
-          // onClose={toggleAddUserModal}
-          // aria-labelledby="login-modal"
-          // aria-describedby="login_modal"
           closeAfterTransition
           sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}
         >
           <>
-            <AddGuests toggleAddUserModal={toggleAddUserModal} />
+            <AddGuests
+              toggleAddUserModal={toggleAddUserModal}
+              getGuestListDetails={getGuestListDetails}
+            />
           </>
         </Modal>
         <Modal
           open={openBulkModal}
           // open={true}
           onClose={toggleBulkModal}
-          // aria-labelledby="modal-bulkUpload"
-          // aria-describedby="modal-modal-description"
           closeAfterTransition
           sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}
         >

@@ -54,13 +54,20 @@ export const setCreatedEventDetail = (data) => {
     payload: data,
   };
 };
-// function to set created list id =======
-export const setCreatedListId = (id) =>{
+
+export const resetCreatedEventDetail = () => {
   return {
-    type:ActionTypes.SET_CREATED_LIST_ID,
-    payload:id
-  }
-}
+    type: ActionTypes.RESET_CREATED_EVENT_DETAILS,
+    payload: {},
+  };
+};
+// function to set created list id =======
+export const setCreatedListId = (id) => {
+  return {
+    type: ActionTypes.SET_CREATED_LIST_ID,
+    payload: id,
+  };
+};
 export const setEventTemplate = (data) => {
   return {
     type: ActionTypes.SET_EVENT_TEMPLATE_JSON,
