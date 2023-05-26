@@ -10,16 +10,18 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
+import { DataContext } from "../../AppContext";
 
 const LogInModal = (props) => {
   const navigate = useNavigate();
   const [value, setValue] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const {snackbar} = useContext(DataContext)
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -32,6 +34,9 @@ const LogInModal = (props) => {
       const res = await axios.post("/login", value);
       if (res.status === 200) {
         navigate("/admin/template-list");
+        snackbar(res.data.status, res.data.message)
+        
+
       }
     } catch (error) {
       console.log(error);
@@ -39,8 +44,8 @@ const LogInModal = (props) => {
   };
   useEffect(() => {}, []);
   return (
-    <>
       <Paper
+      elevation={24}
         sx={{
           position: "absolute",
           top: "50%",
@@ -48,7 +53,7 @@ const LogInModal = (props) => {
           transform: "translate(-50%, -50%)",
           width: { xl: 400, lg: 400, md: 400, sm: 400, xs: "70%" },
           bgcolor: " rgba(133, 103, 157, 0.47)",
-          border: "1px solid white",
+          border: "1px solid #3B285B",
           borderRadius: "20px",
           p: 5,
         }}
@@ -79,7 +84,7 @@ const LogInModal = (props) => {
               bgcolor={"transparent"}
               fontSize="30px"
               fontWeight="600"
-              color="white"
+              color="#3B285B"
               variant="h1"
               mb={2}
             >
@@ -102,7 +107,7 @@ const LogInModal = (props) => {
                   position: "static",
                   bgcolor: "transparent",
                   color: "red",
-                  "&.Mui-focused": { color: "white" },
+                  "&.Mui-focused": { color: "#3B285B", fontWeight:"600" },
                   "& span": { bgcolor: "transparent", color: "red" },
                 }}
                 required
@@ -119,6 +124,7 @@ const LogInModal = (props) => {
                   padding: "2px 10px",
                   borderRadius: "5px",
                   fontWeight: "500",
+                  bgcolor:"white"
                 }}
                 placeholder={"Your e-mail"}
               />
@@ -134,7 +140,8 @@ const LogInModal = (props) => {
                   position: "static",
                   bgcolor: "transparent",
                   color: "white",
-                  "&.Mui-focused": { color: "white" },
+                  "&.Mui-focused": { color: "#3B285B", fontWeight:"600" },
+
                   "& span": { bgcolor: "transparent", color: "red" },
                 }}
                 required
@@ -152,6 +159,7 @@ const LogInModal = (props) => {
                   padding: "2px 10px",
                   borderRadius: "5px",
                   fontWeight: "500",
+                  bgcolor:"white"
                 }}
                 placeholder="Your password"
                 required
@@ -195,7 +203,6 @@ const LogInModal = (props) => {
           {/*👆 Form Container👆 */}
         </Stack>
       </Paper>
-    </>
   );
 };
 

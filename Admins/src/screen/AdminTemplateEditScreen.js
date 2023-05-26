@@ -42,8 +42,9 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
+    bgcolor: "white",
+    border: "2px solid #795DA8",
+    borderRadius:"8px",
     boxShadow: 24,
     p: 4,
   };
@@ -54,16 +55,16 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
         <>
           <form onSubmit={(e) => submitHandler(e)}>
             <Grid container sx={{ p: 1 }}>
-              <Typography
-                variant="h4"
-                align="center"
-                fontWeight="800"
-                mb={2}
-                sx={{
+            <Typography
+               variant="h1"
+               align="center"
+               fontWeight="800"
+               fontSize={"28px"}
+               mb={2}
+               sx={{
                   color: "#795da8",
                   width: "100%",
-                }}
-              >
+               }}>
                 Edit Template
               </Typography>
               <Grid item xs={12} sx={{ mb: 4 }}>
@@ -105,8 +106,11 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
                   />
                 </FormControl>
               </Grid>
-              <Button sx={{ m: "auto" }} variant="outlined" type="submit">
+              <Button disableElevation sx={{ m: "auto", color:"white" }} variant="contained" type="submit">
                 Submit
+              </Button>
+              <Button disableElevation sx={{ m: "auto" }} variant="outlined" onClick={closeModal} >
+                Cancel
               </Button>
             </Grid>
           </form>

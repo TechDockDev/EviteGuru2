@@ -103,11 +103,21 @@ export default function CouponTable() {
   }
 
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
-      <Typography variant="h3" m={2}>
+    <Box sx={{  width: "100%", boxSizing:"border-box", padding:"0px 20px" }}>
+       <Typography
+            variant="h1"
+            align="center"
+            fontWeight="800"
+            fontSize={"28px"}
+            mb={2}
+            sx={{
+               color: "#795da8",
+               width: "100%",
+            }}>
         Coupons
       </Typography>
       <DataGrid
+      autoHeight={true}
         rows={coupons}
         getRowId={(row) => row._id}
         columns={columns}
@@ -117,10 +127,15 @@ export default function CouponTable() {
         slots={{ toolbar }}
         // rowsPerPageOptions={[20]}
         sx={{
+          border: "2px solid #795DA8",
           "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-            outline: "none !important",
+             outline: "none !important",
           },
-        }}
+          "& .MuiDataGrid-columnHeaderTitle":{
+          fontWeight:"600",                                       
+          }
+       }}
+
       />
     </Box>
   );

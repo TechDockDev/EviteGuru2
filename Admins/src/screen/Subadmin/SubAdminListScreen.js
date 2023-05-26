@@ -151,6 +151,7 @@ const SubAdminListScreen = () => {
     },
 
     {
+      field:"delete",
       headerName: "Delete",
       width: 100,
       renderCell: (params) => {
@@ -182,6 +183,18 @@ const SubAdminListScreen = () => {
           justifyItems: "right",
         }}
       >
+        <Typography
+            variant="h1"
+            align="center"
+            fontWeight="800"
+            fontSize={"28px"}
+            mb={2}
+            sx={{
+               color: "#795da8",
+               width: "100%",
+            }}>
+            Sub-Admins List
+         </Typography>
         <Button
           component={NavLink}
           to="/admin/create-subadmin"
@@ -208,6 +221,16 @@ const SubAdminListScreen = () => {
           loading={loading}
           pageSizeOptions={[5]}
           disableRowSelectionOnClick
+          sx={{
+            border: "2px solid #795DA8",
+            "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+               outline: "none !important",
+            },
+            "& .MuiDataGrid-columnHeaderTitle":{
+            fontWeight:"600",                                       
+            }
+         }}
+
         />
       </Box>
     </>

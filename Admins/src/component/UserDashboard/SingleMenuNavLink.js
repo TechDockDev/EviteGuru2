@@ -19,7 +19,7 @@ const SingleMenuNavLink = ({
           clickFunction();
         }
       }}
-      component={NavLink}
+      component={to ? NavLink :""}
       to={to}
       sx={{
         color: "black",
@@ -33,9 +33,10 @@ const SingleMenuNavLink = ({
 
         "&:hover": {
           color: "#000",
-          borderLeft: "10px solid #795DA8",
+          borderLeft: "8px solid #795DA8",
           bgcolor: "#CDB5EA",
           borderRadius: "4px 0px 0px 4px",
+          boxShadow:"3px 3px 8px grey"
         },
       }}
     >
@@ -70,7 +71,7 @@ const SingleMenuNavLink = ({
             sx: {
               bgcolor: "transparent",
               fontWeight: "bold",
-              fontSize: "18px",
+              fontSize: "16px",
             },
           }}
         />
