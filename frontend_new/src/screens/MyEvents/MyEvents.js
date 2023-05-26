@@ -57,7 +57,7 @@ const MyEvents = () => {
   }, []);
 
   return (
-    <Box>
+    <Box width={"100%"}>
       <Stack mt={1} mb={1}>
         <Typography variant="h5" fontWeight={"800"} textAlign={"center"}>
           Created Events
