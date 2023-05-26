@@ -17,6 +17,7 @@ import { CircularProgress } from "@mui/material";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import axios from "axios";
 import { DataContext } from "../../AppContext";
+import ExtensionIcon from '@mui/icons-material/Extension';
 
 const AdminDashboard = () => {
    //👇  state for open small screen left drawer  👇
@@ -145,6 +146,7 @@ const AdminDashboard = () => {
                   linkText={"Events"}
                 />{" "} */}
                         <SingleMenuNavLink icon={<CollectionsIcon />} to={"/admin/template-list"} linkText={"Template List"} />
+                        <SingleMenuNavLink icon={<ExtensionIcon />} to={"/admin/manage-stickers"} linkText={"Manage Stickers"} />
                         <SingleMenuNavLink icon={<AddPhotoAlternateIcon />} to={"/admin/template-create"} linkText={"Add Template"} />
                         <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/user-list"} linkText={"Users"} />
                         <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/admin_list"} linkText={"Sub-Admins"} />
@@ -377,14 +379,15 @@ const AdminDashboard = () => {
                     to={"/admin/template-list"}
                     linkText={"Events"}
                   /> */}
-                           <SingleMenuNavLink icon={<CollectionsIcon />} to={"/admin/template-list"} linkText={"Template List"} />
-                           <SingleMenuNavLink icon={<AddPhotoAlternateIcon />} to={"/admin/template-create"} linkText={"Add Template"} />
-                           <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/user-list"} linkText={"Users"} />
-                           <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/admin_list"} linkText={"Sub-Admins"} />
-                           <SingleMenuNavLink icon={<SubscriptionsIcon />} to={"/admin/pricing"} linkText={"Subscriptions"} />
-                           <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/payment-details"} linkText={"Payments Details"} />
-                           <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} />
-                           <SingleMenuNavLink icon={<MdLogout />} clickFunction={logout} linkText={"Log out"} />
+                           <SingleMenuNavLink icon={<CollectionsIcon />} to={"/admin/template-list"} linkText={"Template List"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<ExtensionIcon  />} to={"/admin/manage-stickers"} linkText={"Manage Stickers"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<AddPhotoAlternateIcon />} to={"/admin/template-create"} linkText={"Add Template"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/user-list"} linkText={"Users"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/admin_list"} linkText={"Sub-Admins"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<SubscriptionsIcon />} to={"/admin/pricing"} linkText={"Subscriptions"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/payment-details"} linkText={"Payments Details"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<MdLogout />} clickFunction={logout} linkText={"Log out"} handleDrawerToggle={handleDrawerToggle} />
                         </List>
                      </Box>
                      {/* 👆 Left nav menu container  👆   */}

@@ -35,8 +35,10 @@ const AdminTemplateListScreen = () => {
    const deleteHandler = async (templateId) => {
       try {
          if (window.confirm("Are you sure you want to delete this template?")) {
-            const res = await axios.delete(`/admin/template/${templateId}`);
+            const res = await axios.delete(`/template/${templateId}`);
             console.log("deleted");
+             getTemplateData();
+
          }
       } catch (error) {
          console.log(error);

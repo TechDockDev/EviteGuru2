@@ -39,7 +39,8 @@ const LogInModal = (props) => {
 
       }
     } catch (error) {
-      console.log(error);
+      snackbar("error", error.message);
+      
     }
   };
   useEffect(() => {}, []);
@@ -59,6 +60,7 @@ const LogInModal = (props) => {
         }}
       >
         <Stack bgcolor={"transparent"} mt={6}>
+          
           {/* 👇container for heading text and logo img's container👇  */}
           <Box bgcolor={"transparent"}>
             {/* 👇container for logo img👇  */}
