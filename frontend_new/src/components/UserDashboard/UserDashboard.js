@@ -412,7 +412,7 @@ const UserDashboard = () => {
             <Button disableElevation variant="contained" sx={{ color: "#fff" }}>
               Next
             </Button> */}
-            {console.log("=>", userDetail)}
+            {/* {console.log("=>", userDetail)} */}
             <Avatar
               sx={{ bgcolor: "rgba(121, 93, 168, 1)" }}
               {...stringAvatar(`${userDetail?.name}`)}

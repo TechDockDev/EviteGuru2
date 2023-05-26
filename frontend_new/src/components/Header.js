@@ -58,6 +58,7 @@ const Header = () => {
   // );
   // const { googlefacebookInfo } = usergooglefacebookLogin;
   // console.log("google login:->", googlefacebookInfo);
+  // ====== logout handler =======
 
   const logoutHandler = async () => {
     try {
@@ -71,6 +72,7 @@ const Header = () => {
       console.log("error=>", error);
     }
   };
+  // ===== endof logout handler===
 
   return (
     <>

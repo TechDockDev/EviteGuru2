@@ -57,20 +57,6 @@ const LogInModal = ({
 
   const { userDetail } = useSelector((state) => state);
 
-  // const usergooglefacebookLogin = useSelector(
-  //   (state) => state.usergooglefacebookLogin
-  // );
-  // const { googlefacebookInfo } = usergooglefacebookLogin;
-
-  // useEffect(() => {
-  //   if (googlefacebookInfo) {
-  //     // navigate(redirect);
-
-  //   }else if (userInfo){
-  //     // navigate(redirect)
-  //   }
-  // }, [googlefacebookInfo,userInfo,navigate, redirect]);
-
   const submitHandler = async (e) => {
     e.preventDefault();
     console.log("cred->", userValues);
@@ -291,7 +277,6 @@ const LogInModal = ({
                         onMouseDown={handleMouseDownPassword}
                         edge="end"
                       >
-                        {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
                         {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
@@ -321,6 +306,21 @@ const LogInModal = ({
                 Login
               </Button>
               {/*👆 LogIn button👆 */}
+              <Typography
+                mt={1}
+                variant="body2"
+                fontWeight={"900"}
+                sx={{
+                  color: "white",
+                  cursor: "pointer",
+                  textShadow: "3px 3px 13px #000000",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Forget Password
+              </Typography>
             </Box>
             {/*👆 Form Container👆 */}
             <Typography
@@ -329,7 +329,7 @@ const LogInModal = ({
               fontSize="14px"
               bgcolor="transparent"
               color="white"
-              sx={{ margin: "20px auto" }}
+              sx={{ margin: "20px auto", textShadow: "3px 3px 13px #000000" }}
             >
               or continue with
             </Typography>
@@ -386,7 +386,7 @@ const LogInModal = ({
               bgcolor="transparent"
               fontSize="14px"
               color="white"
-              sx={{ margin: "20px auto" }}
+              sx={{ margin: "20px auto", textShadow: "3px 3px 13px #000000" }}
             >
               Don’t have an account yet?{" "}
               <Button
@@ -404,6 +404,7 @@ const LogInModal = ({
                   fontWeight: "600",
                   textTransform: "capitalize",
                   padding: "0",
+                  textShadow: "3px 3px 13px #000000",
                   "&:hover": {
                     textDecoration: "underline",
                   },

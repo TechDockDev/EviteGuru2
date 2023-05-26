@@ -1,22 +1,11 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  Typography,
-} from "@mui/material";
-import React from "react";
+import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
 import RSVPSummaryCard from "./RSVPSummaryCard";
 import {
   DataGrid,
   GridToolbar,
   GridToolbarQuickFilter,
 } from "@mui/x-data-grid";
-import PieChart2 from "./PieChart2";
 import { useEffect } from "react";
 import {
   resetEventDetails,
@@ -24,14 +13,18 @@ import {
   setPageTitle,
 } from "../../redux/action/defaultActions";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
-
+import { NavLink, useLocation } from "react-router-dom";
+import axios from "axios";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import Moment from "react-moment";
 //=============================
 const EventStats = () => {
   const { state } = useLocation();
-  const pageTitle = useSelector((state) => state.pageTitle);
-  // console.log("pageTitle",pageTitle)
+  const { pageTitle } = useSelector((state) => state);
   const dispatch = useDispatch();
+  const navigate = useDispatch();
+  const [guestList, setGuestList] = useState([]);
+  console.log("state=>", state);
   function CustomeToolBar() {
     return (
       <Grid container>
@@ -74,8 +67,6 @@ const EventStats = () => {
       field: "name",
       headerName: "Name",
       width: 200,
-      valueGetter: (params) =>
-        `${params.row.firstName || ""} ${params.row.lastName || ""}`,
     },
     {
       field: "email",
@@ -83,28 +74,55 @@ const EventStats = () => {
       width: 200,
     },
     {
-      field: "phoneNumber",
+      field: "phone",
       headerName: "Phone Number",
       type: "number",
       width: 150,
-      valueGetter: (params) =>
-        `${params.value || ""} ${params.value || ""}`,
     },
     {
-      field: "date",
-      headerName: "Date",
-      width: 120,
+      field: "membersAllowed",
+      headerName: "Members Allowed",
+      width: 100,
     },
     {
       field: "status",
       headerName: "Status",
       width: 120,
+      renderCell: (params) => {
+        // console.log("params=>", params);
+        return (
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            alignContent={"center"}
+            spacing={1}
+          >
+            <FiberManualRecordIcon
+              fontSize="8px"
+              color={
+                params.value === true
+                  ? "success"
+                  : params.value === false
+                  ? "disabled"
+                  : "error"
+              }
+            />
+
+            <Typography variant="body2" fontSize={"16px"} component={"span"}>
+              sent
+            </Typography>
+          </Stack>
+        );
+      },
     },
-    // {
-    //    field: "attending",
-    //    headerName: "Attending",
-    //    width: 100,
-    // },
+    {
+      field: "attending",
+      headerName: "Attending",
+      width: 100,
+      renderCell: (params) => {
+        return `${params?.value ? "Attending" : "Not Attending"}`;
+      },
+    },
     // {
     //    field: "notAttending",
     //    headerName: "Not Attending",
@@ -117,85 +135,25 @@ const EventStats = () => {
     // },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      email: "xyz@gmail.com",
-      firstName: "Jon",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 2,
-      email: "qwerty@gmail.com",
-      firstName: "Cersei",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "attending",
-    },
-    {
-      id: 3,
-      email: "pokl@gmail.com",
-      firstName: "Jaime",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 4,
-      email: "lmp@gmail.com",
-      firstName: "Arya",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 5,
-      email: "xyz@gmail.com",
-      firstName: "Daenerys",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "not attending",
-    },
-    {
-      id: 6,
-      email: "xyz@gmail.com",
-      firstName: "Name Kuch Bhi",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 7,
-      email: "xyz@gmail.com",
-      firstName: "Ferrara",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "attending",
-    },
-    {
-      id: 8,
-      email: "xyz@gmail.com",
-      firstName: "Rossini",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-    {
-      id: 9,
-      email: "xyz@gmail.com",
-      firstName: "Harvey",
-      phoneNumber: 9963258741,
-      date: "03-05-2023",
-      status: "pending",
-    },
-  ];
+  // ===get event guestList =====
+  const getGuestList = async (eventId) => {
+    try {
+      const res = await axios.get(`/api/v1/user/guest/event/${eventId}`);
+      if (res.status === 200) {
+        console.log("response=>", res);
+        setGuestList(res?.data?.guestList?.guests);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
+  // ===end of guest list =======
   // ============================
   useEffect(() => {
     if (state) {
       dispatch(setEventDetails(state));
       dispatch(setPageTitle(state?.event?.name));
+      getGuestList(state?.event?._id);
     }
     return () => {
       dispatch(resetEventDetails({}));
@@ -248,7 +206,7 @@ const EventStats = () => {
             alt="template design"
             width={"100%"}
             maxHeight={"290px"}
-            src="https://marketplace.canva.com/EAE-xvRBZdQ/1/0/1600w/canva-beige-blue-wedding-invitation-square-floral-watercolor-arrangement-bFL2AFVrwpY.jpg"
+            src={`/images/getImage?path=/${state?.event?.variation?.previewImage}`}
           />
         </Grid>
         {/* ============ 👇 RSVP  summary card👇  ============= */}
@@ -273,6 +231,15 @@ const EventStats = () => {
       </Grid>
       {/* ============  👆container for RSVP  summary and pie chart👆============= */}
       {/* title */}
+      <Stack component={Paper} border={"1px solid"}>
+        <Typography>
+          event Date :{" "}
+          <Moment
+            date={state?.event?.date}
+            format="hh:mm A, dddd, MMMM DD, YYYY"
+          />
+        </Typography>
+      </Stack>
       <Stack
         mt={1}
         direction={"row"}
@@ -283,10 +250,17 @@ const EventStats = () => {
           <Typography variant="h1" sx={{ fontSize: "25px", fontWeight: "800" }}>
             Invitees
           </Typography>
+
           <Typography>{pageTitle?.title}</Typography>
         </Box>
         <Box>
-          <Button variant="contained" sx={{ color: "white" }}>
+          <Button
+            component={NavLink}
+            variant="contained"
+            sx={{ color: "white" }}
+            to={`/dashboard/${state?.event?._id}/send`}
+            // onClick={() => navigate("/dashboard/:id/send")}
+          >
             + SEND MORE
           </Button>
         </Box>
@@ -297,7 +271,7 @@ const EventStats = () => {
         <DataGrid
           components={{ Toolbar: CustomeToolBar }}
           //   slots={{ toolbar: QuickSearchToolbar }}
-          rows={rows}
+          rows={guestList ? guestList : []}
           columns={columns}
           initialState={{
             pagination: {
@@ -306,6 +280,7 @@ const EventStats = () => {
               },
             },
           }}
+          getRowId={(row) => row?._id}
           autoHeight={true}
           pageSizeOptions={[5]}
           checkboxSelection

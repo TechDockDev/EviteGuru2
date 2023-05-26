@@ -34,7 +34,7 @@ const AddGuests = (props) => {
   const SubmitHamdler = async (e) => {
     e.preventDefault();
     try {
-      console.log("console is coming=>")
+      console.log("console is coming=>");
       const res = await axios.patch("/api/v1/user/guest/add-guest", {
         name: `${guests[0].first_name} ${guests[0].last_name}`,
         membersAllowed: guests[0].membersAllowed,
@@ -44,7 +44,7 @@ const AddGuests = (props) => {
       });
       if (res.status === 200) {
         console.log("response=>", res);
-        await props?.getGuestListDetails();
+        await props?.getGuestListDetails(createdEventDetails?.guestListId);
         props.toggleAddUserModal();
       }
     } catch (error) {
@@ -55,7 +55,6 @@ const AddGuests = (props) => {
   const addMoreContact = () => {
     setGuests([...guests, {}]);
   };
-  
 
   // =======end of useEffect ====
 

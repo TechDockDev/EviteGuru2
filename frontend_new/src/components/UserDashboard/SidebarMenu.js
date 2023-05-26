@@ -4,6 +4,7 @@ import {
   List,
   ListItem,
   ListItemAvatar,
+  ListItemButton,
   ListItemText,
   Tooltip,
 } from "@mui/material";
@@ -17,11 +18,16 @@ import { MdLogout } from "react-icons/md";
 import { useState } from "react";
 import ArchitectureIcon from "@mui/icons-material/Architecture";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/action/userActions";
+import axios from "axios";
+import { NavLink, useNavigate } from "react-router-dom";
 const SidebarMenu = (props) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { tempTemplate, viewEventDetails, createdEventDetails, pageTitle } =
     useSelector((state) => state);
-  console.log("eventDetails=>", createdEventDetails);
+
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
 
@@ -30,17 +36,35 @@ const SidebarMenu = (props) => {
   const handleDrawerToggle = () => {
     setOpenLeftDrawer(!openLeftDrawer);
   };
+  // ===logout handler =========
+  const logoutHandler = async () => {
+    try {
+      const res = await axios.post("/api/v1/user/logout");
+      if (res.status === 200) {
+        console.log("response=>", res);
+        // props?.handleDrawerToggle();
+        dispatch(logout());
+        navigate("/");
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
+  // ===endof logout handler====
   return (
     <List
       component={"nav"}
       sx={{
         // border:"1px solid blue",
+        fontSize: "8px",
         height: "100%",
+
         "& .active": {
           color: "#000",
           borderLeft: "10px solid #795DA8",
           bgcolor: "#CDB5EA",
           borderRadius: "4px 0px 0px 4px",
+          boxShadow: "#443e3e78 0px 7px 12px 0px",
         },
       }}
     >
@@ -107,6 +131,7 @@ const SidebarMenu = (props) => {
             borderLeft: "10px solid #795DA8",
             bgcolor: "#CDB5EA",
             borderRadius: "4px 0px 0px 4px",
+            boxShadow: "#443e3e78 0px 7px 12px 0px",
           }}
         >
           <ListItemAvatar>
@@ -114,35 +139,37 @@ const SidebarMenu = (props) => {
               <VisibilityIcon />
             </Avatar>
           </ListItemAvatar>
-
-          <ListItemText
-            primary={`${viewEventDetails?.event?.name}`}
-            sx={{ fontWeight: "800" }}
-            primaryTypographyProps={{
-              sx: {
-                bgcolor: "transparent",
-                fontWeight: "bold",
-                fontSize: "16px",
+          <Tooltip
+            title={
+              viewEventDetails?.event?.name
+                ? `${viewEventDetails?.event?.name}`
+                : ""
+            }
+            arrow={true}
+            enterDelay={100}
+            sx={{
+              "& .MuiTooltip-tooltip": {
+                color: "red",
               },
             }}
-          />
+          >
+            <ListItemText
+              primary={`${viewEventDetails?.event?.name.substring(0, 12)}...`}
+              sx={{ fontWeight: "800" }}
+              primaryTypographyProps={{
+                sx: {
+                  bgcolor: "transparent",
+                  fontWeight: "bold",
+                  fontSize: "16px",
+                },
+              }}
+            />
+          </Tooltip>
         </ListItem>
       ) : (
         ""
       )}
 
-      {/* <SingleMenuNavLink
-        handleDrawerToggle={props?.handleDrawerToggle}
-        icon={<GrDocumentText />}
-        to={"/dashboard/invitees"}
-        linkText={"Invitees"}
-      /> */}
-      {/* <SingleMenuNavLink
-        handleDrawerToggle={props?.handleDrawerToggle}
-        icon={<GoMailRead />}
-        to={"/dashboard/mailing-responses"}
-        linkText={"Mailing Response"}
-      /> */}
       {createdEventDetails?.name ? (
         <ListItem
           sx={{
@@ -150,6 +177,7 @@ const SidebarMenu = (props) => {
             borderLeft: "10px solid #795DA8",
             bgcolor: "#CDB5EA",
             borderRadius: "4px 0px 0px 4px",
+            boxShadow: "#443e3e78 0px 7px 12px 0px",
           }}
         >
           <ListItemAvatar>
@@ -192,12 +220,70 @@ const SidebarMenu = (props) => {
         to={"/dashboard/account-setting"}
         linkText={"Account Settings"}
       />
-      <SingleMenuNavLink
-        handleDrawerToggle={props?.handleDrawerToggle}
-        icon={<MdLogout />}
-        to={"/"}
-        linkText={"Log out"}
-      />
+      <ListItem
+        onClick={logoutHandler}
+        sx={{
+          color: "black",
+          fontSize: "18px",
+          // border: "1px solid red",
+          display: "block",
+          margin: "12px 0px",
+          padding: "5px 0px 5px 20px",
+          bgcolor: "transparent",
+          transition: "all 0.1s ease",
+
+          "&:hover": {
+            color: "#000",
+            borderLeft: "10px solid #795DA8",
+            bgcolor: "#CDB5EA",
+            borderRadius: "4px 0px 0px 4px",
+            boxShadow: "#443e3e78 0px 7px 12px 0px",
+          },
+          "& .active": {
+            color: "#000",
+            borderLeft: "10px solid #795DA8",
+            bgcolor: "#CDB5EA",
+            borderRadius: "4px 0px 0px 4px",
+          },
+        }}
+      >
+        <ListItemButton
+          sx={{
+            // border: "1px solid purple",
+            cursor: "pointer",
+            padding: "0px",
+            fontWeight: "400",
+            fontSize: "26px",
+
+            "&:hover": {
+              bgcolor: "transparent",
+            },
+            "&:active": {
+              transform: "scale(0.95)",
+            },
+            "& svg": {
+              bgcolor: "transparent",
+            },
+          }}
+        >
+          <MdLogout />
+
+          <ListItemText
+            primary={"Log out"}
+            sx={{
+              marginLeft: "12px",
+              bgcolor: "transparent",
+            }}
+            primaryTypographyProps={{
+              sx: {
+                bgcolor: "transparent",
+                fontWeight: "bold",
+                fontSize: "18px",
+              },
+            }}
+          />
+        </ListItemButton>
+      </ListItem>
     </List>
   );
 };
