@@ -203,15 +203,6 @@ const Header = () => {
                   //   border: "1px solid green",
                 }}
               >
-                {/* <Box
-                  sx={{
-                    width: "90px",
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                ></Box> */}
-
                 {!userDetail.isUser ? (
                   <Stack spacing={1} direction={"row"}>
                     <Button
@@ -305,6 +296,13 @@ const Header = () => {
                         }}
                       >
                         {userDetail?.email}
+                      </MenuItem>
+                      <MenuItem
+                        component={NavLink}
+                        to="/dashboard/my-events/"
+                        onClick={() => handleClose}
+                      >
+                        My Events
                       </MenuItem>
                       <MenuItem
                         component={NavLink}

@@ -1,4 +1,18 @@
-import { Box, Button, FormControl, Grid, IconButton, InputAdornment, InputLabel, MenuItem, OutlinedInput, Select, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  Stack,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -9,12 +23,34 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import TemplatePreview from "../TemplatePreview/TemplatePreview";
 const MyEvents = () => {
   const dispatch = useDispatch();
+  // to work with template preview modal =====
+  const [openTemplatePreviewModal, seTopenTemplatePreviewModal] =
+    useState(false);
+  const [singleTemplateId, setSingleTemplateId] = useState("");
+  // ============================================
   const [page, setPage] = React.useState(10);
   const [allEvents, setAllEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  // toggler for template selection modal ====
+  const toggleTemplatePreviewModal = (e, templateId) => {
+    if (!openTemplatePreviewModal) {
+      setSingleTemplateId(templateId);
+      seTopenTemplatePreviewModal(!openTemplatePreviewModal);
+    } else {
+      setSingleTemplateId("");
+      seTopenTemplatePreviewModal(!openTemplatePreviewModal);
+    }
+  };
+  //  this function is passed to carousel to handle onclick👇
+  const carouselClick = (e, id) => {
+    setSingleTemplateId(id);
+  };
+  //  this function is passed to carousel to handle onclic👆
+  // =========================================
   const handleChange = (event) => {
     setPage(event.target.value);
   };
@@ -28,6 +64,7 @@ const MyEvents = () => {
       if (res.status === 200) {
         console.log("response=>", res);
         setAllEvents(res?.data?.events);
+        setLoading(false);
       }
     } catch (error) {
       console.log("error=>", error);
@@ -128,13 +165,13 @@ const MyEvents = () => {
           <Button
             variant="outlined"
             size="small"
-            startIcon={<GrDocumentText />}
+            startIcon={<GrDocumentText style={{ fontSize: "15px" }} />}
             endIcon={"10"}
             sx={{
               color: "rgba(119, 119, 119, 1)",
               "& .css-jcxoq4-MuiButton-endIcon": {
                 color: "rgba(121, 93, 168, 1)",
-                fontSize: "15px",
+                // fontSize: "15px",
                 fontWeight: "800",
               },
               cursor: "text",
@@ -148,13 +185,38 @@ const MyEvents = () => {
             size="small"
             startIcon={<AddIcon />}
             sx={{ color: "white" }}
+            onClick={toggleTemplatePreviewModal}
           >
-            Add New
+            Create New
           </Button>
         </Box>
       </Stack>
       <Stack maxHeight={"550px"} overflow={"auto"} mt={1}>
         <Grid container display={"flex"} justifyContent={"space-around"}>
+          {loading ? (
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "20px",
+              }}
+            >
+              <CircularProgress
+                color="primary"
+                sx={{
+                  bgcolor: "transparent !important",
+                  "& svg": {
+                    bgcolor: "transparent !important",
+                  },
+                }}
+              />{" "}
+            </Grid>
+          ) : (
+            ""
+          )}
           {allEvents &&
             allEvents?.map((event, index) => {
               return (
@@ -261,6 +323,13 @@ const MyEvents = () => {
             })}
         </Grid>
       </Stack>
+      <TemplatePreview
+        carouselClick={carouselClick}
+        toggleTemplatePreviewModal={toggleTemplatePreviewModal}
+        singleTemplateId={singleTemplateId}
+        // data={templateData}
+        openTemplatePreviewModal={openTemplatePreviewModal}
+      />
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, CircularProgress, Grid, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import PricingCard from "./PricingCard";
 import Faqs from "./Faqs";
@@ -6,6 +6,7 @@ import axios from "axios";
 
 function Pricing() {
   const [allPlans, setallPlans] = useState();
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [browsePlanDetails, setBrowsePlanDetails] = useState(null);
   const handleShow = () => setOpen(!open);
@@ -43,6 +44,7 @@ function Pricing() {
       if (res.status === 200) {
         console.log("res=>", res?.data?.plans);
         setallPlans(res?.data?.plans);
+        setLoading(false);
       }
     } catch (error) {}
   };
@@ -76,15 +78,31 @@ function Pricing() {
         </Typography>
       </Stack>
       <Stack mt={4}>
-        <Grid
-          container
-         
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          sx={{
-            
-          }}
-        >
+        <Grid container justifyContent={"center"} alignItems={"center"} sx={{}}>
+          {loading ? (
+            <Grid
+              item
+              xs={12}
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "20px",
+              }}
+            >
+              <CircularProgress
+                color="primary"
+                sx={{
+                  bgcolor: "transparent !important",
+                  "& svg": {
+                    bgcolor: "transparent !important",
+                  },
+                }}
+              />{" "}
+            </Grid>
+          ) : (
+            ""
+          )}
           {allPlans &&
             allPlans.map((plan, index) => {
               return (

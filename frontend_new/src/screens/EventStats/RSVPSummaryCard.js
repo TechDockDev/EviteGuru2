@@ -14,25 +14,34 @@ import PieChart2 from "./PieChart2";
 
 const RSVPSummaryCard = () => {
   return (
-    <Paper
+    <Box
       sx={{
         width: { md: "100%", xs: "100%" },
         bgcolor: "rgba(250, 250, 250, 1)",
+        // bgcolor: "transparent",
         padding: "20px",
-        // border: "2px solid red",
+        border: "2px solid rgba(121, 93, 168, 1)",
+        borderRadius: "15px",
         boxSizing: "border-box",
       }}
-      elevation={10}
+      // elevation={10}
     >
-      <Typography variant="h1" sx={{ fontSize: "18px", fontWeight: "700" }}>
+      <Typography
+        variant="h1"
+        sx={{
+          fontSize: "18px",
+          fontWeight: "700",
+          mb: 1,
+        }}
+      >
         RSVP Summary
       </Typography>
       <Stack
-        direction={"row"}
+        direction={{ md: "row", lg: "row", sm: "row", xs: "column" }}
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Stack>
+        <Stack width={"100%"}>
           <Box
             sx={{
               display: "flex",
@@ -58,7 +67,7 @@ const RSVPSummaryCard = () => {
               justifyContent: "space-between",
               width: "100%",
               mt: 2,
-              color: "red",
+              color: "#FE3169",
             }}
           >
             <Typography sx={{ fontSize: "16px", fontWeight: "800" }}>
@@ -74,7 +83,7 @@ const RSVPSummaryCard = () => {
               justifyContent: "space-between",
               width: "100%",
               mt: 2,
-              color: "blue",
+              color: "rgba(121, 93, 168, 1)",
             }}
           >
             <Typography sx={{ fontSize: "16px", fontWeight: "800" }}>
@@ -88,7 +97,7 @@ const RSVPSummaryCard = () => {
 
         <PieChart2 />
       </Stack>
-    </Paper>
+    </Box>
   );
 };
 

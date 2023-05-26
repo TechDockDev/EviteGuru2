@@ -1,14 +1,22 @@
-import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
-import { ATemplateList } from "../../oldredux/action/userAction";
 import { setTemplateList } from "../../redux/action/userActions";
 
 const TemplateSection = () => {
   // const [templateData, setTemplateData] = useState();
+  const [loadingTemplate, setLoadingTemplate] = useState(true);
   const [openTemplatePreviewModal, seTopenTemplatePreviewModal] =
     useState(false);
   const [singleTemplateId, setSingleTemplateId] = useState("");
@@ -23,9 +31,10 @@ const TemplateSection = () => {
   // get templatesList
   const getAllTemplates = async () => {
     try {
-      const res = await axios.get("/api/v1/user/template/all");
+      const res = await axios.get("/api/v1/user/template/all?page=1&limit=6");
       console.log("res", res);
       dispatch(setTemplateList(res?.data?.template));
+      setLoadingTemplate(false);
     } catch (error) {
       console.log("error=>", error);
     }
@@ -97,9 +106,33 @@ const TemplateSection = () => {
           padding: "20px 10px",
           // border: "1px solid #795DA8",
           borderRadius: "20px",
-          backgroundColor:"transparent"
+          backgroundColor: "transparent",
         }}
       >
+        {loadingTemplate ? (
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "20px",
+            }}
+          >
+            <CircularProgress
+              color="primary"
+              sx={{
+                bgcolor: "transparent !important",
+                "& svg": {
+                  bgcolor: "transparent !important",
+                },
+              }}
+            />{" "}
+          </Grid>
+        ) : (
+          ""
+        )}
         {templateList?.map((singleTemplate, index) => {
           // console.log("templates...", singleTemplate);
           return (
