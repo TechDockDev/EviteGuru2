@@ -17,6 +17,8 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { register } from "../../oldredux/action/userAction";
+import axios from "axios";
+import { login } from "../../redux/action/userActions";
 // '../redux/action/userAction';
 const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
   // const [formData, setFormData] = useState({ username:"",email: "", password: "" });
@@ -34,29 +36,45 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
 
   const dispatch = useDispatch();
   // const navigate = useNavigate();
+  const tempvalues = {
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  };
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [values, setValues] = useState(tempvalues);
 
   const { userDetail } = useSelector((state) => state);
 
-  // useEffect(() => {
-  //   if(userInfo){
-  //       navigate(redirect)
-  //   }
-  // }, [navigate, userInfo, redirect]);
-
-  const submitHandler = (e) => {
-    console.log("Values:->", name, email, phone, password);
+  // ====handleChange ========
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+  // ====end of handleChange==
+  const submitHandler = async (e) => {
+    const { name, email, phone, password, confirmPassword } = values;
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("password do not match");
-    } else {
-      dispatch(register(name, email, phone, password));
-      toggleRegisterModal();
+    try {
+      if (password !== confirmPassword) {
+        alert("password do not match");
+      } else {
+        // dispatch(register(name, email, phone, password));
+        const res = await axios.post("/api/v1/user/register", {
+          name,
+          email,
+          phone,
+          password,
+        });
+        if (res.status === 200) {
+          console.log("res=>", res);
+          dispatch(login(res?.data?.user));
+          toggleRegisterModal();
+        }
+      }
+    } catch (error) {
+      console.log("error=>", error);
     }
   };
 
@@ -120,7 +138,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
               >
                 <Box
                   component={"img"}
-                  src="./assets/EviteGuruLogo.svg"
+                  src="./assets/EviteGuruLogoWhite.svg"
                   width="100%"
                   height="100%"
                   bgcolor="transparent"
@@ -166,9 +184,9 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                 </InputLabel>
                 <InputBase
                   type="text"
-                  name="username"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  name="name"
+                  value={values?.name || ""}
+                  onChange={handleChange}
                   sx={{
                     padding: "2px 10px",
                     borderRadius: "5px",
@@ -176,7 +194,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                     bgcolor: "white",
                   }}
                   placeholder={"Your full name"}
-                  id="username"
+                  id="name"
                 />
               </FormControl>
               {/*👆 Full Name👆 */}
@@ -200,8 +218,8 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                 <InputBase
                   type="email"
                   name="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={values?.email || ""}
+                  onChange={handleChange}
                   sx={{
                     padding: "2px 10px",
                     borderRadius: "5px",
@@ -233,8 +251,8 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                 <InputBase
                   type="number"
                   name="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  value={values?.phone || ""}
+                  onChange={handleChange}
                   sx={{
                     padding: "2px 10px",
                     borderRadius: "5px",
@@ -267,8 +285,8 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                 <InputBase
                   type={showPassword ? "text" : "password"}
                   name="password"
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
+                  onChange={handleChange}
+                  value={values?.password || ""}
                   id="password"
                   sx={{
                     padding: "2px 10px",
@@ -315,8 +333,8 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                 <InputBase
                   type={showPassword ? "text" : "password"}
                   name="confirmPassword"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  value={confirmPassword}
+                  onChange={handleChange}
+                  value={values?.confirmPassword || ""}
                   id="confirmPassword"
                   sx={{
                     padding: "2px 10px",
@@ -335,7 +353,6 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                         edge="end"
                       >
                         {showPassword ? <Visibility /> : <VisibilityOff />}
-                        {/* {showPassword ? <VisibilityOff /> : <Visibility />} */}
                       </IconButton>
                     </InputAdornment>
                   }

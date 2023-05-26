@@ -70,7 +70,7 @@ const VerifyEmailAddresss = ({ toggleLogInModal }) => {
           variant="h1"
           mb={2}
         >
-          Forgot Password
+          Reset Password
         </Typography>
       </Box>
       {/*👆 container for heading text and logo img's container👆  */}

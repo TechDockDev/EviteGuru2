@@ -10,6 +10,8 @@ import {
   sendImage,
   editTemplate,
   addSticker,
+  getStickers,
+  deleteSticker,
 } from "../../controllers/templateController.js";
 
 // const upload = multer({ dest: "uploads/" });
@@ -43,6 +45,8 @@ templateRouter.post("/saveImage", upload.array("image"), saveImage);
 templateRouter.post("/previewImage", upload.single("previewImage"), saveImage);
 templateRouter.get("/sendImage/:imgName", sendImage);
 templateRouter.post("/create", preview.single("previewImage"), createTemplate);
+templateRouter.get("/stickers", getStickers);
+templateRouter.get("/sticker/:stickerId", deleteSticker);
 templateRouter.post("/addSticker", upload.single("sticker"), addSticker);
 templateRouter
   .route("/:id")

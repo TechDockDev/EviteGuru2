@@ -24,10 +24,6 @@ const eventSchema = mongoose.Schema({
   additionalInfo: {
     type: String,
   },
-  guest: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "guestDetails",
-  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

@@ -1,38 +1,37 @@
 import mongoose from "mongoose";
 
-const singleGuestSchema = mongoose.Schema({
-  name: { type: String, required: true },
-  phone: { type: Number, required: true, unique: true },
-  email: { type: String, required: true, unique: true },
-  adult: {
-    type: Number,
+const singleGuestSchema = mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    phone: { type: Number, required: true, unique: true, sparse: true },
+    email: { type: String, required: true, unique: true, sparse: true },
+    adult: {
+      type: Number,
+    },
+    child: {
+      type: Number,
+    },
+    membersAllowed: {
+      type: Number,
+    },
+    status: {
+      type: String,
+      enums: ["Not Invited", "Pending", "Open", "Not Attending", "Attending"],
+    },
   },
-  child: {
-    type: Number,
-  },
-  membersAllowed: {
-    type: Number,
-  },
-  attending: {
-    type: Boolean,
-    default: false,
-  },
-  status: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { autoIndex: false }
+);
 
 const guestSchema = mongoose.Schema({
   guests: [singleGuestSchema],
   event: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "event",
+    unique: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    unique: true,
   },
 });
 

@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import EventDetails from "../models/eventModel.js";
+import Guest from "../models/guestModel.js";
 
 const createEvent = asyncHandler(async (req, res) => {
   let { name, hostName, date, venue, address, additionalInfo, variationId } =
@@ -28,15 +29,56 @@ const getAllEvents = asyncHandler(async (req, res) => {
 
 const getEventById = asyncHandler(async (req, res) => {
   const event = await EventDetails.findById(req.params.id);
+  const guestList = await Guest.findOne({ event: event.id });
   res.json({
     status: "success",
     message: "Event has been fetched",
     event,
+    guestList: guestList.guests,
   });
 });
 
 const getEventsByUser = asyncHandler(async (req, res) => {
-  const events = await EventDetails.find({ user: req.user.id });
+  const events = await EventDetails.find({ user: req.user.id }).populate(
+    "variation"
+  );
+  res.json({
+    status: "success",
+    message: "Event has been fetched",
+    events,
+  });
+});
+
+const getStatusStats = asyncHandler(async (req, res) => {
+  Guest.findOne(
+    {
+      event: req.params.eventId,
+    },
+    function (err, data) {
+      data.guests.filter((guest) => guest.status === "open").length;
+      res.json({
+        status: "success",
+        message: "Event Stats have been fetched successfully",
+        stats: {
+          "Not Invited": data.guests.filter(
+            (guest) => guest.status === "Not Invited"
+          ).length,
+          open: data.guests.filter((guest) => guest.status === "open").length,
+          pending: data.guests.filter((guest) => guest.status === "Pending")
+            .length,
+          "Not Attending": data.guests.filter(
+            (guest) => guest.status === "Not Attending"
+          ).length,
+          Attending: data.guests.filter((guest) => guest.status === "Attending")
+            .length,
+        },
+      });
+    }
+  );
+});
+
+const getEventsByUserAdmin = asyncHandler(async (req, res) => {
+  const events = await EventDetails.find({ user: req.params.userId });
   res.json({
     status: "success",
     message: "Event has been fetched",
@@ -79,4 +121,6 @@ export {
   getAllEvents,
   getEventsByUser,
   getTotalEventsByUser,
+  getEventsByUserAdmin,
+  getStatusStats,
 };

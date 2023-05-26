@@ -53,20 +53,7 @@ const Details = (props) => {
       alert("please save design firts");
     }
     console.log("data=>", eventDetailsData, "=>user", userEventTemplate);
-    // try {
-    //   const form = new FormData();
-    //   form.append("variationJson", userEventTemplate?.jsonData);
-    //   form.append("preview", userEventTemplate?.previewImage);
-    //   form.append("templateId", id);
-    //   const response = await axios.post("/api/v1/user/variation/create", form);
-    //   if (response.status === 200) {
-    //     console.log("response=>", response?.data?.variation?._id);
-    //     await createEvent(response?.data?.variation?._id);
-    //   } else {
-    //   }
-    // } catch (error) {
-    //   console.log("eventId=>", error);
-    // }
+    
   };
 
   return (

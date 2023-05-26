@@ -9,8 +9,11 @@ export const userReducer = (state = initialState, { type, payload }) => {
       return { ...state, ...payload, isAuthenticated: true, isUser: true };
     case ActionTypes.USER_UPDATE:
       return { ...state, ...payload, isAuthenticated: true, isUser: true };
+    case ActionTypes.USER_AUTH:
+      return { ...state, ...payload, isAuthenticated: true, isUser: true };
     case ActionTypes.USER_LOGOUT:
-      return initialState;
+      console.log("console is comming..");
+      return { ...initialState };
     default:
       return state;
   }

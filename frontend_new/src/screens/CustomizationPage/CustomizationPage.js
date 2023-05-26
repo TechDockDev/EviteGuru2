@@ -37,7 +37,7 @@ const CustomizationPage = () => {
   useEffect(() => {
     if (id) {
       // to set the temp name fot the event
-      dispatch(setPageTitle(`temp${id}`));
+      dispatch(setPageTitle(`New Event Name`));
       // will create temp route for new event along with temp data
       dispatch(setTempTemplateData({ id: id }));
     }
@@ -145,7 +145,11 @@ const CustomizationPage = () => {
             icon={<AiOutlineFileSearch />}
             iconPosition="start"
             disabled={
-              userEventTemplate && userEventTemplate?.eventDetails ? false : true
+              !value === 3 &&
+              userEventTemplate &&
+              userEventTemplate?.eventDetails
+                ? false
+                : true
             }
             sx={{
               color: "black",
@@ -166,7 +170,9 @@ const CustomizationPage = () => {
             aria-controls={`send-tabpanel-3`}
             icon={<MailOutlinedIcon />}
             disabled={
-              userEventTemplate && userEventTemplate?.eventDetails ? false : true
+              userEventTemplate && userEventTemplate?.eventDetails
+                ? false
+                : true
             }
             iconPosition="start"
             sx={{
