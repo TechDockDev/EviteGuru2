@@ -87,14 +87,8 @@ const registerAdmin = asyncHandler(async (req, res) => {
 });
 
 const getAdmin = asyncHandler(async (req, res) => {
-  const admin = await Admin.findById(req.admin._id);
-
-  if (admin) {
-    res.json(admin);
-  } else {
-    res.status(404); // Not Found
-    throw new Error("Admin not Found");
-  }
+  const admin = await Admin.findById(req.admin.id);
+  res.json({ status: "success", message: "Admin fetched Successfully", admin });
 });
 
 const getallAdmin = asyncHandler(async (req, res) => {
@@ -102,12 +96,6 @@ const getallAdmin = asyncHandler(async (req, res) => {
   let admins = admin;
   res.json(admins);
 });
-
-/**
- * @desc delete admin by Email
- * @route DELETE /:id
- * @access private/admin
- */
 
 const deleteAdmin = asyncHandler(async (req, res) => {
   const admin = await Admin.findById(req.params.id);
@@ -122,12 +110,6 @@ const deleteAdmin = asyncHandler(async (req, res) => {
     throw new Error(" admin is not found");
   }
 });
-
-/**
- * @desc update admin email
- * @route PUT /admin/:id
- * @access private/admin
- */
 
 const updateAdmin = asyncHandler(async (req, res) => {
   const admin = await Admin.findById(req.params.id);
@@ -147,14 +129,6 @@ const updateAdmin = asyncHandler(async (req, res) => {
     throw new Error("Admin not found");
   }
 });
-
-//Admin controls in users
-
-/**
- * @dec get all user  in admin panel
- * @route GET /users
- * @access private /admin
- */
 
 const getallUsers = asyncHandler(async (req, res) => {
   const users = await User.find({}).populate("subscription", "name");
@@ -183,12 +157,6 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @desc update user by id
- * @route PUT /users-admins/:id
- * @access private/admin
- */
-
 const updateUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
@@ -210,12 +178,6 @@ const updateUser = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @dec get single Template in admin panel
- * @route GET /id
- * @access public admin & users
- */
-
 const singleAdminId = asyncHandler(async (req, res) => {
   const admin = await Admin.findById(req.params.id).select("-password");
   try {
@@ -229,12 +191,6 @@ const singleAdminId = asyncHandler(async (req, res) => {
   }
 });
 
-/**
- * @dec get single Template in admin panel
- * @route GET /id
- * @access public admin & users
- */
-
 const singleTemplateId = asyncHandler(async (req, res) => {
   const template = await Template.findById(req.params.id);
   try {
@@ -247,12 +203,6 @@ const singleTemplateId = asyncHandler(async (req, res) => {
     res.json(err);
   }
 });
-
-/**
- * @desc delete template by id
- * @route DELETE /:id
- * @access private/admin
- */
 
 const admindeleteTemplate = asyncHandler(async (req, res) => {
   const template = await Template.findById(req.params.id);
@@ -268,6 +218,14 @@ const admindeleteTemplate = asyncHandler(async (req, res) => {
   }
 });
 
+// logout
+const logOut = asyncHandler(async (req, res) => {
+  res
+    .status(200)
+    .clearCookie("bearerToken")
+    .json({ message: "Logout successfully", status: "Success" });
+});
+
 export {
   authAdmin,
   deleteAdmin,
@@ -281,4 +239,5 @@ export {
   getallUsers,
   singleTemplateId,
   admindeleteTemplate,
+  logOut,
 };
