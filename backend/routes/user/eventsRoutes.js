@@ -7,14 +7,14 @@ import {
   editEvent,
   getEventById,
   getEventsByUser,
-  getAllEvents,
+  getStatusStats,
 } from "../../controllers/eventController.js";
 
 const eventRouter = express.Router();
 
 // Event route for user
-eventRouter.post("/create", userAuth, createEvent); //add event details by users
-
+eventRouter.post("/create", userAuth, createEvent);
+eventRouter.get("/stats/:eventId", userAuth, getStatusStats);
 eventRouter.get("/user", userAuth, getEventsByUser);
 eventRouter
   .route("/:id")

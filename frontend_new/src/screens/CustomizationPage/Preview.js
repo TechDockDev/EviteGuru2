@@ -3,10 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import Moment from "react-moment";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { setCreatedEventDetail } from "../../redux/action/userActions";
 
 const Preview = (props) => {
+  const navigate = useNavigate();
   const { id } = useParams();
+  const dispatch = useDispatch();
   const { eventDetailsPreviewData, userEventTemplate } = useSelector(
     (state) => state
   );
@@ -42,7 +45,9 @@ const Preview = (props) => {
       });
       if (res.status === 200) {
         console.log("res=>", res);
-        props.tabChange({}, 3);
+        dispatch(setCreatedEventDetail(res?.data?.eventDetails));
+        // props.tabChange({}, 3);
+        navigate(`/dashboard/${res?.data?.eventDetails?._id}/send/`);
       } else {
         console.log("res error=>", res);
       }

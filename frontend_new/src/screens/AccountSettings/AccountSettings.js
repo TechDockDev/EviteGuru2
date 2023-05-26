@@ -84,7 +84,9 @@ const AccountSettings = () => {
       }}
     >
       <Stack mt={1} mb={4} alignItems={"center"}>
-        <Typography variant="h4">Account Info</Typography>
+        <Typography variant="h5" fontWeight={"800"}>
+          Account Info
+        </Typography>
       </Stack>
       <Grid
         mt={4}
@@ -256,7 +258,7 @@ const AccountSettings = () => {
           sx={{ color: "white", py: 1 }}
           onClick={togglePasswordChangeModal}
         >
-          Save Changes
+          Update Password
         </Button>
       </Stack>
       <PasswordChange
