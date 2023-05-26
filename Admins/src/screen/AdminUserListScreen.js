@@ -130,11 +130,11 @@ const UserListScreen = () => {
             getRowId={(row) => row._id}
             columns={columns}
             disableRowSelectionOnClick={true}
-            autoHeight={true}
+            // autoHeight={true}
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 10,
                 },
               },
             }}
@@ -142,10 +142,14 @@ const UserListScreen = () => {
             onRowClick={(row) => navigate(`/admin/user/${row.id}`)}
             pageSizeOptions={[5]}
             sx={{
+              border: "2px solid #795DA8",
               "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-                outline: "none !important",
+                 outline: "none !important",
               },
-            }}
+              "& .MuiDataGrid-columnHeaderTitle":{
+              fontWeight:"600",                                       
+              }
+           }}
           />
         )}
       </Box>

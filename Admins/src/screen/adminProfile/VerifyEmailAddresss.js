@@ -22,6 +22,7 @@ const VerifyEmailAddresss = ({ toggleLogInModal }) => {
   const resetPassword = (e) => {
     e.preventDefault();
     setModalContent("updatePassword");
+    
   };
   return (
     <Stack bgcolor={"transparent"} mt={6}>
@@ -104,6 +105,7 @@ const VerifyEmailAddresss = ({ toggleLogInModal }) => {
               value={formData.email}
               onChange={onChangeHandler}
               sx={{
+                bgcolor:"white",
                 padding: "2px 10px",
                 borderRadius: "5px",
                 fontWeight: "500",
@@ -115,6 +117,7 @@ const VerifyEmailAddresss = ({ toggleLogInModal }) => {
 
           {/* 👇 Reset Password button 👇 */}
           <Button
+          disableElevation
             variant="contained"
             type="submit"
             sx={{

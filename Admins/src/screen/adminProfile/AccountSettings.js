@@ -25,11 +25,12 @@ const AccountSettings = () => {
     try {
       // console.log("admin details", adminInfo?._id);
 
-      const { data } = await axios.get(`/admin/${adminInfo?._id}`);
+      const { data } = await axios.get(`/get-admin`);
       // console.log("Inside the Admin", data);
-      setAdminDetailsById(data);
+      setAdminDetailsById(data.admin);
+      console.log(data);
+
     } catch (error) {
-      console.log(error);
     }
   };
   //   setShowDate(adminDetailsById?.adminLastLogin);
@@ -50,13 +51,8 @@ const AccountSettings = () => {
     };
   };
 
-  let showDate = new Date();
-  console.log("admin details", showDate.toString("YYYY-MM-dd"));
-
-  useEffect(() => {
-    return () => {
-      adminById(adminInfo?._id);
-    };
+  useEffect( () => {
+    adminById(adminInfo?._id);
   }, []);
 
   return (
@@ -88,26 +84,24 @@ const AccountSettings = () => {
         }}
         elevation={10}
       >
-        <Typography
-          variant="h4"
-          align="center"
-          fontWeight="800"
-          mb={2}
-          sx={{
-            color: "#795DA8",
-            width: "100%",
-          }}
-        >
+      <Typography
+            variant="h1"
+            align="center"
+            fontWeight="800"
+            fontSize={"28px"}
+            mb={2}
+            sx={{
+               color: "#795da8",
+               width: "100%",
+            }}>
           Admin Profile
         </Typography>
-        <Grid container>
+        <Grid container justifyContent={"center"}>
           <Grid
             item
             xs={12}
-            sm={12}
-            md={3}
-            lg={4}
-            xl={4}
+            md={8}
+           
             // border={"1px solid red"}
             sx={{
               display: "flex",
@@ -123,17 +117,19 @@ const AccountSettings = () => {
                 height: "100px",
                 fontSize: "35px",
                 bgcolor: "#795DA8",
+                textTransform:"uppercase"
               }}
               {...stringAvatar(`${adminDetailsById?.name}`)}
             />
 
             <Typography
-              mt={2}
+              mt={1}
               textAlign="center"
               fontWeight="800"
-              mb={2}
               sx={{
                 width: "100%",
+                textTransform:"uppercase"
+
               }}
             >
               {adminDetailsById?.name}
@@ -143,10 +139,7 @@ const AccountSettings = () => {
           <Grid
             item
             xs={12}
-            sm={12}
             md={8}
-            lg={7}
-            xl={7}
             container
             m={2}
             sx={{

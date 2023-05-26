@@ -97,6 +97,7 @@ const AdminTemplateListScreen = () => {
       },
 
       {
+         field:"delete",
          headerName: "Delete",
          width: 100,
          renderCell: (params) => {
@@ -125,8 +126,8 @@ const AdminTemplateListScreen = () => {
    }, []);
 
    return (
-      <>
-         <Box sx={{ height: 400, width: "100%" }}>
+      <Box padding={"0px 10px 30px 10px"}>
+         <Box sx={{ width: "100%" }}>
             {/* title */}
             <Typography
                variant="h1"
@@ -150,16 +151,22 @@ const AdminTemplateListScreen = () => {
                disableRowSelectionOnClick={true}
                onRowClick={(row) => navigate(`/admin/template-edit/${row.id}`)}
                sx={{
+                  border: "2px solid #795DA8",
                   "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                      outline: "none !important",
+                  },
+                  "& .MuiDataGrid-columnHeaderTitle": {
+                     fontWeight: "600",
                   },
                }}
             />
          </Box>
          <Modal open={openEditTemplate} onClose={toggleEditTemplate} closeAfterTransition>
-            <AdminTemplateEditScreen templateId={selectedTemplateId} closeModal={toggleEditTemplate} />
+            <>
+               <AdminTemplateEditScreen templateId={selectedTemplateId} closeModal={toggleEditTemplate} />
+            </>
          </Modal>
-      </>
+      </Box>
    );
 };
 

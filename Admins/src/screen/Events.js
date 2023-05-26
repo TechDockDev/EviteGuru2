@@ -4,7 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 const columns = [
    //   { field: "_id", headerName: "ID", width: 70 },
@@ -48,7 +48,7 @@ export default function DataTable() {
    }, []);
 
    return (
-      <div style={{ height: "100%", width: "100%", padding: "0px 10px", boxSizing: "border-box"}}>
+      <Box sx={{ width: "100%", padding: "0px 10px 30px 10px", boxSizing: "border-box"}}>
          <Typography
             variant="h1"
             align="center"
@@ -63,6 +63,7 @@ export default function DataTable() {
          </Typography>
          <DataGrid
             rows={events}
+            autoHeight={true}
             getRowId={(row) => row._id}
             columns={columns}
             pageSize={1}
@@ -70,11 +71,15 @@ export default function DataTable() {
             onRowClick={(row) => navigate(`/admin/event/${row.row._id}`)}
             // rowsPerPageOptions={[20]}
             sx={{
+               border: "2px solid #795DA8",
                "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
                   outline: "none !important",
                },
+               "& .MuiDataGrid-columnHeaderTitle":{
+               fontWeight:"600",                                       
+               }
             }}
          />
-      </div>
+      </Box>
    );
 }

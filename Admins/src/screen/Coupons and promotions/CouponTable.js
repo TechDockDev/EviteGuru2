@@ -127,10 +127,15 @@ export default function CouponTable() {
         slots={{ toolbar }}
         // rowsPerPageOptions={[20]}
         sx={{
+          border: "2px solid #795DA8",
           "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-            outline: "none !important",
+             outline: "none !important",
           },
-        }}
+          "& .MuiDataGrid-columnHeaderTitle":{
+          fontWeight:"600",                                       
+          }
+       }}
+
       />
     </Box>
   );

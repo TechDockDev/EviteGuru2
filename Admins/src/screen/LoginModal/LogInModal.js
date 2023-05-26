@@ -10,16 +10,18 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
+import { DataContext } from "../../AppContext";
 
 const LogInModal = (props) => {
   const navigate = useNavigate();
   const [value, setValue] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const {snackbar} = useContext(DataContext)
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -32,6 +34,9 @@ const LogInModal = (props) => {
       const res = await axios.post("/login", value);
       if (res.status === 200) {
         navigate("/admin/template-list");
+        snackbar(res.data.status, res.data.message)
+        
+
       }
     } catch (error) {
       console.log(error);
@@ -40,6 +45,7 @@ const LogInModal = (props) => {
   useEffect(() => {}, []);
   return (
       <Paper
+      elevation={24}
         sx={{
           position: "absolute",
           top: "50%",

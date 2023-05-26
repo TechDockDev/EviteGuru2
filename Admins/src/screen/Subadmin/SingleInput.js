@@ -28,7 +28,7 @@ const SingleInput = ({
             xs={12}
             sx={{
               fontFamily: "Montserrat",
-              fontSize: "20px",
+              fontSize: "16px",
               display: "flex",
               alignItems: "center",
             }}
@@ -51,12 +51,12 @@ const SingleInput = ({
             sm={8}
             xs={12}
             sx={{
-              height: "50px",
+              height: "40px",
               outline: "none",
               border: "1px solid black",
               borderRadius: "8px",
               paddingX: "10px",
-              fontSize: "18px",
+              fontSize: "16px",
               "&:focus": { border: "2px solid #795DA8" },
             }}
           ></Grid>
@@ -91,7 +91,7 @@ const SingleInput = ({
             xs={12}
             sx={{
               fontFamily: "Montserrat",
-              fontSize: "20px",
+              fontSize: "16px",
               display: "flex",
               alignItems: "center",
             }}
