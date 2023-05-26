@@ -49,6 +49,15 @@ const createTemplate = asyncHandler(async (req, res) => {
   }
 });
 
+const getStickers = expressAsyncHandler(async (req, res) => {
+  const stickers = await Sticker.find({});
+  res.json({
+    status: "success",
+    message: "Stickers have been fetched successfully",
+    stickers,
+  });
+});
+
 const addSticker = expressAsyncHandler(async (req, res) => {
   await Sticker.create({
     name: req.body.name,
@@ -57,6 +66,14 @@ const addSticker = expressAsyncHandler(async (req, res) => {
   res.json({
     status: "success",
     message: "Sticker has been added successfully",
+  });
+});
+
+const deleteSticker = expressAsyncHandler(async (req, res) => {
+  await Sticker.findByIdAndRemove(req.params.stickerId);
+  res.json({
+    status: "success",
+    message: "Sticker has been deleted successfully",
   });
 });
 
@@ -111,4 +128,6 @@ export {
   saveImage,
   sendImage,
   addSticker,
+  getStickers,
+  deleteSticker,
 };

@@ -7,21 +7,22 @@ import {
   registerAdmin,
   updateAdmin,
   singleAdminId,
+  logOut,
+  getAdmin,
 } from "../../controllers/adminController.js";
+import { adminAuth } from "../../middlewares/adminAuthMiddleware.js";
 
 const adminRouter = express.Router();
 adminRouter.use(express.json());
 
 //admin routers
+adminRouter.get("/get-admin", adminAuth, getAdmin); // for login admin
 adminRouter.post("/login", authAdmin); // for login admin
 adminRouter.post("/create-subadmin", registerAdmin); // for registration
 adminRouter.get("/admin-list", getallAdmin); //get all admin in panel
+adminRouter.get("/logout", logOut);
 
 // admin controller route
-adminRouter
-  .route("/:id")
-  .delete(deleteAdmin) //delete admin from admin panel
-  .put(updateAdmin) //update admin by email
-  .get(singleAdminId); //single admin by id
+adminRouter.route("/:id").delete(deleteAdmin).put(updateAdmin);
 
 export default adminRouter;
