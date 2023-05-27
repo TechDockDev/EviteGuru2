@@ -1,4 +1,4 @@
-Name,Email,Phone No.,No of Invitees,
+name,email,phone,membersAllowed,
 Jhon,jhon_s@example.com,7412589630,2,
 David,david@xyz.com,8523697410,5,
 Jack,jack@xyz.com,9632587410,1,
