@@ -2,7 +2,9 @@ import { React, useContext, useState } from "react";
 import axios from "axios";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "@fontsource/montserrat";
-
+import "@fontsource/sacramento";
+import "@fontsource/parisienne"; 
+import "@fontsource/pinyon-script";
 //local files
 import AdminEmailotp from "./screen/AdminEmailotpScreen";
 
@@ -34,6 +36,7 @@ import PaymentDetails from "./screen/PaymentDetails/PaymentDetails";
 import { DataContext } from "./AppContext";
 import { Alert, Snackbar } from "@mui/material";
 import ManageStickers from "./screen/ManageStickers/ManageStickers";
+
 const App = () => {
    const [alertMessage, setAlertMessage] = useState(null);
    const {  severity,
