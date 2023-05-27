@@ -133,7 +133,7 @@ const Send = () => {
     {
       field: "phone",
       headerName: "Phone Number",
-      type: "number",
+      // type: "number",
       width: 150,
     },
     {

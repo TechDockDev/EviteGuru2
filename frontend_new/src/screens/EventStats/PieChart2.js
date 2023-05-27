@@ -12,7 +12,7 @@ const PieChart2 = () => {
       offsetX: 0,
       offsetY: 0,
     },
-    colors: ["#15fa05", "#e8050c", "#0000FF"],
+    colors: ["#00B5B0", "#FE3169", "#FAA71B"],
     labels: ["Attending", "Not Attending", "Pending"],
     responsive: [
       {

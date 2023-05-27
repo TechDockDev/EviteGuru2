@@ -15,8 +15,6 @@ import {
   Stack,
   Toolbar,
 } from "@mui/material";
-import SettingsIcon from "@mui/icons-material/Settings";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { useSelector } from "react-redux";
 const drawerWidth = 240;
 
@@ -51,13 +49,14 @@ const SmallScreenDrawerMenu = (props) => {
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+            sx={{ mr: 2, display: { sm: "none" }, color: "white" }}
           >
             <MenuIcon />
           </IconButton>
           {/* ==== 👇 EVITEGURU topbar logo👇   ===== */}
           <Box
             component={NavLink}
+            to={"/"}
             sx={{
               width: "150px",
               display: "flex",
@@ -69,7 +68,7 @@ const SmallScreenDrawerMenu = (props) => {
           >
             <Box
               component={"img"}
-              src="./assets/EviteGuruLogo.svg"
+              src="./assets/EviteGuruLogoWhite.svg"
               sx={{ width: "100%" }}
             />
           </Box>
@@ -115,25 +114,62 @@ const SmallScreenDrawerMenu = (props) => {
           {/* ==== 👆 EVITEGURU topbar logo 👆   ===== */}
 
           {/*👇 topbar left menu list 👇 */}
-          <List disablePadding={true} dense sx={{}}>
-            <ListItem>
+          <List
+            disablePadding={true}
+            dense
+            sx={{
+              color: "black",
+
+              "& .MuiListItemText-root": { color: "black" },
+            }}
+          >
+            <ListItem
+              component={NavLink}
+              to="/"
+              onClick={handleDrawerToggle}
+              // sx={{
+              //   "& .active": {
+              //     color: "rgba(121, 93, 168, 1)",
+              //     fontWeight: "800",
+              //   },
+              // }}
+            >
               <ListItemButton>
                 <ListItemText>Home</ListItemText>
               </ListItemButton>
             </ListItem>
-            <ListItem>
+            <ListItem
+              component={NavLink}
+              to="/browse_template"
+              onClick={handleDrawerToggle}
+            >
               <ListItemButton>
                 <ListItemText>Template</ListItemText>
               </ListItemButton>
             </ListItem>
             {/*👆 topbar left menu list👆 */}
             {/*👇 topbar right buttons 👇 */}
-            {userDetail.isUser ? (
-              <ListItem>
-                <ListItemButton>
-                  <ListItemText>Profile</ListItemText>
-                </ListItemButton>
-              </ListItem>
+            {userDetail?.isUser ? (
+              <>
+                <ListItem
+                  component={NavLink}
+                  to="/dashboard/account-setting"
+                  onClick={handleDrawerToggle}
+                >
+                  <ListItemButton>
+                    <ListItemText>Account</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+                <ListItem
+                  component={NavLink}
+                  to="/dashboard/my-events"
+                  onClick={handleDrawerToggle}
+                >
+                  <ListItemButton>
+                    <ListItemText>Dashboard</ListItemText>
+                  </ListItemButton>
+                </ListItem>
+              </>
             ) : (
               <>
                 <ListItem>

@@ -69,15 +69,14 @@ const AddressBook = () => {
     {
       field: "phone",
       headerName: "Phone Number",
-      type: "number",
+      // type: "number",
       width: 150,
     },
     {
       field: "email",
       headerName: "email",
-      width:200,
+      width: 200,
     },
-   
   ];
 
   // ===extract all contact list to a single list ===

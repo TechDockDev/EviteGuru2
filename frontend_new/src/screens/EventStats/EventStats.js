@@ -76,7 +76,7 @@ const EventStats = () => {
     {
       field: "phone",
       headerName: "Phone Number",
-      type: "number",
+      // type: "number",
       width: 150,
     },
     {
@@ -204,6 +204,7 @@ const EventStats = () => {
           <Box
             component={"img"}
             alt="template design"
+            borderRadius={"15px"}
             width={"100%"}
             maxHeight={"290px"}
             src={`/images/getImage?path=/${state?.event?.variation?.previewImage}`}
@@ -231,13 +232,73 @@ const EventStats = () => {
       </Grid>
       {/* ============  👆container for RSVP  summary and pie chart👆============= */}
       {/* title */}
-      <Stack component={Paper} border={"1px solid"}>
-        <Typography>
-          event Date :{" "}
-          <Moment
-            date={state?.event?.date}
-            format="hh:mm A, dddd, MMMM DD, YYYY"
+      <Stack
+        mt={2}
+        component={Paper}
+        border={"0.5px solid rgba(121, 93, 168, 1)"}
+        borderRadius={"50px"}
+        bgcolor={"#F7F7F7"}
+        position={"relative"}
+        p={4}
+        sx={{ backgroundImage: "url(../assets/leaves2.png)" }}
+      >
+        <Box
+          bgcolor="transparent"
+          display={{ md: "block", lg: "block", sm: "none", xs: "none" }}
+          sx={{
+            position: "absolute",
+            right: "0px",
+            top: "-10px",
+            // transform: "rotate(180deg)",
+          }}
+        >
+          <Box
+            bgcolor="transparent"
+            width="180px"
+            height={"100%"}
+            component={"img"}
+            src="../assets/footerDecoSir.png"
           />
+        </Box>
+        <Typography
+          variant="h6"
+          fontWeight={"900"}
+          // sx={{ textShadow: "3px 3px 13px #000000" }}
+          // color={"#795DA8"}
+        >
+          Venue :{" "}
+          <b
+            style={{
+              // fontStyle: "italic",
+              // textShadow: "3px 3px 13px #000000",
+              color: "#795DA8",
+            }}
+          >
+            {state?.event?.venue}
+          </b>{" "}
+        </Typography>
+        <Typography variant="h6" fontWeight={"900"}>
+          Address :{" "}
+          <b
+            style={{
+              color: "#795DA8",
+            }}
+          >
+            {state?.event?.address}
+          </b>
+        </Typography>
+        <Typography variant="h6" fontWeight={"900"}>
+          Date :{" "}
+          <b
+            style={{
+              color: "#795DA8",
+            }}
+          >
+            <Moment
+              date={state?.event?.date}
+              format="hh:mm A, dddd, MMMM DD, YYYY"
+            />
+          </b>
         </Typography>
       </Stack>
       <Stack

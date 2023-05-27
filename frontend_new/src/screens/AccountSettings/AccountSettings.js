@@ -68,19 +68,20 @@ const AccountSettings = () => {
 
   return (
     <Box
+      p={{ xs: 2, md: 0, lg: 0 }}
       sx={{
         //  border: "2px solid red",
-        height: "100%",
-        width: {
-          xl: "calc(100vw - 250px)",
-          lg: "calc(100vw - 270px)",
-          md: "calc(100vw - 270px)",
-          sm: "100vw",
-          xs: "100vw",
-        },
-        maxWidth: "1150px",
-        padding: "0 20px 20px 20px",
+        // height: "100%",
+        // width: {
+        //   xl: "calc(100vw - 250px)",
+        //   lg: "calc(100vw - 270px)",
+        //   md: "calc(100vw - 270px)",
+        //   sm: "100vw",
+        //   xs: "100vw",
+        // },
+
         boxSizing: "border-box",
+        width: "100%",
       }}
     >
       <Stack mt={1} mb={4} alignItems={"center"}>
@@ -91,9 +92,12 @@ const AccountSettings = () => {
       <Grid
         mt={4}
         container
-        spacing={{ xs: 2 }}
+        spacing={{ xs: 1 }}
         display={"flex"}
+        flexDirection={{ md: "row", lg: "row", sm: "row", xs: "column" }}
+        // alignItems={"center"}
         justifyContent={"space-between"}
+        // p={1}
       >
         <Grid item lg={7.5} md={7.5} sm={5.5} xs={12}>
           <Paper
@@ -250,7 +254,7 @@ const AccountSettings = () => {
           <ActiveCardInfo />
         </Grid>
       </Grid>
-      <Stack mt={3} alignContent={"center"} direction={"row"}>
+      <Stack mt={3} alignContent={"center"} direction={"row"} p={2}>
         <Button
           variant="contained"
           size="small"

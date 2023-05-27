@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import {
   AppBar,
   Avatar,
@@ -90,6 +90,8 @@ const UserDashboard = () => {
         >
           {/* == left eviteguru logo ==*/}
           <Box
+            component={NavLink}
+            to="/"
             sx={{
               height: {
                 md: "70px",

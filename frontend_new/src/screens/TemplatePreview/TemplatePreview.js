@@ -6,7 +6,6 @@ import {
   CircularProgress,
   Grid,
   IconButton,
-  Slide,
   Typography,
 } from "@mui/material";
 import axios from "axios";
@@ -40,7 +39,7 @@ const TemplatePreview = (props) => {
   };
 
   const getPreviewTemplate = async () => {
-    if (props?.singleTemplateId != "") {
+    if (props?.singleTemplateId) {
       try {
         const res = await axios.get(
           `/api/v1/user/template/${props?.singleTemplateId}`
@@ -108,113 +107,126 @@ const TemplatePreview = (props) => {
 
         {/*== 👇 container grid for left sample image and description text 👇==*/}
         <Grid container item xl={11}>
-          <Grid item xl={6} lg={6} md={6} sm={6}>
-            <Box
-              sx={{
-                height: "300px",
-                // border: "1px solid red",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                boxSizing: "border-box",
-                padding: "10px",
-              }}
-            >
-              {singleTemplateData?.previewImage ? (
+          {props?.singleTemplateId ? (
+            <>
+              <Grid item xl={6} lg={6} md={6} sm={6}>
                 <Box
-                  component="img"
-                  height="100%"
-                  maxWidth="100%"
-                  src={`/images/getImage?path=/${singleTemplateData?.previewImage}`}
-                  // /template/previewImage/${singleTemplate?.previewImage}
-                  sx={{ display: "block" }}
-                />
-              ) : (
-                <CircularProgress />
-              )}
-            </Box>
-          </Grid>
-          <Grid item xl={6} lg={6} md={6} sm={6}>
-            <Box
-              sx={{
-                height: "300px",
-                // border: "1px solid red",
-                display: "flex",
-                justifyContent: "space-around",
-                alignItems: "center",
-                flexDirection: "column",
-                padding: "20px 10px",
-                boxSizing: "border-box",
-              }}
-            >
-              <Typography
-                variant="h1"
-                fontSize="28px"
-                fontWeight="600"
-                width="100%"
-                textAlign="left"
-              >
-                {singleTemplateData?.name}
-              </Typography>
-              <Typography
-                variant="h2"
-                fontSize="20px"
-                width="100%"
-                textAlign="left"
-              >
-                Description
-              </Typography>
-              <Typography
-                variant="body"
-                fontSize="16px"
-                fontFamily={"Montserrat"}
-                width="100%"
-                textAlign="left"
-              >
-                {singleTemplateData?.description}
-              </Typography>
-              {userDetail ? (
-                <Button
-                  disableElevation
-                  onClick={() =>
-                    navigate(`/dashboard/edit/${singleTemplateData?._id}`)
-                  }
-                  variant="contained"
                   sx={{
-                    width: "70%",
-                    color: "#fff",
-                    marginRight: { sm: "20px", xs: "0px" },
-                    marginBottom: { sm: "0px", xs: "10px" },
+                    height: "300px",
+                    // border: "1px solid red",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    boxSizing: "border-box",
+                    padding: "10px",
                   }}
                 >
-                  Customize
-                </Button>
-              ) : (
-                <Button
-                  disableElevation
-                  onClick={submit}
-                  variant="contained"
+                  {singleTemplateData?.previewImage ? (
+                    <Box
+                      component="img"
+                      height="100%"
+                      maxWidth="100%"
+                      src={`/images/getImage?path=/${singleTemplateData?.previewImage}`}
+                      // /template/previewImage/${singleTemplate?.previewImage}
+                      sx={{ display: "block" }}
+                    />
+                  ) : (
+                    <CircularProgress />
+                  )}
+                </Box>
+              </Grid>
+              <Grid item xl={6} lg={6} md={6} sm={6}>
+                <Box
                   sx={{
-                    width: "70%",
-                    color: "#fff",
-                    marginRight: { sm: "20px", xs: "0px" },
-                    marginBottom: { sm: "0px", xs: "10px" },
+                    height: "300px",
+                    // border: "1px solid red",
+                    display: "flex",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    padding: "20px 10px",
+                    boxSizing: "border-box",
                   }}
                 >
-                  Customize
-                </Button>
-              )}
-            </Box>
-          </Grid>
+                  <Typography
+                    variant="h1"
+                    fontSize="28px"
+                    fontWeight="600"
+                    width="100%"
+                    textAlign="left"
+                  >
+                    {singleTemplateData?.name}
+                  </Typography>
+                  <Typography
+                    variant="h2"
+                    fontSize="20px"
+                    width="100%"
+                    textAlign="left"
+                  >
+                    Description
+                  </Typography>
+                  <Typography
+                    variant="body"
+                    fontSize="16px"
+                    fontFamily={"Montserrat"}
+                    width="100%"
+                    textAlign="left"
+                  >
+                    {singleTemplateData?.description}
+                  </Typography>
+                  {userDetail ? (
+                    <Button
+                      disableElevation
+                      onClick={() =>
+                        navigate(`/dashboard/edit/${singleTemplateData?._id}`)
+                      }
+                      variant="contained"
+                      sx={{
+                        width: "70%",
+                        color: "#fff",
+                        marginRight: { sm: "20px", xs: "0px" },
+                        marginBottom: { sm: "0px", xs: "10px" },
+                      }}
+                    >
+                      Customize
+                    </Button>
+                  ) : (
+                    <Button
+                      disableElevation
+                      onClick={submit}
+                      variant="contained"
+                      sx={{
+                        width: "70%",
+                        color: "#fff",
+                        marginRight: { sm: "20px", xs: "0px" },
+                        marginBottom: { sm: "0px", xs: "10px" },
+                      }}
+                    >
+                      Customize
+                    </Button>
+                  )}
+                </Box>
+              </Grid>
+            </>
+          ) : (
+            ""
+          )}
         </Grid>
         {/*== 👆 container grid for left sample image and description text 👆==*/}
         {/* ==================================== */}
         {/*== 👇 container grid for bottom carousel👇==*/}
 
         <Grid container item xl={11} sx={{ padding: "20px 0" }}>
-          <Typography variant="h2" fontSize="20px" fontWeight="600" mb={2}>
-            More like this
-          </Typography>
+          {props?.singleTemplateId ? (
+            <Typography variant="h2" fontSize="20px" fontWeight="600" mb={2}>
+              More like this
+            </Typography>
+          ) : (
+            <Typography variant="h2" fontSize="20px" fontWeight="600" mb={2}>
+              Please Select A Template To Customize
+            </Typography>
+          )}
+
           <TemplatePreviewCarousel carouselClick={props?.carouselClick} />
         </Grid>
         {/*== 👆 container grid for bottom carousel👆==*/}

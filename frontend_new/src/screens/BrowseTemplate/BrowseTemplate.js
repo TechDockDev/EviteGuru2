@@ -35,12 +35,14 @@ const BrowseTemplate = () => {
   const getTemplate = async () => {
     try {
       setLoadingTemplate(true);
-      const res = await axios.get(`/api/v1/user/template/all`);
+      const res = await axios.get(
+        `/api/v1/user/template/all?page=${page}&limit=9`
+      );
       console.log(res?.data?.template);
       setTemplateData(res?.data?.template);
       setLoadingTemplate(false);
       // navigate(`/dashboard/edit/${res.data.template[0]._id}`);
-      // setTotalPages(Math.ceil(res.data.total / 6));
+      setTotalPages(res?.data?.totalPages);
     } catch (error) {
       console.log(error);
     }
@@ -57,13 +59,13 @@ const BrowseTemplate = () => {
 
   const loadMoreContent = async () => {
     setPage(1 + page);
-    // console.log("totalpage->", totalPages);
+    console.log("totalpage->", totalPages);
 
     if (page !== totalPages) {
       try {
         setLoadingTemplate(true);
         const res = await axios.get(
-          `template/template-list?page=${page + 1}&limit=6`
+          `/api/v1/user/template/all?page=${page}&limit=9`
         );
         setTemplateData([...templateData, ...res?.data?.template]);
         setLoadingTemplate(false);
@@ -215,7 +217,7 @@ const BrowseTemplate = () => {
         carouselClick={carouselClick}
         toggleTemplatePreviewModal={toggleTemplatePreviewModal}
         singleTemplateId={singleTemplateId}
-        data={templateData}
+        // data={templateData}
         openTemplatePreviewModal={openTemplatePreviewModal}
       />
     </Stack>
