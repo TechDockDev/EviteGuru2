@@ -91,12 +91,6 @@ const getAdmin = asyncHandler(async (req, res) => {
   res.json({ status: "success", message: "Admin fetched Successfully", admin });
 });
 
-const getallAdmin = asyncHandler(async (req, res) => {
-  const admin = await Admin.find({});
-  let admins = admin;
-  res.json(admins);
-});
-
 const deleteAdmin = asyncHandler(async (req, res) => {
   const admin = await Admin.findById(req.params.id);
 
@@ -139,105 +133,38 @@ const getallUsers = asyncHandler(async (req, res) => {
   });
 });
 
-const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  const admin = await Admin.findById(req.body.id);
-  if (user) {
-    await user.remove();
-    res.json({ message: "user is deleted" });
-  } else if (googleuser) {
-    await googleuser.remove();
-    res.json({ message: "user is deleted" });
-  } else if (admin) {
-    await admin.remove();
-    res.json({ message: "Admin is deleted" });
-  } else {
-    res.status(404); //not found
-    throw new Error(" user or admins is not found");
-  }
-});
-
-const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-
-  if (user) {
-    user.name = req.body.name || user.name;
-    // user.isAdmin = req.body.isAdmin;
-
-    const updatedUser = await user.save();
-
+const changePassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const admin = await Admin.findById(req.admin.id).select("+password");
+  if (await bcrypt.compare(oldPassword, admin.password)) {
+    admin.password = await bcrypt.hash(newPassword, 10);
+    await admin.save();
     res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updateUser.email,
-      phone: updatedUser.phone,
+      status: "success",
+      message: "Password has been successfully updated",
     });
   } else {
-    res.status(404);
-    throw new Error("user or admin not found");
+    res.json({
+      status: "error",
+      message: "Incorrect Password Provided",
+    });
   }
 });
-
-const singleAdminId = asyncHandler(async (req, res) => {
-  const admin = await Admin.findById(req.params.id).select("-password");
-  try {
-    if (!admin) {
-      res.json("admin not found ");
-    } else {
-      res.json(admin);
-    }
-  } catch (err) {
-    res.json(err);
-  }
-});
-
-const singleTemplateId = asyncHandler(async (req, res) => {
-  const template = await Template.findById(req.params.id);
-  try {
-    if (!template) {
-      res.json("Template not found ");
-    } else {
-      res.json(template);
-    }
-  } catch (err) {
-    res.json(err);
-  }
-});
-
-const admindeleteTemplate = asyncHandler(async (req, res) => {
-  const template = await Template.findById(req.params.id);
-  try {
-    if (!template) {
-      res.json("Template not found ");
-    } else {
-      await template.remove();
-      res.json({ message: "Template is deleted" });
-    }
-  } catch (err) {
-    res.json(err);
-  }
-});
-
 // logout
 const logOut = asyncHandler(async (req, res) => {
   res
     .status(200)
     .clearCookie("bearerToken")
-    .json({ message: "Logout successfully", status: "Success" });
+    .json({ status: "success", message: "Logout successfully" });
 });
 
 export {
   authAdmin,
   deleteAdmin,
   updateAdmin,
-  getallAdmin,
   getAdmin,
-  singleAdminId,
   registerAdmin,
-  deleteUser,
-  updateUser,
   getallUsers,
-  singleTemplateId,
-  admindeleteTemplate,
+  changePassword,
   logOut,
 };

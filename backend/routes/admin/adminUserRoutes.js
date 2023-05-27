@@ -1,9 +1,5 @@
 import express from "express";
-import {
-  deleteUser,
-  getallUsers,
-  updateUser,
-} from "../../controllers/adminController.js";
+import { getallUsers } from "../../controllers/adminController.js";
 import {
   giftInvitees,
   giftTemplates,
@@ -17,6 +13,6 @@ adminUserRouter.get("/all-users", getallUsers); //get all users in admin panel
 adminUserRouter.patch("/gift-invitees", giftInvitees);
 adminUserRouter.patch("/gift-templates", giftTemplates);
 adminUserRouter.patch("/suspend", suspendUser);
-adminUserRouter.route("/:id").get(getUser).put(updateUser).delete(deleteUser);
+adminUserRouter.route("/:id").get(getUser);
 
 export default adminUserRouter;

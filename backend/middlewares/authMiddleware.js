@@ -9,7 +9,6 @@ const userAuth = async (req, res, next) => {
     if (req.headers.cookie) {
       const value = req.headers.cookie.split("bearerToken=")[1];
       let token = value.split(";")[0];
-      console.log(token);
       if (!token) {
         res.status(401).json({
           status: "unauthorized",
@@ -17,7 +16,6 @@ const userAuth = async (req, res, next) => {
         });
       } else {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
         const currentUser = await User.findById(decoded.id);
         if (!currentUser) {
           res.status(404).json({

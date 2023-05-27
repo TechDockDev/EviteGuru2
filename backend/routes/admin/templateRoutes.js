@@ -20,7 +20,6 @@ const storage = multer.diskStorage({
     cb(null, "uploads/templateImages");
   },
   filename: function (req, file, cb) {
-    console.log(file);
     cb(null, file.originalname);
   },
 });
@@ -30,7 +29,6 @@ const previewImages = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const fileName = file.originalname.split(".");
-    console.log(file);
     cb(null, fileName[0] + Date.now() + "." + fileName[1]);
   },
 });
@@ -46,7 +44,7 @@ templateRouter.post("/previewImage", upload.single("previewImage"), saveImage);
 templateRouter.get("/sendImage/:imgName", sendImage);
 templateRouter.post("/create", preview.single("previewImage"), createTemplate);
 templateRouter.get("/stickers", getStickers);
-templateRouter.get("/sticker/:stickerId", deleteSticker);
+templateRouter.delete("/sticker/:stickerId", deleteSticker);
 templateRouter.post("/addSticker", upload.single("sticker"), addSticker);
 templateRouter
   .route("/:id")
