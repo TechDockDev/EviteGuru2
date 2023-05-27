@@ -28,7 +28,11 @@ import {
   setEventTemplateJson,
 } from "../../redux/action/userActions";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import { TbTextRecognition } from "react-icons/tb";
+import {
+  TbLayersDifference,
+  TbLayersSubtract,
+  TbTextRecognition,
+} from "react-icons/tb";
 import { FaRegObjectGroup } from "react-icons/fa";
 import { FaRegObjectUngroup } from "react-icons/fa";
 import { BsLayerBackward } from "react-icons/bs";
@@ -47,7 +51,6 @@ const Design = (props) => {
   const [color, setColor] = useState("");
   const { editor, onReady } = useFabricJSEditor();
   const [data, setData] = useState();
-  const [groupCanvas, setGroupCanvas] = useState();
   const [sticker, setSticker] = useState();
   const [templateData, setTemplateData] = useState();
   const [addStickersModal, setAddStickersModal] = useState(false);
@@ -59,6 +62,7 @@ const Design = (props) => {
     "Arial",
     "Helvetica",
   ];
+  const navigate = useNavigate();
   // =========== 👇 code for draggable tools bar for text edit👆👆=======
   // const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
   const [position, setPosition] = useState({ x: 20, y: 250 });
@@ -410,6 +414,11 @@ const Design = (props) => {
       }
     } catch (error) {}
   };
+  // ====handleCancel ====
+  const handleCancel = () => {
+    navigate("/dashboard/my-events");
+  };
+  // =endOf handleCancel==
   // ===============
   useEffect(() => {
     getAllStickers();
@@ -676,7 +685,7 @@ const Design = (props) => {
                 </ListItemText>
               </ListItemButton>
 
-              {/* 👆 ==== GroupAll ==== 👆   */}
+              {/* 👆 ==== GroupAll ==== 👆 TbLayersSubtract  */}
               {/*  👇==== UnGroup ====  👇    */}
               <ListItemButton
                 sx={{ ...ListItemButtonStyle2 }}
@@ -715,7 +724,7 @@ const Design = (props) => {
                     sx: { color: "black", fontSize: "12px", fontWeight: "800" },
                   }}
                 >
-                  Bring To Top
+                  Move Forward
                 </ListItemText>
               </ListItemButton>
 
@@ -737,6 +746,50 @@ const Design = (props) => {
                 </ListItemText>
               </ListItemButton>
               {/* 👆 ==== move layer back ==== 👆   */}
+              {/* ====move layers backward */}
+              <ListItemButton
+                sx={{ ...ListItemButtonStyle2 }}
+                onClick={moveToBack}
+              >
+                <ListItemIcon sx={{ color: "#667087" }}>
+                  <TbLayersDifference />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{
+                    sx: {
+                      color: "black",
+                      fontSize: "12px",
+                      fontFamily: "Montserrat",
+                      textAlign: "center",
+                    },
+                  }}
+                >
+                  Push to Back
+                </ListItemText>
+              </ListItemButton>
+              {/* mover layer backward === */}
+              {/* ====move layers to front */}
+              <ListItemButton
+                sx={{ ...ListItemButtonStyle2 }}
+                onClick={moveForward}
+              >
+                <ListItemIcon sx={{ color: "#667087" }}>
+                  <TbLayersSubtract />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{
+                    sx: {
+                      color: "black",
+                      fontSize: "12px",
+                      fontFamily: "Montserrat",
+                      textAlign: "center",
+                    },
+                  }}
+                >
+                  Bring To Top
+                </ListItemText>
+              </ListItemButton>
+              {/* mover layer to top === */}
               {/*  👇==== Clone Object  ====  👇    */}
               <ListItemButton onClick={clone} sx={{ ...ListItemButtonStyle2 }}>
                 <ListItemIcon sx={{ color: "#667087" }}>
@@ -799,7 +852,7 @@ const Design = (props) => {
           fullWidth
           disableElevation
           variant="outlined"
-          // onClick={}
+          onClick={handleCancel}
           sx={{ mt: 1 }}
         >
           Cancel

@@ -93,7 +93,8 @@ const AddressBook = () => {
       const res = await axios.get("/api/v1/user/guest/user/");
       if (res.status === 200) {
         console.log("response=>", res?.data?.guestList);
-        extractAllcontacts(res?.data?.guestList);
+        // extractAllcontacts(res?.data?.guestList);
+        setAllContacts(res?.data?.guestList);
       }
     } catch (error) {
       console.log("error=>", error);

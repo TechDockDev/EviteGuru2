@@ -16,7 +16,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 // =========================
-const BulkUpload = ({ toggleBulkModal }) => {
+const BulkUpload = (props) => {
   const { createdEventDetails } = useSelector((state) => state);
   const [sheetData, setSheetData] = useState("");
   const [bulkFile, setBulkFile] = useState(null);
@@ -92,6 +92,7 @@ const BulkUpload = ({ toggleBulkModal }) => {
   //=== handleupload file bulk upload ====
   const handleUploadFile = async () => {
     try {
+      props.setLoading(true);
       if (bulkFile) {
         const fileData = new FormData();
         fileData.append("file", bulkFile);
@@ -101,9 +102,12 @@ const BulkUpload = ({ toggleBulkModal }) => {
         );
         if (res.status === 200) {
           console.log("res=>", res);
-          
+          props?.toggleBulkModal();
+          props?.getGuestListDetails(createdEventDetails?.guestListId);
+          props?.setLoading(false);
         }
       } else {
+        props?.setLoading(false);
         alert("Please Select File First");
       }
     } catch (error) {
@@ -130,7 +134,7 @@ const BulkUpload = ({ toggleBulkModal }) => {
       >
         {/* 👇Cross icon to close the modal👇  */}
         <IconButton
-          onClick={toggleBulkModal}
+          onClick={props?.toggleBulkModal}
           sx={{
             color: "black",
             position: "absolute",

@@ -87,7 +87,7 @@ const EventStats = () => {
     {
       field: "status",
       headerName: "Status",
-      width: 120,
+      width: 150,
       renderCell: (params) => {
         // console.log("params=>", params);
         return (
@@ -100,16 +100,14 @@ const EventStats = () => {
             <FiberManualRecordIcon
               fontSize="8px"
               color={
-                params.value === true
-                  ? "success"
-                  : params.value === false
-                  ? "disabled"
-                  : "error"
+                params?.row?.status !== "Not Invited" ? "success" : "default"
               }
             />
 
             <Typography variant="body2" fontSize={"16px"} component={"span"}>
-              sent
+              {params?.row?.status !== "Not Invited"
+                ? "Invited"
+                : "Not Invited"}
             </Typography>
           </Stack>
         );
@@ -118,21 +116,35 @@ const EventStats = () => {
     {
       field: "attending",
       headerName: "Attending",
-      width: 100,
+      width: 150,
       renderCell: (params) => {
-        return `${params?.value ? "Attending" : "Not Attending"}`;
+        return (
+          <Stack
+            direction={"row"}
+            alignItems={"center"}
+            alignContent={"center"}
+            spacing={1}
+          >
+            <FiberManualRecordIcon
+              fontSize="8px"
+              color={
+                params?.row?.status === "Attending"
+                  ? "success"
+                  : params?.row?.status === "Open"
+                  ? "warning"
+                  : params?.row?.status === "Not Attending"
+                  ? "error"
+                  : "disabled"
+              }
+            />
+
+            <Typography variant="body2" fontSize={"16px"} component={"span"}>
+              {params?.row?.status}
+            </Typography>
+          </Stack>
+        );
       },
     },
-    // {
-    //    field: "notAttending",
-    //    headerName: "Not Attending",
-    //    width: 100,
-    // },
-    // {
-    //    field: "pending",
-    //    headerName: "Pending",
-    //    width: 80,
-    // },
   ];
 
   // ===get event guestList =====

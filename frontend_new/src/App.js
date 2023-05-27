@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import "@fontsource/montserrat";
-import "@fontsource/poppins"; 
+import "@fontsource/poppins";
 import Header from "./components/Header";
 import BrowseTemplate from "./screens/BrowseTemplate/BrowseTemplate";
 import UserDashboard from "./components/UserDashboard/UserDashboard";
@@ -20,6 +20,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { userAuth } from "./redux/action/userActions";
 import Send from "./screens/CustomizationPage/Send";
+import InviteesResponseScreen from "./screens/InviteesResponseScreen/InvitessResponseScreen";
 
 // import FooterSection from "./screens/HomeScreen/FooterSection";
 // import EmailsendOtp from "./screens/EmailotpScreen";
@@ -52,6 +53,10 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route
+          path="/guest-event-view-screen/:eventId"
+          element={<InviteesResponseScreen />}
+        />
         <Route path="/" element={<Header />}>
           <Route index element={<HomeScreen />} />
           <Route path="/browse_template" element={<BrowseTemplate />} />
