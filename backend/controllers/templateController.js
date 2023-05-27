@@ -91,16 +91,17 @@ const deleteTemplate = asyncHandler(async (req, res) => {
 });
 
 const allTemplate = asyncHandler(async (req, res) => {
-  try {
-    const { page, ItemsPerPage } = req.query;
-    const template = await Template.find({})
-      .limit(page * ItemsPerPage)
-      .skip(page * ItemsPerPage - ItemsPerPage);
-    res.json({ template });
-  } catch (err) {
-    console.log("not showing all template", err);
-    res.json(err);
-  }
+  const { page, limit } = req.query;
+  const template = await Template.find({})
+    .limit(page * limit)
+    .skip(page * limit - limit);
+  const totalPages = Math.ceil((await Template.find({}).count()) / limit);
+  res.json({
+    status: "success",
+    message: "Templates has been successfully fetched",
+    template,
+    totalPages,
+  });
 });
 
 const sendImage = asyncHandler((req, res) => {

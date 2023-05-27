@@ -14,6 +14,7 @@ const adminSchema = mongoose.Schema({
 });
 
 adminSchema.methods.matchPassword = async function (enterdPassword) {
+  console.log(this);
   return await bcrypt.compare(enterdPassword, this.password);
 };
 
@@ -22,7 +23,7 @@ adminSchema.pre("save", async function (next) {
     next();
   }
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  this.password = bcrypt.hash(this.password, salt);
 });
 
 adminSchema.statics.newLogin = function login(id, callback) {

@@ -17,6 +17,7 @@ const singleGuestSchema = mongoose.Schema(
     status: {
       type: String,
       enums: ["Not Invited", "Pending", "Open", "Not Attending", "Attending"],
+      default: "Not Invited",
     },
   },
   { autoIndex: false }

@@ -28,7 +28,7 @@ const getAllEvents = asyncHandler(async (req, res) => {
 });
 
 const getEventById = asyncHandler(async (req, res) => {
-  const event = await EventDetails.findById(req.params.id);
+  const event = await EventDetails.findById(req.params.id).populate("variation");
   const guestList = await Guest.findOne({ event: event.id });
   res.json({
     status: "success",

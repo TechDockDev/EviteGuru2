@@ -61,6 +61,24 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
+const changePassword = asyncHandler(async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const user = await User.findById(req.user.id).select("+password");
+  if (await bcrypt.compare(oldPassword, user.password)) {
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+    res.json({
+      status: "success",
+      message: "Password has been successfully updated",
+    });
+  } else {
+    res.json({
+      status: "error",
+      message: "Incorrect Password Provided",
+    });
+  }
+});
+
 // sign up controller
 const signUp = async (req, res, next) => {
   try {
@@ -123,39 +141,15 @@ const allUser = asyncHandler(async (req, res) => {
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-
-  const google_user = await userGooglefbs.findById(req.params.id);
-
-  if (user) {
-    user.name = req.body.name || user.name;
-    user.email = req.body.email || user.email;
-    user.phone = req.body.phone || user.phone;
-
-    const updatedUser = await user.save();
-
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-      phone: updatedUser.phone,
-    });
-  } else if (google_user) {
-    google_user.name = req.body.name || google_user.name;
-    google_user.email = req.body.email || user.email;
-
-    const updatedgoogle = await google_user.save();
-
-    res.json({
-      _id: updatedgoogle._id,
-      name: updatedgoogle.name,
-      email: updatedgoogle.email,
-      phone: updatedgoogle.phone,
-    });
-  } else {
-    res.status(404);
-    throw new Error("user not found");
-  }
+  const user = await User.findByIdAndUpdate(req.user.id, req.body, {
+    runValidators: true,
+    new: true,
+  });
+  res.json({
+    status: "success",
+    message: "User Details has been successfully updated",
+    user,
+  });
 });
 
 // Update user's subscription plan
@@ -209,5 +203,6 @@ export {
   allUser,
   userPlans,
   authenticated,
+  changePassword,
   logOut,
 };
