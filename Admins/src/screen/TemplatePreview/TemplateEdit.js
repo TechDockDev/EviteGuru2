@@ -1,4 +1,3 @@
-
 import { Grid, Button, List, ListItemButton, ListItemIcon, ListItemText, Stack, FormControl, InputLabel, Select, MenuItem, Typography, IconButton, Box } from "@mui/material";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
@@ -24,8 +23,11 @@ import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import StickersModal from "../StickersModal";
+import { useContext } from "react";
+import { DataContext } from "../../AppContext";
 
 const TemplateEdit = () => {
+   const { snackbar } = useContext(DataContext);
    const [allImages, setAllImages] = useState([]);
    const [color, setColor] = useState("");
    const { editor, onReady, selectedObjects } = useFabricJSEditor();
@@ -34,8 +36,10 @@ const TemplateEdit = () => {
    const [addStickersModal, setAddStickersModal] = useState(false);
    const { templateId } = useParams();
    const [templateJson, setTemplateJson] = useState();
-   const fonts = ["Pacifico", "VT323", "Quicksand", "Inconsolata", "Arial", "Helvetica"];
-  const navigate = useNavigate()
+   const [selectedFont, setSelectedFont] = useState("Pinyon Script");
+   const fonts = ["Sacramento", "Parisienne", "Montserrat", "Pinyon Script", "Arial", "Helvetica"];
+
+   const navigate = useNavigate();
    // ===========👇 Add background IMAGE👇  ===================
    const setBackgroundImage = (e) => {
       const reader = new FileReader();
@@ -175,6 +179,7 @@ const TemplateEdit = () => {
    //   ========================font family ===
    const changeFont = (e) => {
       console.log("font working>-");
+      setSelectedFont(e.target.value);
       const o = editor.canvas.getActiveObject().set("fontFamily", e.target.value);
       console.log("text=>", o);
       editor.canvas.renderAll();
@@ -460,31 +465,32 @@ const TemplateEdit = () => {
          formData.append("templateJson", JSON.stringify(editor?.canvas.toJSON()));
          formData.append("previewImage", file);
          const response = await axios.patch(`/template/${templateId}`, formData);
-         navigate("/admin/template-list")
-         
+         editor.canvas.clear();
+         snackbar(response.data.status, response.data.message);
+         navigate("/admin/template-list");
       } catch (error) {
          console.log(error);
       }
    }
-// ===========================================
-const getTemplateJson = async () => {
+   // ===========================================
+   const getTemplateJson = async () => {
       try {
-        const { data } = await axios.get(`/template/${templateId}`);
-        setTemplateJson(data.template.templateJson);
+         const { data } = await axios.get(`/template/${templateId}`);
+         setTemplateJson(data.template.templateJson);
       } catch (error) {
-        console.log(error);
+         console.log(error);
       }
-    };
-    useEffect(() => {
+   };
+   useEffect(() => {
       editor?.canvas?.setDimensions({ height: height, width: width });
-    }, [editor]);
-  
-    useEffect(() => {
+   }, [editor]);
+
+   useEffect(() => {
       editor?.canvas.loadFromJSON(templateJson);
-    }, [templateJson]);
-    useEffect(() => {
+   }, [templateJson]);
+   useEffect(() => {
       getTemplateJson();
-    }, []);
+   }, []);
 
    // =======================================================
    // =======================================================
@@ -512,7 +518,7 @@ const getTemplateJson = async () => {
                      <ListItemButton sx={{ ...ListItemButtonStyle3 }}>
                         <FormControl fullWidth>
                            <InputLabel id="font-family-select-label">Fonts</InputLabel>
-                           <Select labelId="font-family-select-label" id="font-family-select" value={"Pacifico"} label="Font Family" size="small" onChange={changeFont}>
+                           <Select labelId="font-family-select-label" id="font-family-select" value={selectedFont} label="Font Family" size="small" onChange={changeFont}>
                               {fonts?.map((font, index) => {
                                  return (
                                     <MenuItem key={index} value={font}>
@@ -846,12 +852,7 @@ const getTemplateJson = async () => {
                   sx={{ color: "#fff", mt: 2 }}>
                   Update
                </Button>
-               <Button
-                  fullWidth
-                  disableElevation
-                  variant="outlined"
-                  onClick={()=>navigate("/admin/template-list")}
-                  sx={{ mt: 1 }}>
+               <Button fullWidth disableElevation variant="outlined" onClick={() => navigate("/admin/template-list")} sx={{ mt: 1 }}>
                   Cancel
                </Button>
             </Grid>
@@ -889,7 +890,6 @@ const getTemplateJson = async () => {
 };
 
 export default TemplateEdit;
-
 
 // ***********************************************
 // ***********************************************

@@ -207,7 +207,7 @@ const SubAdminListScreen = () => {
       <Box sx={{ height: 400, width: "98%" }}>
         <DataGrid
           width={"98%"}
-          rows={admins}
+          rows={admins?admins:[]}
           columns={columns}
           autoHeight={true}
           initialState={{

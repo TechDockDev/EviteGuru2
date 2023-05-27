@@ -2,7 +2,9 @@ import { React, useContext, useState } from "react";
 import axios from "axios";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "@fontsource/montserrat";
-
+import "@fontsource/sacramento";
+import "@fontsource/parisienne"; 
+import "@fontsource/pinyon-script";
 //local files
 import AdminEmailotp from "./screen/AdminEmailotpScreen";
 
@@ -33,6 +35,8 @@ import EventStats from "./screen/EventStats/EventStats";
 import PaymentDetails from "./screen/PaymentDetails/PaymentDetails";
 import { DataContext } from "./AppContext";
 import { Alert, Snackbar } from "@mui/material";
+import ManageStickers from "./screen/ManageStickers/ManageStickers";
+
 const App = () => {
    const [alertMessage, setAlertMessage] = useState(null);
    const {  severity,
@@ -64,9 +68,7 @@ const App = () => {
                <Route path="/admin/template-create" element={<AdminTemplateCreate showAlertBar={showAlertBar} />} />
                <Route path="/admin/template-edit" element={<AdminTemplateEditScreen showAlertBar={showAlertBar} />} />
                <Route path="/admin/template-edit/:templateId" element={<TemplateEdit />} />
-
                <Route path="/admin/template-list" element={<AdminTemplateListScreen />} />
-
                <Route path="/admin/admin_list" element={<SubAdminListScreen />} />
                <Route path="/admin/pricing" element={<PricingContent />} />
                <Route path="/admin/create-subadmin" element={<AddSubAdmins />} />
@@ -79,6 +81,7 @@ const App = () => {
                <Route path="/admin/promotional-mail" element={<PromotionalMail />} />
                <Route path="/admin/payment-details" element={<PaymentDetails />} />
                <Route path="/admin/send-promotion-message" element={<UserListEmail />} />
+               <Route path="/admin/manage-stickers" element={<ManageStickers />} />
             </Route>
          </Routes>
          <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={() => setOpenSnackbar(false)} 

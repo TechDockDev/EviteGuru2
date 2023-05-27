@@ -1,7 +1,7 @@
 import { Grid, Button, List, ListItemButton, ListItemIcon, ListItemText, Stack, FormControl, InputLabel, Select, MenuItem, Typography, IconButton, Box } from "@mui/material";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -23,46 +23,63 @@ import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
+import { DataContext } from "../AppContext";
 
 const AdminTemplateCreateScreen = () => {
+   const { snackbar } = useContext(DataContext);
+
    const [allImages, setAllImages] = useState([]);
    const [color, setColor] = useState("");
    const { editor, onReady, selectedObjects } = useFabricJSEditor();
    const [data, setData] = useState();
    const [templateData, setTemplateData] = useState();
    const [addStickersModal, setAddStickersModal] = useState(false);
-   const fonts = ["Pacifico", "VT323", "Quicksand", "Inconsolata", "Arial", "Helvetica"];
+   const fonts = ["Sacramento", "Parisienne", "Montserrat", "Pinyon Script", "Arial", "Helvetica"];
+   // ==================👇 dynamically getting canvas height and width👇  =========================
+   let canvasEl = document.querySelector(".canvas-container");
+   let height = canvasEl?.clientHeight;
+   let width = canvasEl?.clientWidth;
 
    // ===========👇 Add background IMAGE👇  ===================
    const setBackgroundImage = (e) => {
       const reader = new FileReader();
       setAllImages([...allImages, e.target.files[0]]);
-      // set background image options
-      var bgImgOptions = {
-         // set the background color to white
-         backgroundColor: "red",
-         // set the scaling mode to "cover"
-         backgroundScaleMode: "cover",
-      };
-      // load the background image
+
       reader.onload = function (event) {
          var imgObj = new Image();
          imgObj.crossOrigin = "Anonymous";
          imgObj.src = event.target.result;
+         imgObj.width = width;
+         console.log(imgObj.height);
+
+         const scaleFactor = Math.min(width / imgObj.width, height / imgObj.height);
+         console.log(scaleFactor);
+
+         // imgObj.scale(scaleFactor);
+
          imgObj.onload = function () {
             var image = new fabric.Image(imgObj);
             image.name = e.target.files[0].name;
+            // image.scale(scaleFactor)
+            console.log(height);
+            console.log(width);
+            //   image.width=200
+            // console.log(editor.canvas);
+            // image.width = editor.canvas.getWidth();
+            // image.height = editor.canvas.getHeight();
+            // image.objectfit = 'contain'
+            // image.scaleToWidth(editor.canvas.width);
+            // image.scaleToHeight(editor.canvas.height);
             // set the image as the background of the canvas
-            editor?.canvas?.setBackgroundImage(image, editor.canvas.renderAll.bind(editor.canvas), bgImgOptions);
+            editor?.canvas?.setBackgroundImage(image, editor.canvas.renderAll.bind(editor.canvas), {
+               scaleX: editor.canvas.width / image.width,
+               scaleY: editor.canvas.height / image.height,
+            });
          };
       };
       reader.readAsDataURL(e.target.files[0]);
    };
    // ============👆Add background IMAGE👆   =================
-   // ==================👇 dynamically getting canvas height and width👇  =========================
-   let canvasEl = document.querySelector(".canvas-container");
-   let height = canvasEl?.clientHeight;
-   let width = canvasEl?.clientWidth;
 
    // ===========================================
 
@@ -457,10 +474,11 @@ const AdminTemplateCreateScreen = () => {
          formData.append("templateJson", JSON.stringify(editor?.canvas.toJSON()));
          formData.append("previewImage", file);
          const response = await axios.post("/template/create", formData);
-         console.log(editor?.canvas.toJSON());
-         console.log(response);
+         // console.log(editor?.canvas.toJSON());
+         snackbar(response.data.status, response.data.message);
+         editor.canvas.clear();
       } catch (error) {
-         console.log(error);
+         snackbar("error", error.message);
       }
    }
 
@@ -489,8 +507,9 @@ const AdminTemplateCreateScreen = () => {
                      {/*  👇 change font type button  👇    */}
                      <ListItemButton sx={{ ...ListItemButtonStyle3 }}>
                         <FormControl fullWidth>
-                           <InputLabel id="font-family-select-label">Fonts</InputLabel>
-                           <Select labelId="font-family-select-label" id="font-family-select" value={"Pacifico"} label="Font Family" size="small" onChange={changeFont}>
+                           <InputLabel id="font-family-select-label" >Fonts</InputLabel>
+                           <Select labelId="font-family-select-label" sx={{ ".MuiSelect-select": { color: "black" },
+                }} id="font-family-select" value={"Pacifico"} label="Font Family" size="small" onChange={changeFont}>
                               {fonts?.map((font, index) => {
                                  return (
                                     <MenuItem key={index} value={font}>
@@ -867,3 +886,43 @@ const AdminTemplateCreateScreen = () => {
 };
 
 export default AdminTemplateCreateScreen;
+
+// const addImage = (e) => {
+//     const reader = new FileReader();
+//     console.log(e.target.files[0]);
+//     setAllImages([...allImages, e.target.files[0]]);
+//     reader.onload = function (event) {
+//       var imgObj = new Image();
+//       imgObj.crossOrigin = "Anonymous";
+//       imgObj.src = event.target.result;
+//       imgObj.onload = function () {
+//         var image = new fabric.Image(imgObj);
+//         editor.canvas.centerObject(image);
+//         image.set({
+//           scaleX: editor?.canvas.getWidth() / image.width / 2,
+//           scaleY: editor?.canvas.getHeight() / image.height / 2,
+//           top: 0,
+//           left: 0,
+//           // originX: "left",
+//           // originY: "top",
+//           srcFromAttribute: true,
+//         });
+//         image.name = e.target.files[0].name;
+//         editor.canvas.add(image);
+//         // image.filters.push(
+//         //   new fabric.Image.filters.BlendColor({
+//         //     color: "orange", // change this color to your desired color
+//         //     mode: "multiply",
+//         //   })
+//         // );
+//         // image.applyFilters();
+//         // var dataURL = editor?.canvas.toDataURL({
+//         //   format: "png",
+//         //   quality: 0.8,
+//         // });
+//         // console.log(dataURL);
+//         editor?.canvas.renderAll();
+//       };
+//     };
+//     reader.readAsDataURL(e.target.files[0]);
+//   };

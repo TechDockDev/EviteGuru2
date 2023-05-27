@@ -21,7 +21,7 @@ const PasswordReset = () => {
     email: "",
     password: "",
   });
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => setShowPassword(!show);
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
