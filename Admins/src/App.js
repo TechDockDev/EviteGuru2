@@ -36,6 +36,7 @@ import PaymentDetails from "./screen/PaymentDetails/PaymentDetails";
 import { DataContext } from "./AppContext";
 import { Alert, Snackbar } from "@mui/material";
 import ManageStickers from "./screen/ManageStickers/ManageStickers";
+import FAQ from "./screen/FAQ/FAQ";
 
 const App = () => {
    const [alertMessage, setAlertMessage] = useState(null);
@@ -79,9 +80,10 @@ const App = () => {
                <Route path="/admin/promotions" element={<CouponTable />} />
                <Route path="/admin/add-coupon" element={<AddCoupon />} />
                <Route path="/admin/promotional-mail" element={<PromotionalMail />} />
-               <Route path="/admin/payment-details" element={<PaymentDetails />} />
+               <Route path="/admin/accounts" element={<PaymentDetails />} />
                <Route path="/admin/send-promotion-message" element={<UserListEmail />} />
                <Route path="/admin/manage-stickers" element={<ManageStickers />} />
+               <Route path="/admin/faq" element={<FAQ />} />
             </Route>
          </Routes>
          <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={() => setOpenSnackbar(false)} 

@@ -26,7 +26,7 @@ const SingleMenuNavLink = ({
         fontSize: "18px",
         // border: "1px solid red",
         display: "block",
-        margin: "12px 0px",
+        margin: "5px 0px",
         padding: "5px 0px 5px 20px",
         bgcolor: "transparent",
         transition: "all 0.1s ease",

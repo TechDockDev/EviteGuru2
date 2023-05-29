@@ -44,8 +44,6 @@ const SingleSticker = ({ sticker, deleteSticker }) => {
             open={deleteModal}
             // open={true}
             onClose={toggleDeleteModal}
-            aria-labelledby="login-modal"
-            aria-describedby="login_modal"
             closeAfterTransition
             sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}>
             <Paper
