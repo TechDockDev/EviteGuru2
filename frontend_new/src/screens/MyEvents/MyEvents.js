@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
+import { Constants } from "../../redux/constants/action-types";
 const MyEvents = () => {
   const dispatch = useDispatch();
   // to work with template preview modal =====
@@ -60,7 +61,7 @@ const MyEvents = () => {
   // === to all events ========
   const getAllEvents = async () => {
     try {
-      const res = await axios.get("/api/v1/user/event/user");
+      const res = await axios.get(`${Constants.URL}/event/user`);
       if (res.status === 200) {
         console.log("response=>", res);
         setAllEvents(res?.data?.events);
@@ -177,7 +178,7 @@ const MyEvents = () => {
               cursor: "text",
             }}
           >
-            LEFT
+            EVENTS LEFT
           </Button>
           &nbsp;&nbsp;
           <Button
@@ -302,7 +303,7 @@ const MyEvents = () => {
                       component={"img"}
                       width={"100%"}
                       alt="template preview"
-                      src={`/images/getImage?path=/${event?.variation?.previewImage}`}
+                      src={`${Constants.IMG_PATH}/${event?.variation?.previewImage}`}
                       borderRadius={"8px"}
                       display={"block"}
                       sx={{

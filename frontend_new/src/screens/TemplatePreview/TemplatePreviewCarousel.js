@@ -2,18 +2,21 @@ import React, { useEffect, useState } from "react";
 import ItemsCarousel from "react-items-carousel";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import axios from "axios";
 import "./TemplatePreviewCarousel.css";
+import { Constants } from "../../redux/constants/action-types";
 
-const TemplatePreviewCarousel = ({ carouselClick }) => {
+const TemplatePreviewCarousel = (props) => {
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const [templateData, setTemplateData] = useState();
-
+  const matchesXS = useMediaQuery("(max-width:390px)");
+  const matchesSM = useMediaQuery("(max-width:600px)");
+  const matchesMD = useMediaQuery("(max-width:900px)");
   // ================
   const getTemplate = async () => {
     try {
-      const res = await axios.get("/api/v1/user/template/all");
+      const res = await axios.get(`${Constants.URL}/template/all`);
       console.log(res.data);
 
       setTemplateData(res?.data);
@@ -40,7 +43,8 @@ const TemplatePreviewCarousel = ({ carouselClick }) => {
       <ItemsCarousel
         requestToChangeActive={setActiveItemIndex}
         activeItemIndex={activeItemIndex}
-        numberOfCards={4}
+        // numberOfCards={4}d
+        numberOfCards={matchesXS ? 1 : matchesSM ? 2 : matchesMD ? 3 : 4}
         gutter={20}
         leftChevron={<ChevronLeftIcon />}
         rightChevron={<ChevronRightIcon />}
@@ -61,7 +65,7 @@ const TemplatePreviewCarousel = ({ carouselClick }) => {
             <Box
               component="img"
               onClick={(e) => {
-                carouselClick(e, singleTemplate._id);
+                props?.carouselClick(e, singleTemplate._id);
               }}
               height="150px"
               key={index}
@@ -77,7 +81,7 @@ const TemplatePreviewCarousel = ({ carouselClick }) => {
                   },
                 },
               }}
-              src={`/images/getImage?path=/${singleTemplate?.previewImage}`}
+              src={`${Constants.IMG_PATH}/${singleTemplate?.previewImage}`}
             />
           );
         })}

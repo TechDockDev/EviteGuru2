@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Grid,
   IconButton,
+  Stack,
   Typography,
 } from "@mui/material";
 import axios from "axios";
@@ -14,12 +15,12 @@ import { useNavigate } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 import TemplatePreviewCarousel from "./TemplatePreviewCarousel";
+import { Constants } from "../../redux/constants/action-types";
 // import Design from "../CustomizationPage/Design";
 
 const TemplatePreview = (props) => {
   const [singleTemplateData, setSingleTemplateData] = useState({});
   // const [openLoginModal, setOpenLoginModal] = useState(false);
-  // /template/:id
 
   const navigate = useNavigate();
 
@@ -42,7 +43,7 @@ const TemplatePreview = (props) => {
     if (props?.singleTemplateId) {
       try {
         const res = await axios.get(
-          `/api/v1/user/template/${props?.singleTemplateId}`
+          `${Constants.URL}/template/${props?.singleTemplateId}`
         );
         setSingleTemplateData(res?.data?.template);
         console.log("singleData->", res?.data);
@@ -84,6 +85,7 @@ const TemplatePreview = (props) => {
           maxHeight: "90vh",
           width: "90%",
           maxWidth: "900px",
+          overflowY: "auto",
           bgcolor: "white",
           boxShadow: 24,
           p: 4,
@@ -126,8 +128,7 @@ const TemplatePreview = (props) => {
                       component="img"
                       height="100%"
                       maxWidth="100%"
-                      src={`/images/getImage?path=/${singleTemplateData?.previewImage}`}
-                      // /template/previewImage/${singleTemplate?.previewImage}
+                      src={`${Constants.IMG_PATH}/${singleTemplateData?.previewImage}`}
                       sx={{ display: "block" }}
                     />
                   ) : (
@@ -138,7 +139,7 @@ const TemplatePreview = (props) => {
               <Grid item xl={6} lg={6} md={6} sm={6}>
                 <Box
                   sx={{
-                    height: "300px",
+                    minHeight: "200px",
                     // border: "1px solid red",
                     display: "flex",
                     justifyContent: "space-around",
@@ -154,26 +155,32 @@ const TemplatePreview = (props) => {
                     fontWeight="600"
                     width="100%"
                     textAlign="left"
+                    sx={{ textTransform: "uppercase" }}
                   >
                     {singleTemplateData?.name}
                   </Typography>
-                  <Typography
-                    variant="h2"
-                    fontSize="20px"
-                    width="100%"
-                    textAlign="left"
-                  >
-                    Description
-                  </Typography>
-                  <Typography
-                    variant="body"
-                    fontSize="16px"
-                    fontFamily={"Montserrat"}
-                    width="100%"
-                    textAlign="left"
-                  >
-                    {singleTemplateData?.description}
-                  </Typography>
+                  <Stack spacing={1} width={"100%"} mt={1} mb={1}>
+                    <Typography
+                      variant="h2"
+                      fontSize="20px"
+                      width="100%"
+                      textAlign="left"
+                      // bgcolor={"yellow"}
+                      fontWeight={"bold"}
+                    >
+                      Description
+                    </Typography>
+                    <Typography
+                      variant="body"
+                      fontSize="16px"
+                      fontFamily={"Montserrat"}
+                      width="100%"
+                      textAlign="left"
+                      // bgcolor={"red"}
+                    >
+                      {singleTemplateData?.description}
+                    </Typography>
+                  </Stack>
                   {userDetail ? (
                     <Button
                       disableElevation
@@ -222,9 +229,23 @@ const TemplatePreview = (props) => {
               More like this
             </Typography>
           ) : (
-            <Typography variant="h2" fontSize="20px" fontWeight="600" mb={2}>
-              Please Select A Template To Customize
-            </Typography>
+            <Stack
+              direction={"row"}
+              alignContent={"center"}
+              alignItems={"center"}
+              mb={2}
+              spacing={1}
+            >
+              <Typography variant="h2" fontSize="20px" fontWeight="600">
+                Please Select A Template To Customize OR
+              </Typography>
+              <Button
+                variant="text"
+                onClick={() => navigate("/dashboard/edit/fresh-template")}
+              >
+                CREATE FRESH ONE
+              </Button>
+            </Stack>
           )}
 
           <TemplatePreviewCarousel carouselClick={props?.carouselClick} />

@@ -17,6 +17,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import axios from "axios";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Moment from "react-moment";
+import { Constants } from "../../redux/constants/action-types";
 //=============================
 const EventStats = () => {
   const { state } = useLocation();
@@ -150,7 +151,7 @@ const EventStats = () => {
   // ===get event guestList =====
   const getGuestList = async (eventId) => {
     try {
-      const res = await axios.get(`/api/v1/user/guest/event/${eventId}`);
+      const res = await axios.get(`${Constants.URL}/guest/event/${eventId}`);
       if (res.status === 200) {
         console.log("response=>", res);
         setGuestList(res?.data?.guestList?.guests);

@@ -35,9 +35,13 @@ const CustomizationPage = () => {
   };
 
   useEffect(() => {
-    if (id) {
+    if (id && id !== "fresh-template") {
       // to set the temp name fot the event
       dispatch(setPageTitle(`New Event Name`));
+      // will create temp route for new event along with temp data
+      dispatch(setTempTemplateData({ id: id }));
+    } else if (id === "fresh-template") {
+      dispatch(setPageTitle(`New Event name_blank`));
       // will create temp route for new event along with temp data
       dispatch(setTempTemplateData({ id: id }));
     }

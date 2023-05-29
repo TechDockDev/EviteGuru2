@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setPageTitle } from "../../redux/action/defaultActions";
 import axios from "axios";
 import { useState } from "react";
+import { Constants } from "../../redux/constants/action-types";
 
 const AddressBook = () => {
   const { pageTitle } = useSelector((state) => state);
@@ -90,7 +91,7 @@ const AddressBook = () => {
   // ==== get contact list ====
   const getContactList = async () => {
     try {
-      const res = await axios.get("/api/v1/user/guest/user/");
+      const res = await axios.get(`${Constants.URL}/guest/user/`);
       if (res.status === 200) {
         console.log("response=>", res?.data?.guestList);
         // extractAllcontacts(res?.data?.guestList);
