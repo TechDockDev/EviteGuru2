@@ -1,6 +1,6 @@
-import React, {  useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
-import {  AppBar, Backdrop, Box, Drawer, IconButton, List,  Toolbar } from "@mui/material";
+import { AppBar, Backdrop, Box, Drawer, IconButton, List, Toolbar } from "@mui/material";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PaymentsIcon from "@mui/icons-material/Payments";
@@ -17,14 +17,13 @@ import { CircularProgress } from "@mui/material";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import axios from "axios";
 import { DataContext } from "../../AppContext";
-import ExtensionIcon from '@mui/icons-material/Extension';
-
+import ExtensionIcon from "@mui/icons-material/Extension";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 const AdminDashboard = () => {
    //👇  state for open small screen left drawer  👇
    const navigate = useNavigate();
    const [openLeftDrawer, setOpenLeftDrawer] = useState();
-   const {snackbar} = useContext(DataContext)
-
+   const { snackbar } = useContext(DataContext);
 
    const handleDrawerToggle = () => {
       setOpenLeftDrawer(!openLeftDrawer);
@@ -32,7 +31,7 @@ const AdminDashboard = () => {
    const logout = async () => {
       try {
          const { data } = await axios.get("/logout");
-         navigate("/");         
+         navigate("/");
          snackbar(data.status, data.message);
       } catch (error) {}
    };
@@ -152,8 +151,9 @@ const AdminDashboard = () => {
                         <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/admin_list"} linkText={"Sub-Admins"} />
                         <SingleMenuNavLink icon={<SubscriptionsIcon />} to={"/admin/pricing"} linkText={"Subscriptions"} />
                         <SingleMenuNavLink icon={<LocalOfferIcon />} to={"/admin/promotions"} linkText={"Coupons and Promotions"} />
-                        <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/payment-details"} linkText={"Payments Details"} />
+                        <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/accounts"} linkText={"Accounts"} />
                         <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} />
+                        <SingleMenuNavLink icon={<QuestionAnswerIcon />} to={"/admin/faq"} linkText={"FAQs"} />
                         <SingleMenuNavLink icon={<MdLogout />} clickFunction={logout} linkText={"Log out"} />
                      </List>
                   </Box>
@@ -380,13 +380,15 @@ const AdminDashboard = () => {
                     linkText={"Events"}
                   /> */}
                            <SingleMenuNavLink icon={<CollectionsIcon />} to={"/admin/template-list"} linkText={"Template List"} handleDrawerToggle={handleDrawerToggle} />
-                           <SingleMenuNavLink icon={<ExtensionIcon  />} to={"/admin/manage-stickers"} linkText={"Manage Stickers"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<ExtensionIcon />} to={"/admin/manage-stickers"} linkText={"Manage Stickers"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<AddPhotoAlternateIcon />} to={"/admin/template-create"} linkText={"Add Template"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/user-list"} linkText={"Users"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/admin_list"} linkText={"Sub-Admins"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<SubscriptionsIcon />} to={"/admin/pricing"} linkText={"Subscriptions"} handleDrawerToggle={handleDrawerToggle} />
-                           <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/payment-details"} linkText={"Payments Details"} handleDrawerToggle={handleDrawerToggle} />
-                           <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/accounts"} linkText={"Accounts"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} handleDrawerToggle={handleDrawerToggle}/>
+                           <SingleMenuNavLink icon={<QuestionAnswerIcon />} to={"/admin/faq"} linkText={"FAQs"} handleDrawerToggle={handleDrawerToggle} />
+
                            <SingleMenuNavLink icon={<MdLogout />} clickFunction={logout} linkText={"Log out"} handleDrawerToggle={handleDrawerToggle} />
                         </List>
                      </Box>
@@ -457,7 +459,7 @@ const AdminDashboard = () => {
                   <CircularProgress color="info" />
                </Backdrop>
                {/* loader */}
-             
+
                <Outlet />
             </Box>
             {/* ============  👆container for all the screens (scenes)👆============= */}

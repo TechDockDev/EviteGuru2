@@ -1,7 +1,27 @@
 import { Box, Menu, MenuItem, Modal, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { DataContext } from "../AppContext";
+import axios from "axios";
 
 const StickersModal = ({ open, handleClose, addStickers }) => {
+   const [stickersData, setStickersData] = useState([]);
+   const { snackbar } = useContext(DataContext);
+
+   const getStickers = async () => {
+      try {
+         const { data } = await axios.get("template/stickers");
+         setStickersData(data.stickers);
+      } catch (error) {
+         snackbar("error", error.message);
+      }
+   };
+
+   console.log(stickersData);
+
+   useEffect(() => {
+      getStickers();
+   }, []);
+
    const style = {
       position: "absolute",
       top: "50%",
@@ -28,32 +48,19 @@ const StickersModal = ({ open, handleClose, addStickers }) => {
                Select sticker
             </Typography>
             <Stack mt={2} direction={"row"} flexWrap={"wrap"} overflow={"auto"}>
-               <MenuItem
-                  onClick={(e) => {
-                     handleClose();
-                     addStickers(e);
-                  }}
-                  value={"/assets/leaves2.png"}>
-                  <img alt="image" src="/assets/leaves2.png" width={"50px"} />
-               </MenuItem>
-               <MenuItem onClick={(e) => {
-                     handleClose();
-                     addStickers(e);
-                  }} value={"/assets/heroImage2.png"}>
-                  <img alt="image" src="/assets/heroImage2.png" />
-               </MenuItem>
-               <MenuItem onClick={(e) => {
-                     handleClose();
-                     addStickers(e);
-                  }} value={"/assets/leaves3.png"}>
-                  <img alt="image" src="/assets/leaves3.png" />
-               </MenuItem>
-               <MenuItem onClick={(e) => {
-                     handleClose();
-                     addStickers(e);
-                  }} value={"/assets/footerDecoSir.png"}>
-                  <img alt="image" src="/assets/footerDecoSir.png" />
-               </MenuItem>
+               {stickersData?.map((stkr, index) => {
+                  console.log(stkr);
+                  
+                 return <MenuItem key={index}
+
+                     onClick={(e) => {
+                        handleClose();
+                        addStickers(e);
+                     }}
+                     value={`/images/getImage?path=/${stkr?.image}`}>
+                     <img alt="image" src={`/images/getImage?path=/${stkr?.image}`} />
+                  </MenuItem>;
+               })}
             </Stack>
          </Box>
       </Modal>

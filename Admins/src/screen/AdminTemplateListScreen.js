@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, IconButton, Typography, Modal } from "@mui/material";
+import { Box, IconButton, Typography, Modal, Paper, Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
@@ -13,6 +13,12 @@ const AdminTemplateListScreen = () => {
    const [selectedTemplateId, setSelectedTemplateId] = useState();
    const [loading, setLoading] = useState(false);
    const navigate = useNavigate();
+
+   const [deleteModal, setDeleteModal] = useState(false);
+   //    =========
+   const toggleDeleteModal = () => {
+      setDeleteModal(!deleteModal);
+   };
 
    const getTemplateData = async () => {
       try {
@@ -34,12 +40,9 @@ const AdminTemplateListScreen = () => {
    /// Delete handler for template delete
    const deleteHandler = async (templateId) => {
       try {
-         if (window.confirm("Are you sure you want to delete this template?")) {
-            const res = await axios.delete(`/template/${templateId}`);
-            console.log("deleted");
-             getTemplateData();
-
-         }
+         const res = await axios.delete(`/template/${templateId}`);
+         console.log("deleted");
+         getTemplateData();
       } catch (error) {
          console.log(error);
       }
@@ -99,7 +102,7 @@ const AdminTemplateListScreen = () => {
       },
 
       {
-         field:"delete",
+         field: "delete",
          headerName: "Delete",
          width: 100,
          renderCell: (params) => {
@@ -108,7 +111,7 @@ const AdminTemplateListScreen = () => {
                   <IconButton
                      onClick={(e) => {
                         e.stopPropagation();
-                        deleteHandler(params?.row?._id);
+                        toggleDeleteModal();
                      }}
                      sx={{
                         color: "#FFFFFF",
@@ -117,6 +120,81 @@ const AdminTemplateListScreen = () => {
                      }}>
                      <DeleteForeverIcon />
                   </IconButton>
+                  {/* ***********  confirm delete modal ************** */}
+                  <Modal
+                     open={deleteModal}
+                     // open={true}
+                     onClose={toggleDeleteModal}
+                     closeAfterTransition
+                     sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}>
+                     <Paper
+                        sx={{
+                           position: "absolute",
+                           top: "50%",
+                           left: "50%",
+                           transform: "translate(-50%, -50%)",
+                           width: { xl: 400, lg: 400, md: 400, sm: 400, xs: "70%" },
+                           bgcolor: " rgba(133, 103, 157, 0.47)",
+                           border: "1px solid white",
+                           borderRadius: "20px",
+                           p: 5,
+                        }}>
+                        <Typography
+                           variant="h1"
+                           sx={{
+                              fontSize: "25px",
+                              fontWeight: "600",
+                              textAlign: "center",
+                              color: "white",
+                           }}>
+                           Delete Template
+                        </Typography>
+                        <Typography
+                           sx={{
+                              mt: 2,
+                              textAlign: "center",
+                              color: "white",
+                           }}>
+                           Are sure you want to delete {params.row.name} ?
+                        </Typography>
+                        <Button
+                           onClick={() => {
+                              deleteHandler(params?.row?._id);
+                              toggleDeleteModal();
+                           }}
+                           variant="contained"
+                           sx={{
+                              color: "white",
+                              bgcolor: "#3B285B",
+                              width: "100%",
+                              mt: 2,
+                              "&:hover": {
+                                 scale: "1.02",
+
+                                 bgcolor: "#3B285B",
+                              },
+                           }}
+                           disableElevation>
+                           Yes
+                        </Button>
+                        <Button
+                           onClick={toggleDeleteModal}
+                           variant="outlined"
+                           sx={{
+                              color: "white",
+                              borderColor: "#3B285B",
+                              width: "100%",
+                              mt: 2,
+                              "&:hover": {
+                                 scale: "1.02",
+                                 borderColor: "#3B285B",
+                              },
+                           }}
+                           disableElevation>
+                           No
+                        </Button>
+                     </Paper>
+                  </Modal>
                </>
             );
          },
