@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import Guest from "../models/guestModel.js";
 import { parse } from "csv-parse";
 import { sendMail } from "../middlewares/mailMiddleware.js";
+import { sendSms } from "../middlewares/smsMiddleware.js";
 
 const createGuest = asyncHandler(async (req, res) => {
   const existingGuestList = await Guest.findOne({ event: req.body.eventId });
@@ -53,9 +54,13 @@ const addGuestInBulk = asyncHandler(async (req, res) => {
   // Test that the parsed records matched the expected records
   parser.on("end", async function () {
     console.log(records);
-    await Guest.findByIdAndUpdate(req.params.guestId, {
-      $push: { guests: { $each: records } },
-    });
+    await Guest.findByIdAndUpdate(
+      req.params.guestId,
+      {
+        $push: { guests: { $each: records } },
+      },
+      { runValidators: true }
+    );
     res.json({
       status: "success",
       message: "Guests has been added in the list",
@@ -150,42 +155,37 @@ const sendInvitation = asyncHandler(async (req, res) => {
       return email;
     }
   });
-  sendMail("subject", "body", emails).then(async () => {
-    const guests = guestList.guests.map((guest) => {
-      if (guestIds.includes(guest.id)) {
-        return { ...guest, status: "pending" };
-      }
-      return { ...guest };
-    });
-    guestList.guests = guests;
-    await guestList.save();
-    res.json({
-      status: "success",
-      message: "Invitations have been sent successfully",
-    });
+  const phoneNumbers = guestList.guests.map(({ id, phone }) => {
+    if (guestIds.includes(id)) {
+      return phone;
+    }
+  });
+  await sendMail("subject", "body", emails);
+  await sendSms("This is a message", phoneNumbers);
+  const guests = guestList.guests.map((guest) => {
+    if (guestIds.includes(guest.id)) {
+      return { ...guest, status: "pending" };
+    }
+    return { ...guest };
+  });
+  guestList.guests = guests;
+  await guestList.save();
+  res.json({
+    status: "success",
+    message: "Invitations have been sent successfully",
   });
 });
 
 const addGuestsFromAddressBook = asyncHandler(async (req, res) => {
   const { guestIds, eventId } = req.body;
   let guestList = await Guest.find({ user: req.user.id });
-  console.log(guestList);
   guestList = guestList
-    .map(({guest}) => {
-      return { ...guest, status: "Not Invited" };
-    })
-    // .map(({ guests }) => guests)
+    .map(({ guests }) => guests)
     .flat()
-    .filter((guest) => guestIds.includes(guest.id));
-  // .map((guest) => {
-  //   return { ...guest, status: "Not Invited" };
-  // });
-  console.log(guestList);
-  // console.log(
-  //   guestList((guest) => {
-  //     return { ...guest, status: "Not Invited" };
-  //   })
-  // );
+    .filter((guest) => guestIds.includes(guest.id))
+    .map((guest) => {
+      return { ...guest.toObject(), status: "Not Invited" };
+    });
   await Guest.findOneAndUpdate(
     { event: eventId },
     { $addToSet: { guests: guestList } }
