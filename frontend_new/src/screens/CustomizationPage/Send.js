@@ -268,6 +268,7 @@ const Send = () => {
   useEffect(() => {
     if (id) {
       getSingleEventDetails();
+      createGuestList();
     }
     if (createdEventDetails?.guestListId) {
       getGuestListDetails(createdEventDetails?.guestListId);

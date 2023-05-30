@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Avatar,
@@ -15,6 +15,7 @@ import SidebarMenu from "./SidebarMenu";
 import { useSelector } from "react-redux";
 
 const UserDashboard = () => {
+  const navigate = useNavigate();
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
   // useSelector to use Title
@@ -295,6 +296,8 @@ const UserDashboard = () => {
               }}
             >
               <Box
+                component={NavLink}
+                to="/"
                 sx={{
                   height: "60px",
                   // width: "",
@@ -310,6 +313,10 @@ const UserDashboard = () => {
                   component={"img"}
                   src={"/assets/EviteGuruLogoWhite.svg"}
                   sx={{ height: "100%" }}
+                  onClick={() => {
+                    navigate("/");
+                    handleDrawerToggle();
+                  }}
                 />
               </Box>
 

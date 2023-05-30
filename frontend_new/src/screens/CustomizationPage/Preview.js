@@ -5,6 +5,7 @@ import Moment from "react-moment";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { setCreatedEventDetail } from "../../redux/action/userActions";
+import { Constants } from "../../redux/constants/action-types";
 
 const Preview = (props) => {
   const navigate = useNavigate();
@@ -22,7 +23,10 @@ const Preview = (props) => {
       form.append("variationJson", userEventTemplate?.jsonData);
       form.append("preview", userEventTemplate?.previewImage);
       form.append("templateId", id);
-      const response = await axios.post("/api/v1/user/variation/create", form);
+      const response = await axios.post(
+        `${Constants.URL}/variation/create`,
+        form
+      );
       if (response.status === 200) {
         console.log("response=>", response?.data?.variation?._id);
         await createEvent(response?.data?.variation?._id);
@@ -38,7 +42,7 @@ const Preview = (props) => {
   const createEvent = async (variationId) => {
     console.log("control is comming => variationId=>", variationId);
     try {
-      const res = await axios.post("/api/v1/user/event/create", {
+      const res = await axios.post(`${Constants.URL}/event/create`, {
         ...userEventTemplate?.eventDetails,
         date: userEventTemplate?.eventDetails?.dateFormat,
         variationId: variationId,
@@ -212,9 +216,6 @@ const Preview = (props) => {
               </Button> */}
               <Box
                 component={"img"}
-                //  src={
-                //    "https://images.greetingsisland.com/images/invitations/wedding/previews/ivy-and-sage_3.png?auto=format,compress&w=440"
-                //  }
                 src={userEventTemplate?.tempPreviewImage}
                 alt=""
                 sx={{

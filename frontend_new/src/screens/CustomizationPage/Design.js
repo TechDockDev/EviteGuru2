@@ -25,7 +25,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import {
   getSingleTemplate,
   setEventTemplate,
-  setEventTemplateJson,
 } from "../../redux/action/userActions";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import {
@@ -38,7 +37,6 @@ import { FaRegObjectUngroup } from "react-icons/fa";
 import { BsLayerBackward } from "react-icons/bs";
 import { BsLayerForward } from "react-icons/bs";
 import { ImMakeGroup } from "react-icons/im";
-// import InterestsIcon from "@mui/icons-material/Interests";// icon for add shapes
 import ExtensionIcon from "@mui/icons-material/Extension";
 import StickersModal from "./StickersModal";
 import FormatBoldIcon from "@mui/icons-material/FormatBold";
@@ -47,25 +45,26 @@ import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import Draggable from "react-draggable";
+import { Constants } from "../../redux/constants/action-types";
 const Design = (props) => {
   const [color, setColor] = useState("");
   const { editor, onReady } = useFabricJSEditor();
   const [data, setData] = useState();
-  const [sticker, setSticker] = useState();
   const [templateData, setTemplateData] = useState();
   const [addStickersModal, setAddStickersModal] = useState(false);
   const fonts = [
-    "Pacifico",
-    "VT323",
-    "Quicksand",
-    "Inconsolata",
+    "Sacramento",
+    "Parisienne",
+    "Montserrat",
+    "Pinyon Script",
     "Arial",
     "Helvetica",
   ];
+
   const navigate = useNavigate();
   // =========== 👇 code for draggable tools bar for text edit👆👆=======
   // const [menuPosition, setMenuPosition] = React.useState({ x: 0, y: 0 });
-  const [position, setPosition] = useState({ x: 20, y: 250 });
+  const [position, setPosition] = useState({ x: 50, y: 250 });
   const handleDrag = (_, { x, y }) => {
     setPosition({ x, y });
   };
@@ -88,13 +87,8 @@ const Design = (props) => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  // console.log("id...", id);
-
-  const { templateDetails, userDetail } = useSelector(
-    (state) => state.templateData
-  );
-  // const { template, loading, error } = templateDetails;
-  // console.log("template data", templateDetails);
+  const { templateDetails, userDetail } = useSelector((state) => state);
+  console.log(userDetail);
 
   // =================== Ading Text Fuc
   const addText = () => {
@@ -151,18 +145,21 @@ const Design = (props) => {
   const moveForward = () => {
     const myObject = editor.canvas.getActiveObject();
     editor.canvas.bringForward(myObject);
+    editor.canvas.discardActiveObject();
   };
   // =====================================
   // =================move to back back=======================
   const moveToBack = () => {
     const myObject = editor.canvas.getActiveObject();
     editor.canvas.sendToBack(myObject);
+    editor.canvas.discardActiveObject();
   };
   //   ============bring to top =============
   const bringToTop = () => {
     const myObject = editor.canvas.getActiveObject();
     editor.canvas.bringToFront(myObject);
     editor.canvas.renderAll();
+    editor.canvas.discardActiveObject();
   };
   // =====================================
   //   ==================ungroup itetms ================
@@ -179,28 +176,12 @@ const Design = (props) => {
     editor.canvas.renderAll();
   };
   // =====================================================
-  // ===========need to be fixed
-  // const addStickers = (e) => {
-  //   fabric.Image.fromURL(
-  //     e.target.src,
-  //     (img) => {
-  //       img.scale(0.2);
-  //       editor.canvas.add(img);
-  //       editor.canvas.renderAll();
-  //     },
-  //     {
-  //       left: width / 2,
-  //       top: height / 2,
-  //     }
-  //   );
-  // };
-  // ========add stickers =======================
+  // ===========add stickers ============
   const addStickers = (e) => {
+    // console.log("e=>", e.target);
     fabric.Image.fromURL(
-      e.target.value,
+      e,
       (img) => {
-        img.name = e.target.value.split("/").slice(-1)[0];
-        console.log(e.target.value.split("/").slice(-1)[0]);
         img.scale(0.2);
         editor.canvas.add(img);
         editor.canvas.renderAll();
@@ -211,7 +192,7 @@ const Design = (props) => {
       }
     );
   };
-  // ==============================================
+
   //   ========================font family ===
   const changeFont = (e) => {
     console.log("font working>-");
@@ -305,7 +286,7 @@ const Design = (props) => {
       return function () {
         return fabric.util.object.extend(toObject.call(this), {
           name: this.name,
-          src: `http://192.168.29.249:8085/api/v1/user/template/sendImage/${this.name}`,
+          src: `${Constants.IMG_URL}/template/sendImage/${this.name}`,
         });
       };
     })(fabric.Image.prototype.toObject);
@@ -364,8 +345,8 @@ const Design = (props) => {
 
   //   ====load canvas from json =====
   const loadCanvasFromJson = () => {
-    let object = new fabric.Canvas("canvas");
-    // console.log(templateData);
+    // let object = new fabric.Canvas("canvas");
+    console.log(templateData);
     editor?.canvas.loadFromJSON(templateData);
   };
   // ==================================
@@ -393,27 +374,12 @@ const Design = (props) => {
   };
   // ==================
   const getTemplate = async () => {
-    const res = await axios.get(`/api/v1/user/template/${id}`);
-    // console.log(s.data.template[0].templateJson);
-    // console.log(
-    //   "template data=>",
-    //   res?.data?.template?.templateJson,
-    //   "id =>",
-    //   id
-    // );
+    const res = await axios.get(`${Constants.URL}/template/${id}`);
     dispatch(getSingleTemplate(res?.data?.template));
-    // const latest = s?.data?.template.length - 1;
     setTemplateData(JSON.parse(res?.data?.template?.templateJson));
   };
-  // ============================
-  const getAllStickers = async () => {
-    try {
-      const res = await axios.get("/api/v1/user/variation/stickers");
-      if (res.status === 200) {
-        console.log("response=>", res);
-      }
-    } catch (error) {}
-  };
+  //  ============================
+
   // ====handleCancel ====
   const handleCancel = () => {
     navigate("/dashboard/my-events");
@@ -421,8 +387,10 @@ const Design = (props) => {
   // =endOf handleCancel==
   // ===============
   useEffect(() => {
-    getAllStickers();
-    getTemplate();
+    // getAllStickers();
+    if (id && id !== "fresh-template") {
+      getTemplate();
+    }
   }, []);
   // =============
 
@@ -893,7 +861,7 @@ const Design = (props) => {
               item
               mt={2}
               // component={Paper}
-              md={4}
+              md={6}
               xs={12}
               overflow={"auto"}
               bgcolor={"white"}
@@ -901,6 +869,7 @@ const Design = (props) => {
                 position: "absolute",
                 left: `${position.x}`,
                 right: `${position.y}`,
+                cursor: "move",
               }}
             >
               <Stack
@@ -911,6 +880,7 @@ const Design = (props) => {
                 paddingX={"5px"}
                 boxSizing={"border-box"}
                 width={"100%"}
+                sx={{ cursor: "move" }}
               >
                 {/*  👇 change font type button  👇    */}
                 <ListItemButton sx={{ ...ListItemButtonStyle3 }}>
@@ -919,7 +889,7 @@ const Design = (props) => {
                     <Select
                       labelId="font-family-select-label"
                       id="font-family-select"
-                      value={"Pacifico"}
+                      value={"Montserrat"}
                       label="Font Family"
                       size="small"
                       onChange={changeFont}
@@ -986,31 +956,6 @@ const Design = (props) => {
           {/* 👆 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED) 👆   */}
         </>
       )}
-      <Grid item xs={12}>
-        {/* <Stack direction={"row"} alignItems={"center"} justifyContent={"end"}> */}
-        {/* ======================================== */}
-        {/* <ListItemButton
-            sx={{ display: "flex", flexDirection: "column" }}
-            onClick={downloadImage}
-          >
-            <ListItemIcon
-              sx={{ color: "black", "& svg": { fontSize: "50px" } }}
-            >
-              <FileDownloadOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText
-              primaryTypographyProps={{
-                sx: { color: "black", fontSize: "12px", fontWeight: "800" },
-              }}
-            >
-              Download
-            </ListItemText>
-          </ListItemButton> */}
-        {/* ============================ */}
-        {/* </Stack> */}
-      </Grid>
-      {/* 👆 image container 👆   */}
-      {/* <img src="/assets/leaves2.png" /> */}
     </Grid>
   );
 };

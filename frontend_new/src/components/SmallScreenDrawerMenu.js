@@ -95,6 +95,7 @@ const SmallScreenDrawerMenu = (props) => {
           {/* ==== 👇 EVITEGURU topbar logo👇   ===== */}
           <Box
             component={NavLink}
+            to={"/"}
             sx={{
               width: "150px",
               display: "flex",

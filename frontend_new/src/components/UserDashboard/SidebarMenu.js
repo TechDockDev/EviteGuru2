@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/action/userActions";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
+import { Constants } from "../../redux/constants/action-types";
 const SidebarMenu = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const SidebarMenu = (props) => {
   // ===logout handler =========
   const logoutHandler = async () => {
     try {
-      const res = await axios.post("/api/v1/user/logout");
+      const res = await axios.post(`${Constants.URL}/logout`);
       if (res.status === 200) {
         console.log("response=>", res);
         // props?.handleDrawerToggle();

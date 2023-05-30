@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import "@fontsource/montserrat";
 import "@fontsource/poppins";
+import "@fontsource/sacramento";
+import "@fontsource/parisienne";
+import "@fontsource/pinyon-script";
 import Header from "./components/Header";
 import BrowseTemplate from "./screens/BrowseTemplate/BrowseTemplate";
 import UserDashboard from "./components/UserDashboard/UserDashboard";
@@ -22,12 +25,6 @@ import { userAuth } from "./redux/action/userActions";
 import Send from "./screens/CustomizationPage/Send";
 import InviteesResponseScreen from "./screens/InviteesResponseScreen/InvitessResponseScreen";
 
-// import FooterSection from "./screens/HomeScreen/FooterSection";
-// import EmailsendOtp from "./screens/EmailotpScreen";
-// import { Stack } from "@mui/material";
-// import LogInModal from "./screens/LoginModal/LogInModal";
-// import React, { useState, useEffect } from "react";
-// import RegisterModal from "./screens/RegisterModal/RegisterModal";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -93,42 +90,3 @@ const App = () => {
 
 export default App;
 
-//{/* <Route path="/browse_template" element={<BrowseTemplate />} /> */}
-
-// import "@fontsource/montserrat";
-// import { Flex } from "@chakra-ui/react";
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import React from 'react'
-// import HomeScreen from './screens/HomeScreen';
-// import LoginScreen from "./screens/LoginScreen";
-// import RegisterScreen from "./screens/RegisterScreen";
-// import EmailsendOtp from "./screens/EmailotpScreen";
-// import Changepassword from "./screens/Changepassword";
-// import Header from "./components/Header";
-
-// const App = () => {
-//   return (
-//     <BrowserRouter>
-//       <Header />
-//       <Flex
-//         as='main'
-//         mt='65px'
-//         direction='column'
-//         minH='xl'
-//         py='3'
-//         px='6'
-//       // bgColor='gray.200'
-//       >
-//         <Routes>
-//           <Route path="/" element={<HomeScreen />} />
-//           <Route path="/login" element={<LoginScreen />} />
-//           <Route path="/register" element={<RegisterScreen />} />
-//           <Route path='/send-otp' element={<EmailsendOtp />} />
-//           <Route path='/change-password' element={<Changepassword />} />
-//         </Routes>
-//       </Flex>
-//     </BrowserRouter>
-//   )
-// }
-
-// export default App;

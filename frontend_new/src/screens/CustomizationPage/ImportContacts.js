@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useSelector } from "react-redux";
+import { Constants } from "../../redux/constants/action-types";
 
 const ImportContacts = (props) => {
   const { createdEventDetails } = useSelector((state) => state);
@@ -81,7 +82,7 @@ const ImportContacts = (props) => {
   // ==== get contact list ====
   const getContactList = async () => {
     try {
-      const res = await axios.get(`/api/v1/user/guest/user/${id}`);
+      const res = await axios.get(`${Constants.URL}/guest/user/${id}`);
       if (res.status === 200) {
         console.log("response=>", res?.data?.guestList);
         // extractAllcontacts(res?.data?.guestList);
@@ -97,7 +98,7 @@ const ImportContacts = (props) => {
     try {
       console.log("imported contact", rowSelectionModel);
       const res = await axios.post(
-        "/api/v1/user/guest/add-guests-from-addressBook",
+        `${Constants.URL}/guest/add-guests-from-addressBook`,
         { guestIds: rowSelectionModel, eventId: id }
       );
       if (res.status === 200) {
