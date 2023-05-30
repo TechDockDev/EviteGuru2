@@ -16,6 +16,7 @@ import subscriptionRoutes from "./routes/admin/subscriptionRoutes.js";
 import couponRoutes from "./routes/admin/couponRoutes.js";
 import promotionRoutes from "./routes/admin/promotionRoutes.js";
 import subscriptionUserRoutes from "./routes/user/subscriptionRoutes.js";
+import faqRoutes from "./routes/admin/faqRoutes.js";
 
 //connecting database
 dotenv.config();
@@ -46,6 +47,7 @@ app.use("/api/v1/admin/template", templateRoutes);
 app.use("/api/v1/admin/plan", subscriptionRoutes);
 app.use("/api/v1/admin/coupon", couponRoutes);
 app.use("/api/v1/admin/promotion", promotionRoutes);
+app.use("/api/v1/admin/faq", faqRoutes);
 
 // port using env file
 const PORT = process.env.PORT || 8080; // port No.
