@@ -53,8 +53,13 @@ const Details = (props) => {
       alert("please save design firts");
     }
     console.log("data=>", eventDetailsData, "=>user", userEventTemplate);
-    
   };
+
+  useEffect(() => {
+    if (userEventTemplate?.eventDetails) {
+      setEventDetailsData(userEventTemplate?.eventDetails);
+    }
+  }, []);
 
   return (
     <Stack>

@@ -30,7 +30,7 @@ export const eventReducer = (state = {}, { type, payload }) => {
 export const createdEventDetail = (state = {}, { type, payload }) => {
   switch (type) {
     case ActionTypes.SET_CREATED_EVENT_DETAILS:
-      console.log("eventDetails=>", payload);
+      // console.log("eventDetails=>", payload); 
       return { ...payload };
     case ActionTypes.SET_CREATED_LIST_ID:
       return { ...state, guestListId: payload };

@@ -1,5 +1,16 @@
-import { Box, Button, Tab, Tabs } from "@mui/material";
-import React from "react";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Slide,
+  Tab,
+  Tabs,
+} from "@mui/material";
+import React, { useState } from "react";
 import DesignServicesOutlinedIcon from "@mui/icons-material/DesignServicesOutlined";
 import FormatAlignLeftOutlinedIcon from "@mui/icons-material/FormatAlignLeftOutlined";
 import MailOutlinedIcon from "@mui/icons-material/MailOutlined";
@@ -20,6 +31,10 @@ import {
 import { reSetEventTemplate } from "../../redux/action/userActions";
 
 const CustomizationPage = () => {
+  const [changesSaved, setChangesSaved] = useState(false);
+  // ====dialogue state =========
+  const [openDialogue, setopenDialogue] = useState(false);
+  // ============================
   const { id } = useParams();
   // use selector
   const { userEventTemplate } = useSelector((state) => state);
@@ -29,6 +44,27 @@ const CustomizationPage = () => {
 
   const navigate = useNavigate();
   // const id = temp._id
+
+  // handleopenDialogue box ====
+  const handleOpenDialogue = () => {
+    setopenDialogue(!openDialogue);
+  };
+  // =============================
+  const handleSkip = () => {
+    setValue(0);
+    handleOpenDialogue();
+  };
+  // =============================
+  // const handleUserResponse = (response) => {
+  //   if (response === "yes") {
+  //     setValue(1);
+  //     handleOpenDialogue();
+  //   } else if (response === "no") {
+  //     setValue(0);
+  //     handleOpenDialogue();
+  //   }
+  // };
+  // =============================
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -50,7 +86,23 @@ const CustomizationPage = () => {
       dispatch(reSetEventTemplate({}));
     };
   }, []);
+  // ===========================================
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      console.log("event=>", event);
+      if (!changesSaved) {
+        event.preventDefault();
+        event.returnValue = ""; // Required for Chrome
+      }
+    };
 
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [changesSaved]);
+  // ==========================================
   return (
     <Box
       sx={{
@@ -126,8 +178,9 @@ const CustomizationPage = () => {
             label="Details"
             id={`details-tab-1`}
             aria-controls={`details-tabpanel-1`}
-            disabled={value === 3 ? true : false}
+            disabled={value === 3 || value === 0 ? true : false}
             icon={<FormatAlignLeftOutlinedIcon />}
+            // onClick={() => handleSkip()}
             iconPosition="start"
             sx={{
               color: "black",
@@ -223,7 +276,9 @@ const CustomizationPage = () => {
         id={`preview-tabpanel-${2}`}
         aria-labelledby={`preview-tab-${2}`}
       >
-        {value === 2 && <Preview tabChange={handleChange} />}
+        {value === 2 && (
+          <Preview tabChange={handleChange} setChangesSaved={setChangesSaved} />
+        )}
       </div>
       {/* === 👆 tab-2 Preview tab button👆  ===*/}
 
@@ -237,8 +292,48 @@ const CustomizationPage = () => {
         {value === 3 && <Send tabChange={handleChange} />}
       </div>
       {/* === 👆 tab-4 send tab button👆  ===*/}
+
+      {/* === dialoage box for persisit use tab change without saving */}
+      <Dialog
+        open={openDialogue}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleOpenDialogue}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <Box sx={{ bgcolor: "white" }}>
+          <DialogTitle fontWeight={"900"}>
+            {"Are you sure you want to leave this page?"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="alert-dialog-slide-description"
+              fontWeight={"800"}
+              color={"black"}
+            >
+              Your changes will be erased once you left this page, before
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+            // onClick={() => handleUserResponse("no")}
+            >
+              Stay
+            </Button>
+            <Button
+            // onClick={() => handleUserResponse("yes")}
+            >
+              Leave
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
+      {/* ====endof dialoues box ==================================== */}
     </Box>
   );
 };
 
 export default CustomizationPage;
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});

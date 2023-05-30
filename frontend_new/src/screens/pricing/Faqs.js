@@ -74,7 +74,7 @@ const Faqs = (props) => {
                 </Stack>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography>{item?.description}</Typography>
+                <Typography>{item?.answer}</Typography>
               </AccordionDetails>
             </Accordion>
           );

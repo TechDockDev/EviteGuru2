@@ -48,6 +48,7 @@ import Draggable from "react-draggable";
 import { Constants } from "../../redux/constants/action-types";
 const Design = (props) => {
   const [color, setColor] = useState("");
+  const [font, setfont] = useState("Montserrat");
   const { editor, onReady } = useFabricJSEditor();
   const [data, setData] = useState();
   const [templateData, setTemplateData] = useState();
@@ -87,7 +88,9 @@ const Design = (props) => {
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const { templateDetails, userDetail } = useSelector((state) => state);
+  const { templateDetails, userDetail, userEventTemplate } = useSelector(
+    (state) => state
+  );
   console.log(userDetail);
 
   // =================== Ading Text Fuc
@@ -197,6 +200,7 @@ const Design = (props) => {
   const changeFont = (e) => {
     console.log("font working>-");
     const o = editor.canvas.getActiveObject().set("fontFamily", e.target.value);
+    setfont(e.target.value);
     console.log("text=>", o);
     editor.canvas.renderAll();
   };
@@ -281,6 +285,7 @@ const Design = (props) => {
   };
   // =====save event template json ====
   const saveTemplateData = () => {
+    console.log("working")
     // ================================
     fabric.Image.prototype.toObject = (function (toObject) {
       return function () {
@@ -300,7 +305,7 @@ const Design = (props) => {
       // multiplier: 2,
       // enableRetinaScaling: true,
     });
-    // ========================================
+    // ================================
     function dataURLtoFile(dataurl, filename) {
       const uint8Buffer = Buffer.from(dataurl.split(",")[1], "base64");
       return new File([uint8Buffer], filename, { type: "image/png" });
@@ -347,7 +352,11 @@ const Design = (props) => {
   const loadCanvasFromJson = () => {
     // let object = new fabric.Canvas("canvas");
     console.log(templateData);
-    editor?.canvas.loadFromJSON(templateData);
+    if (userEventTemplate?.jsonData) {
+      editor?.canvas.loadFromJSON(userEventTemplate?.jsonData);
+    } else if (!userEventTemplate?.jsonData && templateData) {
+      editor?.canvas.loadFromJSON(templateData);
+    }
   };
   // ==================================
   // =================== This is YOur Handler + Image Downloader
@@ -803,10 +812,9 @@ const Design = (props) => {
           fullWidth
           disableElevation
           variant="contained"
-          //  onClick={downloadImage}
-          // onClick={toJSON}
+          
           onClick={
-            userDetail?.isUser
+            !userDetail?.isUser
               ? () => {}
               : () => {
                   saveTemplateData();
@@ -889,7 +897,7 @@ const Design = (props) => {
                     <Select
                       labelId="font-family-select-label"
                       id="font-family-select"
-                      value={"Montserrat"}
+                      value={font}
                       label="Font Family"
                       size="small"
                       onChange={changeFont}

@@ -187,6 +187,14 @@ const Header = () => {
                     <ListItemText>Pricing</ListItemText>
                   </ListItemButton>
                 </ListItem>
+                <ListItem component={NavLink} to="/enterprise">
+                  <ListItemButton
+                    disableGutters
+                    sx={{ "&:hover": { bgcolor: "white" } }}
+                  >
+                    <ListItemText>Enteprise</ListItemText>
+                  </ListItemButton>
+                </ListItem>
               </List>
               {/*👆 topbar left menu list👆 */}
             </Stack>

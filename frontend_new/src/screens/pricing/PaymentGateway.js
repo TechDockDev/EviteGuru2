@@ -1,6 +1,8 @@
+import { Stack } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 // import "./App.css";
-const ProductDisplay = () => (
+const ProductDisplay = (props) => (
   <section>
     <div className="product">
       <img
@@ -8,14 +10,12 @@ const ProductDisplay = () => (
         alt="The cover of Stubborn Attachments"
       />
       <div className="description">
-      <h3>Stubborn Attachments</h3>
-      <h5>$20.00</h5>
+        <h3>{props?.planDetails?.plan?.name}</h3>
+        <h5>${props?.planDetails?.amount}</h5>
       </div>
     </div>
     <form action="/api/v1/user/plan/purchase" method="POST">
-      <button type="submit">
-        Checkout
-      </button>
+      <button type="submit">Checkout</button>
     </form>
   </section>
 );
@@ -25,6 +25,8 @@ const Message = ({ message }) => (
   </section>
 );
 export default function PaymentGateway() {
+  const { state } = useLocation();
+  console.log("state=>", state);
   const [message, setMessage] = useState("");
   useEffect(() => {
     // Check to see if this is a redirect back from Checkout
@@ -41,6 +43,8 @@ export default function PaymentGateway() {
   return message ? (
     <Message message={message} />
   ) : (
-    <ProductDisplay />
+    <Stack alignItems={"center"} mt={2}>
+      <ProductDisplay planDetails={state} />
+    </Stack>
   );
 }
