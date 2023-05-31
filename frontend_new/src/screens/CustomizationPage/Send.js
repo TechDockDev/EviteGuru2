@@ -208,9 +208,9 @@ const Send = () => {
                   </Button>
                 )}
 
-                <Button variant="contained" disabled>
+                {/* <Button variant="contained" disabled>
                   Edit
-                </Button>
+                </Button> */}
               </Stack>
             )}
           </>

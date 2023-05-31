@@ -15,22 +15,25 @@ import TextDescription from "./TextDescription";
 import { useState } from "react";
 import PasswordChange from "./PasswordChange";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPageTitle } from "../../redux/action/defaultActions";
 import { BiEdit } from "react-icons/bi";
 import { MdLogout } from "react-icons/md";
 import ActiveCardInfo from "./ActiveCardInfo";
 const AccountSettings = () => {
   const temp = {
-    name: "Terry Johnson Modric",
-    email: "terryjohn@gmail.com",
-    mobile: "8255678902",
+    name: "Example User",
+    email: "example@gmail.com",
+    mobile: "1234567890",
   };
   const [profileInfo, setProfileInfo] = useState(temp);
   const [editemode, seteditemode] = useState(false);
   const dispatch = useDispatch();
   const [openPasswordChangeModal, setOpenPasswordChangeModal] = useState(false);
-
+  // ===== user detail ======================
+  const { userDetail } = useSelector((state) => state);
+  console.log("userDetail=>", userDetail);
+  // ========================================
   // handlechange to update input values
   const handleChange = (e) => {
     setProfileInfo({ ...profileInfo, [e.target.name]: e.target.value });
@@ -52,18 +55,21 @@ const AccountSettings = () => {
   };
   // ==================================
   useEffect(() => {
+    if (userDetail?.isUser) {
+      console.log("user=>", userDetail);
+      setProfileInfo({
+        ...profileInfo,
+        email: userDetail?.email,
+        name: userDetail?.name,
+      });
+    }
     dispatch(setPageTitle("Account"));
 
     return () => {
       dispatch(setPageTitle(""));
     };
   }, []);
-  //   ============temp card data =========
-  const tempCardDetails = {
-    question: "Where can I watch?",
-    description:
-      "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-  };
+
   // ======================================
 
   return (
@@ -118,22 +124,32 @@ const AccountSettings = () => {
               <Typography variant="h6" fontWeight={"800"}>
                 Profile
               </Typography>
-              <IconButton
-                aria-label="delete"
-                color="primary"
-                onClick={() => seteditemode(!editemode)}
-                sx={{ fontSize: "20px", color: "black", cursor: "pointer" }}
-              >
-                {editemode ? (
-                  <MdLogout style={{ color: "rgba(85, 85, 85, 1)" }} />
-                ) : (
-                  <BiEdit style={{ color: "rgba(85, 85, 85, 1)" }} />
-                )}
-              </IconButton>
+              {userDetail?.userType === "google" ? (
+                ""
+              ) : (
+                <IconButton
+                  aria-label="delete"
+                  color="primary"
+                  onClick={() => seteditemode(!editemode)}
+                  sx={{ fontSize: "20px", color: "black", cursor: "pointer" }}
+                >
+                  {editemode ? (
+                    <MdLogout style={{ color: "rgba(85, 85, 85, 1)" }} />
+                  ) : (
+                    <BiEdit style={{ color: "rgba(85, 85, 85, 1)" }} />
+                  )}
+                </IconButton>
+              )}
             </Stack>
-            <Typography variant="caption" fontWeight={"400"}>
-              The information can be edited
-            </Typography>
+            {userDetail?.userType === "google" ? (
+              <Typography variant="caption" fontWeight={"400"}>
+                This information is as per your google profile
+              </Typography>
+            ) : (
+              <Typography variant="caption" fontWeight={"400"}>
+                The information can be edited
+              </Typography>
+            )}
 
             <TextField
               label="Name *"
@@ -198,36 +214,41 @@ const AccountSettings = () => {
                   },
                 }}
               />
-              <TextField
-                label="Mobile Number *"
-                size="small"
-                variant="filled"
-                fullWidth
-                name="mobile"
-                value={profileInfo?.mobile}
-                onChange={handleChange}
-                focused
-                disabled={!editemode}
-                InputProps={{ disableUnderline: true }}
-                sx={{
-                  mt: 2,
-                  mr: 1,
-                  color: "black",
-                  "& .Mui-disabled ": {
-                    "-webkit-text-fill-color": " rgba(0, 0, 0, 0.7) !important",
-                    color: "black !important",
-                  },
-                  "& .MuiFilledInput-root": {
-                    backgroundColor: "transparent !important",
-                    border: "1px solid rgba(183, 172, 172, 1)",
-                    borderRadius: "6px !important",
-                  },
-                  "& .MuiFormLabel-root": {
-                    //   color: "rgba(250, 250, 250, 1) !important",
-                    // backgroundColor: "rgba(56, 73, 141, 1) !important",
-                  },
-                }}
-              />
+              {userDetail?.userType === "google" ? (
+                ""
+              ) : (
+                <TextField
+                  label="Mobile Number *"
+                  size="small"
+                  variant="filled"
+                  fullWidth
+                  name="mobile"
+                  value={profileInfo?.mobile}
+                  onChange={handleChange}
+                  focused
+                  disabled={!editemode}
+                  InputProps={{ disableUnderline: true }}
+                  sx={{
+                    mt: 2,
+                    mr: 1,
+                    color: "black",
+                    "& .Mui-disabled ": {
+                      "-webkit-text-fill-color":
+                        " rgba(0, 0, 0, 0.7) !important",
+                      color: "black !important",
+                    },
+                    "& .MuiFilledInput-root": {
+                      backgroundColor: "transparent !important",
+                      border: "1px solid rgba(183, 172, 172, 1)",
+                      borderRadius: "6px !important",
+                    },
+                    "& .MuiFormLabel-root": {
+                      //   color: "rgba(250, 250, 250, 1) !important",
+                      // backgroundColor: "rgba(56, 73, 141, 1) !important",
+                    },
+                  }}
+                />
+              )}
             </Stack>
             {editemode ? (
               <Stack
@@ -254,17 +275,22 @@ const AccountSettings = () => {
           <ActiveCardInfo />
         </Grid>
       </Grid>
-      <Stack mt={3} alignContent={"center"} direction={"row"} p={2}>
-        <Button
-          variant="contained"
-          size="small"
-          type="submit"
-          sx={{ color: "white", py: 1 }}
-          onClick={togglePasswordChangeModal}
-        >
-          Update Password
-        </Button>
-      </Stack>
+      {userDetail?.userType === "google" ? (
+        ""
+      ) : (
+        <Stack mt={3} alignContent={"center"} direction={"row"} p={2}>
+          <Button
+            variant="contained"
+            size="small"
+            type="submit"
+            sx={{ color: "white", py: 1 }}
+            onClick={togglePasswordChangeModal}
+          >
+            Update Password
+          </Button>
+        </Stack>
+      )}
+
       <PasswordChange
         togglePasswordChangeModal={togglePasswordChangeModal}
         openPasswordChangeModal={openPasswordChangeModal}

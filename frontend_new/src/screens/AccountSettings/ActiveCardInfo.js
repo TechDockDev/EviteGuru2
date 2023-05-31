@@ -58,7 +58,9 @@ const ActiveCardInfo = () => {
             </Stack>
           </>
         ) : (
-          "No Active Plans"
+          <Typography variant="h6" textAlign={"center"}>
+            No Active Plans
+          </Typography>
         )}
       </CardContent>
       <CardActions sx={{ justifyContent: "center" }}>
