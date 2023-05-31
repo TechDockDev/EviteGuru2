@@ -2,9 +2,10 @@ import { createTheme } from "@mui/material";
 
 const theme = createTheme({
   breakpoints: {
-    keys: ["xs", "sm", "md", "xxmd", "xmd", "lg", "xlg", "xl"],
+    keys: ["xs","mxs", "sm", "md", "xxmd", "xmd", "lg", "xlg", "xl"],
     values: {
       xs: 0,
+      mxs:450,
       sm: 600,
       md: 900,
       xxmd: 1000,

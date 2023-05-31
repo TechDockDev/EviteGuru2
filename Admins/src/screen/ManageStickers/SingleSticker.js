@@ -10,7 +10,7 @@ const SingleSticker = ({ sticker, deleteSticker }) => {
    //    =========
    return (
       <>
-         <Grid item xs={6} sm={4} md={4} xxmd={3} display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
+         <Grid item xs={12} mxs={6} sm={4} md={4} xxmd={3} display={"flex"} flexDirection={"column"} justifyContent={"center"} alignItems={"center"}>
             <Stack sx={{ border: "2px solid #795DA8", borderRadius: "8px", padding: "5px", width: "150px", height: "150px", position: "relative" }}>
                <IconButton
                   onClick={toggleDeleteModal}
@@ -52,11 +52,12 @@ const SingleSticker = ({ sticker, deleteSticker }) => {
                   top: "50%",
                   left: "50%",
                   transform: "translate(-50%, -50%)",
-                  width: { xl: 400, lg: 400, md: 400, sm: 400, xs: "70%" },
+                  width: { sm: 400, xs: "90%" },
                   bgcolor: " rgba(133, 103, 157, 0.47)",
                   border: "1px solid white",
                   borderRadius: "20px",
                   p: 5,
+                  boxSizing:"border-box"
                }}>
                <Typography
                   variant="h1"

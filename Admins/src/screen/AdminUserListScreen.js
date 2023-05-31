@@ -51,71 +51,23 @@ const UserListScreen = () => {
     },
     {
       field: "guestNum",
-      headerName: "guests",
+      headerName: "Guests",
       width: 100,
     },
     {
       field: "subscription",
-      headerName: "subscription",
+      headerName: "Subscription",
       width: 150,
       renderCell: (params) => {
         return <div>{params?.value?.name}</div>;
       },
     },
-    {
-      field: "suspended",
-      headerName: "Suspend",
-      width: 80,
-      renderCell: (params) => {
-        return (
-          <>
-            <IconButton
-            onClick={
-              (e)=>{
-                e.stopPropagation()
-              }
-            }
-              sx={{
-                color: "#FFFFFF",
-                backgroundColor: "#795DA8",
-                borderRadius: "70%",
-              }}
-            >
-              {params.value === false ? <PersonOffIcon /> : <PersonIcon />}
-            </IconButton>
-          </>
-        );
-      },
-    },
-    {
-      field: "delete",
-      headerName: "Delete",
-      width: 80,
-      renderCell: (params) => {
-        return (
-          <>
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation()
-                // editTemplate(e, params.row._id);
-              }}
-              sx={{
-                color: "#FFFFFF",
-                backgroundColor: "#795DA8",
-                borderRadius: "70%",
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </>
-        );
-      },
-    },
+    
   ];
 
   return (
     <>
-      <Box sx={{ height: 400, width: "98%" }}>
+            <Box paddingX={"10px"} boxSizing={"border-box"}>
 
       <Typography
             variant="h1"
@@ -136,7 +88,7 @@ const UserListScreen = () => {
             getRowId={(row) => row._id}
             columns={columns}
             disableRowSelectionOnClick={true}
-            // autoHeight={true}
+            autoHeight={true}
             initialState={{
               pagination: {
                 paginationModel: {
@@ -154,7 +106,10 @@ const UserListScreen = () => {
               },
               "& .MuiDataGrid-columnHeaderTitle":{
               fontWeight:"600",                                       
+              },"& .MuiDataGrid-row":{
+                cursor:"pointer"
               }
+
            }}
           />
         )}

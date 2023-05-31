@@ -104,19 +104,19 @@ const UserDetails = () => {
          </Typography>
          <Paper elevation={3} sx={{ padding: 5, margin: 2 }}>
             <Grid container spacing={2}>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Typography sx={style}>Name</Typography>
                   <Typography>{user?.name}</Typography>
                </Grid>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Typography sx={style}>Email Address</Typography>
                   <Typography>{user?.email}</Typography>
                </Grid>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Typography sx={style}>Phone Number</Typography>
                   <Typography>{user?.phone}</Typography>
                </Grid>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Typography sx={style}>Events</Typography>
                   <Typography
                      onClick={() => {
@@ -126,27 +126,27 @@ const UserDetails = () => {
                      {totalEvents}
                   </Typography>
                </Grid>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Typography sx={style}>Plan</Typography>
                   <Typography>{user?.subscription?.name}</Typography>
                </Grid>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Typography sx={style}>Expiring on</Typography>
                   <Typography>{user?.planEndDate}</Typography>
                </Grid>
             </Grid>
             <Grid container spacing={2} sx={{ marginTop: "20px" }}>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Button variant="contained" sx={{ color: "white" }} onClick={() => gift("Gift Invitees")}>
                      Gift Invitees
                   </Button>
                </Grid>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Button variant="contained" sx={{ color: "white" }} onClick={() => gift("Gift Templates")}>
                      Gift Templates
                   </Button>
                </Grid>
-               <Grid item xs={4}>
+               <Grid item xs={12} sm={3.9}>
                   <Button variant="contained" sx={{ color: "white" }} onClick={suspendUser}>
                      {user?.suspended && "un"}suspend User
                   </Button>

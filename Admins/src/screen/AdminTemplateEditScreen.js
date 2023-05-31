@@ -5,9 +5,12 @@ import { Box, Button, TextField, FormControl } from "@mui/material";
 
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { DataContext } from "../AppContext";
 
 const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
+  const { snackbar} = React.useContext( DataContext )
   const [templateData, setTemplateData] = useState({
+
     name: "",
     description: "",
   });
@@ -18,11 +21,11 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
       const res = await axios.patch(`/template/${templateId}`, {
         name: templateData.name,
         description: templateData.description,
-      });
-      console.log(res);
+      });      
+      snackbar(res.data.status, res.data.message)
       closeModal();
     } catch (error) {
-      console.log(error);
+      snackbar("error", error.message)
     }
   };
 
@@ -41,12 +44,13 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
+    width:{xs:"90%", sm: 500},
     bgcolor: "white",
     border: "2px solid #795DA8",
     borderRadius:"8px",
     boxShadow: 24,
     p: 4,
+    boxSizing:"border-box"
   };
 
   return (
