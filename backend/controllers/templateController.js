@@ -22,7 +22,7 @@ const getTemplateById = asyncHandler(async (req, res) => {
 const editTemplate = asyncHandler(async (req, res) => {
   await Template.findByIdAndUpdate(req.params.id, {
     ...req.body,
-    previewImage: req.file.path,
+    previewImage: req?.file?.path,
   });
   res.json({
     status: "success",

@@ -3,53 +3,49 @@ import Subscription from "../models/subscriptionModel.js";
 import Stripe from "stripe";
 import Payment from "../models/paymentModel.js";
 import User from "../models/userModel.js";
-const stripe = new Stripe(
-  "sk_test_51MmTTLJyawffnqCDMx48PrzogYc49QK4yGdJOVUuCHljgBpvZFSXtM6I2NNRPkJ5zCDALHohta1hhpcNEkuYxBSs00K7A7xSRZ"
-);
+import ip from "ip";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const purchasePlan = expressAsyncHandler(async (req, res) => {
-  const { plan, planType } = req.body;
-  const amount = await Subscription.findById(plan)[planType].amount;
-  console.log(amount);
+  const { planId, planType } = req.body;
+  const plan = await Subscription.findById(planId);
+  const amount = plan.price[`${planType}ly`];
   const session = await stripe.checkout.sessions.create({
-    metadata: { plan, planType },
+    metadata: { planId, planType, user: req.user.id },
     currency: "usd",
     line_items: [
       {
         price_data: {
           currency: "usd",
           product_data: {
-            name: plan,
+            name: plan.name,
           },
-          unit_amount: amount,
+          unit_amount: `${amount}00`,
         },
         quantity: 1,
       },
     ],
     mode: "payment",
-    success_url:
-      "http://localhost:8085/api/v1/user/plan/success?session_id={CHECKOUT_SESSION_ID}",
-    cancel_url: "http://localhost:8085/api/v1/user/plan/failure",
+    success_url: `http://${ip.address()}:8085/api/v1/user/plan/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `http://${ip.address()}:8085/api/v1/user/plan/failure`,
   });
-  res.redirect(303, session.url);
+  res.json({ url: session.url });
+  // res.redirect(303, session.url);
 });
 
 const paymentSuccess = expressAsyncHandler(async (req, res) => {
   const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
-  console.log(session.payment_status);
-  console.log(session.metadata.plan);
-  console.log(session.amount_total);
-  console.log(session);
   if (session.payment_status === "paid") {
     await Payment.create({
       amount: session.amount_total,
-      plan: session.metadata.plan,
-      user: req.user.id,
+      plan: session.metadata.planId,
+      user: session.metadata.user,
+      planType: session.metadata.planType,
     });
-    const user = await User.findById(req.user.id);
-    user.subscription = session.metadata.plan;
+    const user = await User.findById(session.metadata.user);
+    user.subscription = session.metadata.planId;
     user.planType = session.metadata.planType;
-    user.planStartDate = new Date.now();
+    user.planStartDate = Date.now();
     await user.save();
   }
   res.json({

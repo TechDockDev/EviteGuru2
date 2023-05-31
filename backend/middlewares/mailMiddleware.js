@@ -24,6 +24,7 @@ async function sendMail(subject, body, emails) {
         to: emails, // list of receivers
         subject: subject, // Subject line
         text: body, // Subject line
+        html: body,
         // html: body, // html body
       },
       (err, info) => {
