@@ -106,6 +106,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
         const res = await axios.post(`${Constants?.URL}/register/google`, {
           idToken: idToken,
         });
+        // =====================
         if (res.status === 200) {
           console.log("response=>", res?.data?.data?.user);
           dispatch(login(res?.data?.data?.user));
