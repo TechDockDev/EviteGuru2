@@ -37,6 +37,7 @@ import { DataContext } from "./AppContext";
 import { Alert, Snackbar } from "@mui/material";
 import ManageStickers from "./screen/ManageStickers/ManageStickers";
 import FAQ from "./screen/FAQ/FAQ";
+import Enterprise from "./screen/Enterprise/Enterprise";
 
 const App = () => {
    const [alertMessage, setAlertMessage] = useState(null);
@@ -84,6 +85,7 @@ const App = () => {
                <Route path="/admin/send-promotion-message" element={<UserListEmail />} />
                <Route path="/admin/manage-stickers" element={<ManageStickers />} />
                <Route path="/admin/faq" element={<FAQ />} />
+               <Route path="/admin/enterprise" element={<Enterprise />} />
             </Route>
          </Routes>
          <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={() => setOpenSnackbar(false)} 

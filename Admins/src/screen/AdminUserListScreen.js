@@ -70,6 +70,11 @@ const UserListScreen = () => {
         return (
           <>
             <IconButton
+            onClick={
+              (e)=>{
+                e.stopPropagation()
+              }
+            }
               sx={{
                 color: "#FFFFFF",
                 backgroundColor: "#795DA8",
@@ -91,6 +96,7 @@ const UserListScreen = () => {
           <>
             <IconButton
               onClick={(e) => {
+                e.stopPropagation()
                 // editTemplate(e, params.row._id);
               }}
               sx={{
