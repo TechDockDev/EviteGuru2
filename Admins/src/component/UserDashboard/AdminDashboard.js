@@ -19,6 +19,7 @@ import axios from "axios";
 import { DataContext } from "../../AppContext";
 import ExtensionIcon from "@mui/icons-material/Extension";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import BusinessIcon from '@mui/icons-material/Business';
 const AdminDashboard = () => {
    //👇  state for open small screen left drawer  👇
    const navigate = useNavigate();
@@ -153,6 +154,7 @@ const AdminDashboard = () => {
                         <SingleMenuNavLink icon={<LocalOfferIcon />} to={"/admin/promotions"} linkText={"Coupons and Promotions"} />
                         <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/accounts"} linkText={"Accounts"} />
                         <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} />
+                        <SingleMenuNavLink icon={<BusinessIcon />} to={"/admin/enterprise"} linkText={"Enterprise"} />
                         <SingleMenuNavLink icon={<QuestionAnswerIcon />} to={"/admin/faq"} linkText={"FAQs"} />
                         <SingleMenuNavLink icon={<MdLogout />} clickFunction={logout} linkText={"Log out"} />
                      </List>
@@ -387,6 +389,7 @@ const AdminDashboard = () => {
                            <SingleMenuNavLink icon={<SubscriptionsIcon />} to={"/admin/pricing"} linkText={"Subscriptions"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/accounts"} linkText={"Accounts"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} handleDrawerToggle={handleDrawerToggle}/>
+                           <SingleMenuNavLink icon={<BusinessIcon />} to={"/admin/enterprise"} linkText={"Enterprise"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<QuestionAnswerIcon />} to={"/admin/faq"} linkText={"FAQs"} handleDrawerToggle={handleDrawerToggle} />
 
                            <SingleMenuNavLink icon={<MdLogout />} clickFunction={logout} linkText={"Log out"} handleDrawerToggle={handleDrawerToggle} />

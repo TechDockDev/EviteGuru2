@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
 import connectDb from "./config/db.js";
-import guestRoutes from "./routes/user/guestRoutes.js";
+import guestUserRoutes from "./routes/user/guestUserRoutes.js";
 import userRoutes from "./routes/user/userRoutes.js";
 import adminRoutes from "./routes/admin/adminRoutes.js";
 import templateRoutes from "./routes/admin/templateRoutes.js";
@@ -17,6 +17,12 @@ import couponRoutes from "./routes/admin/couponRoutes.js";
 import promotionRoutes from "./routes/admin/promotionRoutes.js";
 import subscriptionUserRoutes from "./routes/user/subscriptionRoutes.js";
 import faqRoutes from "./routes/admin/faqRoutes.js";
+import faqUserRoutes from "./routes/user/faqRoutes.js";
+import transactionRoutes from "./routes/admin/transactionRoutes.js";
+import enterpriseUserRoutes from "./routes/user/enterpriseRoutes.js";
+import enterpriseRoutes from "./routes/admin/enterpriseRoutes.js";
+import templateUserRoutes from "./routes/user/templateUserRoutes.js";
+import guestRoutes from "./routes/admin/guestRoutes.js";
 
 //connecting database
 dotenv.config();
@@ -30,13 +36,15 @@ app.use(morgan("dev"));
 // images routes
 app.use("/images", imageRouter);
 
-//user routes
+// user routes
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/user/event", eventRoutes);
-app.use("/api/v1/user/template", templateRoutes);
+app.use("/api/v1/user/template", templateUserRoutes);
 app.use("/api/v1/user/variation", variationRoutes);
-app.use("/api/v1/user/guest", guestRoutes);
+app.use("/api/v1/user/guest", guestUserRoutes);
 app.use("/api/v1/user/plan", subscriptionUserRoutes);
+app.use("/api/v1/user/faq", faqUserRoutes);
+app.use("/api/v1/user/enterprise", enterpriseUserRoutes);
 
 // admin routes
 app.use("/api/v1/admin", adminRoutes);
@@ -48,6 +56,8 @@ app.use("/api/v1/admin/plan", subscriptionRoutes);
 app.use("/api/v1/admin/coupon", couponRoutes);
 app.use("/api/v1/admin/promotion", promotionRoutes);
 app.use("/api/v1/admin/faq", faqRoutes);
+app.use("/api/v1/admin/transactions", transactionRoutes);
+app.use("/api/v1/admin/enterprise", enterpriseRoutes);
 
 // port using env file
 const PORT = process.env.PORT || 8080; // port No.

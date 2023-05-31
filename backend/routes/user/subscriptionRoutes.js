@@ -10,8 +10,8 @@ import {
 
 const subscriptionRouter = express.Router();
 
-subscriptionRouter.post("/purchase", purchasePlan);
-subscriptionRouter.get("/success", userAuth, paymentSuccess);
+subscriptionRouter.post("/purchase", userAuth, purchasePlan);
+subscriptionRouter.get("/success", paymentSuccess);
 subscriptionRouter.get("/failure", paymentFailure);
 subscriptionRouter.get("/all", viewallPlans);
 subscriptionRouter.route("/:id").get(viewPlan);

@@ -25,10 +25,11 @@ const authUser = asyncHandler(async (req, res) => {
 
 // authenticated
 const authenticated = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id).populate("subscription");
   res.json({
     status: "success",
     message: "user is authenticated",
-    user: req.user,
+    user,
   });
 });
 
