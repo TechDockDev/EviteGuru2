@@ -24,7 +24,7 @@ import { useDispatch } from "react-redux";
 import { userAuth } from "./redux/action/userActions";
 import Send from "./screens/CustomizationPage/Send";
 import InviteesResponseScreen from "./screens/InviteesResponseScreen/InvitessResponseScreen";
-
+import Enterprise from "./screens/Enterprise/Enterprise";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -58,6 +58,8 @@ const App = () => {
           <Route index element={<HomeScreen />} />
           <Route path="/browse_template" element={<BrowseTemplate />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/enterprise" element={<Enterprise />} />
+
           <Route path="/paymentGateway" element={<PaymentGateway />} />
           <Route path="/test" element={<Test />} />
         </Route>
@@ -89,4 +91,3 @@ const App = () => {
 };
 
 export default App;
-

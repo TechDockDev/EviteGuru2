@@ -11,35 +11,49 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+
 import React from "react";
-import HttpsIcon from "@mui/icons-material/Https";
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import App from "./PaymentGateway";
-import { AiFillCheckCircle } from 'react-icons/ai';
+
+import { AiFillCheckCircle } from "react-icons/ai";
+import axios from "axios";
+import { Constants } from "../../redux/constants/action-types";
+import { useSelector } from "react-redux";
 
 const PricingCard = (props) => {
+  const { userDetail } = useSelector((state) => state);
   const navigate = useNavigate();
+  // =====handlePurchase =======
+  const handlePurchasePlan = async (planId, type) => {
+    try {
+      const res = await axios.post(`${Constants.URL}/plan/purchase`, {
+        planId: planId,
+        planType: type,
+      });
+      window.location.href = res.data.url;
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
+  // ===endOf handlePurchase ===
   return (
     <Card
-    elevation={4}
+      elevation={userDetail?.subscription?._id === props?.plan?._id ? 24 : 4}
       sx={{
-        minWidth:" 300px",
-        backgroundColor: "#FAFAFA",        
-        borderRadius:"8px",
-        padding:"10px 10px",
-        bgcolor:"#FAFAFA",
-        boxSizing:"border-box"
-
+        minWidth: " 300px",
+        backgroundColor: "#FAFAFA",
+        borderRadius: "8px",
+        padding: "10px 10px",
+        bgcolor: "#FAFAFA",
+        boxSizing: "border-box",
       }}
     >
       <CardContent>
         <Stack
           alignItems={"center"}
-          sx={{ borderBottom: "2px solid rgba(159, 159, 159, 1)",
-        }}
-          
+          sx={{ borderBottom: "2px solid rgba(159, 159, 159, 1)" }}
         >
           <Typography
             color="rgba(121, 93, 168, 1)"
@@ -68,28 +82,23 @@ const PricingCard = (props) => {
         <List sx={{ mt: 1 }}>
           {props?.plan?.description &&
             props?.plan?.description?.map((item, index) => {
+              console.log("plan=>", props?.plan?._id);
               return (
-                <ListItem disablePadding key={index} sx={{marginY:"5px"}}>
-                  <ListItemIcon sx={{minWidth:"", marginRight:"15px"}}>
+                <ListItem disablePadding key={index} sx={{ marginY: "5px" }}>
+                  <ListItemIcon sx={{ minWidth: "", marginRight: "15px" }}>
                     {/* {item.status ? ( */}
                     <AiFillCheckCircle
                       style={{ color: "rgba(59, 40, 91, 1)", fontSize: "20px" }}
                     />
-                    {/* ) : (
-                      <HttpsIcon
-                        sx={{
-                          color: "rgba(164, 164, 164, 1)",
-                          fontSize: "30px",
-                        }}
-                      />
-                    )} */}
                   </ListItemIcon>
 
                   <ListItemText
-                    primaryTypographyProps={{sx:{
-                      fontFamily:"Poppins",
-                      color:"#333333"
-                    }}}
+                    primaryTypographyProps={{
+                      sx: {
+                        fontFamily: "Poppins",
+                        color: "#333333",
+                      },
+                    }}
                     primary={item}
                   />
                 </ListItem>
@@ -97,46 +106,52 @@ const PricingCard = (props) => {
             })}
         </List>
       </CardContent>
-      <CardActions>
-        {props?.plan?.price ? (
-          <Stack width={"100%"} spacing={1}>
-            <Button
-            disableElevation
-              fullWidth
-              variant="contained"
-              sx={{
-                backgroundColor: "#795DA8",
-                color: "white",
-                textTransform:"none",
-                p: 1,
-              }}
-              onClick={() => navigate("/paymentGateway")}
-            >
-              $ {props?.plan?.price?.monthly} -/ Month
-            </Button>
-            <Button
-            disableElevation
-
-              fullWidth
-              variant="contained"
-              sx={{
-                backgroundColor: "rgba(59, 40, 91, 1)",
-                color: "white",
-                textTransform:"none",
-                p: 1,
-              }}
-              // onClick={() => props.handleModalOpen(props?.plan)}
-              onClick={() => navigate("/paymentGateway")}
-            >
-              $ {props?.plan?.price?.yearly} -/ Year
-            </Button>
-          </Stack>
-        ) : (
-          <Button variant="outlined" fullWidth color="primary">
-            Contact Us
+      {userDetail?.subscription?._id === props?.plan?._id ? (
+        <CardActions>
+          <Button variant="outlined" color="success" fullWidth>
+            CURRENT PLAN
           </Button>
-        )}
-      </CardActions>
+        </CardActions>
+      ) : (
+        <CardActions>
+          {props?.plan?.price ? (
+            <Stack width={"100%"} spacing={1}>
+              <Button
+                disableElevation
+                fullWidth
+                variant="contained"
+                sx={{
+                  backgroundColor: "#795DA8",
+                  color: "white",
+                  textTransform: "none",
+                  p: 1,
+                }}
+                onClick={() => handlePurchasePlan(props?.plan?._id, "month")}
+              >
+                $ {props?.plan?.price?.monthly} -/ Month
+              </Button>
+              <Button
+                disableElevation
+                fullWidth
+                variant="contained"
+                sx={{
+                  backgroundColor: "rgba(59, 40, 91, 1)",
+                  color: "white",
+                  textTransform: "none",
+                  p: 1,
+                }}
+                onClick={() => handlePurchasePlan(props?.plan?._id, "year")}
+              >
+                $ {props?.plan?.price?.yearly} -/ Year
+              </Button>
+            </Stack>
+          ) : (
+            <Button variant="outlined" fullWidth color="primary">
+              Contact Us
+            </Button>
+          )}
+        </CardActions>
+      )}
     </Card>
   );
 };

@@ -23,7 +23,7 @@
     "buffer": "^6.0.3",
     "disclosure": "^0.1.0",
     "fabricjs-react": "^1.2.0",
-    "firebase": "^9.17.2",
+    "firebase": "^9.22.1",
     "framer-motion": "^9.0.4",
     "html2canvas": "^1.4.1",
     "mui-one-time-password-input": "^1.1.0",

@@ -69,6 +69,7 @@ export const setCreatedListId = (id) => {
   };
 };
 export const setEventTemplate = (data) => {
+  console.log("data=>",data)
   return {
     type: ActionTypes.SET_EVENT_TEMPLATE_JSON,
     payload: data,

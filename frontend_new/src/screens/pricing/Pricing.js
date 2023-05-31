@@ -3,10 +3,19 @@ import React, { useEffect, useState } from "react";
 import PricingCard from "./PricingCard";
 import Faqs from "./Faqs";
 import axios from "axios";
+import { Constants } from "../../redux/constants/action-types";
+import { useSelector } from "react-redux";
 
 function Pricing() {
+  const { userDetail } = useSelector((state) => state);
+  // ==================================
+  console.log("userDetails=>", userDetail);
   const [allPlans, setallPlans] = useState();
-  const [loading, setLoading] = useState(true);
+  const [allFaqs, setAllFaqs] = useState([]);
+  const [loading, setLoading] = useState({
+    faqsLoading: false,
+    plansLoading: false,
+  });
   const [open, setOpen] = useState(false);
   const [browsePlanDetails, setBrowsePlanDetails] = useState(null);
   const handleShow = () => setOpen(!open);
@@ -14,43 +23,40 @@ function Pricing() {
     setBrowsePlanDetails(plan);
   };
 
-  const allFaqs = [
-    {
-      question: "Where can I watch?",
-      description:
-        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-    },
-    {
-      question: "Where can I watch?",
-      description:
-        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-    },
-    {
-      question: "Where can I watch?",
-      description:
-        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-    },
-    {
-      question: "Where can I watch?",
-      description:
-        "Nibh quisque suscipit fermentum netus nulla cras porttitor euismod nulla. Orci, dictumst nec aliquet id ullamcorper venenatis. Fermentum sulla craspor ttitore  ismod nulla.",
-    },
-  ];
-
+  // ====endOf getAllFaqs =======
+  const getAllFaqs = async () => {
+    setLoading({ ...loading, faqsLoading: true });
+    try {
+      const res = await axios.get(`${Constants.URL}/faq/get`);
+      if (res.status === 200) {
+        console.log("response=>", res);
+        setAllFaqs(res?.data?.faqs);
+        setLoading({ ...loading, faqsLoading: false });
+      }
+    } catch (error) {
+      setLoading({ ...loading, faqsLoading: false });
+      console.log("error=>", error);
+    }
+  };
   // ====get subscritpiton list
   const getAllSubscritptions = async () => {
+    setLoading({ ...loading, plansLoading: true });
     try {
-      const res = await axios.get("/api/v1/user/plan/all");
+      const res = await axios.get(`${Constants.URL}/plan/all`);
       if (res.status === 200) {
         console.log("res=>", res?.data?.plans);
+        setLoading({ ...loading, plansLoading: false });
         setallPlans(res?.data?.plans);
-        setLoading(false);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("error=>", error);
+      setLoading({ ...loading, plansLoading: false });
+    }
   };
   // ===========================
   useEffect(() => {
     getAllSubscritptions();
+    getAllFaqs();
   }, []);
   return (
     <Box
@@ -79,7 +85,7 @@ function Pricing() {
       </Stack>
       <Stack mt={4}>
         <Grid container justifyContent={"center"} alignItems={"center"} sx={{}}>
-          {loading ? (
+          {loading?.plansLoading ? (
             <Grid
               item
               xs={12}
@@ -101,9 +107,7 @@ function Pricing() {
               />{" "}
             </Grid>
           ) : (
-            ""
-          )}
-          {allPlans &&
+            allPlans &&
             allPlans.map((plan, index) => {
               return (
                 <Grid item lg={3.5} md={4} sm={5.5} xs={12} p={2} key={index}>
@@ -115,11 +119,35 @@ function Pricing() {
                   />
                 </Grid>
               );
-            })}
+            })
+          )}
         </Grid>
       </Stack>
       <Stack p={1} mt={2} alignItems={"center"}>
-        <Faqs content={allFaqs} />
+        {loading?.faqsLoading ? (
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "20px",
+            }}
+          >
+            <CircularProgress
+              color="primary"
+              sx={{
+                bgcolor: "transparent !important",
+                "& svg": {
+                  bgcolor: "transparent !important",
+                },
+              }}
+            />{" "}
+          </Grid>
+        ) : (
+          <Faqs content={allFaqs} />
+        )}
       </Stack>
     </Box>
   );

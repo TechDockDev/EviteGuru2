@@ -54,10 +54,21 @@ const TemplatePreview = (props) => {
   };
 
   // console.log('single Template Data :=> ',resEdit)
-
+  // ===================================
+  const handleFreshTemplateRedirection = () => {
+    console.log("userDetails=>", userDetail);
+    if (userDetail?.isUser) {
+      navigate("/dashboard/edit/fresh-template");
+    } else {
+      alert("please login first");
+      closeModal();
+    }
+  };
+  // =====================================
   const submit = () => {
     navigate("/");
     alert("Plz Login");
+    closeModal();
   };
 
   useEffect(() => {
@@ -181,7 +192,7 @@ const TemplatePreview = (props) => {
                       {singleTemplateData?.description}
                     </Typography>
                   </Stack>
-                  {userDetail ? (
+                  {userDetail?.isUser ? (
                     <Button
                       disableElevation
                       onClick={() =>
@@ -225,9 +236,24 @@ const TemplatePreview = (props) => {
 
         <Grid container item xl={11} sx={{ padding: "20px 0" }}>
           {props?.singleTemplateId ? (
-            <Typography variant="h2" fontSize="20px" fontWeight="600" mb={2}>
-              More like this
-            </Typography>
+            <Stack
+              direction={"row"}
+              alignContent={"center"}
+              alignItems={"center"}
+              mb={2}
+              spacing={1}
+            >
+              <Typography variant="h2" fontSize="20px" fontWeight="600">
+                More Like This
+              </Typography>
+              <Button
+                variant="text"
+                // onClick={() => navigate("/dashboard/edit/fresh-template")}
+                onClick={handleFreshTemplateRedirection}
+              >
+                CREATE FRESH ONE
+              </Button>
+            </Stack>
           ) : (
             <Stack
               direction={"row"}
@@ -241,7 +267,8 @@ const TemplatePreview = (props) => {
               </Typography>
               <Button
                 variant="text"
-                onClick={() => navigate("/dashboard/edit/fresh-template")}
+                // onClick={() => navigate("/dashboard/edit/fresh-template")}
+                onClick={handleFreshTemplateRedirection}
               >
                 CREATE FRESH ONE
               </Button>
