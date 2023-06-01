@@ -9,21 +9,21 @@ import {
   logOut,
   getAdmin,
   changePassword,
+  getAllAdmins,
+  authenticated,
 } from "../../controllers/adminController.js";
 import { adminAuth } from "../../middlewares/adminAuthMiddleware.js";
 
 const adminRouter = express.Router();
 adminRouter.use(express.json());
 
-//admin routers
-adminRouter.get("/get-admin", adminAuth, getAdmin); // for login admin
-adminRouter.post("/login", authAdmin); // for login admin
-adminRouter.post("/create-subadmin", registerAdmin); // for registration
-// adminRouter.get("/admin-list", getallAdmin); //get all admin in panel
+adminRouter.get("/get-admin", adminAuth, getAdmin);
+adminRouter.get("/auth", adminAuth, authenticated);
+adminRouter.post("/login", authAdmin);
+adminRouter.post("/create-subadmin", registerAdmin);
+adminRouter.get("/admin-list", getAllAdmins);
 adminRouter.post("/change-password", adminAuth, changePassword);
 adminRouter.get("/logout", logOut);
-
-// admin controller route
 adminRouter.route("/:id").delete(deleteAdmin).put(updateAdmin);
 
 export default adminRouter;

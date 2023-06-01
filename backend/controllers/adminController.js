@@ -3,8 +3,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Admin from "../models/adminModel.js";
 import User from "../models/userModel.js";
-import Subscription from "../models/subscriptionModel.js";
-import Template from "../models/templateModel.js";
 
 const authAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -19,6 +17,15 @@ const authAdmin = asyncHandler(async (req, res) => {
   } else {
     throw new Error("User not found");
   }
+});
+
+// authenticated
+const authenticated = asyncHandler(async (req, res) => {
+  res.json({
+    status: "success",
+    message: "user is authenticated",
+    admin: req.admin,
+  });
 });
 
 // Generating token with user ID
@@ -52,38 +59,18 @@ const createSendToken = (user, statusCode, res) => {
 
 const registerAdmin = asyncHandler(async (req, res) => {
   const { name, email, phone, password, superAdmin, permission } = req.body;
-
-  const adminExists = await Admin.findOne({ email });
-
-  if (adminExists) {
-    res.status(400); // Bad request
-    throw new Error("Admin already exists");
-  }
-
-  try {
-    const admin = await Admin.create({
-      name,
-      email,
-      password,
-      phone,
-      superAdmin,
-      permission,
-    });
-
-    if (admin) {
-      // Successfully created
-      res.json(admin);
-    }
-
-    if (!admin) {
-      console.log("Admin not found");
-      // stop further execution in this callback
-      return;
-    }
-    await Admin.insertMany(admin);
-  } catch (error) {
-    console.log("error");
-  }
+  await Admin.create({
+    name,
+    email,
+    password,
+    phone,
+    superAdmin,
+    permission,
+  });
+  res.json({
+    status: "success",
+    message: "Admin has been created successfully",
+  });
 });
 
 const getAdmin = asyncHandler(async (req, res) => {
@@ -92,36 +79,28 @@ const getAdmin = asyncHandler(async (req, res) => {
 });
 
 const deleteAdmin = asyncHandler(async (req, res) => {
-  const admin = await Admin.findById(req.params.id);
-
-  // const admin = await Admin.findOne({ email: req.body.email });
-
-  if (admin) {
-    await admin.remove();
-    res.json({ message: "admin is deleted" });
-  } else {
-    res.status(404); //not found
-    throw new Error(" admin is not found");
-  }
+  await Admin.findByIdAndDelete(req.params.id);
+  res.json({
+    status: "success",
+    message: "Admin has been deleted successfully",
+  });
 });
 
 const updateAdmin = asyncHandler(async (req, res) => {
-  const admin = await Admin.findById(req.params.id);
-  // const admin = await Admin.findOne({ email: req.body.email });
+  await Admin.findByIdAndUpdate(req.params.id, req.body);
+  res.json({
+    status: "success",
+    message: "Admin has been updated successfully",
+  });
+});
 
-  if (admin) {
-    admin.name = req.body.name || admin.name;
-    admin.email = req.body.email || admin.email;
-    admin.phone = req.body.phone || admin.phone;
-    admin.superAdmin = req.body.superAdmin || admin.superAdmin;
-    admin.permission = req.body.permission || admin.permission;
-    const updatedAdmin = await admin.save();
-
-    res.json(updatedAdmin);
-  } else {
-    res.status(404);
-    throw new Error("Admin not found");
-  }
+const getAllAdmins = asyncHandler(async (req, res) => {
+  const admins = await Admin.find({});
+  res.json({
+    status: "success",
+    message: "Admins have been fetched successfully",
+    admins,
+  });
 });
 
 const getallUsers = asyncHandler(async (req, res) => {
@@ -160,10 +139,12 @@ const logOut = asyncHandler(async (req, res) => {
 
 export {
   authAdmin,
+  authenticated,
   deleteAdmin,
   updateAdmin,
   getAdmin,
   registerAdmin,
+  getAllAdmins,
   getallUsers,
   changePassword,
   logOut,

@@ -7,15 +7,20 @@ const adminSchema = mongoose.Schema({
   phone: { type: String, required: true },
   password: { type: String, required: true, select: false },
   superAdmin: { type: Boolean, default: false },
-  permission: { type: Array },
+  permission: {
+    type: Array,
+    required: function () {
+      return this.superAdmin === false;
+    },
+  },
   adminLastLogin: {
     type: String,
   },
 });
 
-adminSchema.methods.matchPassword = async function (enterdPassword) {
+adminSchema.methods.matchPassword = async function (enteredPassword) {
   console.log(this);
-  return await bcrypt.compare(enterdPassword, this.password);
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
 adminSchema.pre("save", async function (next) {

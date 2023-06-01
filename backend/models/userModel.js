@@ -5,11 +5,23 @@ import mongoose from "mongoose";
 const userSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
+    userType: { type: String, enum: ["normal", "google"] },
     email: { type: String, required: true, unique: true },
-    phone: { type: Number, required: true },
-    password: { type: String, required: true, select: false },
-    templateNum: { type: Number, default: 3 },
-    guestNum: { type: Number, default: 10 },
+    phone: {
+      type: Number,
+      required: function () {
+        return this.userType === "normal";
+      },
+    },
+    password: {
+      type: String,
+      required: function () {
+        return this.userType === "normal";
+      },
+      select: false,
+    },
+    templateNum: { type: Number, default: 0 },
+    guestNum: { type: Number, default: 0 },
     suspended: { type: Boolean, default: false },
     subscription: {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,10 +29,16 @@ const userSchema = mongoose.Schema(
     },
     planType: {
       type: String,
-      enums: ["month", "year"],
+      enum: ["month", "year"],
+      required: function () {
+        return this.subscription !== undefined;
+      },
     },
     planStartDate: {
       type: Date,
+      required: function () {
+        return this.subscription !== undefined;
+      },
     },
     event: {
       type: mongoose.Schema.Types.ObjectId,

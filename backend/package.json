@@ -27,6 +27,7 @@
     "express-validator": "^6.15.0",
     "fabricjs-react": "^1.2.0",
     "file-system": "^1.2.2",
+    "firebase-admin": "^11.9.0",
     "gridfs": "^1.0.0",
     "html-to-json-converter": "^1.0.3",
     "http": "^0.0.1-security",
