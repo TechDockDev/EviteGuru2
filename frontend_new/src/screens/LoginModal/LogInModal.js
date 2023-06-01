@@ -12,12 +12,11 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+
 // import React, { useState } from "react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { login } from "../../oldredux/action/userAction";
-import { GoogleFacebookLogin } from "../../oldredux/action/userAction";
-// import { Authentication } from '../firebaseAuth/firebase';
+
 import { Authentication } from "../../firebaseAuth/firebase";
 import {
   signInWithPopup,
@@ -31,13 +30,14 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
 import { login } from "../../redux/action/userActions";
 
+import { Constants } from "../../redux/constants/action-types";
+
 const LogInModal = ({
   openLoginModal,
   toggleLogInModal,
   toggleRegisterModal,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -59,52 +59,56 @@ const LogInModal = ({
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log("cred->", userValues);
-    const res = await axios.post("/api/v1/user/login", userValues);
-    if (res.status === 200) {
-      toggleLogInModal();
-      dispatch(login(res?.data?.data?.user));
-      setUserValues(tempValues);
-    } else {
-      toggleLogInModal();
+    try {
+      console.log("cred->", userValues);
+      const res = await axios.post("/api/v1/user/login", userValues);
+      if (res.status === 200) {
+        toggleLogInModal();
+        dispatch(login(res?.data?.data?.user));
+        setUserValues(tempValues);
+      } else {
+        toggleLogInModal();
+      }
+    } catch (error) {
+      console.log("error=>", error);
     }
   };
 
-  const googleHandler = () => {
+  const googleHandler = async () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(Authentication, provider)
-      .then((data) => {
-        dispatch(
-          GoogleFacebookLogin(
-            data.user.email,
-            data.user.uid,
-            data.user.emailVerified,
-            data.user.displayName
-          )
-        );
-        toggleLogInModal();
+      .then(async (result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        console.log(result);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        console.log(await Authentication.currentUser.getIdToken());
+        const idToken = await Authentication.currentUser.getIdToken();
+        console.log("idToken", idToken);
+        // The signed-in user info.
+        const user = result.user;
+        console.log(user);
+        const res = await axios.post(`${Constants.URL}/login/google`, {
+          idToken: idToken,
+        });
+        if (res.status === 200) {
+          console.log("response=>", res?.data?.data?.user);
+          dispatch(login(res?.data?.data?.user));
+          toggleLogInModal();
+        }
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
       })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const facebookHandler = () => {
-    const provider = new FacebookAuthProvider();
-    signInWithPopup(Authentication, provider)
-      .then((data) => {
-        dispatch(
-          GoogleFacebookLogin(
-            data.user.email,
-            data.user.uid,
-            data.user.emailVerified,
-            data.user.displayName
-          )
-        );
-        toggleLogInModal();
-      })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(error);
+        // The email of the user's account used.
+        // const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
       });
   };
 
@@ -340,9 +344,10 @@ const LogInModal = ({
             >
               <Button
                 variant="contained"
+                fullWidth
                 sx={{
                   bgcolor: "white",
-                  width: "40%",
+                  // width: "40%",
                   "&:hover": {
                     bgcolor: "white",
                     scale: "1.05",
@@ -360,24 +365,6 @@ const LogInModal = ({
                     src="./assets/google_color_icon.svg"
                   />
                 </Stack>
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  bgcolor: "white",
-                  width: "40%",
-                  "&:hover": {
-                    bgcolor: "white",
-                    scale: "1.05",
-                  },
-                }}
-              >
-                <Box
-                  component="img"
-                  bgcolor={"transparent"}
-                  onClick={facebookHandler}
-                  src="./assets/fb_icon.svg"
-                />
               </Button>
             </Stack>
             <Typography

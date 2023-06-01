@@ -53,6 +53,8 @@ const Design = (props) => {
   const [data, setData] = useState();
   const [templateData, setTemplateData] = useState();
   const [addStickersModal, setAddStickersModal] = useState(false);
+  const [allImages, setAllImages] = useState([]);
+
   const fonts = [
     "Sacramento",
     "Parisienne",
@@ -181,11 +183,14 @@ const Design = (props) => {
   // =====================================================
   // ===========add stickers ============
   const addStickers = (e) => {
+    console.log(e.split(`\\`)[e.split("\\").length - 1]);
     // console.log("e=>", e.target);
     fabric.Image.fromURL(
       e,
       (img) => {
         img.scale(0.2);
+        img.crossOrigin = "anonymous";
+        img.name = e.split(`\\`)[e.split("\\").length - 1];
         editor.canvas.add(img);
         editor.canvas.renderAll();
       },
@@ -284,18 +289,27 @@ const Design = (props) => {
     setData(data);
   };
   // =====save event template json ====
-  const saveTemplateData = () => {
-    console.log("working")
+  const saveTemplateData = async () => {
+    console.log("working");
     // ================================
     fabric.Image.prototype.toObject = (function (toObject) {
       return function () {
         return fabric.util.object.extend(toObject.call(this), {
           name: this.name,
           src: `${Constants.IMG_URL}/template/sendImage/${this.name}`,
+          crossOrigin: "anonymous",
         });
       };
     })(fabric.Image.prototype.toObject);
     // ================================
+    const formData = new FormData();
+    allImages.forEach((v) => {
+      formData.append("image", v);
+    });
+    const res = await axios.post(`${Constants.URL}/template/saveImage`, formData);
+    // createPreview();
+    console.log(res);
+
     console.log("canvas data", editor?.canvas);
     const json = editor?.canvas?.toJSON();
     const data = JSON.stringify(json);
@@ -329,6 +343,7 @@ const Design = (props) => {
   const onUploadImage = (e) => {
     console.log("clicked");
     const image = e.target.files[0];
+    setAllImages([...allImages, e.target.files[0]]);
     if (image) {
       setImageFunc(URL.createObjectURL(e.target.files[0]), image);
     }
@@ -812,7 +827,6 @@ const Design = (props) => {
           fullWidth
           disableElevation
           variant="contained"
-          
           onClick={
             !userDetail?.isUser
               ? () => {}

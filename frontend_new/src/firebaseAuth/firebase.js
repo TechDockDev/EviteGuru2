@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDDjJ78J9xORnZrnCfo8djq6wNEZEKKxC0",
-    authDomain: "sing-in-fb2cb.firebaseapp.com",
-    projectId: "sing-in-fb2cb",
-    storageBucket: "sing-in-fb2cb.appspot.com",
-    messagingSenderId: "212772386552",
-    appId: "1:212772386552:web:a37309e2a81172c8e12d0d"
-};
+    apiKey: "AIzaSyDwDjva0PK2_EhNa6T2aXVqcA6ny51fLCY",
+    authDomain: "eviteguru.firebaseapp.com",
+    projectId: "eviteguru",
+    storageBucket: "eviteguru.appspot.com",
+    messagingSenderId: "199852310825",
+    appId: "1:199852310825:web:253f3d2d4b59a08a47f738"
+  };
 
 const app = initializeApp(firebaseConfig);
 export const Authentication = getAuth(app)
