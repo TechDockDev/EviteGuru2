@@ -16,40 +16,64 @@ import {
 import React, { useState } from "react";
 import { Constants } from "../../redux/constants/action-types";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { openSnackbar } from "../../redux/action/userActions";
 
 const Enterprise = () => {
-  const [values, setValues] = useState({});
+  const dispatch = useDispatch();
+  // === userDetail ================
+  const { userDetail } = useSelector((state) => state);
+  const [values, setValues] = useState(null);
 
   //   handlechange ======
   const handleChange = (e) => {
-    console.log("values=>", values);
     setValues({ ...values, [e.target.name]: e.target.value });
   };
+  console.log("values=>", values);
   //  endof handleChange==
   // ===handlesubmit ===========
   const handleSubmit = async (e) => {
     console.log("working");
     e.preventDefault();
     try {
-      if (
-        values === {} ||
-        values?.inviteeLimit === "" ||
-        values?.templateLimit === ""
-      ) {
-        alert("Please fill all required feilds");
-      } else {
-        const res = await axios.post(
-          `${Constants.URL}/enterprise/create`,
-          values
-        );
-        if (res.status === 200) {
-          console.log("response=>", res);
-          setValues(null);
-          alert(res.data.message);
+      if (userDetail?.isUser) {
+        if (
+          values === null ||
+          values?.inviteeLimit == "" ||
+          values?.templateLimit == "" ||
+          values?.comment == "" ||
+          !values?.inviteeLimit ||
+          !values?.templateLimit ||
+          !values?.comment
+        ) {
+          // alert("Please fill all required feilds");
+          dispatch(openSnackbar("please fill all required feilds", "warning"));
+        } else {
+          const res = await axios.post(
+            `${Constants.URL}/enterprise/create`,
+            values
+          );
+          if (res.status === 200) {
+            console.log("response=>", res);
+            dispatch(openSnackbar(res?.data?.message, "success"));
+            setValues(null);
+            // alert(res.data.message);
+          }
         }
+      } else {
+        // alert("Login First");
+        dispatch(
+          openSnackbar(
+            "Your are not logged in , please login first !",
+            "warning"
+          )
+        );
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(
+        openSnackbar("something went wrong , please try again", "error")
+      );
     }
   };
   // ==endOf handleSubmit ======

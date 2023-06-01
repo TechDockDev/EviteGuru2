@@ -68,26 +68,27 @@ const InviteesResponseScreen = () => {
           mt={1}
           mb={1}
         >
-          Hey!, We Wish you Good day,See What{" "}
+          Hey,{" "}
           <span
             style={{
               color: "rgba(121, 93, 168, 1)",
               textDecoration: "underline",
             }}
           >
-            {event?.hostName}
+            {/* {event?.hostName} */}
           </span>{" "}
-          Sent You
+          You are invited to a celebration of the beginning of our new life as i
+          am going to start new journey of my life
         </Typography>
         <Grid
           container
           sx={{
-            border: "1px solid black",
+            // border: "1px solid black",
             borderRadius: "4px",
           }}
         >
           {/* == 👇 Preview header container | From & Sender Name👇  ==*/}
-          <Grid
+          {/* <Grid
             item
             xl={12}
             lg={12}
@@ -95,7 +96,10 @@ const InviteesResponseScreen = () => {
             sm={12}
             xs={12}
             p={1}
-            borderBottom="1px solid black"
+            display={"flex"}
+            flexDirection={"row"}
+            justifyContent={"space-between"}
+            // borderBottom="1px solid black"
           >
             <Typography fontSize="14px" fontWeight="bold">
               From :{" "}
@@ -105,7 +109,7 @@ const InviteesResponseScreen = () => {
                 fontWeight="normal"
                 p={1}
               >
-                {/* Sunder Bandar */}
+                
                 {event?.hostName}
               </Typography>
             </Typography>
@@ -117,11 +121,11 @@ const InviteesResponseScreen = () => {
                 fontWeight="normal"
                 p={1}
               >
-                {/* Sunder ki shadi */}
+               
                 {event?.name}
               </Typography>
             </Typography>
-          </Grid>
+          </Grid> */}
           {/* == 👆 Preview header container  | From & Sender Name👆   ==*/}
           {/* =================== */}
           {/* == 👇 Preview main section container |  Description and preview image 👇  ==*/}
@@ -145,7 +149,7 @@ const InviteesResponseScreen = () => {
               sm={10}
               xs={10}
               p={1}
-              m={2}
+              // m={2}
               // border="1px solid green"
             >
               <Typography
@@ -162,8 +166,17 @@ const InviteesResponseScreen = () => {
                 >
                   {/* {event?.hostName} */}
                 </Typography>
-                {/* dynamic host name */}
-                sent you an invitation for
+                {/* dynamic host name */}I am{" "}
+                <span
+                  style={{
+                    color: "rgba(121, 93, 168, 1)",
+                    // textDecoration: "underline",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {event?.hostName}
+                </span>{" "}
+                sent you an invitation for marriage ceremony
                 {/* dynamic event name */}
                 <Typography
                   component="span"
@@ -201,7 +214,7 @@ const InviteesResponseScreen = () => {
               md={12}
               sm={12}
               xs={12}
-              p={1}
+              // p={1}
               sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -211,18 +224,17 @@ const InviteesResponseScreen = () => {
             >
               <Box
                 component={"img"}
+                bgcolor={"red"}
                 src={`/images/getImage?path=/${event?.variation?.previewImage}`}
                 alt=""
                 sx={{
-                  width: { md: "70%", lg: "70%", xs: "100%" },
-                  border: "1px solid green",
-                  height: "400px",
+                  width: "100%",
+
+                  height: "100%",
                 }}
               />
-              <Typography fontSize="12px" fontWeight="bold" mt={2}>
-                This email is personalized for you. Please do not forward
-              </Typography>
             </Grid>
+
             {/* == 👆 Template preview button and image 👆   ==*/}
             {/* 👇 Bottom address details 👇 */}
             <Grid
@@ -241,7 +253,9 @@ const InviteesResponseScreen = () => {
               alignItems={"center"}
               // border="1px solid green"
             >
-              {/* dynamic venue address and date time */}
+              <Typography variant="h5" fontWeight="bold">
+                {event?.name}
+              </Typography>
 
               <Typography
                 fontSize="14px"

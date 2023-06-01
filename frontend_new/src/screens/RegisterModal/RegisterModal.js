@@ -18,7 +18,7 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import axios from "axios";
-import { login } from "../../redux/action/userActions";
+import { login, openSnackbar } from "../../redux/action/userActions";
 import OtpScreen from "../LoginModal/OtpScreen";
 import { AiFillCheckCircle } from "react-icons/ai";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -61,7 +61,7 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
 
   // ====handleChange ========
   const handleChange = (e) => {
-    setValues({ ...values?.phone?.length, [e.target.name]: e.target.value });
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
   // ====end of handleChange==
   const submitHandler = async (e) => {
@@ -69,10 +69,11 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
     e.preventDefault();
     try {
       if (password !== confirmPassword) {
-        alert("password do not match");
+        // alert("password do not match");
+        dispatch(openSnackbar("password does not matched", "warning"));
       } else {
         // dispatch(register(name, email, phone, password));
-        const res = await axios.post("/api/v1/user/register", {
+        const res = await axios.post(`${Constants.URL}/register`, {
           name,
           email,
           phone,
@@ -80,12 +81,14 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
         });
         if (res.status === 200) {
           console.log("res=>", res);
+          dispatch(openSnackbar(res?.data?.message, "success"));
           dispatch(login(res?.data?.user));
           toggleRegisterModal();
         }
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(openSnackbar("something went wrong", "error"));
     }
   };
 
@@ -119,6 +122,8 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
+        console.log("error=>", errorMessage);
+        // dispatch(openSnackbar(error.data.message, "error"));
         console.log(error);
         // The email of the user's account used.
         // const email = error.customData.email;

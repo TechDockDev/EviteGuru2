@@ -2,11 +2,13 @@ import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import LogInModal from "../LoginModal/LogInModal";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
   const { userDetail } = useSelector((state) => state);
+  const navigate = useNavigate();
   const isUser = userDetail?.isUser;
-//   console.log("isuser=>", isUser);
+  //   console.log("isuser=>", isUser);
   // =====================================
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
@@ -105,13 +107,19 @@ const HeroSection = () => {
                   marginRight: { sm: "20px", xs: "0px" },
                   marginBottom: { sm: "0px", xs: "10px" },
                 }}
-                onClick={!isUser ? () => toggleLogInModal() : () => {}}
+                onClick={
+                  !isUser
+                    ? () => toggleLogInModal()
+                    : () => {
+                        navigate("/browse_template");
+                      }
+                }
               >
                 Create Now
               </Button>
-              <Button disableElevation variant="outlined">
+              {/* <Button disableElevation variant="outlined">
                 View a sample
-              </Button>
+              </Button> */}
             </Box>
           </Stack>
         </Stack>

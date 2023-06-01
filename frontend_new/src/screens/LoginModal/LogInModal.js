@@ -28,7 +28,7 @@ import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
-import { login } from "../../redux/action/userActions";
+import { login, openSnackbar } from "../../redux/action/userActions";
 
 import { Constants } from "../../redux/constants/action-types";
 
@@ -63,6 +63,7 @@ const LogInModal = ({
       console.log("cred->", userValues);
       const res = await axios.post("/api/v1/user/login", userValues);
       if (res.status === 200) {
+        dispatch(openSnackbar(res?.data?.message, "success"));
         toggleLogInModal();
         dispatch(login(res?.data?.data?.user));
         setUserValues(tempValues);
@@ -71,6 +72,7 @@ const LogInModal = ({
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(openSnackbar("login Failed !", "error"));
     }
   };
 
@@ -92,7 +94,8 @@ const LogInModal = ({
           idToken: idToken,
         });
         if (res.status === 200) {
-          console.log("response=>", res?.data?.data?.user);
+          console.log("response=>", res?.data);
+          dispatch(openSnackbar(res?.data?.message, "success"));
           dispatch(login(res?.data?.data?.user));
           toggleLogInModal();
         }

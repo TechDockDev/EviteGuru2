@@ -11,7 +11,7 @@ import UserDashboard from "./components/UserDashboard/UserDashboard";
 import CustomizationPage from "./screens/CustomizationPage/CustomizationPage";
 import Preview from "./screens/CustomizationPage/Preview";
 import AccountSettings from "./screens/AccountSettings/AccountSettings";
-import MailingReponses from "./screens/CustomizationPage/AddressBook";
+
 import Pricing from "./screens/pricing/Pricing";
 import MyEvents from "./screens/MyEvents/MyEvents";
 import EventStats from "./screens/EventStats/EventStats";
@@ -20,24 +20,36 @@ import PaymentGateway from "./screens/pricing/PaymentGateway";
 import Test from "./screens/CustomizationPage/test";
 import axios from "axios";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { userAuth } from "./redux/action/userActions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  closeSnackbar,
+  openSnackbar,
+  userAuth,
+} from "./redux/action/userActions";
 import Send from "./screens/CustomizationPage/Send";
 import InviteesResponseScreen from "./screens/InviteesResponseScreen/InvitessResponseScreen";
 import Enterprise from "./screens/Enterprise/Enterprise";
+import { Constants } from "./redux/constants/action-types";
+import PaymentSuccessScreen from "./screens/PaymentSuccessScreen/PaymentSuccessScreen";
+import { Alert, Snackbar } from "@mui/material";
+import AddressBook from "./screens/CustomizationPage/AddressBook";
 
 const App = () => {
+  const { snackbar } = useSelector((state) => state);
+  console.log("snackbar=>", snackbar);
   const dispatch = useDispatch();
   // =====get login status ========
   const getUserLoginStatus = async () => {
     try {
-      const res = await axios.get("/api/v1/user/auth");
+      const res = await axios.get(`${Constants.URL}/auth`);
       if (res.status === 200) {
         console.log("ressponse=>", res);
+        // dispatch(openSnackbar(res?.data?.message, "success"));
         dispatch(userAuth(res?.data?.user));
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(openSnackbar("error", "error"));
     }
   };
   // ======end of login status ====
@@ -47,8 +59,26 @@ const App = () => {
   }, []);
 
   // =======end of useEffect ======
+  const handleClose = () => {
+    dispatch(closeSnackbar());
+  };
   return (
-    <BrowserRouter>
+    <>
+      <Snackbar
+        open={snackbar?.open}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleClose}
+          variant="filled"
+          severity={snackbar?.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar?.message}
+        </Alert>
+      </Snackbar>
       <Routes>
         <Route
           path="/guest-event-view-screen/:eventId"
@@ -59,34 +89,36 @@ const App = () => {
           <Route path="/browse_template" element={<BrowseTemplate />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/enterprise" element={<Enterprise />} />
-
           <Route path="/paymentGateway" element={<PaymentGateway />} />
           <Route path="/test" element={<Test />} />
         </Route>
       </Routes>
       <Routes>
+        <Route
+          path="/payment/success/status"
+          element={<PaymentSuccessScreen />}
+        />
         <Route path="/dashboard" element={<UserDashboard />}>
           <Route path="/dashboard/my-events" element={<MyEvents />} />
-
           <Route path="/dashboard/view-event" element={<EventStats />} />
           <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
           <Route path="/dashboard/preview/:id" element={<Preview />} />
           <Route path="/dashboard/:id/send" element={<Send />} />
 
-          <Route path="/dashboard/address-book" element={<MailingReponses />} />
+          <Route path="/dashboard/address-book" element={<AddressBook />} />
 
           <Route
             path="/dashboard/account-setting"
             element={<AccountSettings />}
           />
           <Route path="/dashboard/subscriptions" element={<Subscriptions />} />
-          <Route
+          {/* <Route
             path="/dashboard/mailing-responses"
             element={<MailingReponses />}
-          />
+          /> */}
         </Route>
       </Routes>
-    </BrowserRouter>
+    </>
   );
 };
 
