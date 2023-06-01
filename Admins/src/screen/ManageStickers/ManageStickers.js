@@ -105,7 +105,7 @@ const ManageStickers = () => {
             <Grid item xs={12} sm={6}>
                <FormControl component={"form"} fullWidth onSubmit={uploadSticker}>
                   <Stack>
-                     <input style={{ border: "1px solid #C4C4C4", padding: "9px 5px", borderRadius: "4px" }} required type="file" name="sticker" accept={"image/*"} onChange={onFileChange} />
+                     <input style={{ border: "1px solid #C4C4C4", padding: "9px 5px", borderRadius: "4px" }} required type="file" name="sticker" accept={"image/*"} crossOrigin="Anonymous" onChange={onFileChange} />
                   </Stack>
                   <TextField required size="small" type="text" name="name" value={value.name} onChange={onInputChange} label="Sticker Name" sx={{ marginY: "20px" }} />
                   {imgurl !== "" && (

@@ -16,8 +16,7 @@ const StickersModal = ({ open, handleClose, addStickers }) => {
       }
    };
 
-   console.log(stickersData);
-
+   
    useEffect(() => {
       getStickers();
    }, []);

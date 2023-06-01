@@ -1,198 +1,138 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Typography,
-  Grid,
-  Input,
-  Stack,
-  Select,
-  MenuItem,
-  IconButton,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Paper, Typography, Grid, Input, Stack, Select, MenuItem, IconButton, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
+
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate, NavLink } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close";
+import { DataContext } from "../../AppContext";
 
 export const AddPriceContent = () => {
-  const navigate = useNavigate();
-  const [descriptionNumber, setDescriptionNumber] = useState([Math.random()]);
-  const [value, setValue] = useState();
-  const [description, setDescription] = useState([]);
+   const navigate = useNavigate();
+   const [descriptionNumber, setDescriptionNumber] = useState([Math.random()]);
+   const [value, setValue] = useState();
+   const [description, setDescription] = useState([]);
+   const {snackbar} = useContext(DataContext)
+   const addDescription = () => {
+      setDescriptionNumber([...descriptionNumber, Math.random()]);
+   };
 
-  const addDescription = () => {
-    setDescriptionNumber([...descriptionNumber, Math.random()]);
-  };
+   const handleChange = (e) => {
+      if (e.target.name === "monthly" || e.target.name === "yearly") {
+         return setValue({
+            ...value,
+            price: { ...value.price, [e.target.name]: e.target.value },
+         });
+      }
+      setValue({ ...value, [e.target.name]: e.target.value });
+   };
+   const handleDescription = (e) => {
+      setDescription({ ...description, [e.target.name]: e.target.value });
+   };
 
-  const handleChange = (e) => {
-    if (e.target.name === "monthly" || e.target.name === "yearly") {
-      return setValue({
-        ...value,
-        price: { ...value.price, [e.target.name]: e.target.value },
-      });
-    }
-    setValue({ ...value, [e.target.name]: e.target.value });
-  };
-  const handleDescription = (e) => {
-    setDescription({ ...description, [e.target.name]: e.target.value });
-  };
+   const removeDescription = (index) => {
+      setDescriptionNumber(descriptionNumber.filter((item, i) => i !== index));
+   };
 
-  const removeDescription = (index) => {
-    setDescriptionNumber(descriptionNumber.filter((item, i) => i !== index));
-  };
+   const handleSubmit = async (e) => {
+      e.preventDefault();
+      try {
+         const data = { ...value, description: Object.values(description) };
+         const res = await axios.post("/plan/create-plan", data);
+         snackbar(res.data.status, res.data.message);
+         navigate("/admin/pricing");
+      } catch (error) {
+         snackbar("error", error.message);
+      }
+   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = { ...value, description: Object.values(description) };
-    const res = await axios.post("/plan/create-plan", data);
-    console.log(res);
-    navigate("/admin/pricing");
-  };
+   return (
+      <Stack width="100%" margin="auto" alignItems={"center"} padding={2} boxSizing={"border-box"}>
+         <Paper
+            sx={{
+               display: "flex",
+               justifyContent: "center",
+               flexDirection: "column",
+               padding: "20px 50px",
+               bgcolor: "white",
+               borderRadius: "20px",
+            }}
+            elevation={10}>
+            <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
+               <Typography
+                  variant="h1"
+                  align="center"
+                  fontWeight="800"
+                  fontSize={"28px"}
+                  sx={{
+                     color: "#795da8",
+                     width: "100%",
+                     mb: 2,
+                  }}>
+                  Add Subscription
+               </Typography>
+               <Stack direction={"column"} spacing={2}>
+                  <TextField size="small" label="Name" name="name" variant="outlined" onChange={handleChange} />
 
-  return (
-    <Stack width="100%" margin="auto" alignItems={"center"} p={2}>
-      <Paper
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          p: 5,
-          bgcolor: "white",
-          borderRadius: "20px",
-        }}
-        elevation={10}
-      >
-        <Box
-          component="form"
-          sx={{
-            "& > :not(style)": { m: 1 },
-          }}
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit}
-        >
-          <Typography
-            variant="h4"
-            color="primary"
-            gutterBottom
-            sx={{ fontWeight: "800", textTransform: "uppercase" }}
-          >
-            Add Subscription
-          </Typography>
-          <Stack direction={"column"} spacing={2}>
-            <TextField
-              label="Name"
-              name="name"
-              variant="outlined"
-              sx={{ width: "40ch" }}
-              onChange={handleChange}
-            />
+                  {descriptionNumber.map((v, i) => (
+                     <Stack direction={"row"} alignItems={"center"} spacing={1} key={v} position={"relative"}>
+                        <>
+                           <TextField size="small" label="Description" name={`description${i}`} onChange={handleDescription} variant="outlined" fullWidth />
 
-            {descriptionNumber.map((v, i) => (
-              <Stack
-                direction={"row"}
-                alignItems={"center"}
-                spacing={1}
-                key={v}
-              >
-                <>
-                  <TextField
-                    label="Description"
-                    name={`description${i}`}
-                    onChange={handleDescription}
-                    variant="outlined"
-                    fullWidth
-                  />
-                  <Box>
-                    <IconButton
-                      aria-label="remove"
-                      size="small"
-                      onClick={() => removeDescription(i)}
-                      sx={{
-                        transition: ".3s ease all",
-                        backgroundColor: "#795DA8",
-                        color: "white",
-                        "&:hover": {
-                          backgroundColor: "#CEC5DC",
-                          color: "#795DA8",
-                        },
-                      }}
-                    >
-                      <RemoveIcon />
-                    </IconButton>
+                           <IconButton
+                              aria-label="remove"
+                              size="small"
+                              onClick={() => removeDescription(i)}
+                              sx={{
+                                 padding: "0",
+                                 position: "absolute",
+                                 right: "-5px",
+                                 top: "-5px",
+                                 transition: "all 200ms ease",
+                                 backgroundColor: "#795DA8",
+                                 color: "white",
+                                 "&:hover": {
+                                    backgroundColor: "#CEC5DC",
+                                    color: "#795DA8",
+                                 },
+                              }}>
+                              <CloseIcon sx={{ fontSize: "15px" }} />
+                           </IconButton>
+                        </>
+                     </Stack>
+                  ))}
+                  <Box
+                     width={"100%"}
+                     textAlign={"right"}
+                     sx={{
+                        marginTop: "5px !important",
+                        marginBottom: "10px !important",
+                     }}>
+                     <Button disableElevation size="small" onClick={addDescription} sx={{}}>
+                        Add More Description
+                     </Button>
                   </Box>
-                </>
-              </Stack>
-            ))}
-            <Box>
-              <IconButton
-                aria-label="add"
-                size="small"
-                onClick={addDescription}
-                sx={{
-                  transition: ".3s ease all",
-                  backgroundColor: "#795DA8",
-                  color: "white",
-                  "&:hover": {
-                    backgroundColor: "#CEC5DC",
-                    color: "#795DA8",
-                  },
-                }}
-              >
-                <AddIcon />
-              </IconButton>
+               </Stack>
+               <Stack spacing={2} direction={"row"}>
+                  <TextField size="small" label="Monthly Price" name="monthly" variant="outlined" type="number" onChange={handleChange} />
+                  <TextField size="small" label="Yearly Price" name="yearly" type="number" variant="outlined" onChange={handleChange} />
+               </Stack>
+               <Stack spacing={2} mt={2} direction={"row"}>
+                  <TextField size="small" label="Template Limit" name="templateLimit" variant="outlined" type="number" onChange={handleChange} />
+                  <TextField size="small" label="Guest Limit" name="guestLimit" type="number" variant="outlined" onChange={handleChange} />
+               </Stack>
+               <Box width={"100%"} display={"flex"} justifyContent={"space-between"}>
+                  <Button variant="contained" type="submit" sx={{ color: "white", my: "20px" }}>
+                     Submit
+                  </Button>
+                  <Button onClick={() => navigate("/admin/pricing")} variant="outlined" sx={{ my: "20px" }}>
+                     Cancel
+                  </Button>
+               </Box>
             </Box>
-          </Stack>
-          <Stack spacing={2} direction={"row"}>
-            <TextField
-              label="Monthly Price"
-              name="monthly"
-              variant="outlined"
-              type="number"
-              onChange={handleChange}
-              sx={{ width: "20ch" }}
-            />
-            <TextField
-              label="Yearly Price"
-              name="yearly"
-              type="number"
-              variant="outlined"
-              onChange={handleChange}
-              sx={{ width: "20ch" }}
-            />
-          </Stack>
-          <Stack spacing={2} direction={"row"}>
-            <TextField
-              label="Template Limit"
-              name="templateLimit"
-              variant="outlined"
-              type="number"
-              onChange={handleChange}
-              sx={{ width: "20ch" }}
-            />
-            <TextField
-              label="Guest Limit"
-              name="guestLimit"
-              type="number"
-              variant="outlined"
-              onChange={handleChange}
-              sx={{ width: "20ch" }}
-            />
-          </Stack>
-          <Button
-            variant="contained"
-            type="submit"
-            sx={{ color: "white", my: "20px" }}
-          >
-            Submit
-          </Button>
-        </Box>
-      </Paper>
-    </Stack>
-  );
+         </Paper>
+      </Stack>
+   );
 };
 
 export default AddPriceContent;

@@ -20,38 +20,30 @@ import { useDispatch, useSelector } from "react-redux";
 
 import EditPricingContent from "./EditPricingContent";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Stack } from "@mui/material";
-function Copyright(props) {
-   return (
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
-         {"Copyright © "}
-         <Link color="inherit" href="https://mui.com/">
-            Your Website
-         </Link>{" "}
-         {new Date().getFullYear()}
-         {"."}
-      </Typography>
-   );
-}
+import { Modal, Paper, Stack } from "@mui/material";
+import { DataContext } from "../../AppContext";
 
-function extractValue(arr, prop) {
-   // extract value from of object property in array
-   let extractedValue = arr.map((item) => item[prop]);
-
-   return extractedValue;
-}
 
 function PricingContent() {
-   const dispatch = useDispatch();
-   const navigate = useNavigate();
+   const [deleteModal, setDeleteModal] = useState(false);
    const [planList, setPlanList] = useState([]);
-   const [_id, set_Id] = useState(null);
-   const [singlePlan, setsinglePlan] = useState({});
 
-   const [id, setId] = useState(null);
+   const [singlePlan, setSinglePlan] = useState({});
+
    const [loading, setLoading] = useState(false);
+   const {snackbar} = React.useContext(DataContext)
+   // ===
+   const toggleDeleteModal = (plan) => {
+      if (deleteModal) {
+         setSinglePlan("");
+         setDeleteModal(!deleteModal);
+      } else {
+         setSinglePlan(plan);
+         setDeleteModal(!deleteModal);
+      }
+   };
 
-   //data fetching from backend all template
+   // ===
    const getplanlist = async (res) => {
       try {
          setLoading(true);
@@ -59,153 +51,223 @@ function PricingContent() {
          setPlanList(res?.data?.plans);
          setLoading(false);
       } catch (error) {
-         console.log(error);
-      }
-   };
-   // Delete template by id
+         snackbar("error", error.message)
 
-   const deleteHandler = (_id) => {
-      if (window.confirm("Are you sure you want to delete this Plan ?")) {
-         deletesingleplanlist(_id);
-         getplanlist();
-
-         // window.location.reload(false);
       }
    };
 
-   let deletesingleplanlist = async (singlePlan, res) => {
+   // ===
+
+   let deletePlan = async (planId) => {
       try {
          setLoading(true);
-         const res = await axios.delete(`/plan/${singlePlan}`);
+         const res = await axios.delete(`/plan/${planId}`);
+         snackbar(res.data.status, res.data.message)
          setLoading(false);
+         getplanlist();
       } catch (error) {
-         console.log(error);
+         snackbar("error", error.message)
       }
    };
 
    useEffect(() => {
       getplanlist();
-   }, [planList.length]);
+   }, []);
 
    return (
       <React.Fragment>
          <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: "none" } }} />
          {/* <CssBaseline /> */}
+         <Box padding={"0px 0px 20px 0px"}>
+            <Toolbar sx={{ flexWrap: "wrap" }}>
+               <Typography
+                  variant="h1"
+                  align="center"
+                  fontWeight="800"
+                  fontSize={"28px"}
+                  mb={2}
+                  sx={{
+                     color: "#795da8",
+                     width: "100%",
+                  }}>
+                  Subscription
+               </Typography>
+               <Box width={"100%"} textAlign={"right"}>
+                  <Button component={NavLink} to="/admins/create-plan" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
+                     Add Plans
+                  </Button>
+               </Box>
+            </Toolbar>
 
-         <Toolbar sx={{ flexWrap: "wrap" }}>
-            <Typography
-               variant="h1"
-               align="center"
-               fontWeight="800"
-               fontSize={"28px"}
-               mb={2}
+            <Container disableGutters maxWidth="sm" component="main"></Container>
+            {/* End hero unit */}
+            <Container maxWidth="md" component="main">
+               <Grid container spacing={5} alignItems="flex-end">
+                  {planList.length !== 0 ? (
+                     planList?.map((plan, index) => {
+                        // Enterprise card is full width at sm breakpoint
+                        return (
+                           <Grid item key={index} xs={12} sm={plan.title === "Premium Plan" ? 12 : 6} md={4}>
+                              <Card>
+                                 <CardHeader
+                                    title={plan.name}
+                                    // subheader={plan.subheader}
+                                    titleTypographyProps={{ align: "center" }}
+                                    action={plan.title === "Pro" ? <StarIcon /> : null}
+                                    subheaderTypographyProps={{
+                                       align: "center",
+                                    }}
+                                    sx={{
+                                       backgroundColor: (theme) => (theme.palette.mode === "light" ? theme.palette.grey[200] : theme.palette.grey[700]),
+                                    }}
+                                 />
+                                 <CardContent>
+                                    <Box>
+                                       <Box
+                                          sx={{
+                                             display: "flex",
+                                             justifyContent: "center",
+                                             alignItems: "baseline",
+                                             mb: 2,
+                                          }}>
+                                          <Typography component="h2" variant="h4" color="text.primary">
+                                             ${plan?.price?.monthly}
+                                          </Typography>
+                                          <Typography variant="h6" color="text.secondary">
+                                             /month
+                                          </Typography>
+                                       </Box>
+                                       <Box
+                                          sx={{
+                                             display: "flex",
+                                             justifyContent: "center",
+                                             alignItems: "baseline",
+                                             mb: 2,
+                                          }}>
+                                          <Typography component="h2" variant="h4" color="text.primary">
+                                             ${plan?.price?.yearly}
+                                          </Typography>
+                                          <Typography variant="h6" color="text.secondary">
+                                             /year
+                                          </Typography>
+                                       </Box>
+                                    </Box>
+                                    <ul>
+                                       {plan?.description?.map((line, index) => (
+                                          <Typography component="li" variant="subtitle1" align="center" key={index}>
+                                             {line}
+                                          </Typography>
+                                       ))}
+                                    </ul>
+                                 </CardContent>
+                                 {/* ===== update button==== */}
+                                 <CardActions>
+                                    <Button fullWidth variant={"contained"} sx={{ color: "white" }} component={NavLink} to={`/admin/plans/${plan?._id}`}>
+                                       Edit
+                                    </Button>
+                                 </CardActions>
+                                 {/* ===== Delete button==== */}
+                                 <CardActions>
+                                    <Button fullWidth variant={"contained"} sx={{ color: "white" }} id={plan?._id} onClick={() => toggleDeleteModal(plan)}>
+                                       Delete
+                                    </Button>
+                                 </CardActions>
+                              </Card>
+                           </Grid>
+                        );
+                     })
+                  ) : (
+                     <Box
+                        sx={{
+                           height: "40vh",
+                           width: "100%",
+                           display: "flex",
+                           justifyContent: "center",
+                           alignItems: "center",
+                        }}>
+                        <Typography variant="h6" color={"black"}>
+                           No Plans to display
+                        </Typography>
+                     </Box>
+                  )}
+               </Grid>
+            </Container>
+         </Box>
+         {/* ***********  confirm delete modal ************** */}
+         <Modal
+            open={deleteModal}
+            // open={true}
+            onClose={toggleDeleteModal}
+            closeAfterTransition
+            sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}>
+            <Paper
                sx={{
-                  color: "#795da8",
-                  width: "100%",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: { xl: 400, lg: 400, md: 400, sm: 400, xs: "70%" },
+                  bgcolor: " rgba(133, 103, 157, 0.47)",
+                  border: "1px solid white",
+                  borderRadius: "20px",
+                  p: 5,
                }}>
-               Subscription
-            </Typography>
-            <Box width={"100%"} textAlign={"right"}>
-               <Button component={NavLink} to="/admins/create-plan" variant="outlined" sx={{ my: 1, mx: 1.5 }}>
-                  Add Plans
-               </Button>
-            </Box>
-         </Toolbar>
+               <Typography
+                  variant="h1"
+                  sx={{
+                     fontSize: "25px",
+                     fontWeight: "600",
+                     textAlign: "center",
+                     color: "white",
+                  }}>
+                  Delete Plan
+               </Typography>
+               <Typography
+                  sx={{
+                     mt: 2,
+                     textAlign: "center",
+                     color: "white",
+                  }}>
+                  Are sure you want to delete {singlePlan.name} ?
+               </Typography>
+               <Button
+                  onClick={() => {
+                     deletePlan(singlePlan._id);
+                     toggleDeleteModal();
+                  }}
+                  variant="contained"
+                  sx={{
+                     color: "white",
+                     bgcolor: "#3B285B",
+                     width: "100%",
+                     mt: 2,
+                     "&:hover": {
+                        scale: "1.02",
 
-         <Container disableGutters maxWidth="sm" component="main"></Container>
-         {/* End hero unit */}
-         <Container maxWidth="md" component="main">
-            <Grid container spacing={5} alignItems="flex-end">
-               {planList.length !== 0 ? (
-                  planList?.map((plan, index) => {
-                     // Enterprise card is full width at sm breakpoint
-                     return (
-                        <Grid item key={index} xs={12} sm={plan.title === "Premium Plan" ? 12 : 6} md={4}>
-                           <Card>
-                              <CardHeader
-                                 title={plan.name}
-                                 // subheader={plan.subheader}
-                                 titleTypographyProps={{ align: "center" }}
-                                 action={plan.title === "Pro" ? <StarIcon /> : null}
-                                 subheaderTypographyProps={{
-                                    align: "center",
-                                 }}
-                                 sx={{
-                                    backgroundColor: (theme) => (theme.palette.mode === "light" ? theme.palette.grey[200] : theme.palette.grey[700]),
-                                 }}
-                              />
-                              <CardContent>
-                                 <Box>
-                                    <Box
-                                       sx={{
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "baseline",
-                                          mb: 2,
-                                       }}>
-                                       <Typography component="h2" variant="h4" color="text.primary">
-                                          ${plan?.price?.monthly}
-                                       </Typography>
-                                       <Typography variant="h6" color="text.secondary">
-                                          /month
-                                       </Typography>
-                                    </Box>
-                                    <Box
-                                       sx={{
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          alignItems: "baseline",
-                                          mb: 2,
-                                       }}>
-                                       <Typography component="h2" variant="h4" color="text.primary">
-                                          ${plan?.price?.yearly}
-                                       </Typography>
-                                       <Typography variant="h6" color="text.secondary">
-                                          /year
-                                       </Typography>
-                                    </Box>
-                                 </Box>
-                                 <ul>
-                                    {plan?.description?.map((line) => (
-                                       <Typography component="li" variant="subtitle1" align="center" key={line}>
-                                          {line}
-                                       </Typography>
-                                    ))}
-                                 </ul>
-                              </CardContent>
-                              {/* ===== update button==== */}
-                              <CardActions>
-                                 <Button fullWidth variant={"contained"} sx={{ color: "white" }} component={NavLink} to={`/admin/plans/${plan?._id}`}>
-                                    Edit
-                                 </Button>
-                              </CardActions>
-                              {/* ===== Delete button==== */}
-                              <CardActions>
-                                 <Button fullWidth variant={"contained"} sx={{ color: "white" }} id={plan?._id} onClick={() => deleteHandler(plan?._id)}>
-                                    Delete
-                                 </Button>
-                              </CardActions>
-                           </Card>
-                        </Grid>
-                     );
-                  })
-               ) : (
-                  <Box
-                     sx={{
-                        height: "40vh",
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                     }}>
-                     <CircularProgress />
-                  </Box>
-               )}
-            </Grid>
-         </Container>
-         {/* Footer */}
-         <>{/* <EditPricingContent singlePlan={singlePlan} onClick={() => true} /> */}</>
-         {/* End footer */}
+                        bgcolor: "#3B285B",
+                     },
+                  }}
+                  disableElevation>
+                  Yes
+               </Button>
+               <Button
+                  onClick={toggleDeleteModal}
+                  variant="outlined"
+                  sx={{
+                     color: "white",
+                     borderColor: "#3B285B",
+                     width: "100%",
+                     mt: 2,
+                     "&:hover": {
+                        scale: "1.02",
+                        borderColor: "#3B285B",
+                     },
+                  }}
+                  disableElevation>
+                  No
+               </Button>
+            </Paper>
+         </Modal>
       </React.Fragment>
    );
 }

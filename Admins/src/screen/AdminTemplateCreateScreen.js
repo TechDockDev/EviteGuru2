@@ -55,10 +55,10 @@ const AdminTemplateCreateScreen = () => {
          imgObj.crossOrigin = "Anonymous";
          imgObj.src = event.target.result;
          imgObj.width = width;
-         console.log(imgObj.height);
+         // console.log(imgObj.height);
 
          const scaleFactor = Math.min(width / imgObj.width, height / imgObj.height);
-         console.log(scaleFactor);
+         // console.log(scaleFactor);
 
          // imgObj.scale(scaleFactor);
 
@@ -66,16 +66,9 @@ const AdminTemplateCreateScreen = () => {
             var image = new fabric.Image(imgObj);
             image.name = e.target.files[0].name;
             // image.scale(scaleFactor)
-            console.log(height);
-            console.log(width);
-            //   image.width=200
-            // console.log(editor.canvas);
-            // image.width = editor.canvas.getWidth();
-            // image.height = editor.canvas.getHeight();
-            // image.objectfit = 'contain'
-            // image.scaleToWidth(editor.canvas.width);
-            // image.scaleToHeight(editor.canvas.height);
-            // set the image as the background of the canvas
+            // console.log(height);
+            // console.log(width);
+            
             editor?.canvas?.setBackgroundImage(image, editor.canvas.renderAll.bind(editor.canvas), {
                scaleX: editor.canvas.width / image.width,
                scaleY: editor.canvas.height / image.height,
@@ -97,11 +90,11 @@ const AdminTemplateCreateScreen = () => {
    const dispatch = useDispatch();
    const { id } = useParams();
 
-   console.log("id...", id);
+   // console.log("id...", id);
 
    const templateDetails = useSelector((state) => state.templateData);
    // const { template, loading, error } = templateDetails;
-   console.log("template data", templateDetails);
+   // console.log("template data", templateDetails);
 
    // =================== Ading Text Fuc
    const addText = () => {
@@ -118,7 +111,7 @@ const AdminTemplateCreateScreen = () => {
 
    const changeColor = (e) => {
       setColor(e.target.value);
-      console.log(e.target.value);
+      // console.log(e.target.value);
       const o = editor?.canvas?.getActiveObject();
       o.set("fill", e.target.value);
       editor?.setStrokeColor(e.target.value);
@@ -193,10 +186,10 @@ const AdminTemplateCreateScreen = () => {
    // ==============================================
    //   ========================font family ===
    const changeFont = (e) => {
-      console.log("font working>-");
+      // console.log("font working>-");
       setSelectedFont(e.target.value);
       const o = editor.canvas.getActiveObject().set("fontFamily", e.target.value);
-      console.log("text=>", o);
+      // console.log("text=>", o);
       editor.canvas.renderAll();
    };
    // ========================================
@@ -250,7 +243,7 @@ const AdminTemplateCreateScreen = () => {
    // ===👆 text style STRIKE THROUGH👆
    //   ========================font size ===
    const changeFontSize = (e) => {
-      console.log("font working>-");
+      // console.log("font working>-");
       const o = editor.canvas.getActiveObject().set("fontSize", e.target.value * 1);
       editor.canvas.renderAll();
    };
@@ -272,7 +265,7 @@ const AdminTemplateCreateScreen = () => {
    const toJSON = () => {
       const json = editor.canvas.toJSON();
       const data = JSON.stringify(json);
-      console.log(data);
+      // console.log(data);
       setData(data);
    };
    // =====save event template json ====
@@ -284,14 +277,14 @@ const AdminTemplateCreateScreen = () => {
          format: ext,
          enableRetinaScaling: true,
       });
-      console.log("data=>", data, "image Preview =>", image);
+      // console.log("data=>", data, "image Preview =>", image);
    };
    // ==================================
    //=================== This Fnc For Adding Extra Image
    const onUploadImage = (e) => {
       const reader = new FileReader();
       setAllImages([...allImages, e.target.files[0]]);
-      console.log(e.target.files[0]);
+      // console.log(e.target.files[0]);
       reader.onload = function (event) {
          var imgObj = new Image();
          imgObj.crossOrigin = "Anonymous";
@@ -338,7 +331,7 @@ const AdminTemplateCreateScreen = () => {
    //   ====load canvas from json =====
    const loadCanvasFromJson = () => {
       let object = new fabric.Canvas("canvas");
-      console.log(templateData);
+      // console.log(templateData);
       editor?.canvas.loadFromJSON(templateData);
    };
    // ==================================
@@ -353,7 +346,7 @@ const AdminTemplateCreateScreen = () => {
       const link = document.createElement("a");
       link.href = base64;
       link.download = `Template_Example.${ext}`;
-      console.log("Running", base64);
+      // console.log("Running", base64);
       // dispatch(EditTemplate(base64));
       // { THis link.Click For Dowload Editd Image , Whene You remove That Commit And that Image will Download}
       link.click();
@@ -452,9 +445,9 @@ const AdminTemplateCreateScreen = () => {
          });
          const res = await axios.post("/template/saveImage", formData);
          createPreview();
-         console.log(res);
+         // console.log(res);
       } catch (error) {
-         console.log(error);
+         // console.log(error);
       }
    };
 
@@ -973,43 +966,3 @@ const AdminTemplateCreateScreen = () => {
 };
 
 export default AdminTemplateCreateScreen;
-
-// const addImage = (e) => {
-//     const reader = new FileReader();
-//     console.log(e.target.files[0]);
-//     setAllImages([...allImages, e.target.files[0]]);
-//     reader.onload = function (event) {
-//       var imgObj = new Image();
-//       imgObj.crossOrigin = "Anonymous";
-//       imgObj.src = event.target.result;
-//       imgObj.onload = function () {
-//         var image = new fabric.Image(imgObj);
-//         editor.canvas.centerObject(image);
-//         image.set({
-//           scaleX: editor?.canvas.getWidth() / image.width / 2,
-//           scaleY: editor?.canvas.getHeight() / image.height / 2,
-//           top: 0,
-//           left: 0,
-//           // originX: "left",
-//           // originY: "top",
-//           srcFromAttribute: true,
-//         });
-//         image.name = e.target.files[0].name;
-//         editor.canvas.add(image);
-//         // image.filters.push(
-//         //   new fabric.Image.filters.BlendColor({
-//         //     color: "orange", // change this color to your desired color
-//         //     mode: "multiply",
-//         //   })
-//         // );
-//         // image.applyFilters();
-//         // var dataURL = editor?.canvas.toDataURL({
-//         //   format: "png",
-//         //   quality: 0.8,
-//         // });
-//         // console.log(dataURL);
-//         editor?.canvas.renderAll();
-//       };
-//     };
-//     reader.readAsDataURL(e.target.files[0]);
-//   };
