@@ -111,7 +111,7 @@ export const AddSubAdmins = () => {
                   {/* == 👆 email   ==*/}
 
                   {/* == 👇 password 👇  ==*/}
-                  <SingleInput labelText={"Password"} inputType={"text"} inputName={"password"} inputValue={formData.password} onChangeHandler={handleChange} labelInputId={"password"} requiredTrue={true} placeholderText={"set Password"} />
+                  <SingleInput labelText={"Password"} inputType={"password"} inputName={"password"} inputValue={formData.password} onChangeHandler={handleChange} labelInputId={"password"} requiredTrue={true} placeholderText={"set Password"} />
                   {/* == 👆 password   ==*/}
 
                   {/* == 👇 Phone 👇  ==*/}
@@ -166,8 +166,8 @@ export const AddSubAdmins = () => {
                   </Grid>
                   {/* == 👆 superAdmin   ==*/}
 
-                  {/* == 👇 setArrayPermission 👇  ==*/}
-                  <Grid container mt={2}>
+                  {/* == 👇 permission 👇  ==*/}
+                 {   (formData?.superAdmin === false || formData?.superAdmin === "false"  )&& <Grid container mt={2}>
                      <Grid
                         component={"label"}
                         htmlFor={"permission"}
@@ -185,8 +185,8 @@ export const AddSubAdmins = () => {
                         }}>
                         Permission *
                      </Grid>
-                     <Grid
-                        disabled={formData.superAdmin=== "true" ? true : false}
+                    <Grid
+                        
                         component={Autocomplete}
                         item
                         xl={8}
@@ -231,7 +231,7 @@ export const AddSubAdmins = () => {
                            );
                         }}
                      />
-                  </Grid>
+                  </Grid>}
                   {/* == 👆permission  ==*/}
 
                   {/* buttons container */}
@@ -265,4 +265,4 @@ export const AddSubAdmins = () => {
 
 export default AddSubAdmins;
 
-const subadminPermission = [{ permission: "Template" }, { permission: "Subscription" }, { permission: "Users" }, { permission: "Sub Admin" }, { permission: "Notifications " }, { permission: "Coupons" }];
+const subadminPermission = [{ permission: "Template" }, { permission: "Subscription" }, { permission: "Users" }, { permission: "Sub Admin" }, { permission: "Notifications" }, { permission: "Coupons" }];

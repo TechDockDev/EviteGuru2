@@ -12,7 +12,7 @@ const PaymentDetails = () => {
    const getPaymentsData = async () => {
       try {
          const { data } = await axios.get("/transactions/get");
-         console.log('-->',data.payments);
+         // console.log('-->',data.payments);
          
          setPaymentsData(data.payments)
       } catch (error) {
@@ -31,7 +31,7 @@ const PaymentDetails = () => {
          headerName: "User Name",
          width: 200,
          valueGetter:(params)=>{
-             return params.row.user.name
+             return params.row?.user?.name
          }
       },
       {
@@ -39,7 +39,7 @@ const PaymentDetails = () => {
          headerName: "E-mail",
          width: 200,
          valueGetter:(params)=>{
-            return params.row.user.email
+            return params.row?.user?.email
         }
       },
       {
@@ -53,7 +53,7 @@ const PaymentDetails = () => {
          headerName: "Start Date",
          width: 100,
          valueGetter:(params)=>{
-            const date = new Date(params.row.createdAt).toLocaleDateString('en-GB')
+            const date = new Date(params.row?.createdAt).toLocaleDateString('en-GB')
             return date
         }
       },
@@ -62,7 +62,7 @@ const PaymentDetails = () => {
          headerName: "Plan",
          width: 120,
          valueGetter:(params)=>{
-            return params.row.plan.name
+            return params.row?.plan?.name
         }
       },
       {
@@ -70,10 +70,11 @@ const PaymentDetails = () => {
          headerName: "Plan Type",
          width: 90,
          valueGetter:(params)=>{
-            return params.row.planType
+            return params.row?.planType
         }
       },
    ];
+
    return (
       <Stack padding={"0px 10px"}>
          <Typography

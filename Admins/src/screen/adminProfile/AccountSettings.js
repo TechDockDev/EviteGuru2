@@ -25,7 +25,7 @@ const AccountSettings = () => {
     try {
       // console.log("admin details", adminInfo?._id);
 
-      const { data } = await axios.get(`/get-admin`);
+      const { data } = await axios.get(`/auth`);
       // console.log("Inside the Admin", data);
       setAdminDetailsById(data.admin);
       console.log(data);

@@ -1,9 +1,9 @@
-import { React, useContext, useState } from "react";
+import { React, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "@fontsource/montserrat";
 import "@fontsource/sacramento";
-import "@fontsource/parisienne"; 
+import "@fontsource/parisienne";
 import "@fontsource/pinyon-script";
 //local files
 import AdminEmailotp from "./screen/AdminEmailotpScreen";
@@ -38,14 +38,11 @@ import { Alert, Snackbar } from "@mui/material";
 import ManageStickers from "./screen/ManageStickers/ManageStickers";
 import FAQ from "./screen/FAQ/FAQ";
 import Enterprise from "./screen/Enterprise/Enterprise";
+import Protected from "./Protected";
 
 const App = () => {
    const [alertMessage, setAlertMessage] = useState(null);
-   const {  severity,
-      message,
-      snackbar,
-      openSnackbar,
-      setOpenSnackbar,}  = useContext(DataContext)
+   const { severity, message, snackbar, openSnackbar, setOpenSnackbar, adminAuthData, setAdminAuthData, isLoggedIn, setIsLoggedIn } = useContext(DataContext);
 
    const showAlertBar = (message, type) => {
       setAlertMessage({
@@ -57,41 +54,214 @@ const App = () => {
       }, 1000);
    };
    axios.defaults.baseURL = "/api/v1/admin";
+   // ==============
+   const adminAuth = async () => {
+      try {
+         const { data } = await axios.get("/auth");
+         setAdminAuthData(data.admin);
+         setIsLoggedIn(true);
+      } catch (error) {
+         snackbar("error", "Please login first");
+      }
+   };
+
+   useEffect(() => {
+      adminAuth();
+   }, []);
+
    return (
       <BrowserRouter>
          <Routes>
             <Route path="/" element={<LogInModal />} />
             <Route element={<AdminDashboard />}>
-               <Route element={<AlertMessage alertMessage={alertMessage} />} />
-               <Route path="/admin/user-list" element={<UserListScreen />} />
-               <Route path="/admin/user/:id" element={<UserDetails />} />
-               <Route path="/admin/events/:id" element={<Events />} />
-               <Route path="/admin/event/:id" element={<EventStats />} />
-               <Route path="/admin/template-create" element={<AdminTemplateCreate showAlertBar={showAlertBar} />} />
-               <Route path="/admin/template-edit" element={<AdminTemplateEditScreen showAlertBar={showAlertBar} />} />
-               <Route path="/admin/template-edit/:templateId" element={<TemplateEdit />} />
-               <Route path="/admin/template-list" element={<AdminTemplateListScreen />} />
-               <Route path="/admin/admin_list" element={<SubAdminListScreen />} />
-               <Route path="/admin/pricing" element={<PricingContent />} />
-               <Route path="/admin/create-subadmin" element={<AddSubAdmins />} />
-               <Route path="/admin/:id" element={<EditSubAdmin />} />
-               <Route path="/admin/profile" element={<AccountSettings />} />
-               <Route path="/admin/plans/:id" element={<EditPricingContent />} />
-               <Route path="/admins/create-plan" element={<AddPriceContent />} />
-               <Route path="/admin/promotions" element={<CouponTable />} />
-               <Route path="/admin/add-coupon" element={<AddCoupon />} />
-               <Route path="/admin/promotional-mail" element={<PromotionalMail />} />
-               <Route path="/admin/accounts" element={<PaymentDetails />} />
-               <Route path="/admin/send-promotion-message" element={<UserListEmail />} />
-               <Route path="/admin/manage-stickers" element={<ManageStickers />} />
-               <Route path="/admin/faq" element={<FAQ />} />
-               <Route path="/admin/enterprise" element={<Enterprise />} />
+               <Route
+                  path="/admin/user-list"
+                  element={
+                     <Protected check={isLoggedIn }>
+                        <UserListScreen />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/user/:id"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <UserDetails />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/events/:id"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <Events />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/event/:id"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <EventStats />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/template-create"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <AdminTemplateCreate />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/template-edit"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <AdminTemplateEditScreen />{" "}
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/template-edit/:templateId"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <TemplateEdit />{" "}
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/template-list"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <AdminTemplateListScreen />{" "}
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/admin_list"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <SubAdminListScreen />{" "}
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/pricing"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <PricingContent />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/create-subadmin"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <AddSubAdmins />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/:id"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <EditSubAdmin />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/profile"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <AccountSettings />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/plans/:id"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <EditPricingContent />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admins/create-plan"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <AddPriceContent />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/promotions"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <CouponTable />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/add-coupon"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <AddCoupon />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/promotional-mail"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <PromotionalMail />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/accounts"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <PaymentDetails />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/send-promotion-message"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <UserListEmail />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/manage-stickers"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <ManageStickers />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/faq"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <FAQ />
+                     </Protected>
+                  }
+               />
+               <Route
+                  path="/admin/enterprise"
+                  element={
+                     <Protected check={isLoggedIn}>
+                        <Enterprise />
+                     </Protected>
+                  }
+               />
             </Route>
          </Routes>
-         <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={() => setOpenSnackbar(false)} 
-          anchorOrigin={{ vertical:"top", horizontal:"center" }}
-         >
-            <Alert  variant="filled" severity={severity} sx={{ width: "100%" }} onClose={() => setOpenSnackbar(false)} >
+         <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+            <Alert variant="filled" severity={severity} sx={{ width: "100%" }} onClose={() => setOpenSnackbar(false)}>
                {message}
             </Alert>
          </Snackbar>

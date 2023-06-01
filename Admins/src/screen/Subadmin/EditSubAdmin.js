@@ -1,12 +1,11 @@
-import { Box, Button, Paper, Typography, Grid, Input, Stack, Checkbox, TextField, Autocomplete } from "@mui/material";
+import { Box, Button, Paper, Typography, Grid, Input, Stack, Checkbox, TextField, Autocomplete, FormGroup, FormControlLabel } from "@mui/material";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useContext, useEffect, useState } from "react";
 import { Link as RouterLink, useNavigate, useParams, NavLink } from "react-router-dom";
-import { FormProvider, useForm } from "react-hook-form";
 import SingleInput from "./SingleInput";
+import { DataContext } from "../../AppContext";
 const defaultValues = {
    textValue: "",
 
@@ -16,93 +15,93 @@ const defaultValues = {
 
 export const EditSubAdmin = () => {
    const params = useParams();
-
    let [singleAdminId, setsingleAdminId] = useState({});
-   const [arrayPermission, setArrayPermission] = useState([]);
-   const [oldarrayPermission, setOldarrayPermission] = useState([]);
+
    const [formData, setFormData] = useState({
       name: "",
       email: "",
-
       phone: "",
       permission: [],
       superAdmin: "",
    });
-
-   const dispatch = useDispatch();
+   const [checkboxData, setCheckboxData] = useState({
+      Template: false,
+      Users: false,
+      Subscription: false,
+      "Sub Admin": false,
+      Notifications: false,
+      Coupons: false,
+      Template: false,
+      Template: false,
+   });
+   const { snackbar } = useContext(DataContext);
    const navigate = useNavigate();
 
-   const adminLogin = useSelector((state) => state.adminLogin);
-   const { adminInfo, error } = adminLogin;
    // console.log("inside the edit >", params.id);
 
    const singleAdmin = async (res, req) => {
       try {
-         const { data } = await axios.get(`/admin/${params?.id}`);
-         setsingleAdminId(data);
+         const { data } = await axios.get(`/${params?.id}`);
+         console.log("-->", data?.admin);
 
          setFormData({
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            permission: data.permission,
-            superAdmin: data.superAdmin,
+            name: data?.admin?.name,
+            email: data?.admin?.email,
+            phone: data?.admin?.phone,
+            permission: data?.admin?.permission,
+            superAdmin: data?.admin?.superAdmin,
          });
-
-         // console.log("Inside the Plan", data.data);
+         const tmp = checkboxData;
+         data?.admin?.permission?.forEach((element) => {
+            tmp[element] = true;
+         });
+         setCheckboxData({ ...tmp });
       } catch (error) {
-         console.log(error);
+         snackbar("error", error.message);
       }
    };
 
-   const editAdminbyId = async (res, req) => {
+   //  ===
+
+   const editAdminbyId = async () => {
       try {
-         const data = await axios.put(`/admin/${params?.id}`, {
+         let tempArr = []
+         for (const key in checkboxData) {
+            if(checkboxData[key] === true){
+               tempArr.push(key);
+            }                           
+         }
+         const {data} = await axios.put(`/${params?.id}`, {
             name: formData.name,
             email: formData.email,
-
             phone: formData.phone,
-            permission: formData.permission,
+            permission: tempArr,
             superAdmin: formData.superAdmin,
          });
-
-         // setAddPlan(req.data);
-         // console.log("singleData->", res.data);
+         snackbar(data.status, data.message)
+                  
       } catch (error) {
-         console.log(error);
+         snackbar("error", error.message);
       }
    };
+   // ===
+   const onPermissionChange = (e) => {
+      setCheckboxData({ ...checkboxData, [e.target.name]: e.target.checked });
+   };
+   // ===
+   const handleChange = (e, value) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+   };
+   console.log(formData);
 
-   const handleChange = (e, index) => {
-      if (e.target.name === "permission") {
-         let tempPerm = [...formData.permission];
-         tempPerm[index] = e.target.value;
-         setFormData({ ...formData, permission: tempPerm });
-      } else {
-         setFormData({ ...formData, [e.target.name]: e.target.value });
-         console.log(formData);
-      }
-   };
+   // ===
+
    const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
    const checkedIcon = <CheckBoxIcon fontSize="small" />;
-   const methods = useForm({ defaultValues: defaultValues });
 
    const submitHandler = (e) => {
       e.preventDefault();
-      if (arrayPermission) {
-         arrayPermission.forEach(function (obj) {
-            formData.permission.push(obj.permission);
-         });
-      }
-
-      editAdminbyId(
-         formData.name,
-         formData.email,
-
-         formData.phone,
-         formData.permission,
-         formData.superAdmin
-      );
+      editAdminbyId();
       navigate("/admin/admin_list");
    };
 
@@ -229,9 +228,9 @@ export const EditSubAdmin = () => {
                   </Grid>
                </Grid>
                {/* == 👆 superAdmin   ==*/}
+               {/* == 👇permission  ==*/}
 
-               {/* == 👇 setArrayPermission 👇  ==*/}
-               <Grid container mt={2}>
+             { (formData?.superAdmin === false  || formData?.superAdmin === "false") &&  <Grid container mt={2}>
                   <Grid
                      component={"label"}
                      htmlFor={"permission"}
@@ -249,53 +248,23 @@ export const EditSubAdmin = () => {
                      }}>
                      Permission *
                   </Grid>
-                  <Grid
-                     component={Autocomplete}
-                     item
-                     xl={8}
-                     lg={8}
-                     md={8}
-                     sm={8}
-                     xs={12}
-                     multiple
-                     sx={{
-                        height: "40px",
-                        borderRadius: "8px",
-                        "& .MuiFormControl-root, .MuiInputBase-root": {
-                           padding: "0px",
-                           height: "100%",
-                           borderRadius: "8px",
-                        },
-                        "& input": {
-                           paddingLeft: "10px !important",
-                        },
-                     }}
-                     id="permission"
-                     options={subadminPermission}
-                     disableCloseOnSelect
-                     getOptionLabel={(formData) => formData.permission}
-                     onChange={(event, value) => setArrayPermission(value)}
-                     renderOption={(props, option, { selected }) => (
-                        <li
-                           {...props}
-                           style={{
-                              background: "white",
-                              color: "#795da8",
-                              fontWeight: "bold",
-                           }}>
-                           <Checkbox icon={icon} checkedIcon={checkedIcon} style={{ marginRight: 8 }} checked={selected} />
-                           {option.permission}
-                        </li>
-                     )}
-                     renderInput={(params) => {
-                        return (
-                           <>
-                              <TextField {...params} placeholder="Permission" />
-                           </>
-                        );
-                     }}
-                  />
-               </Grid>
+                  <Grid item xl={8} lg={8} md={8} sm={8} xs={12} multiple>
+                     <FormGroup row>
+                        {subadminPermission.map((option, index) => {
+                           return (
+                              <FormControlLabel
+                                 key={index}
+                                 sx={{
+                                    width: "fit-content",
+                                 }}
+                                 control={<Checkbox checked={checkboxData[option.permission]} name={option.permission} onChange={onPermissionChange} />}
+                                 label={option.permission}
+                              />
+                           );
+                        })}
+                     </FormGroup>
+                  </Grid>
+               </Grid>}
                {/* == 👆permission  ==*/}
 
                {/* buttons container */}
@@ -326,4 +295,4 @@ export const EditSubAdmin = () => {
 };
 
 export default EditSubAdmin;
-const subadminPermission = [{ permission: "Template" }, { permission: "Subscription" }, { permission: "Users" }, { permission: "Sub Admin" }, { permission: "Notifications " }, { permission: "Coupons" }];
+const subadminPermission = [{ permission: "Template" }, { permission: "Subscription" }, { permission: "Users" }, { permission: "Sub Admin" }, { permission: "Notifications" }, { permission: "Coupons" }];
