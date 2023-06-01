@@ -5,12 +5,11 @@ import jwt from "jsonwebtoken";
 //import file
 import User from "../models/userModel.js";
 import Subscription from "../models/subscriptionModel.js";
+import { Authentication } from "../utils/firebase.js";
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-
   const user = await User.findOne({ email });
-
   if (user && (await user.matchPassword(password))) {
     res.json({
       _id: user._id,
@@ -31,6 +30,31 @@ const authenticated = asyncHandler(async (req, res) => {
     message: "user is authenticated",
     user,
   });
+});
+
+const forgetPasssword = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (user) {
+    res.json({
+      status: "success",
+      message: "User Exists",
+      phone: user.phone,
+    });
+  }
+});
+
+const changeForgetPasssword = asyncHandler(async (req, res) => {
+  const decodedValue = await auth().verifyIdToken(req.body.idToken);
+  const user = await User.findOne({ phone: decodedValue.phone_number });
+  user.password = await bcrypt.hash(req.body.password, 10);
+  await user.save();
+  if (user) {
+    res.json({
+      status: "success",
+      message: "User Exists",
+      phone: user.phone,
+    });
+  }
 });
 
 // Generating token with user ID
@@ -83,8 +107,14 @@ const changePassword = asyncHandler(async (req, res) => {
 // sign up controller
 const signUp = async (req, res, next) => {
   try {
+    const decodedValue = await auth().verifyIdToken(req.body.idToken);
     const hash = await bcrypt.hash(req.body.password, 10);
-    const user = await User.create({ ...req.body, password: hash });
+    const user = await User.create({
+      ...req.body,
+      phone: decodedValue.phone_number,
+      password: hash,
+      userType: "normal",
+    });
     createSendToken(user, 200, res);
   } catch (error) {
     res.status(400).json({
@@ -92,6 +122,16 @@ const signUp = async (req, res, next) => {
     });
   }
 };
+
+const googleSignUp = asyncHandler(async (req, res) => {
+  const details = await Authentication.verifyIdToken(req.body.idToken);
+  const user = await User.create({
+    name: details.name,
+    email: details.email,
+    userType: "google",
+  });
+  createSendToken(user, 200, res);
+});
 
 // login controller
 const login = async (req, res, next) => {
@@ -114,6 +154,14 @@ const login = async (req, res, next) => {
     });
   }
 };
+
+const googleLogin = asyncHandler(async (req, res) => {
+  const { email } = await Authentication.verifyIdToken(req.body.idToken);
+  const user = await User.findOne({ email });
+  if (user) {
+    return createSendToken(user, 200, res);
+  }
+});
 
 const getUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id).populate(
@@ -198,6 +246,8 @@ const logOut = asyncHandler(async (req, res) => {
 export {
   authUser,
   updateUser,
+  googleSignUp,
+  googleLogin,
   login,
   signUp,
   getUser,
@@ -205,5 +255,7 @@ export {
   userPlans,
   authenticated,
   changePassword,
+  changeForgetPasssword,
+  forgetPasssword,
   logOut,
 };
