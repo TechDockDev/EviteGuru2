@@ -74,7 +74,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
 });
 
 const getAdmin = asyncHandler(async (req, res) => {
-  const admin = await Admin.findById(req.admin.id);
+  const admin = await Admin.findById(req.params.id);
   res.json({ status: "success", message: "Admin fetched Successfully", admin });
 });
 
