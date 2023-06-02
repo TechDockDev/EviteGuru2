@@ -24,7 +24,7 @@ const AdminDashboard = () => {
    //👇  state for open small screen left drawer  👇
    const navigate = useNavigate();
    const [openLeftDrawer, setOpenLeftDrawer] = useState();
-   const { snackbar } = useContext(DataContext);
+   const { snackbar, setIsLoggedIn,  setAdminAuthData, } = useContext(DataContext);
 
    const handleDrawerToggle = () => {
       setOpenLeftDrawer(!openLeftDrawer);
@@ -32,8 +32,10 @@ const AdminDashboard = () => {
    const logout = async () => {
       try {
          const { data } = await axios.get("/logout");
-         navigate("/");
+         setIsLoggedIn(false)
+         setAdminAuthData("")
          snackbar(data.status, data.message);
+         navigate("/");
       } catch (error) {}
    };
    return (

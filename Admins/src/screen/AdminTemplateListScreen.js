@@ -13,20 +13,17 @@ const AdminTemplateListScreen = () => {
    const [selectedTemplateId, setSelectedTemplateId] = useState();
    const [loading, setLoading] = useState(false);
    const navigate = useNavigate();
-   const [rowSelected, setRowSelected] = useState({})
+   const [rowSelected, setRowSelected] = useState({});
    const [deleteModal, setDeleteModal] = useState(false);
    //    =========
    const toggleDeleteModal = (rowData) => {
-
-      if(!deleteModal){
+      if (!deleteModal) {
          setRowSelected(rowData);
          setDeleteModal(!deleteModal);
       } else {
          setRowSelected("");
          setDeleteModal(!deleteModal);
-
       }
-
    };
 
    const getTemplateData = async () => {
@@ -41,21 +38,19 @@ const AdminTemplateListScreen = () => {
    };
 
    const toggleEditTemplate = (templateId) => {
-      if(!openEditTemplate){
+      if (!openEditTemplate) {
          setSelectedTemplateId(templateId);
 
          setOpenEditTemplate(!openEditTemplate);
-      }else {
+      } else {
          setSelectedTemplateId("");
          setOpenEditTemplate(!openEditTemplate);
-
       }
    };
 
-   
    /// Delete handler for template delete
-   const deleteHandler  = async (templateId) => {
-      console.log( templateId)
+   const deleteHandler = async (templateId) => {
+      console.log(templateId);
       try {
          const res = await axios.delete(`/template/${templateId}`);
          getTemplateData();
@@ -127,7 +122,7 @@ const AdminTemplateListScreen = () => {
                   <IconButton
                      onClick={(e) => {
                         e.stopPropagation();
-                        toggleDeleteModal( params?.row);
+                        toggleDeleteModal(params?.row);
                      }}
                      sx={{
                         color: "#FFFFFF",
@@ -136,7 +131,6 @@ const AdminTemplateListScreen = () => {
                      }}>
                      <DeleteForeverIcon />
                   </IconButton>
-                  
                </>
             );
          },
@@ -189,6 +183,80 @@ const AdminTemplateListScreen = () => {
             </>
          </Modal>
 
+         {/* ***********  confirm delete modal ************** */}
+         <Modal
+            open={deleteModal}
+            // open={true}
+            onClose={toggleDeleteModal}
+            closeAfterTransition
+            sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}>
+            <Paper
+               sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: { xl: 400, lg: 400, md: 400, sm: 400, xs: "70%" },
+                  bgcolor: " rgba(133, 103, 157, 0.47)",
+                  border: "1px solid white",
+                  borderRadius: "20px",
+                  p: 5,
+               }}>
+               <Typography
+                  variant="h1"
+                  sx={{
+                     fontSize: "25px",
+                     fontWeight: "600",
+                     textAlign: "center",
+                     color: "white",
+                  }}>
+                  Delete Template
+               </Typography>
+               <Typography
+                  sx={{
+                     mt: 2,
+                     textAlign: "center",
+                     color: "white",
+                  }}>
+                  Are sure you want to delete {rowSelected?.name} ?
+               </Typography>
+               <Button
+                  onClick={() => {
+                     deleteHandler(rowSelected?._id);
+                     toggleDeleteModal();
+                  }}
+                  variant="contained"
+                  sx={{
+                     color: "white",
+                     bgcolor: "#3B285B",
+                     width: "100%",
+                     mt: 2,
+                     "&:hover": {
+                        scale: "1.02",
+                        bgcolor: "#3B285B",
+                     },
+                  }}
+                  disableElevation>
+                  Yes
+               </Button>
+               <Button
+                  onClick={toggleDeleteModal}
+                  variant="outlined"
+                  sx={{
+                     color: "white",
+                     borderColor: "#3B285B",
+                     width: "100%",
+                     mt: 2,
+                     "&:hover": {
+                        scale: "1.02",
+                        borderColor: "#3B285B",
+                     },
+                  }}
+                  disableElevation>
+                  No
+               </Button>
+            </Paper>
+         </Modal>
       </Box>
    );
 };

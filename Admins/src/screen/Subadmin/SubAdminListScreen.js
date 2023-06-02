@@ -34,10 +34,7 @@ const SubAdminListScreen = () => {
       }
    };
    // ===
-   const editSubAdmin = (e, subAdminId) => {
-      // toggleAddUserModal(subAdminId);
-      // EditSubAdmin(subAdminId);
-      console.log(subAdminId);
+   const editSubAdmin = ( subAdminId) => {
       navigate(`/admin/${subAdminId}`);
    };
    // ===
@@ -92,47 +89,11 @@ const SubAdminListScreen = () => {
       },
       {
          field: "superAdmin",
-         headerName: "Sub Admin",
-         width: 100,
-         renderCell: (params) => {
-            return (
-               <p>
-                  {params?.row?.superAdmin ? (
-                     <AdminPanelSettingsIcon />
-                  ) : (
-                     <CheckCircleIcon
-                        sx={{
-                           color: "green",
-                           borderRadius: "100%",
-                        }}
-                     />
-                  )}
-               </p>
-            );
-         },
-      },
-
-      {
-         field: "view",
-         headerName: "View",
-         width: 80,
-         renderCell: (params) => {
-            return (
-               <>
-                  <IconButton
-                     onClick={(e) => {
-                        // toggleTemplatePreviewModal(e, params.row._id);
-                     }}
-                     sx={{
-                        color: "#FFFFFF",
-                        backgroundColor: "#795DA8",
-                        borderRadius: "70%",
-                     }}>
-                     <VisibilityIcon />
-                  </IconButton>
-               </>
-            );
-         },
+         headerName: "Admin Type",
+         width: 150,
+         valueGetter:(params)=>{
+            return params.row?.superAdmin ? "Super Admin" : "Sub Admin"
+        }
       },
       {
          field: "edit",
@@ -143,7 +104,7 @@ const SubAdminListScreen = () => {
                <>
                   <IconButton
                      onClick={(e) => {
-                        editSubAdmin(e, params.row._id);
+                        editSubAdmin( params.row._id);
                      }}
                      sx={{
                         color: "#FFFFFF",
