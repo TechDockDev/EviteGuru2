@@ -25,7 +25,8 @@ import LogInModal from "../screens/LoginModal/LogInModal";
 import RegisterModal from "../screens/RegisterModal/RegisterModal";
 import FooterSection from "../screens/HomeScreen/FooterSection";
 import axios from "axios";
-import { logout } from "../redux/action/userActions";
+import { logout, openSnackbar } from "../redux/action/userActions";
+import { Constants } from "../redux/constants/action-types";
 
 const Header = () => {
   // =====================================
@@ -53,23 +54,20 @@ const Header = () => {
   const { userDetail } = useSelector((state) => state);
   console.log("User Login:->", userDetail);
 
-  // const usergooglefacebookLogin = useSelector(
-  //   (state) => state.usergooglefacebookLogin
-  // );
-  // const { googlefacebookInfo } = usergooglefacebookLogin;
-  // console.log("google login:->", googlefacebookInfo);
   // ====== logout handler =======
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.post("/api/v1/user/logout");
+      const res = await axios.post(`${Constants.URL}/logout`);
       if (res.status === 200) {
         console.log("response=>", res);
+        dispatch(openSnackbar(res?.data?.message, "success"));
         dispatch(logout());
         navigate("/");
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(openSnackbar("please try again", "error"));
     }
   };
   // ===== endof logout handler===
@@ -334,6 +332,7 @@ const Header = () => {
         <SmallScreenDrawerMenu
           toggleLogInModal={toggleLogInModal}
           toggleRegisterModal={toggleRegisterModal}
+          logoutHandler={logoutHandler}
         />
         {/* ======================================================================== */}
         <LogInModal
@@ -344,6 +343,7 @@ const Header = () => {
         <RegisterModal
           openRegisterModal={openRegisterModal}
           toggleRegisterModal={toggleRegisterModal}
+          setOpenRegisterModal={setOpenRegisterModal}
         />
         {/* ======================================================================== */}
 

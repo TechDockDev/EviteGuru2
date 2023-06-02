@@ -25,11 +25,13 @@ export const ActionTypes = {
 
   SET_EVENT_TEMPLATE_JSON: "SET_EVENT_TEMPLATE_JSON",
   RESET_EVENT_TEMPLATE_JSON: "RESET_EVENT_TEMPLATE_JSON",
+
+  OPEN_SNACKBAR: "OPEN_SNACKBAR",
+  CLOSE_SNACKBAR: "CLOSE_SNACKBAR",
 };
 
-
 export const Constants = {
-  IMG_URL:"http://192.168.29.249:8085/api/v1/user",
-  URL:"/api/v1/user",
-  IMG_PATH:"/images/getImage?path=",
-}
+  IMG_URL: "http://192.168.29.249:8085/api/v1/user",
+  URL: "/api/v1/user",
+  IMG_PATH: "/images/getImage?path=",
+};

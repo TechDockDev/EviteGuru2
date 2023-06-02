@@ -20,6 +20,7 @@ import { setPageTitle } from "../../redux/action/defaultActions";
 import { BiEdit } from "react-icons/bi";
 import { MdLogout } from "react-icons/md";
 import ActiveCardInfo from "./ActiveCardInfo";
+import { openSnackbar } from "../../redux/action/userActions";
 const AccountSettings = () => {
   const temp = {
     name: "Example User",
@@ -46,6 +47,7 @@ const AccountSettings = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     alert("submitted");
+    dispatch(openSnackbar("submitted", "success"));
   };
   // ===================================
   const stringAvatar = (name) => {

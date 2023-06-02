@@ -19,7 +19,7 @@ import { useState } from "react";
 import ArchitectureIcon from "@mui/icons-material/Architecture";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/action/userActions";
+import { logout, openSnackbar } from "../../redux/action/userActions";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Constants } from "../../redux/constants/action-types";
@@ -44,6 +44,7 @@ const SidebarMenu = (props) => {
       if (res.status === 200) {
         console.log("response=>", res);
         // props?.handleDrawerToggle();
+        dispatch(openSnackbar(res?.data?.message, "success"));
         dispatch(logout());
         navigate("/");
       }

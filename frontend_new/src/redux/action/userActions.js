@@ -42,12 +42,7 @@ export const getSingleTemplate = (data) => {
   };
 };
 
-// export const setEventDetailsPreviewData = (data) => {
-//   return {
-//     type: ActionTypes.EVENT_DETAILS,
-//     payload: data,
-//   };
-// };
+
 export const setCreatedEventDetail = (data) => {
   return {
     type: ActionTypes.SET_CREATED_EVENT_DETAILS,
@@ -69,7 +64,7 @@ export const setCreatedListId = (id) => {
   };
 };
 export const setEventTemplate = (data) => {
-  console.log("data=>",data)
+  console.log("data=>", data);
   return {
     type: ActionTypes.SET_EVENT_TEMPLATE_JSON,
     payload: data,
@@ -79,6 +74,20 @@ export const setEventTemplate = (data) => {
 export const reSetEventTemplate = () => {
   return {
     type: ActionTypes.RESET_EVENT_TEMPLATE_JSON,
+    payload: {},
+  };
+};
+
+export const openSnackbar = (message, severity) => {
+  return {
+    type: ActionTypes.OPEN_SNACKBAR,
+    payload: { message: message, severity: severity },
+  };
+};
+
+export const closeSnackbar = () => {
+  return {
+    type: ActionTypes.CLOSE_SNACKBAR,
     payload: {},
   };
 };

@@ -11,6 +11,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
 import { useNavigate } from "react-router-dom";
+import { Constants } from "../../redux/constants/action-types";
 
 const BrowseTemplate = () => {
   const [templateData, setTemplateData] = useState([]);
@@ -36,7 +37,7 @@ const BrowseTemplate = () => {
     try {
       setLoadingTemplate(true);
       const res = await axios.get(
-        `/api/v1/user/template/all?page=${page}&limit=9`
+        `${Constants.URL}/template/all?page=${page}&limit=9`
       );
       console.log(res?.data?.template);
       setTemplateData(res?.data?.template);

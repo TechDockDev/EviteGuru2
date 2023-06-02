@@ -12,7 +12,6 @@ export const userReducer = (state = initialState, { type, payload }) => {
     case ActionTypes.USER_AUTH:
       return { ...state, ...payload, isAuthenticated: true, isUser: true };
     case ActionTypes.USER_LOGOUT:
-      console.log("console is comming..");
       return { ...initialState };
     default:
       return state;
@@ -25,6 +24,20 @@ export const userEventReducer = (state = {}, { type, payload }) => {
       return { ...payload };
     case ActionTypes.RESET_EVENT_TEMPLATE_JSON:
       return {};
+    default:
+      return state;
+  }
+};
+
+export const snacbarReducer = (
+  state = { open: false, message: "", severity: "success" },
+  { type, payload }
+) => {
+  switch (type) {
+    case ActionTypes.OPEN_SNACKBAR:
+      return { open: true, ...payload };
+    case ActionTypes.CLOSE_SNACKBAR:
+      return { ...state, open: false };
     default:
       return state;
   }

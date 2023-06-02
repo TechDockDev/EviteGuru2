@@ -1,4 +1,11 @@
-import { Box, Grid, Pagination, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Grid,
+  Pagination,
+  Stack,
+  Typography,
+} from "@mui/material";
 
 import {
   DataGrid,
@@ -12,10 +19,12 @@ import { setPageTitle } from "../../redux/action/defaultActions";
 import axios from "axios";
 import { useState } from "react";
 import { Constants } from "../../redux/constants/action-types";
+import { openSnackbar } from "../../redux/action/userActions";
 
 const AddressBook = () => {
   const { pageTitle } = useSelector((state) => state);
   const [allContacts, setAllContacts] = useState([]);
+  const [loading, setloading] = useState(true);
   const dispatch = useDispatch();
   function CustomeToolBar() {
     return (
@@ -96,9 +105,11 @@ const AddressBook = () => {
         console.log("response=>", res?.data?.guestList);
         // extractAllcontacts(res?.data?.guestList);
         setAllContacts(res?.data?.guestList);
+        setloading(false);
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(openSnackbar("error , something went wrong", "error"));
     }
   };
   // ====end of contact list===
@@ -112,90 +123,107 @@ const AddressBook = () => {
   }, []);
 
   return (
-    <Box
-      sx={{
-        // border: "2px solid red",
-        height: "100%",
-        width: {
-          xl: "calc(100vw - 250px)",
-          lg: "calc(100vw - 270px)",
-          md: "calc(100vw - 270px)",
-          sm: "100vw",
-          xs: "100vw",
-        },
-        maxWidth: "1150px",
-        padding: "0 20px 20px 20px",
-        boxSizing: "border-box",
-      }}
-    >
-      {/* title */}
+    <>
       <Box
         sx={{
-          m: 1,
+          // border: "2px solid red",
+          height: "100%",
+          width: {
+            xl: "calc(100vw - 250px)",
+            lg: "calc(100vw - 270px)",
+            md: "calc(100vw - 270px)",
+            sm: "100vw",
+            xs: "100vw",
+          },
+          maxWidth: "1150px",
+          padding: "0 20px 20px 20px",
+          boxSizing: "border-box",
         }}
       >
-        <Typography
-          variant="h1"
-          sx={{ fontSize: "25px", fontWeight: "800" }}
-          textAlign={"center"}
-        >
-          All Contacts
-        </Typography>
-      </Box>
-      {/* title */}
-
-      <Stack mt={2}>
-        <DataGrid
-          components={{ Toolbar: CustomeToolBar }}
-          //   slots={{ toolbar: QuickSearchToolbar }}
-          rows={allContacts}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 8,
-              },
-            },
-          }}
-          getRowId={(row) => row._id}
-          autoHeight={true}
-          pageSizeOptions={[5]}
-          checkboxSelection
-          disableRowSelectionOnClick
-          getRowClassName={(params) =>
-            params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-          }
+        {/* title */}
+        <Box
           sx={{
-            bgcolor: "none",
-            border: "none",
-            "& .odd": { bgcolor: "#F7F7F7 !important" },
-            "& .MuiCheckbox-root": {
-              color: "black",
-            },
-            "& .MuiDataGrid-columnHeaderTitle": {
-              fontWeight: "800",
-            },
+            m: 1,
           }}
-        />
-      </Stack>
-      <Stack spacing={2} alignItems={"center"}>
-        <Pagination
-          count={10}
-          siblingCount={1}
-          variant="outlined"
-          defaultPage={1}
-          // type={"first"}
-          shape="rounded"
-          boundaryCount={0}
+        >
+          <Typography
+            variant="h1"
+            sx={{ fontSize: "25px", fontWeight: "800" }}
+            textAlign={"center"}
+          >
+            All Contacts
+          </Typography>
+        </Box>
+        {/* title */}
+        {loading ? (
+          <Stack alignItems={"center"} justifyContent={"center"} mt={2}>
+            <CircularProgress
+              color="primary"
+              sx={{
+                bgcolor: "transparent !important",
+                "& svg": {
+                  bgcolor: "transparent !important",
+                },
+              }}
+            />
+          </Stack>
+        ) : (
+          <>
+            <Stack mt={2}>
+              <DataGrid
+                components={{ Toolbar: CustomeToolBar }}
+                //   slots={{ toolbar: QuickSearchToolbar }}
+                rows={allContacts}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 8,
+                    },
+                  },
+                }}
+                getRowId={(row) => row._id}
+                autoHeight={true}
+                pageSizeOptions={[5]}
+                checkboxSelection
+                disableRowSelectionOnClick
+                getRowClassName={(params) =>
+                  params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+                }
+                sx={{
+                  bgcolor: "none",
+                  border: "none",
+                  "& .odd": { bgcolor: "#F7F7F7 !important" },
+                  "& .MuiCheckbox-root": {
+                    color: "black",
+                  },
+                  "& .MuiDataGrid-columnHeaderTitle": {
+                    fontWeight: "800",
+                  },
+                }}
+              />
+            </Stack>
+            <Stack spacing={2} alignItems={"center"}>
+              <Pagination
+                count={10}
+                siblingCount={1}
+                variant="outlined"
+                defaultPage={1}
+                // type={"first"}
+                shape="rounded"
+                boundaryCount={0}
 
-          // hideNextButton={true}
-          // hidePrevButton={true}
-          // page={1}
-        />
-      </Stack>
+                // hideNextButton={true}
+                // hidePrevButton={true}
+                // page={1}
+              />
+            </Stack>
+          </>
+        )}
 
-      {/* ============  👆 Guests list table👆============= */}
-    </Box>
+        {/* ============  👆 Guests list table👆============= */}
+      </Box>
+    </>
   );
 };
 

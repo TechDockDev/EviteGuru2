@@ -170,6 +170,18 @@ const SmallScreenDrawerMenu = (props) => {
                     <ListItemText>Dashboard</ListItemText>
                   </ListItemButton>
                 </ListItem>
+                <ListItem>
+                  <ListItemButton>
+                    <ListItemText
+                      onClick={() => {
+                        handleDrawerToggle();
+                        props?.logoutHandler();
+                      }}
+                    >
+                      Logout
+                    </ListItemText>
+                  </ListItemButton>
+                </ListItem>
               </>
             ) : (
               <>
