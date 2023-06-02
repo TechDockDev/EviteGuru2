@@ -62,9 +62,9 @@ const sendEnterPriseMail = expressAsyncHandler(async (req, res) => {
   const plan = await Subscription.findOne({ name: "Enterprise" });
   const session = await stripe.checkout.sessions.create({
     metadata: {
-      plan: plan.id,
+      plan: plan?.id,
       planType: "year",
-      user: enterprise.user.id,
+      user: enterprise.user?.id,
       enterpriseId,
     },
     currency: "usd",

@@ -4,7 +4,9 @@ import Stripe from "stripe";
 import Payment from "../models/paymentModel.js";
 import User from "../models/userModel.js";
 import ip from "ip";
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(
+  "sk_test_51MmTTLJyawffnqCDMx48PrzogYc49QK4yGdJOVUuCHljgBpvZFSXtM6I2NNRPkJ5zCDALHohta1hhpcNEkuYxBSs00K7A7xSRZ"
+);
 
 const purchasePlan = expressAsyncHandler(async (req, res) => {
   const { planId, planType } = req.body;
