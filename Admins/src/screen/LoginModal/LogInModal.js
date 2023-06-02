@@ -21,7 +21,7 @@ const LogInModal = (props) => {
   const navigate = useNavigate();
   const [value, setValue] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const {snackbar} = useContext(DataContext)
+  const {snackbar, setIsLoggedIn, setAdminAuthData, isLoggedIn} = useContext(DataContext)
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -32,18 +32,23 @@ const LogInModal = (props) => {
     try {
       e.preventDefault();
       const res = await axios.post("/login", value);
-      if (res.status === 200) {
+      if (res.status === 200) {        
+        setAdminAuthData(res.data.user);
+        setIsLoggedIn(true);
         navigate("/admin/template-list");
         snackbar(res.data.status, res.data.message)
-        
-
       }
     } catch (error) {
       snackbar("error", error.message);
       
     }
   };
-  useEffect(() => {}, []);
+  useEffect(() => {
+   if(isLoggedIn){
+    navigate("/admin/template-list");
+   }
+  }, [isLoggedIn])
+  
   return (
       <Paper
       elevation={24}

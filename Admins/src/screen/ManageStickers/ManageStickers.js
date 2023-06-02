@@ -68,7 +68,7 @@ const ManageStickers = () => {
       }
    };
    return (
-      <Box paddingX={"10px"} boxSizing={"border-box"}>
+      <Box padding={"0px 10px 20px 10px"} boxSizing={"border-box"}>
          <Typography
             variant="h1"
             align="center"

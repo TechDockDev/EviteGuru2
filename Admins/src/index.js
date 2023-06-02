@@ -7,6 +7,7 @@ import "./index.css";
 import { ThemeProvider } from "@mui/material";
 import theme from "./muiTheme/theme";
 import { AppContext } from "./AppContext";
+import { BrowserRouter } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -14,7 +15,9 @@ root.render(
       <AppContext>
          <Provider store={store}>
             <ThemeProvider theme={theme}>
+               <BrowserRouter>
                <App />
+               </BrowserRouter>
             </ThemeProvider>
          </Provider>
       </AppContext>

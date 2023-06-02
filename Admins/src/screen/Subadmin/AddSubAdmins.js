@@ -265,4 +265,4 @@ export const AddSubAdmins = () => {
 
 export default AddSubAdmins;
 
-const subadminPermission = [{ permission: "Template" }, { permission: "Subscription" }, { permission: "Users" }, { permission: "Sub Admin" }, { permission: "Notifications" }, { permission: "Coupons" }];
+const subadminPermission = [{ permission: "Template" }, { permission: "Subscription" }, { permission: "Users" }, { permission: "Sub Admin" }, { permission: "Notifications" }, { permission: "Coupons" },{ permission: "Enterprise" } ,  { permission: "Accounts" }];

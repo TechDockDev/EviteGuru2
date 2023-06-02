@@ -32,7 +32,9 @@ export const EditSubAdmin = () => {
       Notifications: false,
       Coupons: false,
       Template: false,
-      Template: false,
+      Enterprise: false,
+      Accounts: false,
+
    });
    const { snackbar } = useContext(DataContext);
    const navigate = useNavigate();
@@ -295,4 +297,4 @@ export const EditSubAdmin = () => {
 };
 
 export default EditSubAdmin;
-const subadminPermission = [{ permission: "Template" }, { permission: "Subscription" }, { permission: "Users" }, { permission: "Sub Admin" }, { permission: "Notifications" }, { permission: "Coupons" }];
+const subadminPermission = [{ permission: "Template" }, { permission: "Subscription" }, { permission: "Users" }, { permission: "Sub Admin" }, { permission: "Notifications" }, { permission: "Coupons" }, { permission: "Enterprise" }, { permission: "Accounts" }];
