@@ -1,6 +1,6 @@
 import { React, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, redirect } from "react-router-dom";
 import "@fontsource/montserrat";
 import "@fontsource/sacramento";
 import "@fontsource/parisienne";
@@ -39,20 +39,12 @@ import ManageStickers from "./screen/ManageStickers/ManageStickers";
 import FAQ from "./screen/FAQ/FAQ";
 import Enterprise from "./screen/Enterprise/Enterprise";
 import Protected from "./Protected";
+import AccessRestricted from "./screen/AccessRestricted";
+import EditCoupon from "./screen/Coupons and promotions/EditCoupon";
 
 const App = () => {
-   const [alertMessage, setAlertMessage] = useState(null);
    const { severity, message, snackbar, openSnackbar, setOpenSnackbar, adminAuthData, setAdminAuthData, isLoggedIn, setIsLoggedIn } = useContext(DataContext);
 
-   const showAlertBar = (message, type) => {
-      setAlertMessage({
-         message: message,
-         type: type,
-      });
-      setTimeout(() => {
-         setAlertMessage(null);
-      }, 1000);
-   };
    axios.defaults.baseURL = "/api/v1/admin";
    // ==============
    const adminAuth = async () => {
@@ -65,207 +57,206 @@ const App = () => {
       }
    };
 
+   // console.log("", adminAuthData);
+
    useEffect(() => {
       adminAuth();
    }, []);
 
    return (
-      <BrowserRouter>
+      <>
          <Routes>
             <Route path="/" element={<LogInModal />} />
-            <Route element={<AdminDashboard />}>
-               <Route
-                  path="/admin/user-list"
-                  element={
-                     <Protected check={isLoggedIn }>
-                        <UserListScreen />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/user/:id"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <UserDetails />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/events/:id"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <Events />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/event/:id"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <EventStats />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/template-create"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <AdminTemplateCreate />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/template-edit"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <AdminTemplateEditScreen />{" "}
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/template-edit/:templateId"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <TemplateEdit />{" "}
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/template-list"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <AdminTemplateListScreen />{" "}
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/admin_list"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <SubAdminListScreen />{" "}
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/pricing"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <PricingContent />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/create-subadmin"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <AddSubAdmins />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/:id"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <EditSubAdmin />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/profile"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <AccountSettings />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/plans/:id"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <EditPricingContent />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admins/create-plan"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <AddPriceContent />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/promotions"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <CouponTable />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/add-coupon"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <AddCoupon />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/promotional-mail"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <PromotionalMail />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/accounts"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <PaymentDetails />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/send-promotion-message"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <UserListEmail />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/manage-stickers"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <ManageStickers />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/faq"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <FAQ />
-                     </Protected>
-                  }
-               />
-               <Route
-                  path="/admin/enterprise"
-                  element={
-                     <Protected check={isLoggedIn}>
-                        <Enterprise />
-                     </Protected>
-                  }
-               />
-            </Route>
+            {isLoggedIn && (
+               <Route element={<AdminDashboard />}>
+                  <Route
+                     path="/admin/user-list"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Users")} path={"/admin/access-denied"}>
+                           <UserListScreen />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/user/:id"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Users")} path={"/admin/access-denied"}>
+                           <UserDetails />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/events/:id"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Users")} path={"/admin/access-denied"}>
+                           <Events />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/event/:id"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Users")} path={"/admin/access-denied"}>
+                           <EventStats />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/template-create"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Template")} path={"/admin/access-denied"}>
+                           <AdminTemplateCreate />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/template-edit"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Template")} path={"/admin/access-denied"}>
+                           <AdminTemplateEditScreen />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/template-edit/:templateId"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Template")} path={"/admin/access-denied"}>
+                           <TemplateEdit />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/template-list"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Template")} path={"/admin/access-denied"}>
+                           <AdminTemplateListScreen />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/admin_list"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Sub Admin")} path={"/admin/access-denied"}>
+                           <SubAdminListScreen />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/pricing"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Subscription")} path={"/admin/access-denied"}>
+                           <PricingContent />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/create-subadmin"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Sub Admin")} path={"/admin/access-denied"}>
+                           <AddSubAdmins />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/:id"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Sub Admin")} path={"/admin/access-denied"}>
+                           <EditSubAdmin />
+                        </Protected>
+                     }
+                  />
+                  <Route path="/admin/profile" element={<AccountSettings />} />
+                  <Route
+                     path="/admin/plans/:id"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Subscription")} path={"/admin/access-denied"}>
+                           <EditPricingContent />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admins/create-plan"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Subscription")} path={"/admin/access-denied"}>
+                           <AddPriceContent />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/promotions"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Coupons")} path={"/admin/access-denied"}>
+                           <CouponTable />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/add-coupon"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Coupons")} path={"/admin/access-denied"}>
+                           <AddCoupon />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/edit-coupon/:id"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Coupons")} path={"/admin/access-denied"}>
+                           <EditCoupon />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/promotional-mail"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Coupons")} path={"/admin/access-denied"}>
+                           <PromotionalMail />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/accounts"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Accounts")} path={"/admin/access-denied"}>
+                           <PaymentDetails />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path="/admin/send-promotion-message"
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Coupons")} path={"/admin/access-denied"}>
+                           <UserListEmail />
+                        </Protected>
+                     }
+                  />
+                  <Route path="/admin/manage-stickers" element={<ManageStickers />} />
+                  <Route
+                     path="/admin/faq"
+                     element={
+                        <Protected check={isLoggedIn}>
+                           <FAQ />
+                        </Protected>
+                     }
+                  />
+                  <Route
+                     path={"/admin/enterprise"}
+                     element={
+                        <Protected check={adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Enterprise")} path={"/admin/access-denied"}>
+                           <Enterprise />
+                        </Protected>
+                     }
+                  />
+                  <Route path="/admin/access-denied" element={<AccessRestricted />} />
+               </Route>
+            )}
          </Routes>
          <Snackbar open={openSnackbar} autoHideDuration={2000} onClose={() => setOpenSnackbar(false)} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
             <Alert variant="filled" severity={severity} sx={{ width: "100%" }} onClose={() => setOpenSnackbar(false)}>
                {message}
             </Alert>
          </Snackbar>
-      </BrowserRouter>
+      </>
    );
 };
 

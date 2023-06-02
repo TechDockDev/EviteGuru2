@@ -397,6 +397,7 @@ const AdminDashboard = () => {
                            <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/user-list"} linkText={"Users"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/admin_list"} linkText={"Sub-Admins"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<SubscriptionsIcon />} to={"/admin/pricing"} linkText={"Subscriptions"} handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<LocalOfferIcon />} to={"/admin/promotions"} linkText={"Coupons and Promotions"}  handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/accounts"} linkText={"Accounts"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<BusinessIcon />} to={"/admin/enterprise"} linkText={"Enterprise"} handleDrawerToggle={handleDrawerToggle} />

@@ -230,7 +230,7 @@ const SubAdminListScreen = () => {
                      textAlign: "center",
                      color: "white",
                   }}>
-                  Are sure you want to delete {} ?
+                  Are sure you want to delete {singleAdmin.name} ?
                </Typography>
                <Button
                   onClick={() => {
