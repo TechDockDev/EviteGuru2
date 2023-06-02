@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import HomeScreen from "./screens/HomeScreen/HomeScreen";
 import "@fontsource/montserrat";
 import "@fontsource/poppins";
@@ -35,7 +35,8 @@ import { Alert, Snackbar } from "@mui/material";
 import AddressBook from "./screens/CustomizationPage/AddressBook";
 
 const App = () => {
-  const { snackbar } = useSelector((state) => state);
+  const { snackbar, userDetail } = useSelector((state) => state);
+  const navigate = useNavigate();
   console.log("snackbar=>", snackbar);
   const dispatch = useDispatch();
   // =====get login status ========
@@ -98,25 +99,28 @@ const App = () => {
           path="/payment/success/status"
           element={<PaymentSuccessScreen />}
         />
-        <Route path="/dashboard" element={<UserDashboard />}>
-          <Route path="/dashboard/my-events" element={<MyEvents />} />
-          <Route path="/dashboard/view-event" element={<EventStats />} />
-          <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
-          <Route path="/dashboard/preview/:id" element={<Preview />} />
-          <Route path="/dashboard/:id/send" element={<Send />} />
+        {userDetail?.isUser ? (
+          <Route path="/dashboard" element={<UserDashboard />}>
+            <Route path="/dashboard/my-events" element={<MyEvents />} />
+            <Route path="/dashboard/view-event" element={<EventStats />} />
+            <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
+            <Route path="/dashboard/preview/:id" element={<Preview />} />
+            <Route path="/dashboard/:id/send" element={<Send />} />
 
-          <Route path="/dashboard/address-book" element={<AddressBook />} />
+            <Route path="/dashboard/address-book" element={<AddressBook />} />
 
-          <Route
-            path="/dashboard/account-setting"
-            element={<AccountSettings />}
-          />
-          <Route path="/dashboard/subscriptions" element={<Subscriptions />} />
-          {/* <Route
-            path="/dashboard/mailing-responses"
-            element={<MailingReponses />}
-          /> */}
-        </Route>
+            <Route
+              path="/dashboard/account-setting"
+              element={<AccountSettings />}
+            />
+            <Route
+              path="/dashboard/subscriptions"
+              element={<Subscriptions />}
+            />
+          </Route>
+        ) : (
+          ""
+        )}
       </Routes>
     </>
   );

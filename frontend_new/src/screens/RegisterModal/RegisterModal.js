@@ -20,33 +20,15 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { login, openSnackbar } from "../../redux/action/userActions";
 import OtpScreen from "../LoginModal/OtpScreen";
-import { AiFillCheckCircle } from "react-icons/ai";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { Authentication } from "../../firebaseAuth/firebase";
 import { Constants } from "../../redux/constants/action-types";
 
-const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [verified, setverified] = useState(false);
-  const [otp, setOtp] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleSendOtp = () => {
-    if (values?.phone && values?.phone?.length === 10) {
-      setOtp(true);
-    }
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  // const onChangeHandler = (e) => {
-  //    setFormData({ ...formData, [e.target.name]: e.target.value });
-  // };
-
-  const dispatch = useDispatch();
-  // const navigate = useNavigate();
+const RegisterModal = ({
+  openRegisterModal,
+  toggleRegisterModal,
+  setOpenRegisterModal,
+}) => {
   const tempvalues = {
     name: "",
     email: "",
@@ -54,10 +36,37 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
     password: "",
     confirmPassword: "",
   };
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [verified, setverified] = useState(false);
+  const [otp, setOtp] = useState(false);
   const [values, setValues] = useState(tempvalues);
 
   const { userDetail } = useSelector((state) => state);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleSendOtp = () => {
+    if (values?.phone && values?.phone?.length === 10) {
+      setOtp(true);
+      dispatch(
+        openSnackbar("Otp has been sent to your mobile number", "success")
+      );
+    }
+  };
+
+  // ===function to close register modal along with clear data==
+  const closeRegisterModal = () => {
+    setOtp(false);
+    setverified(false);
+    setValues(tempvalues);
+    setOpenRegisterModal(false);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const dispatch = useDispatch();
+  // const navigate = useNavigate();
 
   // ====handleChange ========
   const handleChange = (e) => {
@@ -69,10 +78,8 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
     e.preventDefault();
     try {
       if (password !== confirmPassword) {
-        // alert("password do not match");
         dispatch(openSnackbar("password does not matched", "warning"));
       } else {
-        // dispatch(register(name, email, phone, password));
         const res = await axios.post(`${Constants.URL}/register`, {
           name,
           email,
@@ -83,7 +90,9 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
           console.log("res=>", res);
           dispatch(openSnackbar(res?.data?.message, "success"));
           dispatch(login(res?.data?.user));
-          toggleRegisterModal();
+          setValues(tempvalues);
+          closeRegisterModal();
+          // toggleRegisterModal();
         }
       }
     } catch (error) {
@@ -113,7 +122,8 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
         if (res.status === 200) {
           console.log("response=>", res?.data?.data?.user);
           dispatch(login(res?.data?.data?.user));
-          toggleRegisterModal();
+          closeRegisterModal();
+          // toggleRegisterModal();
         }
         // IdP data available using getAdditionalUserInfo(result)
         // ...
@@ -133,12 +143,21 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
       });
   };
 
+  useEffect(() => {
+    return () => {
+      setValues(tempvalues);
+      setOtp(false);
+      setverified(false);
+    };
+  }, []);
+
   return (
     <>
       <Modal
         open={openRegisterModal}
         // open={true}
         // onClose={toggleRegisterModal}
+        // onClose={closeRegisterModal}
         aria-labelledby="login-modal"
         aria-describedby="login_modal"
         closeAfterTransition
@@ -163,7 +182,8 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
             <Box bgcolor={"transparent"}>
               {/* 👇Cross icon to close the modal👇  */}
               <IconButton
-                onClick={toggleRegisterModal}
+                // onClick={toggleRegisterModal}
+                onClick={closeRegisterModal}
                 sx={{
                   color: "black",
                   position: "absolute",
@@ -328,14 +348,16 @@ const RegisterModal = ({ openRegisterModal, toggleRegisterModal }) => {
                       <InputAdornment position="end" autoFocus>
                         <IconButton
                           // color={"blueviolet"}
-                          disabled={values?.phone?.length === 10 ? false : true}
+                          disabled={values?.phone?.length >= 10 ? false : true}
                           color="primary"
                           sx={{
                             cursor: "pointer",
                             textDecoration: "underline",
                             fontSize: "10px",
                           }}
-                          onClick={handleSendOtp}
+                          onClick={
+                            !otp && !verified ? () => handleSendOtp() : () => {}
+                          }
                         >
                           {verified ? <Verified /> : "GET OTP"}
                         </IconButton>

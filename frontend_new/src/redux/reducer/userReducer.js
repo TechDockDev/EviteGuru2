@@ -37,7 +37,7 @@ export const snacbarReducer = (
     case ActionTypes.OPEN_SNACKBAR:
       return { open: true, ...payload };
     case ActionTypes.CLOSE_SNACKBAR:
-      return { open: false, ...payload };
+      return { ...state, open: false };
     default:
       return state;
   }

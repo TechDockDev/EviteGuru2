@@ -20,6 +20,11 @@ const PaymentSuccessScreen = () => {
       //   bgcolor={"yellow"}
       alignContent={"center"}
       height={"100vh"}
+      sx={{
+        backgroundImage: "url(/assets/newTest2.gif)",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+      }}
     >
       <Grid
         item
@@ -27,16 +32,17 @@ const PaymentSuccessScreen = () => {
         md={8}
         sm={10}
         xs={12}
-        //    bgcolor={"red"}
+        //  bgcolor={"red"}
       >
         <Box
           minHeight={"450px"}
           width={"100%"}
-          //   bgcolor={"blue"}
+          // bgcolor={"white"}
           display={"flex"}
           flexDirection={"column"}
           justifyContent={"center"}
           alignItems={"center"}
+          p={2}
         >
           <Box
             component={"img"}
@@ -74,8 +80,8 @@ const PaymentSuccessScreen = () => {
                 <Divider />
 
                 <Stack alignItems={"center"} justifyContent={"center"}>
-                  <Typography>Invitees - {"hhhh"}</Typography>
-                  <Typography>Templates - {"kkk"}</Typography>
+                  <Typography>Invitees - {"1000"}</Typography>
+                  <Typography>Templates - {"100"}</Typography>
                   <Typography variant="h6">Amount Paid : {"256"} </Typography>
                 </Stack>
               </>

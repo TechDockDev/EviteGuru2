@@ -343,6 +343,7 @@ const Header = () => {
         <RegisterModal
           openRegisterModal={openRegisterModal}
           toggleRegisterModal={toggleRegisterModal}
+          setOpenRegisterModal={setOpenRegisterModal}
         />
         {/* ======================================================================== */}
 

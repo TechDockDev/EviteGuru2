@@ -4,10 +4,13 @@ import { MuiOtpInput } from "mui-one-time-password-input";
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { openSnackbar } from "../../redux/action/userActions";
 
 const OtpScreen = (props) => {
   const [otp, setOtp] = useState("");
   const [seconds, setSeconds] = useState(59);
+  const dispatch = useDispatch();
   const handleChangeOtp = (newValue) => {
     console.log(
       "new=>",
@@ -23,6 +26,12 @@ const OtpScreen = (props) => {
 
   const handleVerify = () => {
     props?.setverified(true);
+    dispatch(
+      openSnackbar(
+        "Otp Verified Successfully! Now Proceed to Register Your account",
+        "success"
+      )
+    );
   };
 
   useEffect(() => {
@@ -31,6 +40,7 @@ const OtpScreen = (props) => {
         setSeconds(seconds - 1);
       } else if (seconds === 0) {
         props.setOtp(false);
+        dispatch(openSnackbar("otp expired resend otp", "warning"));
       }
     }, 1000);
 
