@@ -10,7 +10,9 @@ const authAdmin = asyncHandler(async (req, res) => {
   if (user) {
     const checkPassword = await bcrypt.compare(password, user.password);
     if (checkPassword) {
-      createSendToken(user, 200, res);
+      const admin = user.toObject();
+      delete admin.password;
+      createSendToken(admin, 200, res);
     } else {
       throw new Error("Credentials are incorrect");
     }
@@ -37,7 +39,8 @@ const signToken = (id) => {
 
 // controller for sending creating token for future authorization
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user.id);
+  console.log(user);
+  const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIES_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -50,19 +53,18 @@ const createSendToken = (user, statusCode, res) => {
   res.status(statusCode).json({
     status: "success",
     message: "Login Successfully",
-    data: {
-      user,
-      token,
-    },
+    user,
+    token,
   });
 };
 
 const registerAdmin = asyncHandler(async (req, res) => {
   const { name, email, phone, password, superAdmin, permission } = req.body;
+  const hash = await bcrypt.hash(password, 10);
   await Admin.create({
     name,
     email,
-    password,
+    password: hash,
     phone,
     superAdmin,
     permission,

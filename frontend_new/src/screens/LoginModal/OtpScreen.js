@@ -8,30 +8,23 @@ import { useDispatch } from "react-redux";
 import { openSnackbar } from "../../redux/action/userActions";
 
 const OtpScreen = (props) => {
-  const [otp, setOtp] = useState("");
+  const [code, setCode] = useState("");
   const [seconds, setSeconds] = useState(59);
   const dispatch = useDispatch();
-  const handleChangeOtp = (newValue) => {
-    console.log(
-      "new=>",
-      newValue,
-      " typeof=>",
-      typeof newValue,
-      "sizeOf",
-      newValue.length
-    );
-
-    setOtp(newValue);
+  const handleChangeCode = (newValue) => {
+    setCode(newValue);
   };
 
   const handleVerify = () => {
-    props?.setverified(true);
-    dispatch(
-      openSnackbar(
-        "Otp Verified Successfully! Now Proceed to Register Your account",
-        "success"
-      )
-    );
+    // props?.setverified(true);
+    props?.verifyOtp(code)
+
+    // dispatch(
+    //   openSnackbar(
+    //     "Otp Verified Successfully! Now Proceed to Register Your account",
+    //     "success"
+    //   )
+    // );
   };
 
   useEffect(() => {
@@ -75,9 +68,10 @@ const OtpScreen = (props) => {
           OTP
         </InputLabel>
         <MuiOtpInput
-          value={otp}
+          value={code}
+          length={6}
           id="otp"
-          onChange={handleChangeOtp}
+          onChange={handleChangeCode}
           sx={{
             bgcolor: "transparent",
             height: "50px",
@@ -117,7 +111,7 @@ const OtpScreen = (props) => {
           </FormHelperText>
           <Button
             // variant="outlined"
-            disabled={otp.length === 4 ? false : true}
+            disabled={code.length === 6 ? false : true}
             onClick={handleVerify}
             size="small"
             sx={{
