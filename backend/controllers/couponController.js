@@ -25,4 +25,31 @@ const allCoupons = expressAsyncHandler(async (req, res) => {
   });
 });
 
-export { addCoupon, allCoupons };
+const getCoupon = expressAsyncHandler(async (req, res) => {
+  const coupon = await Coupon.findById(req.params.couponId);
+  res.json({
+    status: "success",
+    message: "Coupon has been successfully fetched",
+    coupon,
+  });
+});
+
+const updateCoupon = expressAsyncHandler(async (req, res) => {
+  await Coupon.findByIdAndUpdate(req.params.couponId, req.body, {
+    runValidators: true,
+  });
+  res.json({
+    status: "success",
+    message: "Coupon has been successfully updated",
+  });
+});
+
+const deleteCoupon = expressAsyncHandler(async (req, res) => {
+  await Coupon.findByIdAndRemove(req.params.couponId);
+  res.json({
+    status: "success",
+    message: "Coupon has been successfully deleted",
+  });
+});
+
+export { addCoupon, allCoupons, getCoupon, updateCoupon, deleteCoupon };
