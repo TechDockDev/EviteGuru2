@@ -8,7 +8,7 @@ const userAuth = async (req, res, next) => {
   try {
     if (req.headers.cookie) {
       const value = req.headers.cookie.split("bearerToken=")[1];
-      let token = value.split(";")[0];
+      let token = value?.split(";")[0];
       if (!token) {
         res.status(401).json({
           status: "unauthorized",

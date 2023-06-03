@@ -5,9 +5,9 @@ import Admin from "../models/adminModel.js";
 const adminAuth = async (req, res, next) => {
   try {
     if (req.headers.cookie) {
-      const value = req.headers.cookie.split("bearerToken=")[1];
-      let token = value.split(";")[0];
-      console.log(token);
+      const token = req.headers.cookie.split("bearerToken=")[1];
+      // let token = value.split(";")[0];
+      // console.log(value);
       if (!token) {
         res.status(401).json({
           status: "unauthorized",
@@ -15,7 +15,6 @@ const adminAuth = async (req, res, next) => {
         });
       } else {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded);
         const currentUser = await Admin.findById(decoded.id);
         if (!currentUser) {
           res.status(404).json({
