@@ -48,7 +48,7 @@ export default function DataTable() {
    }, []);
 
    return (
-      <Box sx={{ width: "100%", padding: "0px 10px 30px 10px", boxSizing: "border-box"}}>
+      <Box sx={{ width: "100%", padding: "0px 20px 30px 20px", boxSizing: "border-box"}}>
          <Typography
             variant="h1"
             align="center"

@@ -17,9 +17,9 @@ const UserListScreen = () => {
     try {
       const res = await axios.get("/user/all-users");
       setUsers(res.data.users);
-      console.log(res);
+      // console.log(res);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

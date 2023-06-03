@@ -28,7 +28,7 @@ const AccountSettings = () => {
       const { data } = await axios.get(`/auth`);
       // console.log("Inside the Admin", data);
       setAdminDetailsById(data.admin);
-      console.log(data);
+      // console.log(data);
 
     } catch (error) {
     }
@@ -39,7 +39,6 @@ const AccountSettings = () => {
   };
 
   const stringAvatar = (name) => {
-    console.log(name);
     let avtar;
     if (name === undefined) {
       avtar = "";
