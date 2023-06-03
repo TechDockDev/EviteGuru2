@@ -17,7 +17,7 @@ export const AddSubAdmins = () => {
       email: "",
       password: "",
       phone: "",
-      permissions: [],
+      permission: [],
       superAdmin: false,
    });
    const [arrayPermission, setArrayPermission] = useState([]);
@@ -33,7 +33,6 @@ export const AddSubAdmins = () => {
          setFormData({ ...formData, permission: tempPerm });
       } else {
          setFormData({ ...formData, [e.target.name]: e.target.value });
-         console.log(formData);
       }
    };
    const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
@@ -46,7 +45,7 @@ export const AddSubAdmins = () => {
          arrayPermission.map((p) => {
             tmpPermissions.push(p.permission);
          });
-         const { data } = await axios.post("/create-subadmin", { ...formData, permissions: tmpPermissions });
+         const { data } = await axios.post("/create-subadmin", { ...formData, permission: tmpPermissions });
          snackbar(data.status, data.message);
          navigate("/admin/admin_list");
       } catch (error) {
