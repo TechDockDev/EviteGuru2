@@ -57,7 +57,8 @@ const App = () => {
       }
    };
 
-   // console.log("", adminAuthData);
+   // console.log("adminAuthData----->", adminAuthData);
+   // console.log("check----->", adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Template"));
 
    useEffect(() => {
       adminAuth();
