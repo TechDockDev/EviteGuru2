@@ -855,6 +855,7 @@ const AdminTemplateCreateScreen = () => {
                      Create
                   </Button>
                   <Button
+                  onClick={()=>navigate(-1)}
                      fullWidth
                      disableElevation
                      variant="outlined"

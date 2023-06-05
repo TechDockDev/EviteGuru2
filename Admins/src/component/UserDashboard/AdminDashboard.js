@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { AppBar, Backdrop, Box, Drawer, IconButton, List, Toolbar } from "@mui/material";
+import { AppBar, Backdrop, Box, Drawer, IconButton, List, Toolbar, Typography } from "@mui/material";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PaymentsIcon from "@mui/icons-material/Payments";
@@ -42,6 +42,7 @@ const AdminDashboard = () => {
       <>
          <Box
             sx={{
+               width:"100%",
                maxWidth: "1440px",
                margin: "0 auto",
                display: "flex",
@@ -109,6 +110,7 @@ const AdminDashboard = () => {
                         boxShadow: "3px 3px 8px grey",
                      }}>
                      <Box component={"img"} bgcolor="transparent" src={"/assets/EviteGuruLogoWhite.svg"} sx={{ height: "100%" }} />
+                                         
                   </Box>
                   {/* == left eviteguru logo ==*/}
                   {/* =============================================================================== */}
@@ -451,8 +453,8 @@ const AdminDashboard = () => {
                   minHeight: `calc(100vh - 100px)`,
                   width: {
                      xl: "calc(100vw - 250px)",
-                     lg: "calc(100vw - 270px)",
-                     md: "calc(100vw - 270px)",
+                     lg: "calc(100vw - 250px)",
+                     md: "calc(100vw - 250px)",
                      sm: "100vw",
                      xs: "100vw",
                   },
@@ -477,6 +479,7 @@ const AdminDashboard = () => {
                <Outlet />
             </Box>
             {/* ============  👆container for all the screens (scenes)👆============= */}
+            
          </Box>
       </>
    );

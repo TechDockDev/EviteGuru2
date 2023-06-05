@@ -4,7 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { useNavigate, useParams } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 const columns = [
    //   { field: "_id", headerName: "ID", width: 70 },
@@ -69,7 +69,9 @@ export default function DataTable() {
             pageSize={1}
             disableRowSelectionOnClick={true}
             onRowClick={(row) => navigate(`/admin/event/${row.row._id}`)}
-            // rowsPerPageOptions={[20]}
+            initialState={{
+               pagination: { paginationModel: { pageSize: 10 } },
+             }}
             sx={{
                border: "2px solid #795DA8",
                "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -80,6 +82,11 @@ export default function DataTable() {
                }
             }}
          />
+           <Button
+         onClick={()=>navigate(-1)}
+         disableElevation variant="outlined" sx={{mt:2 , width:"fit-content"}} >
+              Back       
+         </Button>
       </Box>
    );
 }

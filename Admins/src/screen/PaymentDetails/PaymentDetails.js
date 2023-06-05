@@ -76,7 +76,7 @@ const PaymentDetails = () => {
    ];
 
    return (
-      <Stack padding={"0px 10px"}>
+      <Stack padding={"0px 20px 30px 20px"}>
          <Typography
             variant="h1"
             align="center"
@@ -98,6 +98,9 @@ const PaymentDetails = () => {
             loading={loading}
             disableRowSelectionOnClick={true}
             onRowClick={(row) => console.log(row)}
+            initialState={{
+               pagination: { paginationModel: { pageSize: 10 } },
+             }}
             sx={{
                border: "2px solid #795DA8",
                "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {

@@ -1,10 +1,10 @@
-import { Box, Grid, Stack, Typography } from "@mui/material";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import React, { useContext, useState } from "react";
 import RSVPSummaryCard from "./RSVPSummaryCard";
 import { DataGrid, GridToolbar, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import { useEffect } from "react";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../../AppContext";
 import Moment from "react-moment/dist";
@@ -14,7 +14,7 @@ const EventStats = () => {
    const [event, setEvent] = useState({});
    const [guestList, setGuestList] = useState([]);
    const { snackbar } = useContext(DataContext);
-
+   const navigate = useNavigate()
    // console.log("pageTitle",pageTitle)
    const { id } = useParams();
    function CustomeToolBar() {
@@ -170,7 +170,7 @@ const EventStats = () => {
                xs={12}
                sx={{
                   border: "2px solid #795da8",
-                  borderRadius: "8px",
+                  borderRadius: "4px",
                   padding: "20px",
                }}>
                <Stack direction={"row"}>
@@ -181,7 +181,7 @@ const EventStats = () => {
                      {event?.hostName}
                   </Typography>
                </Stack>
-               <Stack direction={"row"}>
+               <Stack mt={1}  direction={"row"}>
                   <Typography variant="h3" fontSize={"16px"} fontWeight={"600"}>
                      Venue &nbsp;&nbsp;: &nbsp;&nbsp;{" "}
                   </Typography>
@@ -240,8 +240,8 @@ const EventStats = () => {
                disableRowSelectionOnClick
                getRowClassName={(params) => (params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd")}
                sx={{
+                  border: "2px solid #795DA8",
                   bgcolor: "none",
-                  border: "none",
                   "& .odd": { bgcolor: "#F7F7F7 !important" },
                   "& .MuiCheckbox-root": {
                      color: "black",
@@ -254,6 +254,11 @@ const EventStats = () => {
          </Stack>
 
          {/* ============  👆 Guests list table👆============= */}
+         <Button
+         onClick={()=>navigate(-1)}
+         disableElevation variant="outlined" sx={{mt:2 , width:"fit-content"}} >
+              Back       
+         </Button>
       </Box>
    );
 };

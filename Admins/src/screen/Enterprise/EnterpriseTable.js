@@ -101,12 +101,10 @@ const  EnterpriseTable = ()=> {
    const [openModal, setOpenModal] = React.useState(false);
    const [enterpriseId, setEnterpriseId] = React.useState("");
    const { snackbar } = React.useContext(DataContext);
-   const [planAmount, setPlanAmount] = React.useState("");
 
    const toggleModal = (id) => {
     if(openModal){
         setEnterpriseId("");
-        setPlanAmount("");
         setOpenModal(!openModal);
 
     } else{
@@ -151,7 +149,7 @@ const  EnterpriseTable = ()=> {
          </TableContainer>
          {/* ========= 👇Modal for amount👇  ============ */}
          <EnterpriseModal openModal={openModal} toggleModal={toggleModal} enterpriseId={enterpriseId} 
-         planAmount={planAmount} setPlanAmount={setPlanAmount}
+        
          />
       </>
    );

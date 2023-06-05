@@ -110,7 +110,7 @@ export const AddSubAdmins = () => {
                   {/* == 👆 email   ==*/}
 
                   {/* == 👇 password 👇  ==*/}
-                  <SingleInput labelText={"Password"} inputType={"password"} inputName={"password"} inputValue={formData.password} onChangeHandler={handleChange} labelInputId={"password"} requiredTrue={true} placeholderText={"set Password"} />
+                  <SingleInput labelText={"Password"} inputType={"password"} inputName={"password"} inputValue={formData.password} onChangeHandler={handleChange} labelInputId={"password"} requiredTrue={true} placeholderText={"Set Password"} />
                   {/* == 👆 password   ==*/}
 
                   {/* == 👇 Phone 👇  ==*/}
