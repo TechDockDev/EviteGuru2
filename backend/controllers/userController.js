@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import Subscription from "../models/subscriptionModel.js";
 import { Authentication } from "../utils/firebase.js";
+import auth from "firebase-admin";
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -39,6 +40,11 @@ const forgetPasssword = asyncHandler(async (req, res) => {
       status: "success",
       message: "User Exists",
       phone: user.phone,
+    });
+  } else {
+    res.status(400).json({
+      status: "failure",
+      message: "User doesn't exist",
     });
   }
 });
@@ -107,7 +113,7 @@ const changePassword = asyncHandler(async (req, res) => {
 // sign up controller
 const signUp = async (req, res, next) => {
   try {
-    const decodedValue = await auth().verifyIdToken(req.body.idToken);
+    const decodedValue = await auth.auth().verifyIdToken(req.body.idToken);
     const hash = await bcrypt.hash(req.body.password, 10);
     const user = await User.create({
       ...req.body,
@@ -117,6 +123,7 @@ const signUp = async (req, res, next) => {
     });
     createSendToken(user, 200, res);
   } catch (error) {
+    console.log(error);
     res.status(400).json({
       message: error.message,
     });

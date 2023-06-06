@@ -28,24 +28,31 @@ const getAllEvents = asyncHandler(async (req, res) => {
 });
 
 const getEventById = asyncHandler(async (req, res) => {
-  const event = await EventDetails.findById(req.params.id).populate("variation");
+  const event = await EventDetails.findById(req.params.id).populate(
+    "variation"
+  );
   const guestList = await Guest.findOne({ event: event.id });
   res.json({
     status: "success",
     message: "Event has been fetched",
     event,
-    guestList: guestList.guests,
+    guestList: guestList?.guests || [],
   });
 });
 
 const getEventsByUser = asyncHandler(async (req, res) => {
-  const events = await EventDetails.find({ user: req.user.id }).populate(
-    "variation"
-  );
+  const { page, limit } = req.query;
+  const events = await EventDetails.find({ user: req.user.id })
+    .populate("variation")
+    .limit(page * limit)
+    .skip(page * limit - limit);
+  const totalEvents = await EventDetails.find({ user: req.user.id }).count();
+
   res.json({
     status: "success",
     message: "Event has been fetched",
     events,
+    totalEvents,
   });
 });
 
@@ -55,24 +62,29 @@ const getStatusStats = asyncHandler(async (req, res) => {
       event: req.params.eventId,
     },
     function (err, data) {
-      data.guests.filter((guest) => guest.status === "open").length;
-      res.json({
-        status: "success",
-        message: "Event Stats have been fetched successfully",
-        stats: {
-          "Not Invited": data.guests.filter(
-            (guest) => guest.status === "Not Invited"
-          ).length,
-          open: data.guests.filter((guest) => guest.status === "open").length,
-          pending: data.guests.filter((guest) => guest.status === "Pending")
-            .length,
-          "Not Attending": data.guests.filter(
-            (guest) => guest.status === "Not Attending"
-          ).length,
-          Attending: data.guests.filter((guest) => guest.status === "Attending")
-            .length,
-        },
-      });
+      if (data) {
+        res.json({
+          status: "success",
+          message: "Event Stats have been fetched successfully",
+          stats: {
+            "Not Invited": data.guests.filter(
+              (guest) => guest.status === "Not Invited"
+            ).length,
+            open: data.guests.filter((guest) => guest.status === "Open").length,
+            pending: data.guests.filter((guest) => guest.status === "Pending")
+              .length,
+            "Not Attending": data.guests.filter(
+              (guest) => guest.status === "Not Attending"
+            ).length,
+            attending: data.guests.filter(
+              (guest) => guest.status === "Attending"
+            ).length,
+            totalInvitees: data.guests.filter(
+              (guest) => guest.status !== "Not Invited"
+            ).length,
+          },
+        });
+      }
     }
   );
 });
