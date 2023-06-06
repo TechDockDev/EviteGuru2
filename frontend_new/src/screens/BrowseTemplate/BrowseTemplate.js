@@ -12,8 +12,11 @@ import React, { useEffect, useState } from "react";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
 import { useNavigate } from "react-router-dom";
 import { Constants } from "../../redux/constants/action-types";
+import { useDispatch } from "react-redux";
+import { openSnackbar } from "../../redux/action/userActions";
 
 const BrowseTemplate = () => {
+  const dispatch = useDispatch();
   const [templateData, setTemplateData] = useState([]);
   const [openTemplatePreviewModal, seTopenTemplatePreviewModal] =
     useState(false);
@@ -39,13 +42,13 @@ const BrowseTemplate = () => {
       const res = await axios.get(
         `${Constants.URL}/template/all?page=${page}&limit=9`
       );
-      console.log(res?.data?.template);
+      // console.log(res?.data?.template);
       setTemplateData(res?.data?.template);
       setLoadingTemplate(false);
       // navigate(`/dashboard/edit/${res.data.template[0]._id}`);
       setTotalPages(res?.data?.totalPages);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
   //  this function is passed to carousel to handle onclick👇
@@ -60,17 +63,18 @@ const BrowseTemplate = () => {
 
   const loadMoreContent = async () => {
     setPage(1 + page);
-    console.log("totalpage->", totalPages);
+    // console.log("totalpage->", totalPages);
 
     if (page !== totalPages) {
       try {
         setLoadingTemplate(true);
         const res = await axios.get(
-          `/api/v1/user/template/all?page=${page}&limit=9`
+          `${Constants.URL}/template/all?page=${page}&limit=9`
         );
         setTemplateData([...templateData, ...res?.data?.template]);
         setLoadingTemplate(false);
       } catch (error) {
+        dispatch(openSnackbar("something went wrong", "error"));
         console.log(error);
       }
     }

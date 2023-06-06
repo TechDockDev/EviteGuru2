@@ -13,11 +13,14 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 import * as XLSX from "xlsx";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { openSnackbar } from "../../redux/action/userActions";
+import { Constants } from "../../redux/constants/action-types";
 
 // =========================
 const BulkUpload = (props) => {
   const { createdEventDetails } = useSelector((state) => state);
+  const dispatch = useDispatch();
   const [sheetData, setSheetData] = useState("");
   const [bulkFile, setBulkFile] = useState(null);
   const onDrop = useCallback((acceptedFiles) => {
@@ -33,7 +36,13 @@ const BulkUpload = (props) => {
       readExcel(acceptedFiles[0]);
     } else {
       // console.log("",acceptedFiles[0].type);
-      alert("invalid file format! Please upload xlx, xlxs or csv file");
+      // alert("invalid file format! Please upload xlx, xlxs or csv file");
+      dispatch(
+        openSnackbar(
+          "Invalid File Format! Please upload .xlx, .xlxs or .csv file",
+          "warning"
+        )
+      );
     }
   }, []);
 
@@ -45,7 +54,7 @@ const BulkUpload = (props) => {
       fileReader.readAsArrayBuffer(file);
 
       fileReader.onload = (e) => {
-        console.log("e=>", e.target);
+        // console.log("e=>", e.target);
         const bufferArray = e.target.result;
 
         const wb = XLSX.read(bufferArray, { type: "buffer" });
@@ -55,7 +64,7 @@ const BulkUpload = (props) => {
         const ws = wb.Sheets[wsname];
 
         const data = XLSX.utils.sheet_to_json(ws);
-        console.log("data=>", data);
+        // console.log("data=>", data);
         resolve(data);
       };
 
@@ -66,7 +75,7 @@ const BulkUpload = (props) => {
 
     promise.then((dataFromSheet) => {
       setSheetData(dataFromSheet);
-      console.log("console is coming=>");
+      // console.log("console is coming=>");
     });
   };
 
@@ -97,11 +106,12 @@ const BulkUpload = (props) => {
         const fileData = new FormData();
         fileData.append("file", bulkFile);
         const res = await axios.patch(
-          `/api/v1/user/guest/add-guest-in-bulk/${createdEventDetails?.guestListId}`,
+          `${Constants.URL}/guest/add-guest-in-bulk/${createdEventDetails?.guestListId}`,
           fileData
         );
         if (res.status === 200) {
-          console.log("res=>", res);
+          // console.log("res=>", res);
+          dispatch(openSnackbar("Contacts are added succesfully", "success"));
           props?.toggleBulkModal();
           props?.getGuestListDetails(createdEventDetails?.guestListId);
           props?.setLoading(false);
@@ -109,9 +119,11 @@ const BulkUpload = (props) => {
       } else {
         props?.setLoading(false);
         alert("Please Select File First");
+        dispatch(openSnackbar("Please Select a File First", "warning"));
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(openSnackbar("something went wrong", "error"));
     }
   };
   // ====endl of handleupload ============

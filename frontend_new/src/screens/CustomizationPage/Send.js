@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useEffect } from "react";
 import {
+  openSnackbar,
   resetCreatedEventDetail,
   setCreatedEventDetail,
   setCreatedListId,
@@ -33,6 +34,7 @@ import {
 } from "../../redux/action/defaultActions";
 import { LoadingButton } from "@mui/lab";
 import ImportContacts from "./ImportContacts";
+import { Constants } from "../../redux/constants/action-types";
 
 const Send = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -43,20 +45,25 @@ const Send = () => {
   const [listStatus, setListStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [importModal, setImportModal] = useState(false);
-  const [insideButton, setinsideButton] = useState({ loading: false, id: "" });
+  const [insideButton, setinsideButton] = useState({
+    loading: false,
+    id: "",
+    sendMany: false,
+  });
   // ===togle import Modal ========
   const toggleImportModal = () => {
     setImportModal(!importModal);
   };
   // ==endof import modal =========
   // created eventdetails =========
-  const { createdEventDetails } = useSelector((state) => state);
+  const { createdEventDetails, userDetail } = useSelector((state) => state);
+  console.log("userDetail", userDetail);
   const toggleBulkModal = () => {
     setOpenBulkModal(!openBulkModal);
   };
   // =======================================
   const { id } = useParams();
-  // console.log("id=>", id);
+
   // =======================================
   const dispatch = useDispatch();
   // =======================================
@@ -74,27 +81,66 @@ const Send = () => {
 
   // ==========handle send ===============
   const handleSend = async (guestId) => {
-    setinsideButton({ ...insideButton, loading: true, id: guestId });
-    try {
-      // console.log("guestID=>", guestId);
-      const res = await axios.post(`/api/v1/user/guest/send-invite`, {
-        guestIds: [guestId],
-        eventId: id,
-      });
-      if (res.status === 200) {
-        // console.log("res=>", res);
+    if (userDetail?.subscription) {
+      setinsideButton({ ...insideButton, loading: true, id: guestId });
+      try {
+        const res = await axios.post(`${Constants.URL}/guest/send-invite`, {
+          guestIds: [guestId],
+          eventId: id,
+        });
+        if (res.status === 200) {
+          dispatch(openSnackbar(res.data.message, "success"));
+          setinsideButton({ ...insideButton, loading: false, id: "" });
+        }
+      } catch (error) {
+        // console.log("error=>",error)
+        dispatch(openSnackbar("something went wrong", "error"));
         setinsideButton({ ...insideButton, loading: false, id: "" });
       }
-    } catch (error) {
-      console.log("error=>", error);
-      setinsideButton({ ...insideButton, loading: false, id: "" });
+    } else {
+      dispatch(
+        openSnackbar(
+          "This required subscription , you don't have any active plan! please subscribe to get this feature.",
+          "warning"
+        )
+      );
     }
   };
 
   // =====handle send all =====
-  const handleSendAll = () => {
-    console.log("all data");
-    console.log("all data =>", rowSelectionModel);
+  const handleSendAll = async () => {
+    if (userDetail?.subscription) {
+      setinsideButton({
+        ...insideButton,
+        sendMany: true,
+      });
+      try {
+        const res = await axios.post(`${Constants.URL}/guest/send-invite`, {
+          guestIds: [...rowSelectionModel],
+          eventId: id,
+        });
+        if (res.status === 200) {
+          dispatch(openSnackbar(res.data.message, "success"));
+          setinsideButton({
+            ...insideButton,
+            sendMany: false,
+          });
+        }
+      } catch (error) {
+        dispatch(openSnackbar("something went wrong", "success"));
+        setinsideButton({
+          ...insideButton,
+          sendMany: false,
+        });
+      }
+    } else {
+      dispatch(
+        openSnackbar(
+          "This required subscription , you don't have any active plan! please subscribe to get this feature.",
+          "warning"
+        )
+      );
+    }
   };
 
   // ========== customized toolbar ============
@@ -171,7 +217,6 @@ const Send = () => {
       width: 150,
 
       renderCell: (params) => {
-        // console.log("params=>", params);
         return (
           <>
             {params?.row?.status !== "Not Invited" ? (
@@ -201,6 +246,7 @@ const Send = () => {
                 ) : (
                   <Button
                     variant="contained"
+                    disabled={insideButton?.sendMany ? true : false}
                     onClick={() => handleSend(params.row._id)}
                     sx={{ color: "white" }}
                   >
@@ -223,13 +269,14 @@ const Send = () => {
     try {
       const res = await axios.get(`/api/v1/user/event/${id}`);
       if (res.status === 200) {
-        console.log("response=>", res);
         dispatch(setCreatedEventDetail(res?.data?.event));
         dispatch(setPageTitle(`${res?.data?.event?.name}`));
+
         await createGuestList();
       }
     } catch (error) {
-      console.log("error=>", error);
+      // console.log("error=>", error);
+      dispatch(openSnackbar("something went wrong", "error"));
     }
   };
   // ==end of single event details ====
@@ -240,13 +287,14 @@ const Send = () => {
         eventId: id,
       });
       if (res.status === 200) {
-        console.log("response=>", res);
         setListStatus(true);
+        dispatch(openSnackbar(res.data.message, "success"));
         await getGuestListDetails(res.data.guestList?._id);
         dispatch(setCreatedListId(res.data.guestList?._id));
       }
     } catch (error) {
-      console.log("error=>", error);
+      // console.log("error=>", error);
+      dispatch(openSnackbar("something went wrong", "error"));
     }
   };
   // ===end of gues list cretaion====
@@ -255,12 +303,12 @@ const Send = () => {
     try {
       const res = await axios.get(`/api/v1/user/guest/single/${guestListId}`);
       if (res.status === 200) {
-        console.log("response=>", res);
         setguestList(res?.data?.guestList?.guests);
         setLoading(false);
       }
     } catch (error) {
-      console.log("error=>", error);
+      // console.log("error=>", error);
+      dispatch(openSnackbar("something went wrong", "error"));
     }
   };
   // ===end of function ===========
@@ -300,14 +348,30 @@ const Send = () => {
             </Button>
           )}
           &nbsp; &nbsp;
-          <Button
-            variant="contained"
-            sx={{ color: "white" }}
-            disabled={rowSelectionModel.length >= 1 ? false : true}
-            onClick={() => handleSendAll()}
-          >
-            Send All
-          </Button>
+          {insideButton?.sendMany ? (
+            <LoadingButton
+              loading
+              variant="outlined"
+              // color="primary"
+              sx={{
+                "& .MuiLoadingButton-loadingIndicator": {
+                  color: "rgba(121, 93, 168, 1)",
+                  borderColor: "rgba(121, 93, 168, 1)",
+                },
+              }}
+            >
+              Send All
+            </LoadingButton>
+          ) : (
+            <Button
+              variant="contained"
+              sx={{ color: "white" }}
+              disabled={rowSelectionModel.length >= 1 ? false : true}
+              onClick={() => handleSendAll()}
+            >
+              Send All
+            </Button>
+          )}
           &nbsp; &nbsp;
           <Button
             variant="contained"
@@ -416,7 +480,7 @@ const Send = () => {
             },
           }}
         />
-        <Stack spacing={2} alignItems={"center"}>
+        {/* <Stack spacing={2} alignItems={"center"}>
           <Pagination
             count={10}
             siblingCount={1}
@@ -426,7 +490,7 @@ const Send = () => {
             shape="rounded"
             boundaryCount={0}
           />
-        </Stack>
+        </Stack> */}
         <Modal
           open={openAddUserModal}
           closeAfterTransition

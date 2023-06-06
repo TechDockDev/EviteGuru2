@@ -37,20 +37,20 @@ import AddressBook from "./screens/CustomizationPage/AddressBook";
 const App = () => {
   const { snackbar, userDetail } = useSelector((state) => state);
   const navigate = useNavigate();
-  console.log("snackbar=>", snackbar);
+  // console.log("snackbar=>", snackbar);
   const dispatch = useDispatch();
   // =====get login status ========
   const getUserLoginStatus = async () => {
     try {
       const res = await axios.get(`${Constants.URL}/auth`);
       if (res.status === 200) {
-        console.log("ressponse=>", res);
+        // console.log("ressponse=>", res);
         // dispatch(openSnackbar(res?.data?.message, "success"));
         dispatch(userAuth(res?.data?.user));
       }
     } catch (error) {
-      console.log("error=>", error);
-      dispatch(openSnackbar("error", "error"));
+      // console.log("error=>", error);
+      // dispatch(openSnackbar("You are not logged in please login", "error"));
     }
   };
   // ======end of login status ====
@@ -93,13 +93,14 @@ const App = () => {
           <Route path="/paymentGateway" element={<PaymentGateway />} />
           <Route path="/test" element={<Test />} />
         </Route>
-      </Routes>
-      <Routes>
+        <Route path="*" element={<h4>Error 404 Page Not Found</h4>} />
         <Route
           path="/payment/success/status"
           element={<PaymentSuccessScreen />}
         />
-        {userDetail?.isUser ? (
+      </Routes>
+      {userDetail?.isUser ? (
+        <Routes>
           <Route path="/dashboard" element={<UserDashboard />}>
             <Route path="/dashboard/my-events" element={<MyEvents />} />
             <Route path="/dashboard/view-event" element={<EventStats />} />
@@ -118,10 +119,10 @@ const App = () => {
               element={<Subscriptions />}
             />
           </Route>
-        ) : (
-          ""
-        )}
-      </Routes>
+        </Routes>
+      ) : (
+        ""
+      )}
     </>
   );
 };

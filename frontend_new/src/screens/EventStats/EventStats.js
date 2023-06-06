@@ -18,6 +18,7 @@ import axios from "axios";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Moment from "react-moment";
 import { Constants } from "../../redux/constants/action-types";
+import { openSnackbar } from "../../redux/action/userActions";
 //=============================
 const EventStats = () => {
   const { state } = useLocation();
@@ -25,6 +26,7 @@ const EventStats = () => {
   const dispatch = useDispatch();
   const navigate = useDispatch();
   const [guestList, setGuestList] = useState([]);
+  const [stats, setStats] = useState({});
   console.log("state=>", state);
   function CustomeToolBar() {
     return (
@@ -161,12 +163,27 @@ const EventStats = () => {
     }
   };
   // ===end of guest list =======
+  // ===getEventStats ===========
+  const getEventStats = async (eventId) => {
+    try {
+      const res = await axios.get(`${Constants.URL}/event/stats/${eventId}`);
+      console.log("response=>", res);
+      setStats(res?.data?.stats);
+    } catch (error) {
+      console.log("error=>", error);
+      dispatch(
+        openSnackbar("something went wrong with stats of events", "error")
+      );
+    }
+  };
+  // ==endOf eventStats =========
   // ============================
   useEffect(() => {
     if (state) {
       dispatch(setEventDetails(state));
       dispatch(setPageTitle(state?.event?.name));
       getGuestList(state?.event?._id);
+      getEventStats(state?.event?._id);
     }
     return () => {
       dispatch(resetEventDetails({}));
@@ -232,12 +249,12 @@ const EventStats = () => {
           md={5}
           sm={12}
           xs={12}
-          // border={"1px solid green"}
+         
           sx={{
             boxSizing: "border-box",
           }}
         >
-          <RSVPSummaryCard />
+          <RSVPSummaryCard stats={stats} />
         </Grid>
         {/* ============  👆 RSVP  summary card👆============= */}
 
@@ -276,14 +293,12 @@ const EventStats = () => {
         <Typography
           variant="h6"
           fontWeight={"900"}
-          // sx={{ textShadow: "3px 3px 13px #000000" }}
-          // color={"#795DA8"}
+          
         >
           Venue :{" "}
           <b
             style={{
-              // fontStyle: "italic",
-              // textShadow: "3px 3px 13px #000000",
+             
               color: "#795DA8",
             }}
           >
@@ -344,7 +359,7 @@ const EventStats = () => {
       <Stack mt={2}>
         <DataGrid
           components={{ Toolbar: CustomeToolBar }}
-          //   slots={{ toolbar: QuickSearchToolbar }}
+          
           rows={guestList ? guestList : []}
           columns={columns}
           initialState={{

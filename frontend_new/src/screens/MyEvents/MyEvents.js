@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  Container,
   FormControl,
   Grid,
   IconButton,
@@ -11,6 +12,7 @@ import {
   OutlinedInput,
   Select,
   Stack,
+  TablePagination,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -23,19 +25,38 @@ import AddIcon from "@mui/icons-material/Add";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import ClearIcon from "@mui/icons-material/Clear";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
 import { Constants } from "../../redux/constants/action-types";
+import { openSnackbar } from "../../redux/action/userActions";
 const MyEvents = () => {
   const dispatch = useDispatch();
+
   // to work with template preview modal =====
   const [openTemplatePreviewModal, seTopenTemplatePreviewModal] =
     useState(false);
   const [singleTemplateId, setSingleTemplateId] = useState("");
   // ============================================
-  const [page, setPage] = React.useState(10);
-  const [allEvents, setAllEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [allEvents, setAllEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [counts, setCounts] = useState(1);
+  const [search, setSearch] = useState("");
+  const [activeSearch, setactiveSearch] = useState(false);
+
+  const handleChangePage = (event, newPage) => {
+    console.log("pages=>", newPage);
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    console.log("event =>", event.target.value);
+    setRowsPerPage(Number(event.target.value) * 1, 10);
+    setPage(0);
+  };
   // toggler for template selection modal ====
   const toggleTemplatePreviewModal = (e, templateId) => {
     if (!openTemplatePreviewModal) {
@@ -52,80 +73,88 @@ const MyEvents = () => {
   };
   //  this function is passed to carousel to handle onclic👆
   // =========================================
-  const handleChange = (event) => {
-    setPage(event.target.value);
-  };
+
   const handleSearch = () => {
-    console.log("seaching...");
+    if (search) {
+      setLoading(true);
+      setactiveSearch(true);
+      // console.log("seaching...");
+      const temp = allEvents.filter((event) => {
+        if (event.name.toLowerCase().includes(search.toLowerCase())) {
+          return event;
+        }
+      });
+      setFilteredEvents(temp);
+      setLoading(false);
+      // console.log("temp event", temp);
+    } else {
+      dispatch(openSnackbar("Please Enter A Name to Search", "warning"));
+    }
   };
+
+  const cancelSearch = () => {
+    setSearch("");
+    setactiveSearch(false);
+    setFilteredEvents(allEvents);
+  };
+
+  // =============================
   // === to all events ========
-  const getAllEvents = async () => {
+  const getAllEvents = async (page, limit) => {
+    setLoading(true);
     try {
-      const res = await axios.get(`${Constants.URL}/event/user`);
+      const res = await axios.get(
+        `${Constants.URL}/event/user/?page=${page}&limit=${limit}`
+      );
       if (res.status === 200) {
-        console.log("response=>", res);
+        // console.log("response=>", res);
+
         setAllEvents(res?.data?.events);
+        setFilteredEvents(res?.data?.events);
+        setCounts(res?.data?.totalEvents);
         setLoading(false);
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(openSnackbar("something went wrong", "error"));
+      setLoading(false);
     }
   };
   // ====end of get all events=
+
+  useEffect(() => {
+    getAllEvents(page + 1, rowsPerPage);
+  }, [page, rowsPerPage]);
+
   //  ================
   useEffect(() => {
     dispatch(setPageTitle("My Events"));
-    getAllEvents();
+
     return () => {
       dispatch(setPageTitle(""));
     };
   }, []);
 
   return (
-    <Box width={"100%"}>
-      <Stack mt={1} mb={1}>
+    <Box width={"100%"} component={Container}>
+      <Stack mb={1}>
         <Typography variant="h5" fontWeight={"800"} textAlign={"center"}>
           Created Events
         </Typography>
       </Stack>
 
       <Stack
-        direction={{ md: "row", lg: "row", sm: "column", xs: "column" }}
+        direction={{ md: "row", lg: "row", xs: "column" }}
         justifyContent={"space-between"}
         alignContent={"center"}
+        width={"100%"}
       >
-        <Box
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          flexDirection={{ md: "row", lg: "row", sm: "column", xs: "column" }}
-        >
-          <FormControl
-            size="small"
-            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
-          >
-            <Typography>Show</Typography>
-            <Select
-              value={page}
-              size="small"
-              onChange={handleChange}
-              sx={{
-                "& legend": {
-                  display: "none",
-                },
-              }}
-            >
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={30}>30</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
-              <MenuItem value={100}>100</MenuItem>
-            </Select>
-          </FormControl>
+        <Box width={{ md: "50%", sm: "100%", xs: "100%", lg: "50%" }}>
           <FormControl
             sx={{
               m: 1,
-              width: { md: "30ch", lg: "25ch", sm: "50ch", xs: "30ch" },
+              width: "100%",
+              // width: { md: "30ch", lg: "25ch", sm: "50ch", xs: "30ch" },
             }}
             variant="outlined"
             size="small"
@@ -136,32 +165,47 @@ const MyEvents = () => {
                 "& legend": {
                   display: "none",
                 },
+                height: "30px",
               }}
               size="small"
               fullWidth
-              placeholder="search"
+              disabled={activeSearch ? true : false}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Enter Name to Search required events"
               type={"text"}
               endAdornment={
                 <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleSearch}
-                    // onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    <SearchIcon />
-                  </IconButton>
+                  {activeSearch ? (
+                    <IconButton
+                      onClick={cancelSearch}
+                      // onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      <ClearIcon />
+                    </IconButton>
+                  ) : (
+                    <IconButton
+                      onClick={handleSearch}
+                      // onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  )}
                 </InputAdornment>
               }
               label="Password"
             />
           </FormControl>
         </Box>
-        <Box
-          display={"flex"}
+        <Stack
+          // display={"flex"}
+          direction={"row"}
           alignItems={"center"}
           justifyContent={"space-between"}
           px={1}
+          spacing={1}
         >
           <Button
             variant="outlined"
@@ -180,7 +224,7 @@ const MyEvents = () => {
           >
             EVENTS LEFT
           </Button>
-          &nbsp;&nbsp;
+          {/* &nbsp;&nbsp; */}
           <Button
             variant="contained"
             size="small"
@@ -190,10 +234,31 @@ const MyEvents = () => {
           >
             Create New
           </Button>
-        </Box>
+        </Stack>
       </Stack>
-      <Stack maxHeight={"550px"} overflow={"auto"} mt={1}>
-        <Grid container display={"flex"} justifyContent={"space-around"}>
+      <Stack
+        overflow={"auto"}
+        mt={1}
+        maxHeight={"450px"}
+        sx={{
+          "&::-webkit-scrollbar": {
+            width: "5px",
+            bgcolor: "rgba(206, 197, 220, 1)",
+            borderRadius: "6px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            bgcolor: "rgba(121, 93, 168, 1)",
+            height: "40px",
+            borderRadius: "6px",
+          },
+        }}
+      >
+        <Grid
+          container
+          display={"flex"}
+          justifyContent={"space-around"}
+          // maxHeight={"450px"}
+        >
           {loading ? (
             <Grid
               item
@@ -218,8 +283,8 @@ const MyEvents = () => {
           ) : (
             ""
           )}
-          {allEvents &&
-            allEvents?.map((event, index) => {
+          {filteredEvents && filteredEvents.length != 0 ? (
+            filteredEvents?.map((event, index) => {
               return (
                 <Grid
                   item
@@ -255,11 +320,7 @@ const MyEvents = () => {
                   >
                     {event?.name}
                   </Typography>
-                  <Box
-                    overflow={"hidden"}
-                    borderRadius={"8px"}
-                    position={"relative"}
-                  >
+                  <Box borderRadius={"8px"} position={"relative"}>
                     <Box
                       sx={{
                         opacity: "0",
@@ -321,9 +382,30 @@ const MyEvents = () => {
                   </Button>
                 </Grid>
               );
-            })}
+            })
+          ) : (
+            <Typography mt={2} variant="body2">
+              There is no Record found
+            </Typography>
+          )}
         </Grid>
+        {console.log("filtered evet=>", filteredEvents.length)}
       </Stack>
+      {activeSearch ? (
+        ""
+      ) : (
+        <Stack>
+          <TablePagination
+            component="div"
+            count={counts}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Stack>
+      )}
+
       <TemplatePreview
         carouselClick={carouselClick}
         toggleTemplatePreviewModal={toggleTemplatePreviewModal}

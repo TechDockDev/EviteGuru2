@@ -13,7 +13,7 @@ import {
 import React from "react";
 import TextDescription from "./TextDescription";
 import { useState } from "react";
-import PasswordChange from "./PasswordChange";
+
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPageTitle } from "../../redux/action/defaultActions";
@@ -21,6 +21,7 @@ import { BiEdit } from "react-icons/bi";
 import { MdLogout } from "react-icons/md";
 import ActiveCardInfo from "./ActiveCardInfo";
 import { openSnackbar } from "../../redux/action/userActions";
+import PasswordChange from "../PasswordReset/PasswordChange";
 const AccountSettings = () => {
   const temp = {
     name: "Example User",

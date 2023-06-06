@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 const drawerWidth = 240;
 
 const SmallScreenDrawerMenu = (props) => {
-  const { toggleLogInModal, toggleRegisterModal } = props;
+  const { toggleLogInModal, toggleRegisterModal,setOpenLoginModal } = props;
   //   const [isLoggedInd, setIsLoggedInd] = React.useState(false);
 
   const { userDetail } = useSelector((state) => state);

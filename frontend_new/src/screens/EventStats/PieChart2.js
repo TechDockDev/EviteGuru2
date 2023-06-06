@@ -1,9 +1,19 @@
 import { Box } from "@mui/material";
 import React from "react";
 import Chart from "react-apexcharts";
-const PieChart2 = () => {
+const PieChart2 = ({stats}) => {
+
   const options = {
-    series: [44, 55, 13],
+    series: [
+      Number(stats["attending"] * 1),
+      Number(stats["Not Attending"] * 1),
+      Number(stats["pending"] * 1),
+    ],
+    // series: [
+    //   41,
+    //   25,
+    //   39,
+    // ],
     chart: {
       parentHeightOffset: 0,
       width: "100%",
@@ -42,7 +52,7 @@ const PieChart2 = () => {
         fontFamily: undefined,
       },
       onDatasetHover: {
-        highlightDataSeries: false,
+        highlightDataSeries: true,
       },
       x: {
         show: true,

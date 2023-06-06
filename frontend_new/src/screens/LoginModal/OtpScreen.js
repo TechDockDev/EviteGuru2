@@ -1,4 +1,4 @@
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+
 import { Box, Button, FormHelperText, InputLabel } from "@mui/material";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import React from "react";
@@ -16,15 +16,7 @@ const OtpScreen = (props) => {
   };
 
   const handleVerify = () => {
-    // props?.setverified(true);
-    props?.verifyOtp(code)
-
-    // dispatch(
-    //   openSnackbar(
-    //     "Otp Verified Successfully! Now Proceed to Register Your account",
-    //     "success"
-    //   )
-    // );
+    props?.verifyOtp(code);
   };
 
   useEffect(() => {
@@ -33,7 +25,7 @@ const OtpScreen = (props) => {
         setSeconds(seconds - 1);
       } else if (seconds === 0) {
         props.setOtp(false);
-        dispatch(openSnackbar("otp expired resend otp", "warning"));
+        dispatch(openSnackbar("otp expired", "warning"));
       }
     }, 1000);
 
@@ -43,11 +35,7 @@ const OtpScreen = (props) => {
   }, [seconds]);
   return (
     <>
-      <Box
-        // component={"form"}
-        bgcolor={"transparent"}
-        // onSubmit={() => console.log("hi, i'm on submit")}
-      >
+      <Box bgcolor={"transparent"}>
         {/* 👇 Reset Password button 👇 */}
 
         {/* 👇Otp input👇 */}
@@ -110,14 +98,12 @@ const OtpScreen = (props) => {
             Time Remaining.. {seconds}
           </FormHelperText>
           <Button
-            // variant="outlined"
             disabled={code.length === 6 ? false : true}
             onClick={handleVerify}
             size="small"
             sx={{
               color: "white",
               textTransform: "none",
-              // "&:hover": { textDecoration: "underline" },
             }}
           >
             Verify
