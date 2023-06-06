@@ -13,7 +13,7 @@ const purchasePlan = expressAsyncHandler(async (req, res) => {
   const plan = await Subscription.findById(planId);
   const amount = plan.price[`${planType}ly`];
   const session = await stripe.checkout.sessions.create({
-    metadata: { planId, planType, user: req.user.id },
+    metadata: { plan: plan.name, planId, planType, user: req.user.id },
     currency: "usd",
     line_items: [
       {
@@ -50,10 +50,11 @@ const paymentSuccess = expressAsyncHandler(async (req, res) => {
     user.planStartDate = Date.now();
     await user.save();
   }
-  res.json({
-    status: "success",
-    message: "Payment has been successful",
-  });
+  const ipAddress = req.socket.remoteAddress;
+  const address = ipAddress.replace(/^.*:/, "");
+  res.redirect(
+    `http://${address}:3000/payment/success/status?amount=${session.amount_total}&plan=${session.metadata.plan}`
+  );
 });
 
 const paymentFailure = expressAsyncHandler(async (req, res) => {

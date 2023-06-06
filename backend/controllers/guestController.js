@@ -3,6 +3,7 @@ import Guest from "../models/guestModel.js";
 import { parse } from "csv-parse";
 import { sendMail } from "../middlewares/mailMiddleware.js";
 import { sendSms } from "../middlewares/smsMiddleware.js";
+import Event from "../models/eventModel.js";
 
 const createGuest = asyncHandler(async (req, res) => {
   const existingGuestList = await Guest.findOne({ event: req.body.eventId });
@@ -72,7 +73,7 @@ const openStatus = asyncHandler(async (req, res) => {
   const { guestId, singleGuestId } = req.body;
   const guest = await Guest.findById(guestId);
   const singleGuest = guest.guests.id(singleGuestId);
-  singleGuest.set({ status: true });
+  singleGuest.set({ status: "Open" });
   await guest.save();
   res.json({
     status: "success",
@@ -111,7 +112,7 @@ const getGuestListByUser = asyncHandler(async (req, res) => {
 const getGuestListByUserFiltered = asyncHandler(async (req, res) => {
   let guestList = await Guest.find({ user: req.user.id });
   const eventGuestList = await Guest.findOne({ event: req.params.eventId });
-  const eventGuestListPhoneNumbers = eventGuestList.guests.map(
+  const eventGuestListPhoneNumbers = eventGuestList?.guests.map(
     ({ phone }) => phone
   );
   guestList = guestList
@@ -149,22 +150,35 @@ const guestResponse = asyncHandler(async (req, res) => {
 
 const sendInvitation = asyncHandler(async (req, res) => {
   const { guestIds, eventId } = req.body;
+  const event = await Event.findById(eventId);
   const guestList = await Guest.findOne({ event: eventId });
   const emails = guestList.guests.map(({ id, email }) => {
     if (guestIds.includes(id)) {
       return email;
-    }
+    } else return;
   });
   const phoneNumbers = guestList.guests.map(({ id, phone }) => {
     if (guestIds.includes(id)) {
       return phone;
     }
   });
-  await sendMail("subject", "body", emails);
+  const html = `
+  <html>
+  <head>
+  <title>Invitation</title>
+  </head>
+  <body>
+  <p>Hey! You got an invitation for ${
+    event.name
+  } Event.Click on the button below to view your Event Details.</p>
+  <button style='display:block;background-color:blue; border:none;padding:10px;border-radius:10px;margin:auto;margin-top: 30px;'><a style='text-decoration:none; color:white;' href=${"http://guest-event-view-screen/:eventId"}><b>View Invitation</b></a></button>
+  </body>
+  </html>`;
+  await sendMail(`Invitation for ${event.name} Event`, html, emails);
   await sendSms("This is a message", phoneNumbers);
   const guests = guestList.guests.map((guest) => {
     if (guestIds.includes(guest.id)) {
-      return { ...guest, status: "pending" };
+      return { ...guest, status: "Pending" };
     }
     return { ...guest };
   });

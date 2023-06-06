@@ -39,7 +39,6 @@ const signToken = (id) => {
 
 // controller for sending creating token for future authorization
 const createSendToken = (user, statusCode, res) => {
-  console.log(user);
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(

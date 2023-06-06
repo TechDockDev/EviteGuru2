@@ -50,11 +50,13 @@ const getEnterpriseRequests = expressAsyncHandler(async (req, res) => {
 });
 
 const sendEnterPriseMail = expressAsyncHandler(async (req, res) => {
-  const { amount, enterpriseId } = req.body;
+  const { amount, enterpriseId, templateLimit, inviteeLimit } = req.body;
   const enterprise = await Enterprise.findByIdAndUpdate(
     enterpriseId,
     {
       amount,
+      templateLimit,
+      inviteeLimit,
       status: "sent",
     },
     { runValidators: true }
