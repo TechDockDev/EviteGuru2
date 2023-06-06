@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { AppBar, Backdrop, Box, Drawer, IconButton, List, Toolbar } from "@mui/material";
+import { AppBar, Backdrop, Box, Drawer, IconButton, List, Toolbar, Typography } from "@mui/material";
 import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import PaymentsIcon from "@mui/icons-material/Payments";
@@ -24,7 +24,7 @@ const AdminDashboard = () => {
    //👇  state for open small screen left drawer  👇
    const navigate = useNavigate();
    const [openLeftDrawer, setOpenLeftDrawer] = useState();
-   const { snackbar, setIsLoggedIn,  setAdminAuthData, } = useContext(DataContext);
+   const { snackbar, setIsLoggedIn, setAdminAuthData } = useContext(DataContext);
 
    const handleDrawerToggle = () => {
       setOpenLeftDrawer(!openLeftDrawer);
@@ -32,8 +32,8 @@ const AdminDashboard = () => {
    const logout = async () => {
       try {
          const { data } = await axios.get("/logout");
-         setIsLoggedIn(false)
-         setAdminAuthData("")
+         setIsLoggedIn(false);
+         setAdminAuthData("");
          snackbar(data.status, data.message);
          navigate("/");
       } catch (error) {}
@@ -42,6 +42,7 @@ const AdminDashboard = () => {
       <>
          <Box
             sx={{
+               width: "100%",
                maxWidth: "1440px",
                margin: "0 auto",
                display: "flex",
@@ -110,6 +111,21 @@ const AdminDashboard = () => {
                      }}>
                      <Box component={"img"} bgcolor="transparent" src={"/assets/EviteGuruLogoWhite.svg"} sx={{ height: "100%" }} />
                   </Box>
+                  <Box
+                     sx={{
+                        height: "30px",
+                        bgcolor: "#000",
+                        width: "100%",
+                        textAlign: "center",
+                        boxSizing: "border-box",
+                        boxShadow: "3px 3px 8px grey",
+                        paddingX:"8px"
+                     }}>
+                     <Typography color={"white"} fontWeight={"600"} sx={{
+
+                     }}>ADMIN</Typography>
+                  </Box>
+
                   {/* == left eviteguru logo ==*/}
                   {/* =============================================================================== */}
                   {/*  👇 Left nav menu container 👇    */}
@@ -397,7 +413,7 @@ const AdminDashboard = () => {
                            <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/user-list"} linkText={"Users"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<PeopleIcon />} to={"/admin/admin_list"} linkText={"Sub-Admins"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<SubscriptionsIcon />} to={"/admin/pricing"} linkText={"Subscriptions"} handleDrawerToggle={handleDrawerToggle} />
-                           <SingleMenuNavLink icon={<LocalOfferIcon />} to={"/admin/promotions"} linkText={"Coupons and Promotions"}  handleDrawerToggle={handleDrawerToggle} />
+                           <SingleMenuNavLink icon={<LocalOfferIcon />} to={"/admin/promotions"} linkText={"Coupons and Promotions"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<PaymentsIcon />} to={"/admin/accounts"} linkText={"Accounts"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<ManageAccountsIcon />} to={"/admin/profile"} linkText={"Profile"} handleDrawerToggle={handleDrawerToggle} />
                            <SingleMenuNavLink icon={<BusinessIcon />} to={"/admin/enterprise"} linkText={"Enterprise"} handleDrawerToggle={handleDrawerToggle} />
@@ -451,8 +467,8 @@ const AdminDashboard = () => {
                   minHeight: `calc(100vh - 100px)`,
                   width: {
                      xl: "calc(100vw - 250px)",
-                     lg: "calc(100vw - 270px)",
-                     md: "calc(100vw - 270px)",
+                     lg: "calc(100vw - 250px)",
+                     md: "calc(100vw - 250px)",
                      sm: "100vw",
                      xs: "100vw",
                   },
