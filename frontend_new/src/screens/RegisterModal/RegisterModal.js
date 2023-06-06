@@ -34,9 +34,9 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
   const tempvalues = {
     name: "",
     email: "",
-    phone: "",
     password: "",
     confirmPassword: "",
+    idToken: "",
   };
   const [showPassword, setShowPassword] = useState(false);
   const [verified, setverified] = useState(false);
@@ -51,7 +51,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
   const handlePhoneChange = (v) => {
     let ch = "";
     v.split(" ").forEach((num, index) => {
-      console.log("num", num, "index", index);
+
       if (index !== 0) {
         ch = ch + num;
       }
@@ -59,33 +59,22 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
     setphone({ ...phone, number: v, length: ch.length });
   };
 
-  console.log("phn=>", phone);
   const handleSendOtp = async () => {
     if (phone.length === 10) {
-      console.log("working", phone.length);
-      // await onSignInSubmit();
-      // configureCaptcha();
+      // ===send otp and captcha verification =======
       sendOtpVerificationCode();
-      // setOtp(true);
-      // dispatch(
-      //   openSnackbar("Otp has been sent to your mobile number", "success")
-      // );
     }
   };
 
   // =====configure captcha =============
   const configureCaptcha = () => {
-    console.log("console is coming");
     const auth = getAuth();
-    // auth.useDeviceLanguage();
     window.recaptchaVerifier = new RecaptchaVerifier(
       "captcha-button",
       {
         size: "invisible",
         callback: (response) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-          // onSignInSubmit();
-          console.log(response);
+          // console.log(response);
         },
       },
       auth
@@ -97,7 +86,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
   // ========send otp ==============
   const sendOtpVerificationCode = () => {
     // window.recaptchaVerifier.render();
-    console.log("console is coming..");
+  
     const auth = getAuth();
     configureCaptcha();
     signInWithPhoneNumber(auth, phone?.number, window.recaptchaVerifier)
@@ -107,24 +96,29 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
           openSnackbar("Otp has been sent to your mobile number", "success")
         );
         window.confirmationResult = confirmationResult;
-        console.log("resp", window.confirmationResult);
+        // console.log("resp", window.confirmationResult);
         // ...
       })
       .catch((error) => {
         // Error; SMS not sent
         // ...
-        console.log("error=>", error);
+       
+        dispatch(openSnackbar(error.message, "error"));
       });
   };
   // =====verify otp =====
   const verifyOtp = async (code) => {
-    console.log("verifyOtp code is coming")
     await window.confirmationResult
       .confirm(code)
-      .then((result) => {
-        // User signed in successfully.
-        // console.log("result=>", result);
+      .then(async (result) => {
         const user = result.user;
+       
+        const idToken = await Authentication.currentUser.getIdToken();
+      
+        setValues({
+          ...values,
+          idToken: idToken,
+        });
         setverified(true);
         dispatch(
           openSnackbar(
@@ -162,7 +156,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
   };
   // ====end of handleChange==
   const submitHandler = async (e) => {
-    const { name, email, phone, password, confirmPassword } = values;
+    const { name, email, phone, password, confirmPassword, idToken } = values;
     e.preventDefault();
     try {
       if (password !== confirmPassword) {
@@ -171,11 +165,11 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
         const res = await axios.post(`${Constants.URL}/register`, {
           name,
           email,
-          phone,
           password,
+          idToken,
         });
         if (res.status === 200) {
-          console.log("res=>", res);
+         
           dispatch(openSnackbar(res?.data?.message, "success"));
           dispatch(login(res?.data?.user));
           setValues(tempvalues);
@@ -184,7 +178,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
         }
       }
     } catch (error) {
-      console.log("error=>", error);
+     
       dispatch(openSnackbar("something went wrong", "error"));
     }
   };
@@ -194,21 +188,21 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
     signInWithPopup(Authentication, provider)
       .then(async (result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
-        console.log(result);
+
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
-        console.log(await Authentication.currentUser.getIdToken());
+    
         const idToken = await Authentication.currentUser.getIdToken();
-        console.log("idToken", idToken);
+  
         // The signed-in user info.
         const user = result.user;
-        console.log(user);
+   
         const res = await axios.post(`${Constants?.URL}/register/google`, {
           idToken: idToken,
         });
         // =====================
         if (res.status === 200) {
-          console.log("response=>", res?.data?.data?.user);
+       
           dispatch(login(res?.data?.data?.user));
           closeRegisterModal();
           // toggleRegisterModal();
@@ -220,12 +214,10 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log("error=>", errorMessage);
-        // dispatch(openSnackbar(error.data.message, "error"));
-        console.log(error);
-        // The email of the user's account used.
-        // const email = error.customData.email;
-        // The AuthCredential type that was used.
+     
+        dispatch(openSnackbar(error.message, "error"));
+  
+       
         const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
       });

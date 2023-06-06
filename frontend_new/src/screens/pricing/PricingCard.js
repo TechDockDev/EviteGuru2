@@ -20,21 +20,27 @@ import { useNavigate } from "react-router-dom";
 import { AiFillCheckCircle } from "react-icons/ai";
 import axios from "axios";
 import { Constants } from "../../redux/constants/action-types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { openSnackbar } from "../../redux/action/userActions";
 
 const PricingCard = (props) => {
   const { userDetail } = useSelector((state) => state);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   // =====handlePurchase =======
   const handlePurchasePlan = async (planId, type) => {
-    try {
-      const res = await axios.post(`${Constants.URL}/plan/purchase`, {
-        planId: planId,
-        planType: type,
-      });
-      window.location.href = res.data.url;
-    } catch (error) {
-      console.log("error=>", error);
+    if (userDetail?.isUser) {
+      try {
+        const res = await axios.post(`${Constants.URL}/plan/purchase`, {
+          planId: planId,
+          planType: type,
+        });
+        window.location.href = res.data.url;
+      } catch (error) {
+        console.log("error=>", error);
+      }
+    } else {
+      dispatch(openSnackbar("You are not logged in, please login", "error"));
     }
   };
   // ===endOf handlePurchase ===
@@ -82,7 +88,7 @@ const PricingCard = (props) => {
         <List sx={{ mt: 1 }}>
           {props?.plan?.description &&
             props?.plan?.description?.map((item, index) => {
-              console.log("plan=>", props?.plan?._id);
+              // console.log("plan=>", props?.plan?._id);
               return (
                 <ListItem disablePadding key={index} sx={{ marginY: "5px" }}>
                   <ListItemIcon sx={{ minWidth: "", marginRight: "15px" }}>
@@ -146,7 +152,12 @@ const PricingCard = (props) => {
               </Button>
             </Stack>
           ) : (
-            <Button variant="outlined" fullWidth color="primary">
+            <Button
+              variant="outlined"
+              fullWidth
+              color="primary"
+              onClick={() => navigate("/enterprise")}
+            >
               Contact Us
             </Button>
           )}

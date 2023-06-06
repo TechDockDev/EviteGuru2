@@ -4,43 +4,52 @@ import { useEffect } from "react";
 import Moment from "react-moment";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { setCreatedEventDetail } from "../../redux/action/userActions";
+import { openSnackbar, setCreatedEventDetail } from "../../redux/action/userActions";
 import { Constants } from "../../redux/constants/action-types";
 
 const Preview = (props) => {
   const navigate = useNavigate();
   const { id } = useParams();
   const dispatch = useDispatch();
-  const { eventDetailsPreviewData, userEventTemplate } = useSelector(
-    (state) => state
-  );
-  console.log("eventPreviewDetails=>", userEventTemplate);
+  const { eventDetailsPreviewData, userEventTemplate, userDetail } =
+    useSelector((state) => state);
+  // console.log("eventPreviewDetails=>", userEventTemplate);
 
   //   save and continue =====
   const saveAndContinue = async () => {
-    try {
-      const form = new FormData();
-      form.append("variationJson", userEventTemplate?.jsonData);
-      form.append("preview", userEventTemplate?.previewImage);
-      form.append("templateId", id);
-      const response = await axios.post(
-        `${Constants.URL}/variation/create`,
-        form
-      );
-      if (response.status === 200) {
-        console.log("response=>", response?.data?.variation?._id);
-        await createEvent(response?.data?.variation?._id);
-      } else {
+    if (userDetail?.subscription) {
+      try {
+        const form = new FormData();
+        form.append("variationJson", userEventTemplate?.jsonData);
+        form.append("preview", userEventTemplate?.previewImage);
+        form.append("templateId", id);
+        const response = await axios.post(
+          `${Constants.URL}/variation/create`,
+          form
+        );
+        if (response.status === 200) {
+          // console.log("response=>", response?.data?.variation?._id);
+          await createEvent(response?.data?.variation?._id);
+        } else {
+        }
+      } catch (error) {
+        console.log("error=>", error);
+        dispatch(openSnackbar("something went wrong", "erro"));
       }
-    } catch (error) {
-      console.log("error=>", error);
+    } else {
+      dispatch(
+        openSnackbar(
+          "This required subscription , you don't have any active plan! please subscribe to get this feature.",
+          "warning"
+        )
+      );
     }
   };
   // =========================
 
   // =========save event =======
   const createEvent = async (variationId) => {
-    console.log("control is comming => variationId=>", variationId);
+    // console.log("control is comming => variationId=>", variationId);
     try {
       const res = await axios.post(`${Constants.URL}/event/create`, {
         ...userEventTemplate?.eventDetails,
@@ -48,15 +57,16 @@ const Preview = (props) => {
         variationId: variationId,
       });
       if (res.status === 200) {
-        console.log("res=>", res);
+        // console.log("res=>", res);
         dispatch(setCreatedEventDetail(res?.data?.eventDetails));
         // props.tabChange({}, 3);
+        dispatch(openSnackbar("Your created succesfully", "success"));
         navigate(`/dashboard/${res?.data?.eventDetails?._id}/send/`);
       } else {
-        console.log("res error=>", res);
+        dispatch(openSnackbar(res?.data?.message, "error"));
       }
     } catch (error) {
-      console.log("error=>", error);
+      dispatch(openSnackbar("something went wrong.", "error"));
     }
   };
   // ===========================

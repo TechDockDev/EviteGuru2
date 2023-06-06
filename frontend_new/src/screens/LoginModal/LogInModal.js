@@ -6,7 +6,6 @@ import {
   InputAdornment,
   InputBase,
   InputLabel,
-  Link,
   Modal,
   Paper,
   Stack,
@@ -18,12 +17,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Authentication } from "../../firebaseAuth/firebase";
-import {
-  signInWithPopup,
-  getRedirectResult,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-} from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -31,29 +25,37 @@ import axios from "axios";
 import { login, openSnackbar } from "../../redux/action/userActions";
 
 import { Constants } from "../../redux/constants/action-types";
+import PasswordChange from "../PasswordReset/PasswordChange";
 
 const LogInModal = ({
   openLoginModal,
   toggleLogInModal,
   toggleRegisterModal,
+  setOpenLoginModal,
 }) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  // let [searchParam] = useSearchParams();
-  // let redirect = searchParam.get("redirect") || "/";
   const tempValues = {
     email: "",
     password: "",
   };
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const [openPasswordChangeModal, setOpenPasswordChangeModal] = useState(false);
   const [userValues, setUserValues] = useState(tempValues);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const togglePasswordChangeModal = () => {
+    // alert("kkk")
+    setOpenPasswordChangeModal(!openPasswordChangeModal);
+  };
+
+  const toggleLoginModalInside = () => {
+    setUserValues(tempValues);
+    setOpenLoginModal(false);
+  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { userDetail } = useSelector((state) => state);
 
@@ -107,9 +109,7 @@ const LogInModal = ({
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(error);
-        // The email of the user's account used.
-        // const email = error.customData.email;
-        // The AuthCredential type that was used.
+
         const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
       });
@@ -120,7 +120,7 @@ const LogInModal = ({
       <Modal
         open={openLoginModal}
         // open={true}
-        onClose={toggleLogInModal}
+        onClose={toggleLoginModalInside}
         aria-labelledby="login-modal"
         aria-describedby="login_modal"
         closeAfterTransition
@@ -145,7 +145,7 @@ const LogInModal = ({
             <Box bgcolor={"transparent"}>
               {/* 👇Cross icon to close the modal👇  */}
               <IconButton
-                onClick={toggleLogInModal}
+                onClick={toggleLoginModalInside}
                 sx={{
                   color: "black",
                   position: "absolute",
@@ -230,12 +230,8 @@ const LogInModal = ({
                     fontWeight: "500",
                     bgcolor: "white",
                   }}
-                  // placeholder={"Your e-mail"}
+                  placeholder={"Your e-mail"}
                   required
-                  // onBlur="this.placeholder='enter your text'"
-                  // onBlur={() => {
-                  //   this.placeholder = "enter your text";
-                  // }}
                 />
               </FormControl>
               {/*👆 E-MAIL👆 */}
@@ -272,9 +268,6 @@ const LogInModal = ({
                     bgcolor: "white",
                   }}
                   placeholder="Your password"
-                  // onBlur={() => {
-                  //   this.placeholder = "enter your text";
-                  // }}
                   required
                   endAdornment={
                     <InputAdornment position="end">
@@ -313,9 +306,9 @@ const LogInModal = ({
                 Login
               </Button>
               {/*👆 LogIn button👆 */}
-              <Typography
+              <Button
                 mt={1}
-                variant="body2"
+                variant="text"
                 fontWeight={"900"}
                 sx={{
                   color: "white",
@@ -325,9 +318,11 @@ const LogInModal = ({
                     textDecoration: "underline",
                   },
                 }}
+                onClick={togglePasswordChangeModal}
+                // onClick={() => alert("working")}
               >
                 Forget Password
-              </Typography>
+              </Button>
             </Box>
             {/*👆 Form Container👆 */}
             <Typography
@@ -403,9 +398,15 @@ const LogInModal = ({
                 Register for free
               </Button>
             </Typography>
+            <div id="captcha-button"></div>
           </Stack>
         </Paper>
       </Modal>
+      <PasswordChange
+        open={openPasswordChangeModal}
+        onClose={togglePasswordChangeModal}
+        togglePasswordChangeModal={togglePasswordChangeModal}
+      />
     </>
   );
 };

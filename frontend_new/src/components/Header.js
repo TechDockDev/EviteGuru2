@@ -52,7 +52,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const { userDetail } = useSelector((state) => state);
-  console.log("User Login:->", userDetail);
+  // console.log("User Login:->", userDetail);
 
   // ====== logout handler =======
 
@@ -333,12 +333,14 @@ const Header = () => {
           toggleLogInModal={toggleLogInModal}
           toggleRegisterModal={toggleRegisterModal}
           logoutHandler={logoutHandler}
+          setOpenLoginModal={setOpenLoginModal}
         />
         {/* ======================================================================== */}
         <LogInModal
           openLoginModal={openLoginModal}
           toggleLogInModal={toggleLogInModal}
           toggleRegisterModal={toggleRegisterModal}
+          setOpenLoginModal={setOpenLoginModal}
         />
         <RegisterModal
           openRegisterModal={openRegisterModal}

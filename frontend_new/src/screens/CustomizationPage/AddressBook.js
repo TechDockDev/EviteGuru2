@@ -203,7 +203,7 @@ const AddressBook = () => {
                 }}
               />
             </Stack>
-            <Stack spacing={2} alignItems={"center"}>
+            {/* <Stack spacing={2} alignItems={"center"}>
               <Pagination
                 count={10}
                 siblingCount={1}
@@ -217,7 +217,7 @@ const AddressBook = () => {
                 // hidePrevButton={true}
                 // page={1}
               />
-            </Stack>
+            </Stack> */}
           </>
         )}
 

@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
 import { setTemplateList } from "../../redux/action/userActions";
+import { Constants } from "../../redux/constants/action-types";
 
 const TemplateSection = () => {
   // const [templateData, setTemplateData] = useState();
@@ -26,13 +27,13 @@ const TemplateSection = () => {
   const templateList = useSelector((state) => state?.allTemplates);
   // const { template, error, loading } = templateList;
 
-  console.log("Data :->", templateList);
+  // console.log("Data :->", templateList);
 
   // get templatesList
   const getAllTemplates = async () => {
     try {
-      const res = await axios.get("/api/v1/user/template/all?page=1&limit=6");
-      console.log("res", res);
+      const res = await axios.get(`${Constants.URL}/template/all?page=1&limit=6`);
+      // console.log("res", res);
       dispatch(setTemplateList(res?.data?.template));
       setLoadingTemplate(false);
     } catch (error) {

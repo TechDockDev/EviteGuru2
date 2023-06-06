@@ -59,7 +59,7 @@ const SidebarMenu = (props) => {
       sx={{
         // border:"1px solid blue",
         fontSize: "8px",
-        height: "100%",
+        // height: "100%",
 
         "& .active": {
           color: "#000",

@@ -9,15 +9,25 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { NavLink } from "react-router-dom";
+import {
+  NavLink,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 
 const PaymentSuccessScreen = () => {
+  const search = useLocation().search;
+
+  const amount = new URLSearchParams(search).get("amount");
+  const plan = new URLSearchParams(search).get("plan");
+  console.log("search=>", search, " amount => ", amount, " plan=>", plan);
+
   return (
     <Grid
       container
       display={"flex"}
       justifyContent={"center"}
-      //   bgcolor={"yellow"}
       alignContent={"center"}
       height={"100vh"}
       sx={{
@@ -62,9 +72,7 @@ const PaymentSuccessScreen = () => {
               width: 300,
               bgcolor: "rgba(250, 250, 250, 1)",
               borderRadius: "10px",
-              //   py: 2,
             }}
-            // elevation={2}
           >
             <CardContent sx={{ justifyContent: "space-between" }}>
               <>
@@ -75,14 +83,16 @@ const PaymentSuccessScreen = () => {
                   color="text.secondary"
                   gutterBottom
                 >
-                  Plan Name
+                  {plan ? plan : ""}
                 </Typography>
                 <Divider />
 
                 <Stack alignItems={"center"} justifyContent={"center"}>
-                  <Typography>Invitees - {"1000"}</Typography>
-                  <Typography>Templates - {"100"}</Typography>
-                  <Typography variant="h6">Amount Paid : {"256"} </Typography>
+                  {/* <Typography>Invitees - {"1000"}</Typography>
+                  <Typography>Templates - {"100"}</Typography> */}
+                  <Typography variant="h6">
+                    Amount Paid : {amount ? amount : ""}{" "}
+                  </Typography>
                 </Stack>
               </>
             </CardContent>

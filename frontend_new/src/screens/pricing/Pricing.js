@@ -4,12 +4,14 @@ import PricingCard from "./PricingCard";
 import Faqs from "./Faqs";
 import axios from "axios";
 import { Constants } from "../../redux/constants/action-types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { openSnackbar } from "../../redux/action/userActions";
 
 function Pricing() {
   const { userDetail } = useSelector((state) => state);
+  const dispatch = useDispatch();
   // ==================================
-  console.log("userDetails=>", userDetail);
+  // console.log("userDetails=>", userDetail);
   const [allPlans, setallPlans] = useState();
   const [allFaqs, setAllFaqs] = useState([]);
   const [loading, setLoading] = useState({
@@ -29,13 +31,14 @@ function Pricing() {
     try {
       const res = await axios.get(`${Constants.URL}/faq/get`);
       if (res.status === 200) {
-        console.log("response=>", res);
+        // console.log("response=>", res);
         setAllFaqs(res?.data?.faqs);
         setLoading({ ...loading, faqsLoading: false });
       }
     } catch (error) {
       setLoading({ ...loading, faqsLoading: false });
-      console.log("error=>", error);
+      // console.log("error=>", error);
+      dispatch(openSnackbar("something went wrong", "error"));
     }
   };
   // ====get subscritpiton list
@@ -44,7 +47,7 @@ function Pricing() {
     try {
       const res = await axios.get(`${Constants.URL}/plan/all`);
       if (res.status === 200) {
-        console.log("res=>", res?.data?.plans);
+        // console.log("res=>", res?.data?.plans);
         setLoading({ ...loading, plansLoading: false });
         setallPlans(res?.data?.plans);
       }
