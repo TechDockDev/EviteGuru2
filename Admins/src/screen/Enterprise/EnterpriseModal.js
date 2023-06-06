@@ -14,7 +14,7 @@ const EnterpriseModal = ({ openModal, toggleModal, enterpriseId, }) => {
    const onSubmitHandler = async (e) => {
       e.preventDefault();
       try {
-         const { data } = await axios.post("/enterprise/send", { amount: values.planAmount, enterpriseId: enterpriseId });
+         const { data } = await axios.post("/enterprise/send", { amount: values.planAmount,templateLimit:values.templates, inviteeLimit:values.invitees, enterpriseId: enterpriseId });
          console.log(data);
          snackbar(data.status, data.message);
          setValues({ planAmount: "", templates: "", invitees: "" })
