@@ -3,14 +3,21 @@ import React, { useState } from "react";
 import { DataContext } from "../../AppContext";
 import axios from "axios";
 
-const EnterpriseModal = ({ openModal, toggleModal, enterpriseId, planAmount, setPlanAmount }) => {
+const EnterpriseModal = ({ openModal, toggleModal, enterpriseId, }) => {
+   const [values, setValues] = useState({ planAmount: "", templates: "", invitees: "" });
    const { snackbar } = React.useContext(DataContext);
+   // ===
+   const inputChange = (e) => {
+      setValues({ ...values, [e.target.name]: e.target.value });
+   };
+   // ===
    const onSubmitHandler = async (e) => {
       e.preventDefault();
       try {
-         const { data } = await axios.post("/enterprise/send", { amount: planAmount, enterpriseId: enterpriseId });
+         const { data } = await axios.post("/enterprise/send", { amount: values.planAmount, enterpriseId: enterpriseId });
          console.log(data);
          snackbar(data.status, data.message);
+         setValues({ planAmount: "", templates: "", invitees: "" })
          toggleModal();
       } catch (error) {
          snackbar("error", error.message);
@@ -21,7 +28,7 @@ const EnterpriseModal = ({ openModal, toggleModal, enterpriseId, planAmount, set
          <Modal
             open={openModal}
             // open={true}
-            onClose={toggleModal}
+            // onClose={toggleModal}
             closeAfterTransition
             sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}>
             <Paper
@@ -50,12 +57,38 @@ const EnterpriseModal = ({ openModal, toggleModal, enterpriseId, planAmount, set
                      type="number"
                      label={"Plan Amount"}
                      name="planAmount"
-                     value={planAmount}
-                     onChange={(e) => setPlanAmount(e.target.value)}
+                     value={values.planAmount}
+                     onChange={inputChange}
                      placeholder="Your amount"
                      size="small"
                      sx={{
                         color: "white",
+                     }}
+                  />
+                  <TextField
+                     type="number"
+                     label={"Templates"}
+                     name="templates"
+                     value={values.templates}
+                     onChange={inputChange}
+                     placeholder="Your amount"
+                     size="small"
+                     sx={{
+                        color: "white",
+                        mt: 2,
+                     }}
+                  />
+                  <TextField
+                     type="number"
+                     label={"Invitees"}
+                     name="invitees"
+                     value={values.invitees}
+                     onChange={inputChange}
+                     placeholder="Your amount"
+                     size="small"
+                     sx={{
+                        color: "white",
+                        mt: 2,
                      }}
                   />
                   <Stack mt={2} direction={"row"} spacing={1}>
@@ -76,7 +109,9 @@ const EnterpriseModal = ({ openModal, toggleModal, enterpriseId, planAmount, set
                         Send Payment Link
                      </Button>
                      <Button
-                        onClick={toggleModal}
+                        onClick={()=>{
+                           setValues({ planAmount: "", templates: "", invitees: "" })
+                           toggleModal()}}
                         variant="outlined"
                         sx={{
                            borderColor: "#3B285B",

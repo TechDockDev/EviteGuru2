@@ -48,7 +48,6 @@ const StickersModal = ({ open, handleClose, addStickers }) => {
             </Typography>
             <Stack mt={2} direction={"row"} flexWrap={"wrap"} overflow={"auto"}>
                {stickersData?.map((stkr, index) => {
-                  console.log(stkr);
                   
                  return <MenuItem key={index}
 

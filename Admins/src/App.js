@@ -104,9 +104,6 @@ const App = () => {
     }
   };
 
-  // console.log("adminAuthData----->", adminAuthData);
-  // console.log("check----->", adminAuthData?.superAdmin || adminAuthData?.permission?.includes("Template"));
-
   useEffect(() => {
     adminAuth();
   }, []);

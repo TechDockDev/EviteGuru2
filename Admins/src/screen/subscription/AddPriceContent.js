@@ -58,7 +58,7 @@ export const AddPriceContent = () => {
                borderRadius: "20px",
             }}
             elevation={10}>
-            <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
+            <Box component="form"  autoComplete="off" onSubmit={handleSubmit}>
                <Typography
                   variant="h1"
                   align="center"
@@ -72,12 +72,12 @@ export const AddPriceContent = () => {
                   Add Subscription
                </Typography>
                <Stack direction={"column"} spacing={2}>
-                  <TextField size="small" label="Name" name="name" variant="outlined" onChange={handleChange} />
+                  <TextField size="small" label="Name" name="name" variant="outlined" onChange={handleChange} required />
 
                   {descriptionNumber.map((v, i) => (
                      <Stack direction={"row"} alignItems={"center"} spacing={1} key={v} position={"relative"}>
                         <>
-                           <TextField size="small" label="Description" name={`description${i}`} onChange={handleDescription} variant="outlined" fullWidth />
+                           <TextField size="small" label="Description" name={`description${i}`} onChange={handleDescription} variant="outlined" fullWidth required/>
 
                            <IconButton
                               aria-label="remove"

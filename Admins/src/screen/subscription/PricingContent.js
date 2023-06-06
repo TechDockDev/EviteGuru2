@@ -23,7 +23,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Modal, Paper, Stack } from "@mui/material";
 import { DataContext } from "../../AppContext";
 
-
 function PricingContent() {
    const [deleteModal, setDeleteModal] = useState(false);
    const [planList, setPlanList] = useState([]);
@@ -31,7 +30,7 @@ function PricingContent() {
    const [singlePlan, setSinglePlan] = useState({});
 
    const [loading, setLoading] = useState(false);
-   const {snackbar} = React.useContext(DataContext)
+   const { snackbar } = React.useContext(DataContext);
    // ===
    const toggleDeleteModal = (plan) => {
       if (deleteModal) {
@@ -51,8 +50,7 @@ function PricingContent() {
          setPlanList(res?.data?.plans);
          setLoading(false);
       } catch (error) {
-         snackbar("error", error.message)
-
+         snackbar("error", error.message);
       }
    };
 
@@ -62,11 +60,11 @@ function PricingContent() {
       try {
          setLoading(true);
          const res = await axios.delete(`/plan/${planId}`);
-         snackbar(res.data.status, res.data.message)
+         snackbar(res.data.status, res.data.message);
          setLoading(false);
          getplanlist();
       } catch (error) {
-         snackbar("error", error.message)
+         snackbar("error", error.message);
       }
    };
 
@@ -118,11 +116,14 @@ function PricingContent() {
                                        align: "center",
                                     }}
                                     sx={{
+                                       "& .MuiTypography-root": {
+                                          fontWeight: "600",
+                                       },
                                        backgroundColor: (theme) => (theme.palette.mode === "light" ? theme.palette.grey[200] : theme.palette.grey[700]),
                                     }}
                                  />
                                  <CardContent>
-                                    <Box>
+                                    {plan.name !== "Enterprise" && <Box>
                                        <Box
                                           sx={{
                                              display: "flex",
@@ -151,7 +152,7 @@ function PricingContent() {
                                              /year
                                           </Typography>
                                        </Box>
-                                    </Box>
+                                    </Box>}
                                     <ul>
                                        {plan?.description?.map((line, index) => (
                                           <Typography component="li" variant="subtitle1" align="center" key={index}>

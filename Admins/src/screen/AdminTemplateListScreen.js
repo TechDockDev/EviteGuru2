@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, IconButton, Typography, Modal, Paper, Button } from "@mui/material";
+import { Box, IconButton, Typography, Modal, Paper, Button, Stack } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
@@ -64,11 +64,27 @@ const AdminTemplateListScreen = () => {
          field: "name",
          headerName: "Name",
          width: 250,
+         renderCell: (params) => {
+            return (
+              <Typography fontSize={"14px"} sx={{"&:hover":{
+               textDecoration:"underline",
+               cursor:"pointer"
+              }}}>{params?.row?.name}</Typography>
+            );
+         },
       },
       {
          field: "description",
          headerName: "Description",
          width: 250,
+         renderCell: (params) => {
+            return (
+              <Typography fontSize={"14px"} sx={{"&:hover":{
+               textDecoration:"underline",
+               cursor:"pointer"
+              }}}>{params?.row?.description}</Typography>
+            );
+         },
       },
       {
          field: "preview",
@@ -136,7 +152,17 @@ const AdminTemplateListScreen = () => {
          },
       },
    ];
-
+   // ===
+   function toolbar() {
+      return (
+         <Stack direction={"row"} justifyContent={"end"} m={2}>
+            <Button disableElevation variant="outlined" onClick={() => navigate("/admin/template-create")}>
+               Add Template
+            </Button>
+         </Stack>
+      );
+   }
+   // ===
    useEffect(() => {
       getTemplateData();
    }, []);
@@ -165,7 +191,11 @@ const AdminTemplateListScreen = () => {
                getRowId={(row) => row?._id}
                loading={loading}
                disableRowSelectionOnClick={true}
-               onRowClick={(row) => navigate(`/admin/template-edit/${row.id}`)}
+               onRowClick={(row, e) => {
+                  e.stopPropagation();
+                  navigate(`/admin/template-edit/${row.id}`);
+               }}
+               slots={{ toolbar }}
                sx={{
                   border: "2px solid #795DA8",
                   "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -173,7 +203,7 @@ const AdminTemplateListScreen = () => {
                   },
                   "& .MuiDataGrid-columnHeaderTitle": {
                      fontWeight: "600",
-                  },
+                  }
                }}
             />
          </Box>

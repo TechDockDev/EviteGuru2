@@ -1,16 +1,18 @@
 import { DataGrid, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../AppContext";
 
 const UserListEmail = () => {
    const [loading, setLoading] = useState(false);
    const [users, setUsers] = useState();
    const [selectedUsers, setSelectedUsers] = useState([]);
+   const { snackbar } = useContext(DataContext);
    const navigate = useNavigate();
    const getUsers = async () => {
       try {
@@ -19,9 +21,9 @@ const UserListEmail = () => {
             return setUsers(res.data.users.filter((user) => user.phone));
          }
          setUsers(res.data.users);
-         console.log(res);
+         // console.log(res);
       } catch (error) {
-         console.log(error);
+         snackbar("error", error.message);
       }
    };
 
@@ -32,9 +34,9 @@ const UserListEmail = () => {
             body: JSON.parse(sessionStorage.getItem("email"))?.body,
             emails: selectedUsers,
          });
-         console.log(res);
+         snackbar(res.data.satus, res.data.message);
       } catch (error) {
-         console.log(error);
+         snackbar("error", error.message);
       }
    };
 
@@ -106,38 +108,54 @@ const UserListEmail = () => {
       },
    ];
    return (
-      <>
-         <Box sx={{ height: 400, width: "98%" }}>
-            {users && (
-               <DataGrid
-                  width={"98%"}
-                  rows={users}
-                  getRowId={(row) => (sessionStorage.getItem("email") ? row.email : row.phone)}
-                  columns={columns}
-                  slots={{ toolbar }}
-                  disableRowSelectionOnClick={true}
-                  autoHeight={true}
-                  checkboxSelection
-                  onRowSelectionModelChange={(selected) => setSelectedUsers(selected)}
-                  initialState={{
-                     pagination: {
-                        paginationModel: {
-                           pageSize: 5,
-                        },
+      <Stack paddingX={"20px"}>
+          <Typography
+            variant="h1"
+            align="center"
+            fontWeight="800"
+            fontSize={"28px"}
+            mb={1}
+            sx={{
+               color: "#795da8",
+               width: "100%",
+            }}>
+            Select Users
+         </Typography>
+         {users && (
+            <DataGrid
+               width={"98%"}
+               rows={users}
+               getRowId={(row) => (sessionStorage.getItem("email") ? row.email : row.phone)}
+               columns={columns}
+               slots={{ toolbar }}
+               disableRowSelectionOnClick={true}
+               autoHeight={true}
+               checkboxSelection
+               onRowSelectionModelChange={(selected) => setSelectedUsers(selected)}
+               initialState={{
+                  pagination: {
+                     paginationModel: {
+                        pageSize: 5,
                      },
-                  }}
-                  loading={loading}
-                  // onRowClick={(row) => navigate(`/admin/user/${row.id}`)}
-                  pageSizeOptions={[5]}
-                  sx={{
-                     "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
-                        outline: "none !important",
-                     },
-                  }}
-               />
-            )}
-         </Box>
-      </>
+                  },
+               }}
+               loading={loading}
+               // onRowClick={(row) => navigate(`/admin/user/${row.id}`)}
+               pageSizeOptions={[5]}
+               sx={{
+                  border: "2px solid #795DA8",
+                  "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                     outline: "none !important",
+                  },
+               }}
+            />
+         )}
+          <Button
+         onClick={()=>navigate(-1)}
+         disableElevation variant="outlined" sx={{mt:2 , width:"fit-content"}} >
+              Back       
+         </Button>
+      </Stack>
    );
 };
 

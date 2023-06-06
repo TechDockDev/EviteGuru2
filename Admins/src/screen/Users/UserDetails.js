@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { Box, Button, Grid, Modal, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, Modal, Paper, Stack, TextField, Typography } from "@mui/material";
 
 const UserDetails = () => {
    const { id } = useParams();
@@ -89,7 +89,7 @@ const UserDetails = () => {
       }
    };
    return (
-      <>
+      <Stack sx={{padding:"0px 20px"}}>
          <Typography
             variant="h1"
             align="center"
@@ -102,7 +102,7 @@ const UserDetails = () => {
             }}>
             User details
          </Typography>
-         <Paper elevation={3} sx={{ padding: 5, margin: 2 }}>
+         <Paper elevation={3} sx={{ padding: 5 }}>
             <Grid container spacing={2}>
                <Grid item xs={12} sm={3.9}>
                   <Typography sx={style}>Name</Typography>
@@ -137,17 +137,17 @@ const UserDetails = () => {
             </Grid>
             <Grid container spacing={2} sx={{ marginTop: "20px" }}>
                <Grid item xs={12} sm={3.9}>
-                  <Button variant="contained" sx={{ color: "white" }} onClick={() => gift("Gift Invitees")}>
+                  <Button disableElevation variant="contained" sx={{ color: "white" }} onClick={() => gift("Gift Invitees")}>
                      Gift Invitees
                   </Button>
                </Grid>
                <Grid item xs={12} sm={3.9}>
-                  <Button variant="contained" sx={{ color: "white" }} onClick={() => gift("Gift Templates")}>
+                  <Button disableElevation variant="contained" sx={{ color: "white" }} onClick={() => gift("Gift Templates")}>
                      Gift Templates
                   </Button>
                </Grid>
                <Grid item xs={12} sm={3.9}>
-                  <Button variant="contained" sx={{ color: "white" }} onClick={suspendUser}>
+                  <Button disableElevation variant="contained" sx={{ color: "white" }} onClick={suspendUser}>
                      {user?.suspended && "un"}suspend User
                   </Button>
                </Grid>
@@ -163,7 +163,12 @@ const UserDetails = () => {
                </Box>
             </Modal>
          </Paper>
-      </>
+         <Button
+         onClick={()=>navigate(-1)}
+         disableElevation variant="outlined" sx={{mt:2 , width:"fit-content"}} >
+              Back       
+         </Button>
+      </Stack>
    );
 };
 

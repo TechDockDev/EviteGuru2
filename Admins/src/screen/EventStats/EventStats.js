@@ -1,26 +1,21 @@
-import { Box, Button, FormControl, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
+import React, { useContext, useState } from "react";
 import RSVPSummaryCard from "./RSVPSummaryCard";
 import { DataGrid, GridToolbar, GridToolbarQuickFilter } from "@mui/x-data-grid";
-// import PieChart2 from "./PieChart2";
 import { useEffect } from "react";
-// import {
-//   resetEventDetails,
-//   setEventDetails,
-//   setPageTitle,
-// } from "../../redux/action/defaultActions";
-import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useParams } from "react-router-dom";
+
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { DataContext } from "../../AppContext";
+import Moment from "react-moment/dist";
 
 //=============================
 const EventStats = () => {
    const [event, setEvent] = useState({});
    const [guestList, setGuestList] = useState([]);
-   const { state } = useLocation();
-   const pageTitle = useSelector((state) => state.pageTitle);
+   const { snackbar } = useContext(DataContext);
+   const navigate = useNavigate()
    // console.log("pageTitle",pageTitle)
-   const dispatch = useDispatch();
    const { id } = useParams();
    function CustomeToolBar() {
       return (
@@ -52,7 +47,6 @@ const EventStats = () => {
          field: "name",
          headerName: "Name",
          width: 200,
-         
       },
       {
          field: "email",
@@ -79,20 +73,30 @@ const EventStats = () => {
    ];
 
    // ============================
-   useEffect(() => {
-      (async () => {
+   const CustomNoRowsOverlay = () => {
+      return (
+         <Typography variant="h1" fontSize={"20px"} width={"100%"} textAlign={"center"} mt={3}>
+            No guests to display
+         </Typography>
+      );
+   };
+   // ============================
+   const getEventDetails = async () => {
+      try {
          const { data } = await axios.get(`/events/${id}`);
+         console.log("data->", data);
+
          setEvent(data?.event);
          setGuestList(data?.guestList);
-
-        
-      })();
-
+      } catch (error) {
+         snackbar("error", error.message);
+      }
+   };
+   // ============================
+   useEffect(() => {
+      getEventDetails();
    }, []);
-
-
-   console.log("event->", event);
-   console.log("guestguestList->", guestList);
+   // ============================
 
    return (
       <Box
@@ -139,7 +143,7 @@ const EventStats = () => {
                   bgcolor: "transparent",
                   m: 2,
                }}>
-               <Box component={"img"} alt="template design" width={"100%"} maxHeight={"290px"} src="https://marketplace.canva.com/EAE-xvRBZdQ/1/0/1600w/canva-beige-blue-wedding-invitation-square-floral-watercolor-arrangement-bFL2AFVrwpY.jpg" />
+               <Box component={"img"} alt="template design" width={"auto"} maxWidth={"100%"} maxHeight={"290px"} src={`/images/getImage?path=/${event?.variation?.previewImage}`} />
             </Grid>
             {/* ============ 👇 RSVP  summary card👇  ============= */}
 
@@ -154,18 +158,62 @@ const EventStats = () => {
                sx={{
                   boxSizing: "border-box",
                }}>
-               <RSVPSummaryCard />
+               <RSVPSummaryCard guestList={guestList} id={id}/>
             </Grid>
             {/* ============  👆 RSVP  summary card👆============= */}
          </Grid>
          {/* ============  👆container for RSVP  summary and pie chart👆============= */}
+         {/* ============ 👇container for EVENT DETAILS👇  ============= */}
+         <Grid container mt={{xs:3,md:1}} mb={1} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <Grid
+               item
+               xs={12}
+               sx={{
+                  border: "2px solid #795da8",
+                  borderRadius: "4px",
+                  padding: "20px",
+               }}>
+               <Stack direction={"row"}>
+                  <Typography variant="h3" fontSize={"16px"} fontWeight={"600"}>
+                     Host &nbsp;&nbsp;: &nbsp;&nbsp;{" "}
+                  </Typography>
+                  <Typography variant="h3" fontSize={"16px"} fontWeight={"600"} color={"#795da8"}>
+                     {event?.hostName}
+                  </Typography>
+               </Stack>
+               <Stack mt={1}  direction={"row"}>
+                  <Typography variant="h3" fontSize={"16px"} fontWeight={"600"}>
+                     Venue &nbsp;&nbsp;: &nbsp;&nbsp;{" "}
+                  </Typography>
+                  <Typography variant="h3" fontSize={"16px"} fontWeight={"600"} color={"#795da8"}>
+                     {event?.venue}
+                  </Typography>
+               </Stack>
+               <Stack mt={1} direction={"row"}>
+                  <Typography variant="h3" fontSize={"16px"} fontWeight={"600"}>
+                     Address &nbsp;&nbsp;: &nbsp;&nbsp;{" "}
+                  </Typography>
+                  <Typography variant="h3" fontSize={"16px"} fontWeight={"600"} color={"#795da8"}>
+                     {event?.address}
+                  </Typography>
+               </Stack>
+               <Stack mt={1} direction={"row"}>
+                  <Typography variant="h3" fontSize={"16px"} fontWeight={"600"}>
+                     Date & Time &nbsp;&nbsp;: &nbsp;&nbsp;{" "}
+                  </Typography>
+                  <Typography variant="h3" fontSize={"16px"} fontWeight={"600"} color={"#795da8"}>
+                     <Moment date={event?.date} format="hh:mm A, dddd, MMMM DD, YYYY" />
+                  </Typography>
+               </Stack>
+            </Grid>
+         </Grid>
+         {/* ============  👆container for EVENT DETAILS👆============= */}
          {/* title */}
          <Stack mt={1} direction={"row"} justifyContent={"space-between"} alignItems={"center"}>
             <Box>
                <Typography variant="h1" sx={{ fontSize: "25px", fontWeight: "800" }}>
                   Invitees
                </Typography>
-               <Typography>{pageTitle?.title}</Typography>
             </Box>
          </Stack>
          {/* title */}
@@ -173,8 +221,7 @@ const EventStats = () => {
          <Stack mt={2}>
             <DataGrid
                components={{ Toolbar: CustomeToolBar }}
-               //   slots={{ toolbar: QuickSearchToolbar }}
-               rows={guestList}
+               rows={guestList ? guestList : []}
                columns={columns}
                initialState={{
                   pagination: {
@@ -183,6 +230,9 @@ const EventStats = () => {
                      },
                   },
                }}
+               slots={{
+                  noRowsOverlay: CustomNoRowsOverlay,
+               }}
                getRowId={(row) => row._id}
                autoHeight={true}
                pageSizeOptions={[5]}
@@ -190,8 +240,8 @@ const EventStats = () => {
                disableRowSelectionOnClick
                getRowClassName={(params) => (params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd")}
                sx={{
+                  border: "2px solid #795DA8",
                   bgcolor: "none",
-                  border: "none",
                   "& .odd": { bgcolor: "#F7F7F7 !important" },
                   "& .MuiCheckbox-root": {
                      color: "black",
@@ -204,6 +254,11 @@ const EventStats = () => {
          </Stack>
 
          {/* ============  👆 Guests list table👆============= */}
+         <Button
+         onClick={()=>navigate(-1)}
+         disableElevation variant="outlined" sx={{mt:2 , width:"fit-content"}} >
+              Back       
+         </Button>
       </Box>
    );
 };

@@ -1,9 +1,11 @@
 import { Box } from "@mui/material";
 import React from "react";
 import Chart from 'react-apexcharts'
-const PieChart2 = () => {
+const PieChart2 = ({guestList, stats}) => {
+
   const options = {
-    series: [44, 55, 13],
+    series: [Number(stats?.attending), Number(stats?.["Not Attending"]), Number(stats?.pending), Number(stats?.open)],
+    
     chart: {
       parentHeightOffset: 0,
       width: "100%",
@@ -12,8 +14,8 @@ const PieChart2 = () => {
       offsetX: 0,
       offsetY: 0,
     },
-    colors: ["#15fa05", "#e8050c", "#0000FF"],
-    labels: ["Attending", "Not Attending", "Pending"],
+    colors: ["#15fa05", "#e8050c", "#7885eb","#c452eb"],
+    labels: ["Attending", "Not Attending", "Pending", "Open"],
     responsive: [
       {
         breakpoint: 480,
@@ -80,7 +82,7 @@ const PieChart2 = () => {
 
   return (
     <Box width={"fit-content"}>
-      <Chart options={options} series={options.series} type="pie" />
+      <Chart options={options} series={options?.series} type="pie" />
     </Box>
   );
 };
