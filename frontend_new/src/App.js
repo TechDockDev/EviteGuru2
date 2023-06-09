@@ -33,6 +33,8 @@ import { Constants } from "./redux/constants/action-types";
 import PaymentSuccessScreen from "./screens/PaymentSuccessScreen/PaymentSuccessScreen";
 import { Alert, Snackbar } from "@mui/material";
 import AddressBook from "./screens/CustomizationPage/AddressBook";
+import Coupons from "./screens/Coupons/Coupons";
+import DiscountCheckOut from "./screens/pricing/DiscountCheckOut";
 
 const App = () => {
   const { snackbar, userDetail } = useSelector((state) => state);
@@ -92,6 +94,7 @@ const App = () => {
           <Route path="/enterprise" element={<Enterprise />} />
           <Route path="/paymentGateway" element={<PaymentGateway />} />
           <Route path="/test" element={<Test />} />
+          <Route path="/discount" element={<DiscountCheckOut />} />
         </Route>
         <Route path="*" element={<h4>Error 404 Page Not Found</h4>} />
         <Route
@@ -99,6 +102,7 @@ const App = () => {
           element={<PaymentSuccessScreen />}
         />
       </Routes>
+      <Routes></Routes>
       {userDetail?.isUser ? (
         <Routes>
           <Route path="/dashboard" element={<UserDashboard />}>

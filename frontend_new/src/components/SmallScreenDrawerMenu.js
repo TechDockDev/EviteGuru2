@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 const drawerWidth = 240;
 
 const SmallScreenDrawerMenu = (props) => {
-  const { toggleLogInModal, toggleRegisterModal,setOpenLoginModal } = props;
+  const { toggleLogInModal, toggleRegisterModal, setOpenLoginModal } = props;
   //   const [isLoggedInd, setIsLoggedInd] = React.useState(false);
 
   const { userDetail } = useSelector((state) => state);
@@ -148,6 +148,24 @@ const SmallScreenDrawerMenu = (props) => {
                 <ListItemText>Template</ListItemText>
               </ListItemButton>
             </ListItem>
+            <ListItem
+              component={NavLink}
+              to="/pricing"
+              onClick={handleDrawerToggle}
+            >
+              <ListItemButton>
+                <ListItemText>Pricing</ListItemText>
+              </ListItemButton>
+            </ListItem>
+            {/* <ListItem
+              component={NavLink}
+              to="/enterprise"
+              onClick={handleDrawerToggle}
+            >
+              <ListItemButton>
+                <ListItemText>Enterprise</ListItemText>
+              </ListItemButton>
+            </ListItem> */}
             {/*👆 topbar left menu list👆 */}
             {/*👇 topbar right buttons 👇 */}
             {userDetail?.isUser ? (

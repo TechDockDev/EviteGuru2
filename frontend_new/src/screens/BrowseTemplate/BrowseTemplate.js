@@ -57,8 +57,14 @@ const BrowseTemplate = () => {
   };
   //  this function is passed to carousel to handle onclic👆
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
+
   useEffect(() => {
     getTemplate();
+
+    scrollToTop();
   }, []);
 
   const loadMoreContent = async () => {
@@ -81,7 +87,13 @@ const BrowseTemplate = () => {
   };
 
   return (
-    <Stack mt={11} mb={3} padding={"10px"}>
+    <Stack
+      mt={11}
+      mb={3}
+      padding={"10px"}
+
+      // bgcolor={"green"}
+    >
       <Typography
         variant="h1"
         sx={{
@@ -97,15 +109,15 @@ const BrowseTemplate = () => {
       <Grid
         container
         sx={{
-          width: "95%",
+          maxWidth: "1400px",
           margin: " 30px auto",
           display: "flex",
           justifyContent: "space-around",
           alignItems: "center",
-          bgcolor: "#f1eef6",
+          // bgcolor: "#f1eef6",
           // backgroundImage: "url(./assets/leaves2.png)",
-          padding: "20px 10px",
-          border: "1px solid #795DA8",
+          padding: "20px 20px",
+          // border: "1px solid #795DA8",
           borderRadius: "20px",
         }}
       >

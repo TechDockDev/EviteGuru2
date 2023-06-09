@@ -51,7 +51,6 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
   const handlePhoneChange = (v) => {
     let ch = "";
     v.split(" ").forEach((num, index) => {
-
       if (index !== 0) {
         ch = ch + num;
       }
@@ -86,7 +85,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
   // ========send otp ==============
   const sendOtpVerificationCode = () => {
     // window.recaptchaVerifier.render();
-  
+
     const auth = getAuth();
     configureCaptcha();
     signInWithPhoneNumber(auth, phone?.number, window.recaptchaVerifier)
@@ -102,7 +101,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
       .catch((error) => {
         // Error; SMS not sent
         // ...
-       
+
         dispatch(openSnackbar(error.message, "error"));
       });
   };
@@ -112,9 +111,9 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
       .confirm(code)
       .then(async (result) => {
         const user = result.user;
-       
+
         const idToken = await Authentication.currentUser.getIdToken();
-      
+
         setValues({
           ...values,
           idToken: idToken,
@@ -169,7 +168,6 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
           idToken,
         });
         if (res.status === 200) {
-         
           dispatch(openSnackbar(res?.data?.message, "success"));
           dispatch(login(res?.data?.user));
           setValues(tempvalues);
@@ -178,7 +176,6 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
         }
       }
     } catch (error) {
-     
       dispatch(openSnackbar("something went wrong", "error"));
     }
   };
@@ -191,18 +188,17 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
 
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
-    
+
         const idToken = await Authentication.currentUser.getIdToken();
-  
+
         // The signed-in user info.
         const user = result.user;
-   
+
         const res = await axios.post(`${Constants?.URL}/register/google`, {
           idToken: idToken,
         });
         // =====================
         if (res.status === 200) {
-       
           dispatch(login(res?.data?.data?.user));
           closeRegisterModal();
           // toggleRegisterModal();
@@ -214,10 +210,9 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
-     
+
         dispatch(openSnackbar(error.message, "error"));
-  
-       
+
         const credential = GoogleAuthProvider.credentialFromError(error);
         // ...
       });
@@ -306,7 +301,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
                   variant="h1"
                   mb={{ md: 2, xs: 1 }}
                 >
-                  User Sign-up
+                  Registration form
                 </Typography>
               </Box>
               {/*👆 container for heading text and logo img's container👆  */}

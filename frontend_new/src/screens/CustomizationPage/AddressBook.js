@@ -95,14 +95,14 @@ const AddressBook = () => {
       setAllContacts([...allContacts, ...list]);
     });
   };
-  console.log("contact list=>", allContacts);
+  // console.log("contact list=>", allContacts);
   // =====end of function ===========================
   // ==== get contact list ====
   const getContactList = async () => {
     try {
       const res = await axios.get(`${Constants.URL}/guest/user/`);
       if (res.status === 200) {
-        console.log("response=>", res?.data?.guestList);
+        // console.log("response=>", res?.data?.guestList);
         // extractAllcontacts(res?.data?.guestList);
         setAllContacts(res?.data?.guestList);
         setloading(false);
@@ -203,21 +203,7 @@ const AddressBook = () => {
                 }}
               />
             </Stack>
-            {/* <Stack spacing={2} alignItems={"center"}>
-              <Pagination
-                count={10}
-                siblingCount={1}
-                variant="outlined"
-                defaultPage={1}
-                // type={"first"}
-                shape="rounded"
-                boundaryCount={0}
-
-                // hideNextButton={true}
-                // hidePrevButton={true}
-                // page={1}
-              />
-            </Stack> */}
+           
           </>
         )}
 

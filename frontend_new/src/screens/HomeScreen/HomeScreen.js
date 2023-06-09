@@ -8,16 +8,11 @@ import TemplateSection from "./TemplateSection";
 
 const HomeScreen = () => {
   return (
-    <Box
-      component={Container}
-      sx={{ maxWidth: "1440px", margin: "auto" }}
-      justifyContent="center"
-      // border='10px solid red'
-    >
+    <>
       <HeroSection />
       <FeaturesSection />
       <TemplateSection />
-    </Box>
+    </>
   );
 };
 

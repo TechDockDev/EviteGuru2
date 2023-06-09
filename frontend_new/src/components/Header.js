@@ -140,7 +140,7 @@ const Header = () => {
                   },
                   "& : hover	.MuiListItemButton-root": {
                     borderBottom: "4px solid rgba(121, 93, 168, 1)",
-                    transition: "all .5s ease-in",
+                    transition: "all .3s ease-in",
                   },
                   "& .active 	.MuiListItemButton-root": {
                     // scale: ".95",
@@ -185,14 +185,6 @@ const Header = () => {
                     <ListItemText>Pricing</ListItemText>
                   </ListItemButton>
                 </ListItem>
-                <ListItem component={NavLink} to="/enterprise">
-                  <ListItemButton
-                    disableGutters
-                    sx={{ "&:hover": { bgcolor: "white" } }}
-                  >
-                    <ListItemText>Enteprise</ListItemText>
-                  </ListItemButton>
-                </ListItem>
               </List>
               {/*👆 topbar left menu list👆 */}
             </Stack>
@@ -232,7 +224,10 @@ const Header = () => {
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
                     >
-                      <Avatar src="./assets/avatarDefault.svg" />
+                      <Avatar
+                        alt={userDetail?.name}
+                        src={`data:image/jpeg;base64,${userDetail?.profilePhoto}`}
+                      />
                     </IconButton>
                   </>
                 )}
@@ -294,6 +289,8 @@ const Header = () => {
                     <div>
                       <MenuItem
                         onClick={handleClose}
+                        component={NavLink}
+                        to="/dashboard/account-setting"
                         sx={{
                           color: "#3B285B",
                           fontWeight: "800",
@@ -301,14 +298,14 @@ const Header = () => {
                           borderBottom: "2px solid grey",
                         }}
                       >
-                        {userDetail?.email}
+                        {userDetail?.name}
                       </MenuItem>
                       <MenuItem
                         component={NavLink}
                         to="/dashboard/my-events/"
                         onClick={() => handleClose}
                       >
-                        My Events
+                        Dashboard
                       </MenuItem>
                       <MenuItem
                         component={NavLink}
@@ -317,6 +314,7 @@ const Header = () => {
                       >
                         My account
                       </MenuItem>
+
                       <MenuItem onClick={logoutHandler}>Logout</MenuItem>
                     </div>
                   )}

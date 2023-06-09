@@ -91,6 +91,7 @@ const Send = () => {
         if (res.status === 200) {
           dispatch(openSnackbar(res.data.message, "success"));
           setinsideButton({ ...insideButton, loading: false, id: "" });
+          getGuestListDetails(createdEventDetails?.guestListId);
         }
       } catch (error) {
         // console.log("error=>",error)
@@ -120,11 +121,13 @@ const Send = () => {
           eventId: id,
         });
         if (res.status === 200) {
+          setRowSelectionModel([]);
           dispatch(openSnackbar(res.data.message, "success"));
           setinsideButton({
             ...insideButton,
             sendMany: false,
           });
+          getGuestListDetails(createdEventDetails?.guestListId);
         }
       } catch (error) {
         dispatch(openSnackbar("something went wrong", "success"));
