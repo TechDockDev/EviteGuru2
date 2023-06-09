@@ -45,14 +45,14 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
         console.log("response=>", res);
         setUserPhone(`+${res?.data?.phone}`);
         // dispatch(openSnackbar(res.data.message, "success"));
-        // await sendOtpVerificationCode(`+${res?.data?.phone}`);
-        await sendOtpVerificationCode(`+917619866055`);
+        await sendOtpVerificationCode(`+${res?.data?.phone}`);
+        // await sendOtpVerificationCode(`+917619866055`);
 
         // setModalContent("updatePassword");
       }
     } catch (error) {
       console.log("error=>", error);
-      dispatch(openSnackbar(error, "error"));
+      dispatch(openSnackbar("error", "error"));
     }
   };
 

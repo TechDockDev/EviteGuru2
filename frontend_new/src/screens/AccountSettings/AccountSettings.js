@@ -1,8 +1,8 @@
 import {
   Avatar,
+  Badge,
   Box,
   Button,
-  Card,
   Grid,
   IconButton,
   Paper,
@@ -11,25 +11,31 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import TextDescription from "./TextDescription";
+
 import { useState } from "react";
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPageTitle } from "../../redux/action/defaultActions";
-import { BiEdit } from "react-icons/bi";
+import { BiCloudUpload, BiEdit } from "react-icons/bi";
 import { MdLogout } from "react-icons/md";
 import ActiveCardInfo from "./ActiveCardInfo";
-import { openSnackbar } from "../../redux/action/userActions";
-import PasswordChange from "../PasswordReset/PasswordChange";
+import { openSnackbar, userAuth } from "../../redux/action/userActions";
+import UpdatePassword from "../PasswordReset/UpdatePassword";
+
+import { ImPencil } from "react-icons/im";
+import { Constants } from "../../redux/constants/action-types";
+import axios from "axios";
 const AccountSettings = () => {
   const temp = {
-    name: "Example User",
-    email: "example@gmail.com",
-    mobile: "1234567890",
+    name: "",
+    email: "",
+    phone: "",
   };
   const [profileInfo, setProfileInfo] = useState(temp);
+  const [fileUrl, setfileUrl] = useState("");
   const [editemode, seteditemode] = useState(false);
+  const [file, setfile] = useState(null);
   const dispatch = useDispatch();
   const [openPasswordChangeModal, setOpenPasswordChangeModal] = useState(false);
   // ===== user detail ======================
@@ -44,11 +50,42 @@ const AccountSettings = () => {
   const togglePasswordChangeModal = () => {
     setOpenPasswordChangeModal(!openPasswordChangeModal);
   };
+
+  // =========handlefilechange =======
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setfile(e.target.files[0]);
+      setfileUrl(URL.createObjectURL(file));
+    }
+  };
+  // =================================
+
   // =====handle submit ================
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("submitted");
-    dispatch(openSnackbar("submitted", "success"));
+    // alert("submitted");
+    if (
+      (profileInfo && profileInfo?.name != "") ||
+      profileInfo?.email != "" ||
+      profileInfo?.phone != ""
+    ) {
+      const formData = new FormData();
+      formData.append("profile", file);
+      // formData.append("name")
+      const res = await axios.patch(
+        `${Constants?.URL}/update-profile-photo`,
+        formData
+      );
+      if (res.status === 200) {
+        console.log("res=>", res);
+        dispatch(userAuth(res?.data?.user));
+        seteditemode(false);
+        dispatch(openSnackbar(res?.data?.message, "success"));
+      }
+    } else {
+      dispatch(openSnackbar("Please Fill all required values", "error"));
+    }
   };
   // ===================================
   const stringAvatar = (name) => {
@@ -64,6 +101,7 @@ const AccountSettings = () => {
         ...profileInfo,
         email: userDetail?.email,
         name: userDetail?.name,
+        phone: userDetail?.phone,
       });
     }
     dispatch(setPageTitle("Account"));
@@ -84,7 +122,7 @@ const AccountSettings = () => {
         // width: {
         //   xl: "calc(100vw - 250px)",
         //   lg: "calc(100vw - 270px)",
-        //   md: "calc(100vw - 270px)",
+        //   md: "calc(100vw - 260px)",
         //   sm: "100vw",
         //   xs: "100vw",
         // },
@@ -105,44 +143,97 @@ const AccountSettings = () => {
         display={"flex"}
         flexDirection={{ md: "row", lg: "row", sm: "row", xs: "column" }}
         // alignItems={"center"}
-        justifyContent={"space-between"}
+        justifyContent={"center"}
         // p={1}
       >
-        <Grid item lg={7.5} md={7.5} sm={5.5} xs={12}>
+        <Grid item lg={7.5} md={7.5} sm={5.5} xs={12} p={1}>
           <Paper
             sx={{
               bgcolor: "white",
               display: "flex",
               //   justifyContent: "center",
               flexDirection: "column",
+              boxShadow: "0px 2px 24px -1px rgb(0 0 0 / 10%)",
               //   alignItems: "center",
               padding: { xs: "20px 10px", sm: "20px 40px", md: "41px 40px" },
               borderRadius: "20px",
             }}
-            elevation={10}
+            // elevation={10}
             component={"form"}
             onSubmit={handleSubmit}
           >
-            <Stack direction={"row"} alignItems={"center"}>
-              <Typography variant="h6" fontWeight={"800"}>
-                Profile
-              </Typography>
-              {userDetail?.userType === "google" ? (
-                ""
-              ) : (
-                <IconButton
-                  aria-label="delete"
-                  color="primary"
-                  onClick={() => seteditemode(!editemode)}
-                  sx={{ fontSize: "20px", color: "black", cursor: "pointer" }}
-                >
-                  {editemode ? (
-                    <MdLogout style={{ color: "rgba(85, 85, 85, 1)" }} />
+            <Stack direction={"row"} justifyContent={"space-between"}>
+              <Stack direction={"row"} alignItems={"center"}>
+                <Typography variant="h6" fontWeight={"800"}>
+                  Profile
+                </Typography>
+                {userDetail?.userType === "google" ? (
+                  ""
+                ) : (
+                  <IconButton
+                    aria-label="delete"
+                    color="primary"
+                    onClick={() => seteditemode(!editemode)}
+                    sx={{ fontSize: "20px", color: "black", cursor: "pointer" }}
+                  >
+                    {editemode ? (
+                      <MdLogout style={{ color: "rgba(85, 85, 85, 1)" }} />
+                    ) : (
+                      <BiEdit style={{ color: "rgba(85, 85, 85, 1)" }} />
+                    )}
+                  </IconButton>
+                )}
+              </Stack>
+              <Badge
+                overlap="circular"
+                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                // variant="dot"
+                badgeContent={
+                  editemode ? (
+                    <Box
+                      width={"20px"}
+                      height={"20px"}
+                      bgcolor={"rgba(59, 40, 91, 1)"}
+                      borderRadius={"100%"}
+                      color={"white"}
+                      display={"flex"}
+                      justifyContent={"center"}
+                      // alignContent={"center"}
+                      alignItems={"center"}
+                      textAlign={"center"}
+                      fontSize={"10px"}
+                      htmlFor="icon-button-photo"
+                      component={"label"}
+                    >
+                      <ImPencil />
+                    </Box>
                   ) : (
-                    <BiEdit style={{ color: "rgba(85, 85, 85, 1)" }} />
-                  )}
-                </IconButton>
-              )}
+                    ""
+                  )
+                }
+              >
+                <input
+                  accept="image/*"
+                  id="icon-button-photo"
+                  style={{ display: "none" }}
+                  onChange={handleFileChange}
+                  type="file"
+                />
+                <Avatar
+                  sx={{
+                    "&.MuiAvatar-root": {
+                      height: "100px",
+                      width: "100px",
+                    },
+                  }}
+                  alt={profileInfo?.name}
+                  src={
+                    fileUrl
+                      ? fileUrl
+                      : `data:image/jpeg;base64,${userDetail?.profilePhoto}`
+                  }
+                />
+              </Badge>
             </Stack>
             {userDetail?.userType === "google" ? (
               <Typography variant="caption" fontWeight={"400"}>
@@ -162,7 +253,7 @@ const AccountSettings = () => {
               value={profileInfo?.name}
               onChange={handleChange}
               focused
-              disabled={!editemode}
+              disabled={true}
               InputProps={{ disableUnderline: true }}
               sx={{
                 mt: 2,
@@ -196,7 +287,9 @@ const AccountSettings = () => {
                 value={profileInfo?.email}
                 onChange={handleChange}
                 focused
-                disabled={!editemode}
+                disabled={
+                  editemode && !userDetail?.userType === "google" ? false : true
+                }
                 InputProps={{ disableUnderline: true }}
                 sx={{
                   mt: 2,
@@ -225,11 +318,15 @@ const AccountSettings = () => {
                   size="small"
                   variant="filled"
                   fullWidth
-                  name="mobile"
-                  value={profileInfo?.mobile}
+                  name="phone"
+                  value={profileInfo?.phone}
                   onChange={handleChange}
                   focused
-                  disabled={!editemode}
+                  disabled={
+                    editemode && userDetail?.userType === "google"
+                      ? false
+                      : true
+                  }
                   InputProps={{ disableUnderline: true }}
                   sx={{
                     mt: 2,
@@ -294,9 +391,11 @@ const AccountSettings = () => {
         </Stack>
       )}
 
-      <PasswordChange
+      <UpdatePassword
         togglePasswordChangeModal={togglePasswordChangeModal}
         openPasswordChangeModal={openPasswordChangeModal}
+        open={openPasswordChangeModal}
+        onClose={togglePasswordChangeModal}
       />
     </Box>
   );

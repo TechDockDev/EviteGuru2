@@ -3,7 +3,7 @@ import React from "react";
 
 const TextDescription = ({ type, title, value,clickHandler }) => {
    return (
-      <Grid item xs={12} display={"flex"} flexDirection={{ xs: "column", sm: "row" }}>
+      <Grid container item xs={12} display={"flex"} flexDirection={{ xs: "column", sm: "row" }}>
          <Typography
             fontWeight="800"
             mb={2}

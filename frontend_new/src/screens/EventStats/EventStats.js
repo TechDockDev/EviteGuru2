@@ -195,22 +195,23 @@ const EventStats = () => {
       sx={{
         // border: "2px solid red",
         height: "100%",
-        width: {
-          xl: "calc(100vw - 250px)",
-          lg: "calc(100vw - 270px)",
-          md: "calc(100vw - 270px)",
-          sm: "100vw",
-          xs: "100vw",
-        },
+        // width: {
+        //   xl: "calc(100vw - 250px)",
+        //   lg: "calc(100vw - 270px)",
+        //   md: "calc(100vw - 270px)",
+        //   sm: "100vw",
+        //   xs: "100vw",
+        // },
+        width: "100%",
         maxWidth: "1150px",
-        padding: "0 20px 20px 20px",
+        padding: "20px 20px",
         boxSizing: "border-box",
       }}
     >
       {/* ============ 👇container for RSVP  summary and pie chart👇  ============= */}
       <Grid
         container
-        mt={3}
+        // mt={2}
         spacing={1}
         sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
       >
@@ -249,7 +250,6 @@ const EventStats = () => {
           md={5}
           sm={12}
           xs={12}
-         
           sx={{
             boxSizing: "border-box",
           }}
@@ -290,15 +290,10 @@ const EventStats = () => {
             src="../assets/footerDecoSir.png"
           />
         </Box>
-        <Typography
-          variant="h6"
-          fontWeight={"900"}
-          
-        >
+        <Typography variant="h6" fontWeight={"900"}>
           Venue :{" "}
           <b
             style={{
-             
               color: "#795DA8",
             }}
           >
@@ -359,7 +354,6 @@ const EventStats = () => {
       <Stack mt={2}>
         <DataGrid
           components={{ Toolbar: CustomeToolBar }}
-          
           rows={guestList ? guestList : []}
           columns={columns}
           initialState={{

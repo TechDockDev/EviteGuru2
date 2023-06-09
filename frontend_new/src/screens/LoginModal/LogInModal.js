@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Authentication } from "../../firebaseAuth/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate,  } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
@@ -47,6 +47,7 @@ const LogInModal = ({
 
   const togglePasswordChangeModal = () => {
     // alert("kkk")
+    // toggleLoginModalInside();
     setOpenPasswordChangeModal(!openPasswordChangeModal);
   };
 
@@ -395,7 +396,7 @@ const LogInModal = ({
                   },
                 }}
               >
-                Register for free
+                Register Now
               </Button>
             </Typography>
             <div id="captcha-button"></div>

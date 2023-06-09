@@ -23,8 +23,9 @@ const ActiveCardInfo = () => {
         bgcolor: "transparent",
         borderRadius: "16px",
         py: 2,
+        boxShadow: "0px 2px 24px -1px rgb(0 0 0 / 10%)",
       }}
-      elevation={18}
+      // elevation={18}
     >
       <CardContent sx={{ justifyContent: "space-between" }}>
         {userDetail?.subscription ? (

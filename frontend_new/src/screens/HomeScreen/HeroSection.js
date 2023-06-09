@@ -171,6 +171,8 @@ const HeroSection = () => {
         openLoginModal={openLoginModal}
         toggleLogInModal={toggleLogInModal}
         toggleRegisterModal={toggleRegisterModal}
+        setOpenLoginModal={setOpenLoginModal}
+        
       />
     </Box>
   );

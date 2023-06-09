@@ -4,6 +4,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Container,
   Drawer,
   IconButton,
   Toolbar,
@@ -407,7 +408,9 @@ const UserDashboard = () => {
             >
               <Avatar
                 sx={{ bgcolor: "rgba(121, 93, 168, 1)" }}
-                {...stringAvatar(`${userDetail?.name}`)}
+                // {...stringAvatar(`${userDetail?.name}`)}
+                alt={userDetail?.name}
+                src={`data:image/jpeg;base64,${userDetail?.profilePhoto}`}
               />
             </Box>
           </Box>
@@ -419,9 +422,10 @@ const UserDashboard = () => {
 
         {/* ============ 👇container for all the screens (scenes)👇  ============= */}
         <Box
+          component={Container}
           sx={{
             // border:"1px solid blue",
-            height:"100%",
+            height: "100%",
             // minHeight: `calc(100vh - 100px)`,
             // bgcolor: "red",
             width: {

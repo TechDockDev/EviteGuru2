@@ -25,6 +25,7 @@ const RSVPSummaryCard = (props) => {
       >
         RSVP Summary
       </Typography>
+      {console.log("stats=>", props?.stats)}
       {props?.stats && props?.stats?.totalInvitees > 0 ? (
         <Stack
           direction={{ md: "row", lg: "row", sm: "row", xs: "column" }}
@@ -48,7 +49,7 @@ const RSVPSummaryCard = (props) => {
                 Attending
               </Typography>
               <Typography textAlign={"right"} width="100%" fontWeight={"800"}>
-                0
+                {props?.stats["attending"]}
               </Typography>
             </Box>
             <Box
@@ -64,7 +65,7 @@ const RSVPSummaryCard = (props) => {
                 Not Attending
               </Typography>
               <Typography textAlign={"right"} width="100%" fontWeight={"800"}>
-                0
+                {props?.stats["Not Attending"]}
               </Typography>
             </Box>
             <Box
@@ -80,7 +81,7 @@ const RSVPSummaryCard = (props) => {
                 Pending
               </Typography>
               <Typography textAlign={"right"} width="100%" fontWeight={"800"}>
-                0
+                {props?.stats["pending"]}
               </Typography>
             </Box>
           </Stack>

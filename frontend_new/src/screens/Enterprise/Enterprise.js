@@ -1,24 +1,26 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { Constants } from "../../redux/constants/action-types";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { openSnackbar } from "../../redux/action/userActions";
+import { openSnackbar, register } from "../../redux/action/userActions";
+import Inputs from "./Inputs";
+import LogInModal from "../LoginModal/LogInModal";
+import RegisterModal from "../RegisterModal/RegisterModal";
 
 const Enterprise = () => {
   const dispatch = useDispatch();
   // === userDetail ================
   const { userDetail } = useSelector((state) => state);
   const [values, setValues] = useState(null);
-
+  const [open, setopen] = useState(false);
+  const [registerOpen, setregisterOpen] = useState(false);
+  const toggleRegisterModal = () => {
+    setregisterOpen(!registerOpen);
+  };
+  const toggleLoginModal = () => {
+    setopen(!open);
+  };
   //   handlechange ======
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -36,9 +38,12 @@ const Enterprise = () => {
           values?.inviteeLimit == "" ||
           values?.templateLimit == "" ||
           values?.comment == "" ||
-          !values?.inviteeLimit ||
+          !values?.inviteesLimit ||
           !values?.templateLimit ||
-          !values?.comment
+          !values?.email ||
+          !values?.phone ||
+          !values?.firstName ||
+          !values?.lastName
         ) {
           // alert("Please fill all required feilds");
           dispatch(openSnackbar("please fill all required feilds", "warning"));
@@ -56,6 +61,7 @@ const Enterprise = () => {
         }
       } else {
         // alert("Login First");
+        toggleLoginModal();
         dispatch(
           openSnackbar(
             "Your are not logged in , please login first !",
@@ -87,16 +93,21 @@ const Enterprise = () => {
         <Typography
           mt={{ md: 4, xs: 0 }}
           variant="h5"
-          fontSize={{ md: "38px" }}
+          fontSize={{ md: "38px", xs: "25px" }}
           fontWeight={"900"}
+          textAlign={"center"}
         >
-          Evite Guru Enterprise
+          Evite Guru{" "}
+          <span style={{ color: "rgba(121, 93, 168, 1)" }}>Enterprise</span>{" "}
+          Plan
         </Typography>
-        <Typography variant="h6" fontSize={{ xs: "12px", md: "18px" }}>
-          Customize your requirement and send below to contact us.
-        </Typography>
-        <Typography variant="h6" fontSize={{ xs: "12px", md: "18px" }}>
-          Make sure you are logged in
+        <Typography
+          variant="h6"
+          textAlign={"center"}
+          fontSize={{ xs: "12px", md: "18px" }}
+        >
+          Fill in your details and our team will be in touch to get you started
+          with your Enterprise
         </Typography>
       </Stack>
       <Stack>
@@ -112,76 +123,153 @@ const Enterprise = () => {
             alignContent={"center"}
             justifyContent={"center"}
             mt={1}
+            p={2}
           >
-            <Grid
-              item
-              sm={8}
-              md={8}
-              xs={12}
-              lg={6}
-              // boxShadow={"#413d3d 0px 2px 6px 3px"}
-              border={"0.5px solid rgba(59, 40, 91, 1)"}
-              borderRadius={"10px"}
-              p={1}
-            >
-              <Typography variant="h5">Fill This Form</Typography>
+            <Grid item sm={11} md={8} xs={12}>
               <Stack
                 direction={{ xs: "column", md: "row", sm: "row" }}
-                p={{ xs: 1, md: 0, sm: 0 }}
+                justifyContent={"space-between"}
               >
-                <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                  <TextField
-                    id="standard-adornment-password"
-                    label="Template Limit *"
-                    name="templateLimit"
-                    value={values?.templateLimit ? values.templateLimit : ""}
-                    onChange={handleChange}
-                    placeholder="Enter Template Limit"
-                    type="number"
-                    size="small"
-                  />
-                </FormControl>
-                <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                  <TextField
-                    id="standard-adornment-password"
-                    label="Invitees limit *"
-                    name="inviteeLimit"
-                    value={values?.inviteeLimit ? values.inviteeLimit : ""}
-                    onChange={handleChange}
-                    placeholder="Provide Invitees limit"
-                    type="number"
-                    size="small"
-                  />
-                </FormControl>
+                <Inputs
+                  labelText={"First Name"}
+                  inputType={"text"}
+                  inputName={"firstName"}
+                  labelInputId={"firstName"}
+                  inputValue={values?.firstName || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  requiredTrue={true}
+                  placeholderText={"Enter First Name"}
+                />
+                <Inputs
+                  labelText={"Last Name"}
+                  inputType={"text"}
+                  inputName={"lastName"}
+                  labelInputId={"lastName"}
+                  inputValue={values?.lastName || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  requiredTrue={true}
+                  placeholderText={"Enter Last Name"}
+                />
               </Stack>
-              <Stack p={1} justifyContent={"center"} alignItems={"center"}>
-                <FormControl sx={{ m: 1, width: "100%" }} variant="standard">
-                  <TextField
-                    id="standard-adornment-password"
-                    label="Comment *"
-                    name="comment"
-                    value={values?.comment ? values.comment : ""}
-                    onChange={handleChange}
-                    placeholder="Your Comments"
-                    type="text"
-                    multiline
-                  />
-                </FormControl>
+              <Stack
+                direction={{ xs: "column", md: "row", sm: "row" }}
+                justifyContent={"space-between"}
+              >
+                <Inputs
+                  labelText={"Company"}
+                  inputType={"text"}
+                  inputName={"company"}
+                  labelInputId={"company"}
+                  inputValue={values?.company || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  // requiredTrue={true}
+                  placeholderText={"Enter Company"}
+                />
+                <Inputs
+                  labelText={"Title"}
+                  inputType={"text"}
+                  inputName={"title"}
+                  labelInputId={"title"}
+                  inputValue={values?.title || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  // requiredTrue={true}
+                  placeholderText={"Enter Title"}
+                />
               </Stack>
-              <Stack justifyContent={"center"}>
+              <Stack
+                direction={{ xs: "column", md: "row", sm: "row" }}
+                justifyContent={"space-between"}
+              >
+                <Inputs
+                  labelText={"Work Email"}
+                  inputType={"email"}
+                  inputName={"email"}
+                  labelInputId={"email"}
+                  inputValue={values?.email || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  requiredTrue={true}
+                  placeholderText={"Enter Work Email"}
+                />
+                <Inputs
+                  labelText={"Phone Number"}
+                  inputType={"phone"}
+                  inputName={"phone"}
+                  labelInputId={"phone"}
+                  inputValue={values?.phone || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  requiredTrue={true}
+                  placeholderText={"Enter Phone Number"}
+                />
+              </Stack>
+              <Stack
+                direction={{ xs: "column", md: "row", sm: "row" }}
+                justifyContent={"space-between"}
+              >
+                <Inputs
+                  labelText={"Template Limit"}
+                  inputType={"number"}
+                  inputName={"templateLimit"}
+                  labelInputId={"templateLimit"}
+                  inputValue={values?.templateLimit || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  requiredTrue={true}
+                  placeholderText={"Enter Required Numbers of Templates"}
+                />
+                <Inputs
+                  labelText={"Invitees Limit"}
+                  inputType={"number"}
+                  inputName={"inviteesLimit"}
+                  labelInputId={"inviteesLimit"}
+                  inputValue={values?.inviteesLimit || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  requiredTrue={true}
+                  placeholderText={"Enter Required Numbers of Invitees"}
+                />
+              </Stack>
+              <Stack justifyContent={"center"} alignItems={"center"}>
+                <Inputs
+                  labelText={"Comment or other message (if any)"}
+                  inputType={"textarea"}
+                  inputName={"comment"}
+                  inputValue={values?.comment || ""}
+                  onChangeHandler={(e) => handleChange(e)}
+                  labelInputId={"comment"}
+                  requiredTrue={false}
+                  placeholderText={"Enter your message"}
+                  rows={"3"}
+                />
+              </Stack>
+
+              <Stack
+                mt={2}
+                justifyContent={"center"}
+                alignContent={"center"}
+                alignItems={"center"}
+              >
                 <Button
                   variant="contained"
                   color="primary"
-                  sx={{ color: "white" }}
+                  sx={{ color: "white", px: 4, borderRadius: "4px", py: 1 }}
                   type="submit"
+                  disableElevation
                 >
-                  Submit Request
+                  Submit your request
                 </Button>
               </Stack>
             </Grid>
           </Grid>
         </Box>
       </Stack>
+      <LogInModal
+        openLoginModal={open}
+        toggleLogInModal={toggleLoginModal}
+        toggleRegisterModal={toggleRegisterModal}
+        setOpenLoginModal={setopen}
+      />
+      <RegisterModal
+        openRegisterModal={registerOpen}
+        setOpenRegisterModal={setregisterOpen}
+      />
     </Box>
   );
 };

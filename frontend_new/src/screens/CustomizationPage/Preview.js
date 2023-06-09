@@ -34,7 +34,7 @@ const Preview = (props) => {
         }
       } catch (error) {
         console.log("error=>", error);
-        dispatch(openSnackbar("something went wrong", "erro"));
+        dispatch(openSnackbar("something went wrong", "error"));
       }
     } else {
       dispatch(

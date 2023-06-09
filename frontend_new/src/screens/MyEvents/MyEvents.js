@@ -29,6 +29,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
 import { Constants } from "../../redux/constants/action-types";
 import { openSnackbar } from "../../redux/action/userActions";
+import { TbTypography } from "react-icons/tb";
 const MyEvents = () => {
   const dispatch = useDispatch();
 
@@ -39,6 +40,7 @@ const MyEvents = () => {
   // ============================================
   const navigate = useNavigate();
   const [allEvents, setAllEvents] = useState([]);
+  const [left, setLeft] = useState({ events: 0, invitees: 0 });
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = React.useState(0);
@@ -122,12 +124,36 @@ const MyEvents = () => {
   };
   // ====end of get all events=
 
+  // =====get number of events =====
+  const noOfEvents = async () => {
+    try {
+      const res = await axios.get(`${Constants.URL}/variation/left-variation`);
+      if (res.status === 200) {
+        console.log("events=>", res);
+        setLeft({ ...left, events: res?.data?.leftVariations });
+      }
+    } catch (error) {}
+  };
+  // ====endof func ================
+  // =====get number of invitess =====
+  const noOfInvitees = async () => {
+    try {
+      const res = await axios.get(`${Constants.URL}/guest/left-invitee`);
+      if (res.status === 200) {
+        console.log("invitees=>", res);
+        setLeft({ ...left, invitees: res?.data?.remainingInvitees });
+      }
+    } catch (error) {}
+  };
+  // ====endof func ================
   useEffect(() => {
     getAllEvents(page + 1, rowsPerPage);
   }, [page, rowsPerPage]);
 
   //  ================
   useEffect(() => {
+    noOfEvents();
+    noOfInvitees();
     dispatch(setPageTitle("My Events"));
 
     return () => {
@@ -139,10 +165,89 @@ const MyEvents = () => {
     <Box width={"100%"} component={Container}>
       <Stack mb={1}>
         <Typography variant="h5" fontWeight={"800"} textAlign={"center"}>
-          Created Events
+          All Events
         </Typography>
       </Stack>
-
+      <Stack direction={"row"} spacing={1}>
+        <Button
+          variant="text"
+          size="small"
+          startIcon={
+            <Typography
+              sx={{
+                fontSize: { xs: "5px", sm: "11px", md: "12px", lg: "13px" },
+                display: { xs: "none", sm: "block", md: "block", lg: "block" },
+              }}
+            >
+              <GrDocumentText />
+            </Typography>
+          }
+          endIcon={
+            <Typography
+              // component={"span"}
+              variant="caption"
+              sx={
+                {
+                  // fontSize: { sm: "14px", xs: "10px", md: "14px" },
+                }
+              }
+            >
+              {left?.events}
+            </Typography>
+          }
+          sx={{
+            color: "rgba(119, 119, 119, 1)",
+            "& .css-jcxoq4-MuiButton-endIcon": {
+              color: "rgba(121, 93, 168, 1)",
+              // fontSize: "15px",
+              fontWeight: "800",
+            },
+            fontSize: { sm: "12px", xs: "10px", md: "13px", lg: "15px" },
+            cursor: "text",
+          }}
+        >
+          EVENTS LEFT
+        </Button>
+        <Button
+          variant="text"
+          size="small"
+          startIcon={
+            <Typography
+              sx={{
+                fontSize: { xs: "5px", sm: "11px", md: "12px", lg: "13px" },
+                display: { xs: "none", sm: "block", md: "block", lg: "block" },
+              }}
+            >
+              <GrDocumentText />
+            </Typography>
+          }
+          endIcon={
+            <Typography
+              // component={"span"}
+              variant="caption"
+              sx={
+                {
+                  // fontSize: { sm: "14px", xs: "10px", md: "14px" },
+                }
+              }
+            >
+              {left?.invitees}
+            </Typography>
+          }
+          sx={{
+            color: "rgba(119, 119, 119, 1)",
+            "& .css-jcxoq4-MuiButton-endIcon": {
+              color: "rgba(121, 93, 168, 1)",
+              // fontSize: "15px",
+              fontWeight: "800",
+            },
+            fontSize: { sm: "12px", xs: "10px", md: "13px", lg: "15px" },
+            cursor: "text",
+          }}
+        >
+          Invitees Left
+        </Button>
+      </Stack>
       <Stack
         direction={{ md: "row", lg: "row", xs: "column" }}
         justifyContent={"space-between"}
@@ -153,7 +258,7 @@ const MyEvents = () => {
           <FormControl
             sx={{
               m: 1,
-              width: "100%",
+              width: { md: "90%", xs: "100%" },
               // width: { md: "30ch", lg: "25ch", sm: "50ch", xs: "30ch" },
             }}
             variant="outlined"
@@ -172,7 +277,7 @@ const MyEvents = () => {
               disabled={activeSearch ? true : false}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Enter Name to Search required events"
+              placeholder="Search Event Name"
               type={"text"}
               endAdornment={
                 <InputAdornment position="end">
@@ -207,37 +312,25 @@ const MyEvents = () => {
           px={1}
           spacing={1}
         >
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<GrDocumentText style={{ fontSize: "15px" }} />}
-            endIcon={"10"}
-            sx={{
-              color: "rgba(119, 119, 119, 1)",
-              "& .css-jcxoq4-MuiButton-endIcon": {
-                color: "rgba(121, 93, 168, 1)",
-                // fontSize: "15px",
-                fontWeight: "800",
-              },
-              cursor: "text",
-            }}
-          >
-            EVENTS LEFT
-          </Button>
           {/* &nbsp;&nbsp; */}
           <Button
             variant="contained"
             size="small"
             startIcon={<AddIcon />}
-            sx={{ color: "white" }}
+            sx={{
+              color: "white",
+              fontSize: { sm: "14px", xs: "10px", md: "14px" },
+            }}
             onClick={toggleTemplatePreviewModal}
           >
-            Create New
+            Add New
           </Button>
         </Stack>
       </Stack>
+
       <Stack
         overflow={"auto"}
+        // bgcolor={"red"}
         mt={1}
         maxHeight={"450px"}
         sx={{
@@ -245,6 +338,7 @@ const MyEvents = () => {
             width: "5px",
             bgcolor: "rgba(206, 197, 220, 1)",
             borderRadius: "6px",
+            display: { xs: "none", sm: "none", md: "block" },
           },
           "&::-webkit-scrollbar-thumb": {
             bgcolor: "rgba(121, 93, 168, 1)",
@@ -373,23 +467,23 @@ const MyEvents = () => {
                     />
                   </Box>
 
-                  <Button
+                  {/* <Button
                     disableElevation
                     variant="contained"
                     sx={{ color: "white", mt: 1 }}
                   >
                     Customize
-                  </Button>
+                  </Button> */}
                 </Grid>
               );
             })
           ) : (
             <Typography mt={2} variant="body2">
-              There is no Record found
+              There are no Record found
             </Typography>
           )}
         </Grid>
-        {console.log("filtered evet=>", filteredEvents.length)}
+        {/* {console.log("filtered evet=>", filteredEvents?.length)} */}
       </Stack>
       {activeSearch ? (
         ""
