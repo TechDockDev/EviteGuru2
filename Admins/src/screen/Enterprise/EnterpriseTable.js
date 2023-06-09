@@ -72,14 +72,22 @@ function Row(props) {
                      <Table size="small" aria-label="purchases">
                         <TableHead>
                            <TableRow sx={{ "& th": { fontWeight: "600", borderBottom: "1px solid #795DA8" } }}>
-                              <TableCell>Templates</TableCell>
+                              <TableCell>Company</TableCell>
+                              <TableCell align="center">Title</TableCell>
+                              <TableCell align="center">Contact No</TableCell>
+                              <TableCell align="center">Work E-mail</TableCell>
+                              <TableCell align="center">Templates</TableCell>
                               <TableCell align="center">Invitees</TableCell>
                               <TableCell align="center">Comments</TableCell>
                            </TableRow>
                         </TableHead>
                         <TableBody>
                            <TableRow>
-                              <TableCell>{row.details.templateLimit}</TableCell>
+                              <TableCell>{row.details.company}</TableCell>
+                              <TableCell align="center">{row.details.title}</TableCell>
+                              <TableCell align="center">{row.details.phoneNumber}</TableCell>
+                              <TableCell align="center">{row.details.workEmail}</TableCell>
+                              <TableCell align="center">{row.details.templateLimit}</TableCell>
                               <TableCell align="center">{row.details.inviteeLimit}</TableCell>
                               <TableCell align="center">{row.details.comment}</TableCell>
                            </TableRow>
@@ -141,6 +149,9 @@ const  EnterpriseTable = ()=> {
                   </TableRow>
                </TableHead>
                <TableBody sx={{ "& td": { borderBottom: "1px solid #c4c4c4" } }}>
+                  {
+                     enterpriseData.length === 0 && <Typography textAlign={"center"} width={"100%"}>No data to display</Typography>
+                  }
                   {enterpriseData.map((row) => (
                      <Row key={row.id} row={row} toggleModal={toggleModal} />
                   ))}
