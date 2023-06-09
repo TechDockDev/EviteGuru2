@@ -255,7 +255,7 @@ const InviteesResponseScreen = () => {
               alignItems={"center"}
               // border="1px solid green"
             >
-              <Typography variant="h5" fontWeight="bold">
+              <Typography textAlign={"center"} variant="h5" fontWeight="bold">
                 {event?.name}
               </Typography>
 
@@ -312,7 +312,7 @@ const InviteesResponseScreen = () => {
                   sx={{ color: "white" }}
                   //   onClick={saveAndContinue}
                 >
-                  Not Attending
+                  Not Attend
                 </Button>
               </Stack>
             </Grid>

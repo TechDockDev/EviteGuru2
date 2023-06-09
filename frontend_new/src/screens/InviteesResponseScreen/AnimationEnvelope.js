@@ -1,99 +1,163 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./AnimationStyle.css";
-import { gsap } from "gsap";
+import { Bounce, gsap } from "gsap";
 import { Power4 } from "gsap";
 import { Power1 } from "gsap";
 import { Circ } from "gsap";
-const AnimationEnvelope = ({src}) => {
+import { Backdrop, Box, Button, IconButton, Stack } from "@mui/material";
+import { CancelOutlined } from "@mui/icons-material";
+const AnimationEnvelope = ({ src }) => {
    const [envelopeOpen, setEnvelopeOpen] = useState(false);
    const [anim, setAnim] = useState("");
+
+   const [open, setOpen] = useState(false);
+   const toggleBackdrop = () => {
+      if (open) {
+         anim.revert() 
+         setOpen(!open);
+         setEnvelopeOpen(false);
+      } else {
+         setOpen(!open);
+         setAnim(pullOut());
+      }
+   };
 
    useEffect(() => {}, []);
 
    const pullOut = () => {
-      const tl =  gsap
+      const tl = gsap
          .timeline()
          .to(".flap", {
-            duration: 1,
+            duration: 0.6,
             rotationX: 180,
-            ease: Power1.easeInOut,
+            ease: Power1.ease,
          })
          .to(".invitation", {
+            duration: 0.5,
             scale: 0.8,
-            ease: Power4.easeInOut,
+            ease: Power4.ease,
          })
-         .to(".flap", {
-            duration:.1,
+         .set(".flap", {
             zIndex: 0,
-           ease: Circ.easeInOut,
-
-         }).to(".mask",{
-            duration:.2,
-           height:"1000px",
-           ease: Circ.easeInOut,
-
-         })
-         .to(".card", {
-            duration: .8,
-            bottom: "800px",
             ease: Circ.ease,
          })
-         .to(".mask", {
+         .set(".mask", {
+            height: "1000px",
+            ease: Circ.ease,
+         })
+         .to(".face", {
+            duration: 0.9,
+            bottom: "600px",
+            ease: Circ.ease,
+         })
+         .set(".mask", {
             overflow: "visible",
-            'clip-path': 'inset(0 0 0% 0)',
-            bottom:" -65px",
+            "clip-path": "inset(0 0 0% 0)",
+            bottom: " -65px",
             onComplete: function () {
                setEnvelopeOpen(true);
             },
          })
-         .to(".card", {
-            duration: .5,
-            height:"600px",
-            ease: Circ.easeInOut,
+         .set(".face", {
+            // duration: 0.5,
+            height: "auto",
+            ease: Circ.ease,
          })
-         .to(".card", {
-            duration: .8,
-            bottom: "-399px",
-            ease: Circ.easeInOut,
+         .to(".face", {
+            duration: 0.5,
+            // bottom: "-399px",
+            bottom: "0px",
+            ease: Bounce.ease,
          })
          .to(".invitation", {
-            scale:.85,
-            ease: Circ.easeInOut,
-         })
+            scale: 0.85,
+            ease: Circ.ease,
+         });
 
-         return  tl;
+      return tl;
    };
 
    return (
-      <div className="wrapper">
-         <div className="invitation">
-            <div className={`envelope ${envelopeOpen ? "is-open" : ""}`}>
-               <div className="mask">
-                  <div className="card">
-                     <div className="face">
-                        <img  src={src} alt="img" srcset="" />
+      <>
+         <Box
+            onClick={toggleBackdrop}
+            sx={{
+               width: "90%",
+               maxWidth: "300px",
+               boxShadow: "5px 5px 5px black",
+               transition: "all 200ms ease",
+               "&:hover": {
+                  cursor: "pointer",
+                  scale: "0.95",
+               },
+            }}>
+            <Box
+               component={"img"}
+               src="/assets/envelope.png"
+               sx={{
+                  width: "100%",
+                  height: "auto",
+                  display: "block",
+               }}
+            />
+         </Box>
+         <Backdrop sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={open}>
+            <div className="wrapper">
+               <IconButton onClick={toggleBackdrop}>
+                  <CancelOutlined sx={{ color: "#795da8", fontSize: "30px" }} />
+               </IconButton>
+               <div className="invitation">
+                  <div className={`envelope ${envelopeOpen ? "is-open" : ""}`}>
+                     <div className="mask">
+                        <div className="card">
+                           <div className="face">
+                              <img src={src} alt="img" srcset="" />
+                           </div>
+                        </div>
                      </div>
                   </div>
+                  <div className="flap"></div>
+                  {envelopeOpen && (
+                     <button
+                        onClick={(e) => {
+                           e.stopPropagation();
+                           setEnvelopeOpen(false);
+                           anim.restart();
+                        }}
+                        className="restart">
+                        Re-Open
+                     </button>
+                  )}
                </div>
+               <Stack
+                direction={"row"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                sx={{
+                  // border:"1px solid red",
+                  position:"absolute",
+                  width:"100%",
+                  bottom:"20px",
+                }}
+              ><Box maxWidth={"500px"} width={"100%"} display={"flex"} justifyContent={"space-around"}>
+
+                <Button disableElevation variant="contained" color="success">
+                  Will Attend
+                </Button>
+                <Button
+                disableElevation
+                  variant="contained"
+                  sx={{ color: "white" }}
+                  //   onClick={saveAndContinue}
+                >
+                  Not Attend
+                </Button>
+              </Box>
+
+              </Stack>
             </div>
-            <div className="flap"></div>
-            <button  
-               onClick={() => {
-                  setAnim(pullOut());
-               }}
-               className={` invitedbtn ${envelopeOpen ? "btnHide" : ""}`}>
-               You're Invited!
-            </button>
-           {envelopeOpen &&  <button 
-               onClick={() => {
-                  setEnvelopeOpen(false)
-                  anim.restart();
-               }}
-               className="restart">
-               Re-Open
-            </button>}
-         </div>
-      </div>
+         </Backdrop>
+      </>
    );
 };
 
