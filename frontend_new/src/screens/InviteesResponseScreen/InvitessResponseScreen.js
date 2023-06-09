@@ -5,6 +5,7 @@ import Moment from "react-moment";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
+import AnimationEnvelope from "./AnimationEnvelope";
 
 const InviteesResponseScreen = () => {
   const [event, setEvent] = useState(null);
@@ -52,7 +53,7 @@ const InviteesResponseScreen = () => {
       <Stack
         // p={2}
         sx={{
-          width: { md: "50%", xs: "100%", sm: "100%", lg: "50%" },
+          width: { md: "80%", xs: "100%", sm: "100%", lg: "80%" },
           marginX: "auto",
           //   backgroundImage:
           //   "linear-gradient(to right bottom, #a599e2, #7c72a7, #554e6f, #302c3c, #0c0b0e)",
@@ -222,7 +223,7 @@ const InviteesResponseScreen = () => {
                 alignItems: "center",
               }}
             >
-              <Box
+              {/* <Box
                 component={"img"}
                 bgcolor={"red"}
                 src={`/images/getImage?path=/${event?.variation?.previewImage}`}
@@ -232,7 +233,8 @@ const InviteesResponseScreen = () => {
 
                   height: "100%",
                 }}
-              />
+              /> */}
+              <AnimationEnvelope src={`/images/getImage?path=/${event?.variation?.previewImage}`}/>
             </Grid>
 
             {/* == 👆 Template preview button and image 👆   ==*/}
@@ -253,7 +255,7 @@ const InviteesResponseScreen = () => {
               alignItems={"center"}
               // border="1px solid green"
             >
-              <Typography variant="h5" fontWeight="bold">
+              <Typography textAlign={"center"} variant="h5" fontWeight="bold">
                 {event?.name}
               </Typography>
 
@@ -310,7 +312,7 @@ const InviteesResponseScreen = () => {
                   sx={{ color: "white" }}
                   //   onClick={saveAndContinue}
                 >
-                  Not Attending
+                  Not Attend
                 </Button>
               </Stack>
             </Grid>

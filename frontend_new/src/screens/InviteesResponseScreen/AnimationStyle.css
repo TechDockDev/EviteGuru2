@@ -1,0 +1,197 @@
+.wrapper {
+
+  position: relative;
+  width: 90vw;
+  height: 90vh;
+  background: #fff;
+  background-image: url("/public/assets/bgtemp.jpg");
+  border-radius: 8px;
+  border: 4px solid #795da8;
+  box-shadow: 0px 0px 5px white;
+
+}
+
+* {
+  outline: none;
+}
+
+
+.invitation {
+  width: 500px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.envelope {
+  background: #795da8;
+  width: 100%;
+  height: 307.6923076923px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 5px 5px 10px black;
+}
+
+.envelope.is-open:before,
+.envelope.is-open:after {
+  z-index: -2;
+}
+
+.envelope:before,
+.envelope:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+}
+
+.envelope:before {
+  box-sizing: border-box;
+  right: 0;
+  border-bottom: 0px solid transparent;
+  border-top: 307.6923076923px solid transparent;
+  border-right: 500px solid #866db1;
+  z-index: 1;
+}
+
+.envelope:after {
+  box-sizing: border-box;
+  left: 0;
+  border-bottom: 0px solid transparent;
+  border-top: 307.6923076923px solid transparent;
+  border-left: 500px solid #9178c4;
+  z-index: 1;
+}
+
+.flap {
+  border-right: 250px solid transparent;
+  border-top: 153.8461538462px solid #795da8;
+  border-left: 250px solid transparent;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 50% 0%;
+  z-index: 2;
+}
+
+.mask {
+  box-sizing: border-box;
+  overflow: hidden;
+  position: absolute;
+  left: 10px;
+  width: 95%;
+  height: 307px;
+  z-index: 0;
+  margin: auto;
+  bottom: 0px;
+  /* top: 50%; */
+  /* transform: translate(0, -24%); */
+  perspective: 1200px;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  transform-style: preserve-3d;
+  /* transform-origin: 50% 10%;
+  transform: translate(0, 128%) rotateY(0deg); */
+}
+
+.face {
+  width: 100%;
+  height: auto;
+  /* left: 0; */
+  position: absolute;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.398);
+  box-shadow: inset 10px 10px 10px 10px grey;
+
+}
+
+/* .face:last-of-type {
+  transform: translateZ(-3px) rotateY(180deg);
+  background-size: 130% auto;
+} */
+.face img {
+  height: 100%;
+  width: 100%;
+  display: block;
+}
+
+
+
+.invitedbtn {
+
+  padding: 15px 30px;
+  border-radius: 30px;
+  background: white;
+  color: #554176;
+  border: none;
+  position: absolute;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  left: 50%;
+  top: 170px;
+  transform: translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  z-index: 1;
+  cursor: pointer;
+  transition: background 0.3s ease-out, color 0.3s ease-out;
+}
+.btnHide {
+  display: none;
+}
+
+.restart {
+  z-index: 10;
+  position: absolute;
+  bottom: -34%;
+  left: 5%;
+  background-color: #795DA8;
+  color: white;
+  padding: 8px 12px;
+  outline: none;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 570px) {
+
+  .invitation,
+  .envelope {
+    width: 300px;
+    height: 189px;
+  }
+
+  .envelope:before {
+    border-right: 300px solid #866db1;
+    border-top: 189px solid transparent;
+
+  }
+
+  .envelope:after {
+    border-left: 300px solid #9178c4;
+    border-top: 189px solid transparent;
+  }
+
+  .flap {
+    border-right: 150px solid transparent;
+    border-top: 153.8461538462px solid #795da8;
+    border-left: 150px solid transparent;
+  }
+
+  .restart {
+    bottom: -54%;
+  }
+
+  .mask {
+    left: 7.5px;
+  }
+}
+
+/* ++++++++++++++++++++++++++++ */
+/* ++++++++++++++++++++++++++++ */
