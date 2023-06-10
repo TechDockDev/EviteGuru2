@@ -59,7 +59,7 @@ const Coupons = (props) => {
             {/* 50% */}
             {props?.details?.amountType === "price"
               ? `$${props?.details?.amount}`
-              : `%${props?.details?.amount}`}
+              : `${props?.details?.amount}%`}
           </Typography>
         </Box>
         <Box

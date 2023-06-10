@@ -11,7 +11,6 @@ import React, { useState } from "react";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { useEffect } from "react";
 
 const AddGuests = (props) => {
   const dispatch = useDispatch();
@@ -34,12 +33,17 @@ const AddGuests = (props) => {
   const SubmitHamdler = async (e) => {
     e.preventDefault();
     try {
-      console.log("console is coming=>");
+      // console.log("console is coming=>");
+      const guestDetails = guests.map((guest, index) => {
+        return {
+          name: `${guest.first_name} ${guest.last_name}`,
+          membersAllowed: guest.membersAllowed,
+          phone: guest.phone,
+          email: guest.email,
+        };
+      });
       const res = await axios.patch("/api/v1/user/guest/add-guest", {
-        name: `${guests[0].first_name} ${guests[0].last_name}`,
-        membersAllowed: guests[0].membersAllowed,
-        phone: guests[0].phone,
-        email: guests[0].email,
+        guestDetails: [...guestDetails],
         guestId: createdEventDetails?.guestListId,
       });
       if (res.status === 200) {
@@ -90,7 +94,10 @@ const AddGuests = (props) => {
       {/*👆 Cross icon to close the modal👆  */}
 
       <Typography variant="h1" fontSize={"20px"} fontWeight="bold" mb={1}>
-        Add New Contact
+        Add New Contact{" "}
+        <span style={{ color: "red", fontSize: "14px" }}>
+          (Add country code before mobile number)
+        </span>
       </Typography>
 
       <Grid container sx={{ maxHeight: "70vh", overflow: "auto" }}>

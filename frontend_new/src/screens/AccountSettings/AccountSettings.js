@@ -40,7 +40,7 @@ const AccountSettings = () => {
   const [openPasswordChangeModal, setOpenPasswordChangeModal] = useState(false);
   // ===== user detail ======================
   const { userDetail } = useSelector((state) => state);
-  console.log("userDetail=>", userDetail);
+  // console.log("userDetail=>", userDetail);
   // ========================================
   // handlechange to update input values
   const handleChange = (e) => {
@@ -70,18 +70,23 @@ const AccountSettings = () => {
       profileInfo?.email != "" ||
       profileInfo?.phone != ""
     ) {
-      const formData = new FormData();
-      formData.append("profile", file);
-      // formData.append("name")
-      const res = await axios.patch(
-        `${Constants?.URL}/update-profile-photo`,
-        formData
-      );
-      if (res.status === 200) {
-        console.log("res=>", res);
-        dispatch(userAuth(res?.data?.user));
-        seteditemode(false);
-        dispatch(openSnackbar(res?.data?.message, "success"));
+      if (file) {
+        const formData = new FormData();
+        formData.append("profile", file);
+        // formData.append("name")
+        const res = await axios.patch(
+          `${Constants?.URL}/update-profile-photo`,
+          formData
+        );
+        if (res.status === 200) {
+          // console.log("res=>", res);
+          dispatch(userAuth(res?.data?.user));
+          seteditemode(false);
+          dispatch(openSnackbar(res?.data?.message, "success"));
+        }
+      }
+      else{
+        dispatch(openSnackbar("You did not selected any image!", "warning"));
       }
     } else {
       dispatch(openSnackbar("Please Fill all required values", "error"));
@@ -96,7 +101,7 @@ const AccountSettings = () => {
   // ==================================
   useEffect(() => {
     if (userDetail?.isUser) {
-      console.log("user=>", userDetail);
+      // console.log("user=>", userDetail);
       setProfileInfo({
         ...profileInfo,
         email: userDetail?.email,
@@ -151,7 +156,7 @@ const AccountSettings = () => {
             sx={{
               bgcolor: "white",
               display: "flex",
-              //   justifyContent: "center",
+              justifyContent: "center",
               flexDirection: "column",
               boxShadow: "0px 2px 24px -1px rgb(0 0 0 / 10%)",
               //   alignItems: "center",
@@ -167,22 +172,22 @@ const AccountSettings = () => {
                 <Typography variant="h6" fontWeight={"800"}>
                   Profile
                 </Typography>
-                {userDetail?.userType === "google" ? (
+                {/* {userDetail?.userType === "google" ? (
                   ""
-                ) : (
-                  <IconButton
-                    aria-label="delete"
-                    color="primary"
-                    onClick={() => seteditemode(!editemode)}
-                    sx={{ fontSize: "20px", color: "black", cursor: "pointer" }}
-                  >
-                    {editemode ? (
-                      <MdLogout style={{ color: "rgba(85, 85, 85, 1)" }} />
-                    ) : (
-                      <BiEdit style={{ color: "rgba(85, 85, 85, 1)" }} />
-                    )}
-                  </IconButton>
-                )}
+                ) : ( */}
+                <IconButton
+                  aria-label="delete"
+                  color="primary"
+                  onClick={() => seteditemode(!editemode)}
+                  sx={{ fontSize: "20px", color: "black", cursor: "pointer" }}
+                >
+                  {editemode ? (
+                    <MdLogout style={{ color: "rgba(85, 85, 85, 1)" }} />
+                  ) : (
+                    <BiEdit style={{ color: "rgba(85, 85, 85, 1)" }} />
+                  )}
+                </IconButton>
+                {/* )} */}
               </Stack>
               <Badge
                 overlap="circular"
@@ -241,12 +246,12 @@ const AccountSettings = () => {
               </Typography>
             ) : (
               <Typography variant="caption" fontWeight={"400"}>
-                The information can be edited
+                This is your profile information
               </Typography>
             )}
 
             <TextField
-              label="Name *"
+              label="Name"
               size="small"
               variant="filled"
               name="name"
@@ -279,7 +284,7 @@ const AccountSettings = () => {
               alignItems={"center"}
             >
               <TextField
-                label="Email Address *"
+                label="Email Address"
                 size="small"
                 variant="filled"
                 fullWidth

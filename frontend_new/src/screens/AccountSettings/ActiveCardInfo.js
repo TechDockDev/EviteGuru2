@@ -15,7 +15,7 @@ const ActiveCardInfo = () => {
   const navigate = useNavigate();
   // ===========================
   const { userDetail } = useSelector((state) => state);
-  console.log("");
+  console.log("userDetail", userDetail);
   return (
     <Card
       sx={{
@@ -48,14 +48,17 @@ const ActiveCardInfo = () => {
             >
               {userDetail?.subscription?.name}
             </Typography>
-            <Stack alignItems={"center"} justifyContent={"center"}>
-              <Typography>
-                Invitees - {userDetail?.subscription?.guestLimit}
+            <Stack alignItems={"center"} justifyContent={"center"} mt={1}>
+              <Typography mt={1}>Invitees - {userDetail?.guestNum}</Typography>
+              <Typography mt={1}>
+                Templates - {userDetail?.templateNum}
               </Typography>
-              <Typography>
-                Templates - {userDetail?.subscription?.templateNum}
+              <Typography variant="h6" mt={1} fontSize={"15px"}>
+                Expiry :{" "}
+                <span style={{ color: "red", fontSize: "15px" }}>
+                  {userDetail?.planEndDate}{" "}
+                </span>
               </Typography>
-              <Typography variant="h6">{userDetail?.planEndDate} </Typography>
             </Stack>
           </>
         ) : (

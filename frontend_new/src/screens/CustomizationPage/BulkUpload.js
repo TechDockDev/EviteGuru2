@@ -81,13 +81,13 @@ const BulkUpload = (props) => {
 
   // ====handledownload ================
   const handleDownload = () => {
-    const fileUrl = "/assets/sample.csv";
+    const fileUrl = "/assets/invitees_template.xlsx";
     // Create a temporary link element
     const downloadLink = document.createElement("a");
     downloadLink.href = fileUrl;
 
     // Set the filename for the downloaded file
-    downloadLink.setAttribute("sample", "filename.ext");
+    downloadLink.setAttribute("invitees_template", "filename.ext");
 
     // Trigger the download
     document.body.appendChild(downloadLink);
@@ -135,13 +135,25 @@ const BulkUpload = (props) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "550px",
+          width: { lg: "550px", md: "500px", sm: "400px", xs: "200px" },
           maxHeight: "80vh",
           //  bgcolor: " rgba(133, 103, 157, 0.47)",
           bgcolor: "white",
           border: "1px solid white",
           borderRadius: "3px",
           p: 5,
+          overflow: "auto",
+          "&::-webkit-scrollbar": {
+            width: "5px",
+            bgcolor: "rgba(206, 197, 220, 1)",
+            borderRadius: "6px",
+            display: { xs: "none", sm: "block", md: "block" },
+          },
+          "&::-webkit-scrollbar-thumb": {
+            bgcolor: "rgba(121, 93, 168, 1)",
+            height: "40px",
+            borderRadius: "6px",
+          },
         }}
       >
         {/* 👇Cross icon to close the modal👇  */}
@@ -171,7 +183,16 @@ const BulkUpload = (props) => {
           }}
         >
           {/* ========== */}
-          <Grid item xl={12} lg={12} md={12} sm={12} xs={12} width="100%">
+          <Grid
+            item
+            xl={12}
+            lg={12}
+            md={12}
+            sm={12}
+            xs={12}
+            width="100%"
+            display={{ xs: "none", sm: "block" }}
+          >
             <Typography fontWeight={600} fontSize="14px">
               Download the sample for bulk uploading of email
             </Typography>
@@ -261,7 +282,7 @@ const BulkUpload = (props) => {
             <Grid
               container
               sx={{
-                width: "80%",
+                width: { xs: "100%", sm: "80%" },
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
@@ -317,7 +338,7 @@ const BulkUpload = (props) => {
                 ) : (
                   <Typography
                     variant="h1"
-                    fontSize="22px"
+                    fontSize={{ xs: "15px", sm: "22px" }}
                     fontWeight="800"
                     color="white"
                     textAlign="center"
@@ -341,7 +362,7 @@ const BulkUpload = (props) => {
                   color="rgba(255, 255, 255, 0.3)"
                   textAlign="center"
                   fontSize="14px"
-                  mt={3}
+                  mt={1}
                 >
                   max. 50MB
                 </Typography>

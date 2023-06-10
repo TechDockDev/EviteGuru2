@@ -3,7 +3,6 @@ import {
   Button,
   CircularProgress,
   Grid,
-  Paper,
   Stack,
   Typography,
 } from "@mui/material";
@@ -32,7 +31,9 @@ const TemplateSection = () => {
   // get templatesList
   const getAllTemplates = async () => {
     try {
-      const res = await axios.get(`${Constants.URL}/template/all?page=1&limit=6`);
+      const res = await axios.get(
+        `${Constants.URL}/template/all?page=1&limit=6`
+      );
       // console.log("res", res);
       dispatch(setTemplateList(res?.data?.template));
       setLoadingTemplate(false);
@@ -62,23 +63,6 @@ const TemplateSection = () => {
   const carouselClick = (e, id) => {
     setSingleTemplateId(id);
   };
-  //  this function is passed to carousel to handle onclic👆
-
-  // const getTemplate = async () => {
-  //    try {
-  //       const res = await axios.get("/template/template-list?page=1&limit=6");
-  //       console.log(res.data);
-
-  //       setTemplateData(res.data);
-  //    } catch (error) {
-  //       console.log(error);
-  //    }
-  // };
-  // console.log("templateData->", templateData);
-
-  // useEffect(() => {
-  //    getTemplate();
-  // }, []);
 
   return (
     <Stack mt={3} mb={3} padding={"10px"}>

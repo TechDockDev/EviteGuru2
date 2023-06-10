@@ -110,6 +110,7 @@ const Header = () => {
               {/* ==== 👇 EVITEGURU topbar logo👇   ===== */}
               <Box
                 component={NavLink}
+                to={"/"}
                 sx={{
                   width: "150px",
                   display: "flex",
@@ -138,14 +139,30 @@ const Header = () => {
                   "& .MuiListItemButton-root": {
                     color: "black",
                   },
-                  "& : hover	.MuiListItemButton-root": {
-                    borderBottom: "4px solid rgba(121, 93, 168, 1)",
-                    transition: "all .3s ease-in",
+
+                  "& .MuiListItemButton-root::before, .MuiListItemButton-root::after ":
+                    {
+                      position: "absolute",
+                      content: `""`,
+                    },
+                  "& .MuiListItemButton-root::before": {
+                    backgroundColor: "rgba(121, 93, 168, 1)",
+                    height: "4px",
+                    // borderBottom: "4px solid rgba(121, 93, 168, 1)",
+                    transition: "0.3s ease-out",
+                    width: "0",
+                    bottom: "-3px",
+                    borderRadius: "2px",
                   },
-                  "& .active 	.MuiListItemButton-root": {
-                    // scale: ".95",
-                    borderBottom: "4px solid rgba(121, 93, 168, 1)",
-                    // color: "black !important",
+                  "& :hover::before": {
+                    width: "100%",
+                    backgroundColor: "rgba(121, 93, 168, 1)",
+                  },
+                  "& .active": {
+                    "& .MuiListItemButton-root::before": {
+                      width: "100%",
+                      backgroundColor: "rgba(121, 93, 168, 1)",
+                    },
                   },
                 }}
               >
@@ -156,7 +173,9 @@ const Header = () => {
                 >
                   <ListItemButton
                     disableGutters
-                    sx={{ "&:hover": { bgcolor: "white" } }}
+                    sx={{
+                      "&:hover": { bgcolor: "white" },
+                    }}
                   >
                     <ListItemText>Home</ListItemText>
                   </ListItemButton>
@@ -185,6 +204,24 @@ const Header = () => {
                     <ListItemText>Pricing</ListItemText>
                   </ListItemButton>
                 </ListItem>
+                {userDetail?.isUser ? (
+                  <ListItem component={NavLink} to="/dashboard/my-events">
+                    <ListItemButton
+                      disableGutters
+                      sx={{
+                        color: "rgba(121, 93, 168, 1) !important",
+                        fontWeight: "600",
+                        "&:hover": {
+                          bgcolor: "white",
+                        },
+                      }}
+                    >
+                      <ListItemText>Dashboard</ListItemText>
+                    </ListItemButton>
+                  </ListItem>
+                ) : (
+                  ""
+                )}
               </List>
               {/*👆 topbar left menu list👆 */}
             </Stack>

@@ -7,6 +7,7 @@ import { openSnackbar, register } from "../../redux/action/userActions";
 import Inputs from "./Inputs";
 import LogInModal from "../LoginModal/LogInModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
+import { useEffect } from "react";
 
 const Enterprise = () => {
   const dispatch = useDispatch();
@@ -48,10 +49,16 @@ const Enterprise = () => {
           // alert("Please fill all required feilds");
           dispatch(openSnackbar("please fill all required feilds", "warning"));
         } else {
-          const res = await axios.post(
-            `${Constants.URL}/enterprise/create`,
-            values
-          );
+          const res = await axios.post(`${Constants.URL}/enterprise/create`, {
+            company: values?.company,
+            title: values?.title,
+            workEmail: values?.email,
+            phoneNumber: values?.phone,
+            templateLimit: values?.templateLimit,
+            inviteeLimit: values?.inviteesLimit,
+            comment: values?.comment,
+            name: `${values?.firstName} ${values?.lastName}`,
+          });
           if (res.status === 200) {
             console.log("response=>", res);
             dispatch(openSnackbar(res?.data?.message, "success"));
@@ -77,6 +84,15 @@ const Enterprise = () => {
     }
   };
   // ==endOf handleSubmit ======
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToTop();
+  }, []);
+
   return (
     <Box
       sx={{
