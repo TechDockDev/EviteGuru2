@@ -1,6 +1,7 @@
 import { Box, Grid, IconButton, Stack, Typography, Modal, Paper, Button } from "@mui/material";
 import React, { useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { url } from "../../url";
 const SingleSticker = ({ sticker, deleteSticker }) => {
    const [deleteModal, setDeleteModal] = useState(false);
    //    =========
@@ -33,7 +34,7 @@ const SingleSticker = ({ sticker, deleteSticker }) => {
                   }}>
                   <DeleteIcon />
                </IconButton>
-               <Box component={"img"} src={`http://192.168.29.249:8085/images/getImage?path=${sticker.image}`} alt="" height={"100%"} />
+               <Box component={"img"} src={`${url}/images/getImage?path=${sticker.image}`} alt="" height={"100%"} />
             </Stack>
             <Typography fontSize={"14px"} fontWeight={"600"} marginY={"5px"}>
                {sticker.name}
