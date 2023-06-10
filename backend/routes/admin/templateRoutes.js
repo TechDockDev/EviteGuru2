@@ -13,6 +13,7 @@ import {
   getStickers,
   deleteSticker,
 } from "../../controllers/templateController.js";
+import { adminAuth } from "../../middlewares/adminAuthMiddleware.js";
 
 // const upload = multer({ dest: "uploads/" });
 const storage = multer.diskStorage({
@@ -38,14 +39,29 @@ const preview = multer({ storage: previewImages });
 
 const templateRouter = express.Router();
 
-templateRouter.get("/all", allTemplate);
-templateRouter.post("/saveImage", upload.array("image"), saveImage);
-templateRouter.post("/previewImage", upload.single("previewImage"), saveImage);
-templateRouter.get("/sendImage/:imgName", sendImage);
-templateRouter.post("/create", preview.single("previewImage"), createTemplate);
-templateRouter.get("/stickers", getStickers);
-templateRouter.delete("/sticker/:stickerId", deleteSticker);
-templateRouter.post("/addSticker", upload.single("sticker"), addSticker);
+templateRouter.get("/all", adminAuth, allTemplate);
+templateRouter.post("/saveImage", adminAuth, upload.array("image"), saveImage);
+templateRouter.post(
+  "/previewImage",
+  adminAuth,
+  upload.single("previewImage"),
+  saveImage
+);
+templateRouter.get("/sendImage/:imgName", adminAuth, sendImage);
+templateRouter.post(
+  "/create",
+  adminAuth,
+  preview.single("previewImage"),
+  createTemplate
+);
+templateRouter.get("/stickers", adminAuth, getStickers);
+templateRouter.delete("/sticker/:stickerId", adminAuth, deleteSticker);
+templateRouter.post(
+  "/addSticker",
+  adminAuth,
+  upload.single("sticker"),
+  addSticker
+);
 templateRouter
   .route("/:id")
   .get(singleTemplate)

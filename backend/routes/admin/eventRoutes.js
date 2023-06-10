@@ -1,22 +1,19 @@
 import express from "express";
 
-import { userAuth } from "../../middlewares/authMiddleware.js";
 import {
-  getAllEvents,
   getEventById,
-  getEventsByUser,
   getEventsByUserAdmin,
   getStatusStats,
   getTotalEventsByUser,
 } from "../../controllers/eventController.js";
+import { adminAuth } from "../../middlewares/adminAuthMiddleware.js";
 
 const eventRouter = express.Router();
 
 // Event route for user
-// eventRouter.get("/user", userAuth, getEventsByUser);
-eventRouter.get("/stats/:eventId", getStatusStats);
-eventRouter.get("/user/:userId", getEventsByUserAdmin);
-eventRouter.get("/user/total/:userId", getTotalEventsByUser);
-eventRouter.route("/:id").get(getEventById);
+eventRouter.get("/stats/:eventId", adminAuth, getStatusStats);
+eventRouter.get("/user/:userId", adminAuth, getEventsByUserAdmin);
+eventRouter.get("/user/total/:userId", adminAuth, getTotalEventsByUser);
+eventRouter.route("/:id").get(adminAuth, getEventById);
 
 export default eventRouter;

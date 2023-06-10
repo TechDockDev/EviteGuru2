@@ -4,6 +4,18 @@ const enterpriseSchema = mongoose.Schema({
     type: mongoose.Types.ObjectId,
     ref: "User",
   },
+  company: {
+    type: String,
+  },
+  title: {
+    type: String,
+  },
+  workEmail: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
+  },
   amount: {
     type: Number,
   },
@@ -18,7 +30,7 @@ const enterpriseSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    enums: ["pending", "sent"],
+    enum: ["pending", "sent"],
   },
 });
 

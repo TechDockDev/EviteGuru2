@@ -3,10 +3,11 @@ import {
   sendPromotion,
   sendSmsPromotion,
 } from "../../controllers/promotionController.js";
+import { adminAuth } from "../../middlewares/adminAuthMiddleware.js";
 
 const promotionRouter = express.Router();
 
-promotionRouter.post("/sendMail", sendPromotion);
-promotionRouter.post("/sendSms", sendSmsPromotion);
+promotionRouter.post("/sendMail", adminAuth, sendPromotion);
+promotionRouter.post("/sendSms", adminAuth, sendSmsPromotion);
 
 export default promotionRouter;

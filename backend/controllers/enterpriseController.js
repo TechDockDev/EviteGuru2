@@ -13,9 +13,23 @@ const stripe = new Stripe(
 );
 
 const createEnterpriseRequest = expressAsyncHandler(async (req, res) => {
-  const { templateLimit, inviteeLimit, comment } = req.body;
+  const {
+    templateLimit,
+    inviteeLimit,
+    comment,
+    name,
+    company,
+    title,
+    workEmail,
+    phoneNumber,
+  } = req.body;
   await Enterprise.create({
     user: req.user.id,
+    name,
+    company,
+    title,
+    workEmail,
+    phoneNumber,
     templateLimit,
     inviteeLimit,
     comment,
@@ -23,7 +37,7 @@ const createEnterpriseRequest = expressAsyncHandler(async (req, res) => {
   });
   res.json({
     status: "success",
-    message: "enterprise Request has been created successfully",
+    message: "Enterprise Request has been created successfully",
   });
 });
 
@@ -36,6 +50,11 @@ const getEnterpriseRequests = expressAsyncHandler(async (req, res) => {
       email: request.user.email,
       phone: request.user.phone,
       details: {
+        name: request.name,
+        company: request.company,
+        title: request.title,
+        workEmail: request.workEmail,
+        phoneNumber: request.phoneNumber,
         templateLimit: request.templateLimit,
         inviteeLimit: request.inviteeLimit,
         comment: request.comment,
@@ -126,18 +145,16 @@ const enterPrisePurchaseSuccess = expressAsyncHandler(async (req, res) => {
     user.templateNum = enterprise.templateLimit;
     user.guestNum = enterprise.inviteeLimit;
     await user.save();
-    res.json({
-      status: "success",
-      message: "enterprise subscription has been purchased successfully",
-    });
+    res.redirect(
+      `${clientUrl}/payment/success/status?amount=${session.amount_total
+        .toString()
+        .slice(0, -2)}&plan=${metadata.plan}`
+    );
   }
 });
 
 const enterPrisePurchaseFail = expressAsyncHandler(async (req, res) => {
-  res.json({
-    status: "fail",
-    message: "enterprise subscription Payment Fail",
-  });
+  res.redirect(`${clientUrl}/`);
 });
 export {
   createEnterpriseRequest,
