@@ -50,15 +50,14 @@ const forgetPasssword = asyncHandler(async (req, res) => {
 });
 
 const changeForgetPasssword = asyncHandler(async (req, res) => {
-  const decodedValue = await auth().verifyIdToken(req.body.idToken);
+  const decodedValue = await auth.auth().verifyIdToken(req.body.idToken);
   const user = await User.findOne({ phone: decodedValue.phone_number });
   user.password = await bcrypt.hash(req.body.password, 10);
   await user.save();
   if (user) {
     res.json({
       status: "success",
-      message: "User Exists",
-      phone: user.phone,
+      message: "Password has been successfully changed",
     });
   }
 });
@@ -103,7 +102,7 @@ const changePassword = asyncHandler(async (req, res) => {
       message: "Password has been successfully updated",
     });
   } else {
-    res.json({
+    res.status(406).json({
       status: "error",
       message: "Incorrect Password Provided",
     });
@@ -156,6 +155,7 @@ const login = async (req, res, next) => {
       throw new Error("User not found");
     }
   } catch (error) {
+    console.log(error);
     res.status(500).json({
       message: error.message,
     });
@@ -168,6 +168,17 @@ const googleLogin = asyncHandler(async (req, res) => {
   if (user) {
     return createSendToken(user, 200, res);
   }
+});
+
+const updateProfilePhoto = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndUpdate(req.user.id, {
+    profilePhoto: req.file.buffer.toString("base64"),
+  });
+  res.json({
+    status: "success",
+    message: "user profile has been successfully updated",
+    user,
+  }); 
 });
 
 const getUser = asyncHandler(async (req, res) => {
@@ -257,6 +268,7 @@ export {
   googleLogin,
   login,
   signUp,
+  updateProfilePhoto,
   getUser,
   allUser,
   userPlans,

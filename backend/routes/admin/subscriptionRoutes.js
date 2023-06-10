@@ -6,15 +6,16 @@ import {
   viewallPlans,
   viewPlan,
 } from "../../controllers/subscriptionController.js";
+import { adminAuth } from "../../middlewares/adminAuthMiddleware.js";
 
 const subscriptionRouter = express.Router();
 
-subscriptionRouter.post("/create-plan", createPlan);
-subscriptionRouter.get("/all", viewallPlans);
+subscriptionRouter.post("/create-plan", adminAuth, createPlan);
+subscriptionRouter.get("/all", adminAuth, viewallPlans);
 subscriptionRouter
   .route("/:id")
-  .patch(updatePlan) //update plan
-  .delete(deletePlan) //delete plan
-  .get(viewPlan); //view single plans by id
+  .patch(adminAuth, updatePlan) //update plan
+  .delete(adminAuth, deletePlan) //delete plan
+  .get(adminAuth, viewPlan); //view single plans by id
 
 export default subscriptionRouter;

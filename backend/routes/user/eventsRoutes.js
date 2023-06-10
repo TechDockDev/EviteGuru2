@@ -18,8 +18,8 @@ eventRouter.get("/stats/:eventId", userAuth, getStatusStats);
 eventRouter.get("/user", userAuth, getEventsByUser);
 eventRouter
   .route("/:id")
-  .delete(deleteEvent) // delete event by users
-  .patch(editEvent) // update event by user
-  .get(getEventById); // get event
+  .delete(userAuth, deleteEvent) // delete event by users
+  .patch(userAuth, editEvent) // update event by user
+  .get(userAuth, getEventById); // get event
 
 export default eventRouter;

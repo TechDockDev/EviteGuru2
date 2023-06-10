@@ -31,7 +31,7 @@ const getEventById = asyncHandler(async (req, res) => {
   const event = await EventDetails.findById(req.params.id).populate(
     "variation"
   );
-  const guestList = await Guest.findOne({ event: event.id });
+  const guestList = await Guest.findOne({ event: event._id });
   res.json({
     status: "success",
     message: "Event has been fetched",

@@ -1,9 +1,10 @@
 import asyncHandler from "express-async-handler";
 import Guest from "../models/guestModel.js";
 import { parse } from "csv-parse";
-import { sendMail } from "../middlewares/mailMiddleware.js";
+import { sendBulkPersonalizedEmails } from "../middlewares/mailMiddleware.js";
 import { sendSms } from "../middlewares/smsMiddleware.js";
 import Event from "../models/eventModel.js";
+import excelToJson from "convert-excel-to-json";
 
 const createGuest = asyncHandler(async (req, res) => {
   const existingGuestList = await Guest.findOne({ event: req.body.eventId });
@@ -27,9 +28,14 @@ const createGuest = asyncHandler(async (req, res) => {
 
 const addGuest = asyncHandler(async (req, res) => {
   const { name, email, phone, membersAllowed, guestId } = req.body;
-  const guest = await Guest.findById(guestId);
-  guest.guests.push({ name, email, phone, membersAllowed });
-  await guest.save();
+  const { guestDetails } = req.body;
+  await Guest.findByIdAndUpdate(
+    guestId,
+    {
+      $push: { guests: { $each: guestDetails } },
+    },
+    { runValidators: true }
+  );
   res.json({
     status: "success",
     message: "Guest has been added in the list",
@@ -37,28 +43,33 @@ const addGuest = asyncHandler(async (req, res) => {
 });
 
 const addGuestInBulk = asyncHandler(async (req, res) => {
-  console.log(req?.file?.buffer);
   const records = [];
-  // Initialize the parser
-  const parser = parse(req.file.buffer, { columns: true });
-  // Use the readable stream api to consume records
-  parser.on("readable", function () {
-    let record;
-    while ((record = parser.read()) !== null) {
-      records.push(record);
-    }
-  });
-  // Catch any error
-  parser.on("error", function (err) {
-    console.error(err.message);
-  });
-  // Test that the parsed records matched the expected records
-  parser.on("end", async function () {
-    console.log(records);
+  if (
+    req.file.mimetype ===
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+    req.file.mimetype === "application/vnd.ms-excel"
+  ) {
+    let result = excelToJson({
+      source: req.file.buffer,
+      header: {
+        rows: 1,
+      },
+      columnToKey: {
+        A: "name",
+        B: "email",
+        C: "phone",
+        D: "membersAllowed",
+      },
+    });
+    result = result.invitees.filter(
+      ({ name, email }) =>
+        name !== "example name" || email !== "example@xyz.com"
+    );
+    console.log(result);
     await Guest.findByIdAndUpdate(
       req.params.guestId,
       {
-        $push: { guests: { $each: records } },
+        $push: { guests: { $each: result } },
       },
       { runValidators: true }
     );
@@ -66,12 +77,44 @@ const addGuestInBulk = asyncHandler(async (req, res) => {
       status: "success",
       message: "Guests has been added in the list",
     });
-  });
+  } else if (req.file.mimetype === "text/csv") {
+    const parser = parse(req.file.buffer, { columns: true });
+    // Use the readable stream api to consume records
+    parser.on("readable", function () {
+      let record;
+      while ((record = parser.read()) !== null) {
+        records.push(record);
+      }
+    });
+    // Catch any error
+    parser.on("error", function (err) {
+      console.error(err.message);
+    });
+    // Test that the parsed records matched the expected records
+    parser.on("end", async function () {
+      await Guest.findByIdAndUpdate(
+        req.params.guestId,
+        {
+          $push: { guests: { $each: records } },
+        },
+        { runValidators: true }
+      );
+      res.json({
+        status: "success",
+        message: "Guests has been added in the list",
+      });
+    });
+  } else {
+    res.status(400).json({
+      status: "error",
+      message: "Wrong file type provided",
+    });
+  }
 });
 
 const openStatus = asyncHandler(async (req, res) => {
-  const { guestId, singleGuestId } = req.body;
-  const guest = await Guest.findById(guestId);
+  const { eventId, singleGuestId } = req.body;
+  const guest = await Guest.findOne({ event: eventId });
   const singleGuest = guest.guests.id(singleGuestId);
   singleGuest.set({ status: "Open" });
   await guest.save();
@@ -127,7 +170,7 @@ const getGuestListByUserFiltered = asyncHandler(async (req, res) => {
 });
 
 const getSingleGuest = asyncHandler(async (req, res) => {
-  const guest = await Guest.findById(req.params.guestId);
+  const guest = await Guest.findOne({ event: req.params.eventId });
   const singleGuest = guest.guests.id(req.params.singleGuestId);
   res.json({
     status: "success",
@@ -137,8 +180,8 @@ const getSingleGuest = asyncHandler(async (req, res) => {
 });
 
 const guestResponse = asyncHandler(async (req, res) => {
-  const { adult, child, status, guestId, singleGuestId } = req.body;
-  const guest = await Guest.findById(guestId);
+  const { adult, child, status, eventId, singleGuestId } = req.body;
+  const guest = await Guest.findOne({ event: req.body.eventId });
   const singleGuest = guest.guests.id(singleGuestId);
   singleGuest.set({ adult, child, status });
   await guest.save();
@@ -152,9 +195,9 @@ const sendInvitation = asyncHandler(async (req, res) => {
   const { guestIds, eventId } = req.body;
   const event = await Event.findById(eventId);
   const guestList = await Guest.findOne({ event: eventId });
-  const emails = guestList.guests.map(({ id, email }) => {
+  const guestsInfo = guestList.guests.map(({ id, email }) => {
     if (guestIds.includes(id)) {
-      return email;
+      return { id, email };
     } else return;
   });
   const phoneNumbers = guestList.guests.map(({ id, phone }) => {
@@ -162,20 +205,10 @@ const sendInvitation = asyncHandler(async (req, res) => {
       return phone;
     }
   });
-  const html = `
-  <html>
-  <head>
-  <title>Invitation</title>
-  </head>
-  <body>
-  <p>Hey! You got an invitation for ${
-    event.name
-  } Event.Click on the button below to view your Event Details.</p>
-  <button style='display:block;background-color:blue; border:none;padding:10px;border-radius:10px;margin:auto;margin-top: 30px;'><a style='text-decoration:none; color:white;' href=${"http://guest-event-view-screen/:eventId"}><b>View Invitation</b></a></button>
-  </body>
-  </html>`;
-  await sendMail(`Invitation for ${event.name} Event`, html, emails);
-  await sendSms("This is a message", phoneNumbers);
+  const ipAddress = req.socket.remoteAddress;
+  const address = ipAddress.replace(/^.*:/, "");
+  await sendBulkPersonalizedEmails(event, guestsInfo, address);
+  // await sendSms("This is a message", phoneNumbers);
   const guests = guestList.guests.map((guest) => {
     if (guestIds.includes(guest.id)) {
       return { ...guest, status: "Pending" };
@@ -187,6 +220,21 @@ const sendInvitation = asyncHandler(async (req, res) => {
   res.json({
     status: "success",
     message: "Invitations have been sent successfully",
+  });
+});
+
+const leftInvitees = asyncHandler(async (req, res) => {
+  const userGuestList = await Guest.find({ user: req.user.id });
+  let totalInviteesUser = 0;
+  userGuestList.forEach(({ guests }) => (totalInviteesUser += guests.length));
+  let remainingInvitees = req.user.guestNum - totalInviteesUser;
+  if (remainingInvitees < 0) {
+    remainingInvitees = 0;
+  }
+  res.json({
+    status: "success",
+    message: "Remaining Invitees has been fetched",
+    remainingInvitees,
   });
 });
 
@@ -221,6 +269,7 @@ export {
   getGuestListByUser,
   getGuestListByEvent,
   sendInvitation,
+  leftInvitees,
   addGuestsFromAddressBook,
   getGuestListByUserFiltered,
 };

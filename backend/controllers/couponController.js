@@ -1,5 +1,7 @@
 import expressAsyncHandler from "express-async-handler";
 import Coupon from "../models/couponModel.js";
+import Subscription from "../models/subscriptionModel.js";
+import { getCouponDiscountAmount } from "../utils/applyCoupon.js";
 
 const addCoupon = expressAsyncHandler(async (req, res) => {
   const { name, amount, amountType, plans } = req.body;
@@ -22,6 +24,45 @@ const allCoupons = expressAsyncHandler(async (req, res) => {
     status: "success",
     message: "Coupons has been successfully fetched",
     coupons,
+  });
+});
+
+const getCouponByPlan = expressAsyncHandler(async (req, res) => {
+  const { planName } = req.params;
+  const coupon = await Coupon.find({ plans: planName });
+  res.json({
+    status: "success",
+    message: "Coupons has been successfully fetched",
+    coupon,
+  });
+});
+
+const applyCoupon = expressAsyncHandler(async (req, res) => {
+  const { couponText, planId, planType } = req.body;
+  const plan = await Subscription.findById(planId);
+  const coupon = await Coupon.findOne({
+    name: { $regex: new RegExp("^" + couponText.toLowerCase(), "i") },
+  });
+  if (!coupon) {
+    return res.status(404).json({
+      status: "error",
+      message: "Coupon not found",
+    });
+  }
+  if (!coupon.plans.includes(plan.name)) {
+    return res.status(406).json({
+      status: "error",
+      message: "This Coupon is not applicable",
+    });
+  }
+  const { actualPrice, discountedPrice, discountPercentage } =
+    getCouponDiscountAmount(plan, planType, coupon);
+  res.json({
+    status: "success",
+    message: "Coupon has been applied successfully",
+    discountedPrice,
+    actualPrice,
+    discountPercentage,
   });
 });
 
@@ -52,4 +93,12 @@ const deleteCoupon = expressAsyncHandler(async (req, res) => {
   });
 });
 
-export { addCoupon, allCoupons, getCoupon, updateCoupon, deleteCoupon };
+export {
+  addCoupon,
+  allCoupons,
+  getCoupon,
+  updateCoupon,
+  deleteCoupon,
+  applyCoupon,
+  getCouponByPlan,
+};

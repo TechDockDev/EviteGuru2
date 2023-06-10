@@ -19,9 +19,13 @@ adminRouter.use(express.json());
 adminRouter.get("/auth", adminAuth, authenticated);
 adminRouter.post("/login", authAdmin);
 adminRouter.post("/create-subadmin", registerAdmin);
-adminRouter.get("/admin-list", getAllAdmins);
+adminRouter.get("/admin-list", adminAuth, getAllAdmins);
 adminRouter.post("/change-password", adminAuth, changePassword);
 adminRouter.get("/logout", logOut);
-adminRouter.route("/:id").get(getAdmin).delete(deleteAdmin).put(updateAdmin);
+adminRouter
+  .route("/:id")
+  .get(adminAuth, getAdmin)
+  .delete(adminAuth, deleteAdmin)
+  .put(adminAuth, updateAdmin);
 
 export default adminRouter;

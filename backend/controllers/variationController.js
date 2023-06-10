@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Variation from "../models/variationModel.js";
 import Sticker from "../models/stickerModel.js";
+import expressAsyncHandler from "express-async-handler";
 
 const getVariationById = asyncHandler(async (req, res) => {
   const variation = await Variation.findById(req.params._id);
@@ -59,6 +60,18 @@ const allVariationOfUser = asyncHandler(async (req, res) => {
   });
 });
 
+const leftVariations = expressAsyncHandler(async (req, res) => {
+  const totalVariationsUser = await Variation.find({
+    user: req.user.id,
+  }).count();
+  const leftVariations = req.user.templateNum - totalVariationsUser;
+  res.json({
+    status: "success",
+    message: "Remaining Variations have been fetched",
+    leftVariations,
+  });
+});
+
 const sendImage = asyncHandler((req, res) => {
   res.sendFile(`/uploads/VariationImages/${req.params.imgName}`, { root: "." });
 });
@@ -90,6 +103,7 @@ export {
   singleVariation,
   editVariation,
   createVariation,
+  leftVariations,
   saveImage,
   sendImage,
   getStickers,
