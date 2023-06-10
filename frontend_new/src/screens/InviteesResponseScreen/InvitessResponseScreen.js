@@ -6,9 +6,11 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import AnimationEnvelope from "./AnimationEnvelope";
+import AttendingModal from "./AttendingModal";
 
 const InviteesResponseScreen = () => {
   const [event, setEvent] = useState(null);
+  const [openAttendingModal, setOpenAttendingModal] = useState(false)
   const navigate = useNavigate();
   const { eventId } = useParams();
   const dispatch = useDispatch();
@@ -18,7 +20,11 @@ const InviteesResponseScreen = () => {
   //   );
   //   console.log("eventPreviewDetails=>", userEventTemplate);
 
-  //
+  //=============================
+  const toggleAttendingModal = ()=>{
+    setOpenAttendingModal(!openAttendingModal)
+  }
+  //=============================
 
   // =========get Event Details =======
   const getEventDetails = async () => {
@@ -234,7 +240,7 @@ const InviteesResponseScreen = () => {
                   height: "100%",
                 }}
               /> */}
-              <AnimationEnvelope src={`/images/getImage?path=/${event?.variation?.previewImage}`}/>
+              <AnimationEnvelope toggleAttendingModal ={toggleAttendingModal} src={`/images/getImage?path=/${event?.variation?.previewImage}`}/>
             </Grid>
 
             {/* == 👆 Template preview button and image 👆   ==*/}
@@ -304,7 +310,7 @@ const InviteesResponseScreen = () => {
                 justifyContent={"center"}
                 spacing={2}
               >
-                <Button variant="contained" color="success">
+                <Button onClick={()=>{toggleAttendingModal()}} variant="contained" color="success">
                   Will Attend
                 </Button>
                 <Button
@@ -336,6 +342,8 @@ const InviteesResponseScreen = () => {
           {/* == 👆 Preview main section container  | Description and preview image 👆   ==*/}
         </Grid>
       </Stack>
+      {/* === 👇 attending modal  👇   ===*/}
+      <AttendingModal toggleModal ={toggleAttendingModal} open={openAttendingModal}/>
     </Box>
   );
 };
