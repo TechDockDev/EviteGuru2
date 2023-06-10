@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Authentication } from "../../firebaseAuth/firebase";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useNavigate,  } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import axios from "axios";
@@ -75,7 +75,11 @@ const LogInModal = ({
       }
     } catch (error) {
       console.log("error=>", error);
-      dispatch(openSnackbar("login Failed !", "error"));
+      if (error?.response?.data?.message) {
+        dispatch(openSnackbar(error?.response?.data?.message, "error"));
+      } else {
+        dispatch(openSnackbar(error?.reponse?.statusText, "error"));
+      }
     }
   };
 

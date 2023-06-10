@@ -125,26 +125,21 @@ const MyEvents = () => {
   // ====end of get all events=
 
   // =====get number of events =====
-  const noOfEvents = async () => {
+  const noOfLefts = async () => {
     try {
       const res = await axios.get(`${Constants.URL}/variation/left-variation`);
-      if (res.status === 200) {
+      const resp = await axios.get(`${Constants.URL}/guest/left-invitee`);
+      if (res.status === 200 && resp.status === 200) {
         console.log("events=>", res);
-        setLeft({ ...left, events: res?.data?.leftVariations });
+        setLeft({
+          events: res?.data?.leftVariations,
+          invitees: resp?.data?.remainingInvitees,
+        });
       }
     } catch (error) {}
   };
   // ====endof func ================
   // =====get number of invitess =====
-  const noOfInvitees = async () => {
-    try {
-      const res = await axios.get(`${Constants.URL}/guest/left-invitee`);
-      if (res.status === 200) {
-        console.log("invitees=>", res);
-        setLeft({ ...left, invitees: res?.data?.remainingInvitees });
-      }
-    } catch (error) {}
-  };
   // ====endof func ================
   useEffect(() => {
     getAllEvents(page + 1, rowsPerPage);
@@ -152,13 +147,13 @@ const MyEvents = () => {
 
   //  ================
   useEffect(() => {
-    noOfEvents();
-    noOfInvitees();
+    noOfLefts();
+    // noOfInvitees();
     dispatch(setPageTitle("My Events"));
 
-    return () => {
-      dispatch(setPageTitle(""));
-    };
+    // return () => {
+    //   dispatch(setPageTitle(""));
+    // };
   }, []);
 
   return (

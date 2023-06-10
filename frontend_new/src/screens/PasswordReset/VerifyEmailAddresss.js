@@ -21,8 +21,10 @@ import {
   signInWithPhoneNumber,
 } from "firebase/auth";
 import { Authentication } from "../../firebaseAuth/firebase";
+import { useNavigate } from "react-router";
 
 const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
@@ -119,8 +121,11 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
       })
       .catch((error) => {
         console.log(error);
+        setVerified(false);
         // User couldn't sign in (bad verification code?)
+
         dispatch(openSnackbar("invalid otp , please try again", "error"));
+        navigate("/")
         // ...
       });
   };

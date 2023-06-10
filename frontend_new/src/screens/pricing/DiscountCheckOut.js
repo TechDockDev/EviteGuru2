@@ -28,7 +28,7 @@ const DiscountCheckOut = () => {
   const dispatch = useDispatch();
   const { state } = useLocation();
   const navigate = useNavigate();
-  console.log("state", state);
+  // console.log("state", state);
   const [applied, setApplied] = useState(false);
   const [coupons, setCoupons] = useState([]);
   const [couponCode, setCouponCode] = useState("");
@@ -48,7 +48,7 @@ const DiscountCheckOut = () => {
           planType: state?.requestType,
         });
         if (res?.status === 200) {
-          console.log("response=>", res);
+          // console.log("response=>", res);
           setDiscount(Number(res?.data?.discountedPrice));
           if (res?.data?.discountPercentage) {
             setDiscountPercent(Number(res?.data?.discountPercentage));
@@ -74,7 +74,12 @@ const DiscountCheckOut = () => {
         dispatch(openSnackbar("Provide a coupon code to apply!", "error"));
       }
     } catch (error) {
-      dispatch(openSnackbar("error", "error"));
+      if (error?.response?.data?.message) {
+        dispatch(openSnackbar(error?.response?.data?.message, "error"));
+      } else {
+        dispatch(openSnackbar("error", "error"));
+        console.log("error=>", error);
+      }
     }
   };
 
@@ -223,7 +228,7 @@ const DiscountCheckOut = () => {
                 id="standard-adornment-password"
                 type={"text"}
                 size="small"
-                value={applied ? "" : couponCode}
+                value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
                 fullWidth
                 sx={{
@@ -260,7 +265,7 @@ const DiscountCheckOut = () => {
                       }}
                     >
                       <CiDiscount1 />
-                      {couponCode}
+                      {/* {couponCode} */}
                     </InputAdornment>
                   ) : (
                     ""

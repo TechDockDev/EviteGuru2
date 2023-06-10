@@ -67,6 +67,13 @@ const EventStats = () => {
   }
   const columns = [
     {
+      field: "_id",
+      headerName: "Sr. No.",
+      width: 90,
+      renderCell: (index) =>
+        index?.api?.getRowIndexRelativeToVisibleRows(index?.row?._id) + 1,
+    },
+    {
       field: "name",
       headerName: "Name",
       width: 200,
@@ -366,7 +373,7 @@ const EventStats = () => {
           getRowId={(row) => row?._id}
           autoHeight={true}
           pageSizeOptions={[5]}
-          checkboxSelection
+          // checkboxSelection
           disableRowSelectionOnClick
           getRowClassName={(params) =>
             params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"

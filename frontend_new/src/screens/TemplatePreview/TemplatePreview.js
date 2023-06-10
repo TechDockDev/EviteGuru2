@@ -258,13 +258,9 @@ const TemplatePreview = (props) => {
                 <Typography variant="h2" fontSize="20px" fontWeight="600">
                   More Like This
                 </Typography>
-                <Button
-                  variant="text"
-                  // onClick={() => navigate("/dashboard/edit/fresh-template")}
-                  onClick={handleFreshTemplateRedirection}
-                >
+                {/* <Button variant="text" onClick={handleFreshTemplateRedirection}>
                   CREATE FRESH ONE
-                </Button>
+                </Button> */}
               </Stack>
             ) : (
               <Stack
@@ -275,15 +271,15 @@ const TemplatePreview = (props) => {
                 spacing={1}
               >
                 <Typography variant="h2" fontSize="20px" fontWeight="600">
-                  Please Select A Template To Customize OR
+                  Please Select A Template To Customize
                 </Typography>
-                <Button
+                {/* <Button
                   variant="text"
                   // onClick={() => navigate("/dashboard/edit/fresh-template")}
                   onClick={handleFreshTemplateRedirection}
                 >
                   CREATE FRESH ONE
-                </Button>
+                </Button> */}
               </Stack>
             )}
 

@@ -95,7 +95,7 @@ const BrowseTemplate = () => {
       // bgcolor={"green"}
     >
       <Typography
-        variant="h1"
+        variant="h5"
         sx={{
           color: "#795DA8",
           fontWeight: "700",

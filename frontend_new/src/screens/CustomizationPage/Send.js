@@ -35,6 +35,7 @@ import {
 import { LoadingButton } from "@mui/lab";
 import ImportContacts from "./ImportContacts";
 import { Constants } from "../../redux/constants/action-types";
+import { GrDocumentText } from "react-icons/gr";
 
 const Send = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -45,6 +46,7 @@ const Send = () => {
   const [listStatus, setListStatus] = useState(false);
   const [loading, setLoading] = useState(true);
   const [importModal, setImportModal] = useState(false);
+  const [left, setLeft] = useState({ events: 0, invitees: 0 });
   const [insideButton, setinsideButton] = useState({
     loading: false,
     id: "",
@@ -166,7 +168,11 @@ const Send = () => {
           xs={12}
           sx={{ alignItems: "center", display: "flex" }}
         >
-          <Stack width={"100%"}>
+          <Stack
+            width={"100%"}
+            direction={"row"}
+            justifyContent={"space-between"}
+          >
             <GridToolbarQuickFilter
               fullWidth
               variant="outlined"
@@ -179,6 +185,50 @@ const Send = () => {
                 },
               }}
             />
+            <Button
+              variant="text"
+              size="small"
+              startIcon={
+                <Typography
+                  sx={{
+                    fontSize: { xs: "5px", sm: "11px", md: "12px", lg: "13px" },
+                    display: {
+                      xs: "none",
+                      sm: "block",
+                      md: "block",
+                      lg: "block",
+                    },
+                  }}
+                >
+                  <GrDocumentText />
+                </Typography>
+              }
+              endIcon={
+                <Typography
+                  // component={"span"}
+                  variant="caption"
+                  sx={
+                    {
+                      // fontSize: { sm: "14px", xs: "10px", md: "14px" },
+                    }
+                  }
+                >
+                  {left?.invitees}
+                </Typography>
+              }
+              sx={{
+                color: "rgba(119, 119, 119, 1)",
+                "& .css-jcxoq4-MuiButton-endIcon": {
+                  color: "rgba(121, 93, 168, 1)",
+                  // fontSize: "15px",
+                  fontWeight: "800",
+                },
+                fontSize: { sm: "12px", xs: "10px", md: "13px", lg: "14px" },
+                cursor: "text",
+              }}
+            >
+              Invitees Left
+            </Button>
           </Stack>
         </Grid>
       </Grid>
@@ -188,7 +238,7 @@ const Send = () => {
   const columns = [
     {
       field: "_id",
-      headerName: "ID",
+      headerName: "Sr. No.",
       width: 90,
       renderCell: (index) =>
         index?.api?.getRowIndexRelativeToVisibleRows(index?.row?._id) + 1,
@@ -197,6 +247,7 @@ const Send = () => {
       field: "name",
       headerName: "Name",
       width: 200,
+      
     },
     {
       field: "email",
@@ -291,12 +342,13 @@ const Send = () => {
       });
       if (res.status === 200) {
         setListStatus(true);
-        dispatch(openSnackbar(res.data.message, "success"));
+        // dispatch(openSnackbar(res.data.message, "success"));
         await getGuestListDetails(res.data.guestList?._id);
         dispatch(setCreatedListId(res.data.guestList?._id));
       }
     } catch (error) {
       // console.log("error=>", error);
+      setListStatus(false);
       dispatch(openSnackbar("something went wrong", "error"));
     }
   };
@@ -315,11 +367,25 @@ const Send = () => {
     }
   };
   // ===end of function ===========
+  // =====get number of invitess =====
+  const noOfInvitees = async () => {
+    try {
+      const res = await axios.get(`${Constants.URL}/guest/left-invitee`);
+      if (res.status === 200) {
+        console.log("invitees=>", res);
+        setLeft({ ...left, invitees: res?.data?.remainingInvitees });
+      }
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  // ====endof func ================
   // ====useEffect =============
   useEffect(() => {
     if (id) {
       getSingleEventDetails();
       createGuestList();
+      noOfInvitees();
     }
     if (createdEventDetails?.guestListId) {
       getGuestListDetails(createdEventDetails?.guestListId);
@@ -335,7 +401,7 @@ const Send = () => {
       <Stack width={"100%"} p={1}>
         <Stack>
           <Typography variant="h5" fontWeight={"800"} textAlign={"center"}>
-            Add Invitees , Send Inivitation
+            Invitees
           </Typography>
         </Stack>
         <Box m={1} textAlign="left" marginLeft="auto">
@@ -345,6 +411,7 @@ const Send = () => {
             <Button
               variant="contained"
               color="primary"
+              sx={{ color: "white" }}
               onClick={() => createGuestList()}
             >
               Create List
@@ -372,7 +439,7 @@ const Send = () => {
               disabled={rowSelectionModel.length >= 1 ? false : true}
               onClick={() => handleSendAll()}
             >
-              Send All
+              Send Many
             </Button>
           )}
           &nbsp; &nbsp;
@@ -460,6 +527,7 @@ const Send = () => {
             },
           }}
           getRowId={(row) => row._id}
+          isRowSelectable={(params) => params.row.status === "Not Invited"}
           rowSelection={true}
           autoHeight={true}
           pageSizeOptions={[5]}

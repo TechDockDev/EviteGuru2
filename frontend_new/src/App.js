@@ -84,7 +84,7 @@ const App = () => {
       </Snackbar>
       <Routes>
         <Route
-          path="/guest-event-view-screen/:eventId"
+          path="/guest-event-view-screen/:eventId/:guestId"
           element={<InviteesResponseScreen />}
         />
         <Route path="/" element={<Header />}>

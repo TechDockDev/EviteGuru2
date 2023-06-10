@@ -36,7 +36,17 @@ const AddressBook = () => {
           xs={12}
           sx={{ alignItems: "center", display: "flex" }}
         >
-          <GridToolbar />
+          <GridToolbar
+            csvOptions={{
+              fileName: "Contact-List",
+              // delimiter: ";",
+              // utf8WithBom: true,
+            }}
+            printOptions={{
+              hideFooter: true,
+              hideToolbar: true,
+            }}
+          />
         </Grid>
         <Grid
           item
@@ -66,7 +76,7 @@ const AddressBook = () => {
   const columns = [
     {
       field: "_id",
-      headerName: "ID",
+      headerName: "Sr. No.",
       width: 90,
       renderCell: (index) =>
         index?.api?.getRowIndexRelativeToVisibleRows(index?.row?._id) + 1,
@@ -185,7 +195,7 @@ const AddressBook = () => {
                 getRowId={(row) => row._id}
                 autoHeight={true}
                 pageSizeOptions={[5]}
-                checkboxSelection
+                // checkboxSelection
                 disableRowSelectionOnClick
                 getRowClassName={(params) =>
                   params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
@@ -193,6 +203,7 @@ const AddressBook = () => {
                 sx={{
                   bgcolor: "none",
                   border: "none",
+                  px: 2,
                   "& .odd": { bgcolor: "#F7F7F7 !important" },
                   "& .MuiCheckbox-root": {
                     color: "black",
@@ -203,7 +214,6 @@ const AddressBook = () => {
                 }}
               />
             </Stack>
-           
           </>
         )}
 

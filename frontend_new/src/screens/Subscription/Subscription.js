@@ -18,7 +18,7 @@ const Subscriptions = () => {
     try {
       const res = await axios.get(`${Constants.URL}/plan/all`);
       if (res.status === 200) {
-        console.log("res=>", res?.data?.plans);
+        // console.log("res=>", res?.data?.plans);
         setallPlans(res?.data?.plans);
         setloading(false);
       }
