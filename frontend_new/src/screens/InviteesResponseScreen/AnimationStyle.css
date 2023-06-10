@@ -18,10 +18,34 @@
 
 .invitation {
   width: 500px;
+  height: 308px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  perspective: 1000px;
+  
+
+}
+.perspective{
+  position: absolute;
+  width: 500px;
+  height: 308px;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+  perspective: 1200px;
+
+}
+.backEnvelope{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 500px;
+  height: 308px;
+  background: #795da8;
+  top: 0px;
+  box-shadow: inset 0px 0px 10px 1px rgba(64,54,64,1);
 }
 
 .envelope {
@@ -31,6 +55,9 @@
   position: relative;
   z-index: 1;
   box-shadow: 5px 5px 10px black;
+  transform: rotateY(-180deg);
+
+    backface-visibility: hidden;
 }
 
 .envelope.is-open:before,
@@ -71,6 +98,8 @@
   left: 0;
   top: 0;
   transform-origin: 50% 0%;
+  transform: rotateY(-180deg);
+
   z-index: 2;
 }
 
@@ -86,7 +115,7 @@
   bottom: 0px;
   /* top: 50%; */
   /* transform: translate(0, -24%); */
-  perspective: 1200px;
+  /* perspective: 1200px; */
 }
 
 .card {
@@ -157,12 +186,14 @@
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+  transform: rotateY(-180deg);
+
 }
 
 @media screen and (max-width: 570px) {
 
   .invitation,
-  .envelope {
+  .envelope , .backEnvelope, .perspective{
     width: 300px;
     height: 189px;
   }
@@ -180,7 +211,7 @@
 
   .flap {
     border-right: 150px solid transparent;
-    border-top: 153.8461538462px solid #795da8;
+    border-top: 95px solid #795da8;
     border-left: 150px solid transparent;
   }
 
