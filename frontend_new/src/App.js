@@ -27,7 +27,7 @@ import {
   userAuth,
 } from "./redux/action/userActions";
 import Send from "./screens/CustomizationPage/Send";
-import InviteesResponseScreen from "./screens/InviteesResponseScreen/InvitessResponseScreen";
+import InviteesResponseScreen from "./screens/InviteesResponseScreen/InviteesResponseScreen";
 import Enterprise from "./screens/Enterprise/Enterprise";
 import { Constants } from "./redux/constants/action-types";
 import PaymentSuccessScreen from "./screens/PaymentSuccessScreen/PaymentSuccessScreen";

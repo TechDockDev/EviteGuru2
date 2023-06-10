@@ -41,6 +41,7 @@
   justify-content: center;
   align-items: center;
   position: absolute;
+  flex-direction: column;
   width: 500px;
   height: 308px;
   background: #795da8;
@@ -92,7 +93,7 @@
 
 .flap {
   border-right: 250px solid transparent;
-  border-top: 153.8461538462px solid #795da8;
+  border-top: 159.8461538462px solid #795da8;
   border-left: 250px solid transparent;
   position: absolute;
   left: 0;
@@ -131,7 +132,7 @@
 
 .face {
   width: 100%;
-  height: auto;
+  height: 307px;
   /* left: 0; */
   position: absolute;
   bottom: 0;
@@ -221,6 +222,9 @@
 
   .mask {
     left: 7.5px;
+  }
+  .face{
+    height: 188px;
   }
 }
 
