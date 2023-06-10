@@ -4,7 +4,7 @@ import { Bounce, gsap } from "gsap";
 import { Backdrop, Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import { CancelOutlined } from "@mui/icons-material";
 import { Sine } from "gsap";
-const AnimationEnvelope = ({ src }) => {
+const AnimationEnvelope = ({ src, toggleAttendingModal }) => {
    const [envelopeOpen, setEnvelopeOpen] = useState(false);
    const [anim, setAnim] = useState("");
 
@@ -149,7 +149,7 @@ const AnimationEnvelope = ({ src }) => {
                      bottom: "20px",
                   }}>
                   <Box maxWidth={"500px"} width={"100%"} display={"flex"} justifyContent={"space-around"}>
-                     <Button disableElevation variant="contained" color="success">
+                     <Button disableElevation variant="contained" color="success" onClick={toggleAttendingModal}>
                         Will Attend
                      </Button>
                      <Button
