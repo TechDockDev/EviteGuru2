@@ -24,6 +24,7 @@ import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import { DataContext } from "../AppContext";
+import { url } from "../url";
 
 const AdminTemplateCreateScreen = () => {
    const [descModal, setDescModal] = useState(false)
@@ -472,7 +473,7 @@ const AdminTemplateCreateScreen = () => {
             return function () {
                return fabric.util.object.extend(toObject.call(this), {
                   name: this.name,
-                  src: `http://192.168.29.249:8085/api/v1/admin/template/sendImage/${this.name}`,
+                  src: `${url}/api/v1/admin/template/sendImage/${this.name}`,
                });
             };
          })(fabric.Image.prototype.toObject);
