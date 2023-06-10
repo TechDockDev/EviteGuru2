@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./AnimationStyle.css";
 import { Bounce, gsap } from "gsap";
-import { Power4 } from "gsap";
-import { Power1 } from "gsap";
-import { Circ } from "gsap";
-import { Backdrop, Box, Button, IconButton, Stack } from "@mui/material";
+import { Backdrop, Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import { CancelOutlined } from "@mui/icons-material";
+import { Sine } from "gsap";
 const AnimationEnvelope = ({ src }) => {
    const [envelopeOpen, setEnvelopeOpen] = useState(false);
    const [anim, setAnim] = useState("");
@@ -13,7 +11,7 @@ const AnimationEnvelope = ({ src }) => {
    const [open, setOpen] = useState(false);
    const toggleBackdrop = () => {
       if (open) {
-         anim.revert() 
+         anim.revert();
          setOpen(!open);
          setEnvelopeOpen(false);
       } else {
@@ -26,29 +24,35 @@ const AnimationEnvelope = ({ src }) => {
 
    const pullOut = () => {
       const tl = gsap
-         .timeline()
-         .to(".flap", {
+         .timeline().delay(1)
+         .to(".perspective", {
+            duration: 0.6,
+            rotationY: 180,
+            ease: Sine.easeInOut,
+            
+         }).to(".flap", {
             duration: 0.6,
             rotationX: 180,
-            ease: Power1.ease,
+            ease: Sine.easeInOut,
+            delay:0.6
          })
          .to(".invitation", {
             duration: 0.5,
             scale: 0.8,
-            ease: Power4.ease,
+            ease: Sine.easeInOut,
          })
          .set(".flap", {
             zIndex: 0,
-            ease: Circ.ease,
+            
          })
          .set(".mask", {
             height: "1000px",
-            ease: Circ.ease,
+            
          })
          .to(".face", {
             duration: 0.9,
             bottom: "600px",
-            ease: Circ.ease,
+            ease: Sine.easeInOut,
          })
          .set(".mask", {
             overflow: "visible",
@@ -61,17 +65,17 @@ const AnimationEnvelope = ({ src }) => {
          .set(".face", {
             // duration: 0.5,
             height: "auto",
-            ease: Circ.ease,
+            ease: Sine.easeInOut,
          })
          .to(".face", {
             duration: 0.5,
             // bottom: "-399px",
             bottom: "0px",
-            ease: Bounce.ease,
+            ease: Bounce.inOut,
          })
          .to(".invitation", {
             scale: 0.85,
-            ease: Circ.ease,
+            ease: Sine.inOut,
          });
 
       return tl;
@@ -107,54 +111,57 @@ const AnimationEnvelope = ({ src }) => {
                   <CancelOutlined sx={{ color: "#795da8", fontSize: "30px" }} />
                </IconButton>
                <div className="invitation">
-                  <div className={`envelope ${envelopeOpen ? "is-open" : ""}`}>
-                     <div className="mask">
-                        <div className="card">
-                           <div className="face">
-                              <img src={src} alt="img" srcset="" />
+                  <div className="perspective">
+                     <div className={`envelope ${envelopeOpen ? "is-open" : ""}`}>
+                        <div className="mask">
+                           <div className="card">
+                              <div className="face">
+                                 <img src={src} alt="img" />
+                              </div>
                            </div>
                         </div>
                      </div>
+                     <div className="flap"></div>
+                     {envelopeOpen && (
+                        <button
+                           onClick={(e) => {
+                              e.stopPropagation();
+                              setEnvelopeOpen(false);
+                              anim.restart();
+                           }}
+                           className="restart">
+                           Re-Open
+                        </button>
+                     )}
+                  <div className="backEnvelope">
+                     <Typography width={"100%"} mt={3} textAlign={"center"} fontWeight={"600"}>New Hero</Typography>
                   </div>
-                  <div className="flap"></div>
-                  {envelopeOpen && (
-                     <button
-                        onClick={(e) => {
-                           e.stopPropagation();
-                           setEnvelopeOpen(false);
-                           anim.restart();
-                        }}
-                        className="restart">
-                        Re-Open
-                     </button>
-                  )}
+                  </div>
                </div>
                <Stack
-                direction={"row"}
-                alignItems={"center"}
-                justifyContent={"center"}
-                sx={{
-                  // border:"1px solid red",
-                  position:"absolute",
-                  width:"100%",
-                  bottom:"20px",
-                }}
-              ><Box maxWidth={"500px"} width={"100%"} display={"flex"} justifyContent={"space-around"}>
-
-                <Button disableElevation variant="contained" color="success">
-                  Will Attend
-                </Button>
-                <Button
-                disableElevation
-                  variant="contained"
-                  sx={{ color: "white" }}
-                  //   onClick={saveAndContinue}
-                >
-                  Not Attend
-                </Button>
-              </Box>
-
-              </Stack>
+                  direction={"row"}
+                  alignItems={"center"}
+                  justifyContent={"center"}
+                  sx={{
+                     // border:"1px solid red",
+                     position: "absolute",
+                     width: "100%",
+                     bottom: "20px",
+                  }}>
+                  <Box maxWidth={"500px"} width={"100%"} display={"flex"} justifyContent={"space-around"}>
+                     <Button disableElevation variant="contained" color="success">
+                        Will Attend
+                     </Button>
+                     <Button
+                        disableElevation
+                        variant="contained"
+                        sx={{ color: "white" }}
+                        //   onClick={saveAndContinue}
+                     >
+                        Not Attend
+                     </Button>
+                  </Box>
+               </Stack>
             </div>
          </Backdrop>
       </>
