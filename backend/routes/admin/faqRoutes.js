@@ -5,11 +5,12 @@ import {
   getAllFaqs,
   updateFaq,
 } from "../../controllers/faqController.js";
+import { adminAuth } from "../../middlewares/adminAuthMiddleware.js";
 const faqRouter = express.Router();
 
-faqRouter.get("/get", getAllFaqs);
-faqRouter.post("/create", createFaq);
-faqRouter.patch("/update", updateFaq);
-faqRouter.delete("/delete/:faqId", deleteFaq);
+faqRouter.get("/get", adminAuth, getAllFaqs);
+faqRouter.post("/create", adminAuth, createFaq);
+faqRouter.patch("/update", adminAuth, updateFaq);
+faqRouter.delete("/delete/:faqId", adminAuth, deleteFaq);
 
 export default faqRouter;

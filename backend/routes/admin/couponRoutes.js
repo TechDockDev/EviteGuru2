@@ -6,15 +6,16 @@ import {
   getCoupon,
   updateCoupon,
 } from "../../controllers/couponController.js";
+import { adminAuth } from "../../middlewares/adminAuthMiddleware.js";
 
 const couponRouter = express.Router();
 
-couponRouter.post("/create", addCoupon);
-couponRouter.get("/all", allCoupons);
+couponRouter.post("/create", adminAuth, addCoupon);
+couponRouter.get("/all", adminAuth, allCoupons);
 couponRouter
   .route("/:couponId")
-  .get(getCoupon)
-  .patch(updateCoupon)
-  .delete(deleteCoupon);
+  .get(adminAuth, getCoupon)
+  .patch(adminAuth, updateCoupon)
+  .delete(adminAuth, deleteCoupon);
 
 export default couponRouter;

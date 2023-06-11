@@ -23,6 +23,7 @@ import enterpriseUserRoutes from "./routes/user/enterpriseRoutes.js";
 import enterpriseRoutes from "./routes/admin/enterpriseRoutes.js";
 import templateUserRoutes from "./routes/user/templateUserRoutes.js";
 import guestRoutes from "./routes/admin/guestRoutes.js";
+import couponUserRoutes from "./routes/user/couponUserRoutes.js";
 
 //connecting database
 dotenv.config();
@@ -44,6 +45,7 @@ app.use("/api/v1/user/variation", variationRoutes);
 app.use("/api/v1/user/guest", guestUserRoutes);
 app.use("/api/v1/user/plan", subscriptionUserRoutes);
 app.use("/api/v1/user/faq", faqUserRoutes);
+app.use("/api/v1/user/coupon", couponUserRoutes);
 app.use("/api/v1/user/enterprise", enterpriseUserRoutes);
 
 // admin routes

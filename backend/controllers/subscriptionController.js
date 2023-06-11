@@ -3,15 +3,26 @@ import Subscription from "../models/subscriptionModel.js";
 import Stripe from "stripe";
 import Payment from "../models/paymentModel.js";
 import User from "../models/userModel.js";
-import ip from "ip";
+import Coupon from "../models/couponModel.js";
+import { getCouponDiscountAmount } from "../utils/applyCoupon.js";
+import url, { clientUrl } from "../utils/url.js";
 const stripe = new Stripe(
   "sk_test_51MmTTLJyawffnqCDMx48PrzogYc49QK4yGdJOVUuCHljgBpvZFSXtM6I2NNRPkJ5zCDALHohta1hhpcNEkuYxBSs00K7A7xSRZ"
 );
 
 const purchasePlan = expressAsyncHandler(async (req, res) => {
-  const { planId, planType } = req.body;
+  const { planId, planType, couponText } = req.body;
   const plan = await Subscription.findById(planId);
-  const amount = plan.price[`${planType}ly`];
+  const coupon = await Coupon.findOne({
+    name: { $regex: new RegExp("^" + couponText.toLowerCase(), "i") },
+  });
+  let amount = 0;
+  if (couponText) {
+    const { actualPrice } = getCouponDiscountAmount(plan, planType, coupon);
+    amount = actualPrice;
+  } else {
+    amount = plan.price[`${planType}ly`];
+  }
   const session = await stripe.checkout.sessions.create({
     metadata: { plan: plan.name, planId, planType, user: req.user.id },
     currency: "usd",
@@ -28,8 +39,8 @@ const purchasePlan = expressAsyncHandler(async (req, res) => {
       },
     ],
     mode: "payment",
-    success_url: `http://${ip.address()}:8085/api/v1/user/plan/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `http://${ip.address()}:8085/api/v1/user/plan/failure`,
+    success_url: `${url}/api/v1/user/plan/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${url}/api/v1/user/plan/failure`,
   });
   res.json({ url: session.url });
   // res.redirect(303, session.url);
@@ -53,15 +64,14 @@ const paymentSuccess = expressAsyncHandler(async (req, res) => {
   const ipAddress = req.socket.remoteAddress;
   const address = ipAddress.replace(/^.*:/, "");
   res.redirect(
-    `http://${address}:3000/payment/success/status?amount=${session.amount_total}&plan=${session.metadata.plan}`
+    `${clientUrl}/payment/success/status?amount=${session.amount_total
+      .toString()
+      .slice(0, -2)}&plan=${session.metadata.plan}`
   );
 });
 
 const paymentFailure = expressAsyncHandler(async (req, res) => {
-  res.json({
-    status: "failure",
-    message: "Payment has been failed",
-  });
+  res.redirect(`${clientUrl}/`);
 });
 
 const createPlan = expressAsyncHandler(async (req, res) => {

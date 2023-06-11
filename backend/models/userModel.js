@@ -44,6 +44,9 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "event",
     },
+    profilePhoto: {
+      type: String,
+    },
     lastLogin: {
       type: Date,
       default: Date.now,

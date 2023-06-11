@@ -2,7 +2,6 @@ import express from "express";
 import multer from "multer";
 
 import {
-  getVariationById,
   deleteVariation,
   allVariationOfUser,
   singleVariation,
@@ -11,8 +10,10 @@ import {
   saveImage,
   sendImage,
   getStickers,
+  leftVariations,
 } from "../../controllers/variationController.js";
 import { userAuth } from "../../middlewares/authMiddleware.js";
+import { checkAvailabilityOfVariation } from "../../middlewares/availableVariationMiddleware.js";
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -38,20 +39,22 @@ const preview = multer({ storage: previewImages });
 
 const variationRouter = express.Router();
 
-variationRouter.get("/all", allVariationOfUser);
+variationRouter.get("/all", userAuth, allVariationOfUser);
 variationRouter.post(
   "/create",
   userAuth,
+  checkAvailabilityOfVariation,
   preview.single("preview"),
   createVariation
 );
-variationRouter.post("/saveImage", upload.array("image"), saveImage);
-variationRouter.get("/sendImage/:imgName", sendImage);
-variationRouter.get("/stickers", getStickers);
+variationRouter.post("/saveImage", userAuth, upload.array("image"), saveImage);
+variationRouter.get("/sendImage/:imgName", userAuth, sendImage);
+variationRouter.get("/stickers", userAuth, getStickers);
+variationRouter.get("/left-variation", userAuth, leftVariations);
 variationRouter
   .route("/:id")
-  .get(singleVariation)
-  .patch(editVariation)
-  .delete(deleteVariation);
+  .get(userAuth, singleVariation)
+  .patch(userAuth, editVariation)
+  .delete(userAuth, deleteVariation);
 
 export default variationRouter;
