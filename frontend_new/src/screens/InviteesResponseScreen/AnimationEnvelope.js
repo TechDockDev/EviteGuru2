@@ -12,7 +12,7 @@ import {
 import { CancelOutlined } from "@mui/icons-material";
 import { Sine } from "gsap";
 
-const AnimationEnvelope = ({ src, toggleAttendingModal }) => {
+const AnimationEnvelope = ({ src, toggleAttendingModal,guestDetails }) => {
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [anim, setAnim] = useState("");
 

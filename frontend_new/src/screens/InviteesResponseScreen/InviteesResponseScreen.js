@@ -16,7 +16,7 @@ import AttendingModal from "./AttendingModal";
 const InviteesResponseScreen = () => {
   const [event, setEvent] = useState(null);
   const [openAttendingModal, setOpenAttendingModal] = useState(false)
-
+  const [guestDetails, setGuestDetails] = useState(null);
   const navigate = useNavigate();
   const { eventId, guestId } = useParams();
   const dispatch = useDispatch();
@@ -278,12 +278,12 @@ const InviteesResponseScreen = () => {
                 }}
               /> */}
 
-              <AnimationEnvelope
+              {/* <AnimationEnvelope
                 guestDetails={guestDetails}
                 src={`/images/getImage?path=/${event?.variation?.previewImage}`}
-              />
+              /> */}
 
-              <AnimationEnvelope toggleAttendingModal ={toggleAttendingModal} src={`/images/getImage?path=/${event?.variation?.previewImage}`}/>
+              <AnimationEnvelope guestDetails={guestDetails} toggleAttendingModal ={toggleAttendingModal} src={`/images/getImage?path=/${event?.variation?.previewImage}`}/>
             </Grid>
 
             {/* == 👆 Template preview button and image 👆   ==*/}
