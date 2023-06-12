@@ -70,10 +70,6 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
         size: "invisible",
         callback: (response) => {
           // console.log(response);
-          // window.recaptchaVerifier.reset("captcha-button")
-          // window.recaptchaVerifier.render().then(function (widgetId) {
-          //   window.grecaptcha.reset(widgetId);
-          // });
         },
       },
       auth
@@ -84,7 +80,6 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
 
   // ========send otp ==============
   const sendOtpVerificationCode = async (phone) => {
-    
     // window.recaptchaVerifier.render();
     console.log("console is coming=>", phone);
     const auth = getAuth();
@@ -129,16 +124,13 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
         );
       })
       .catch((error) => {
-        navigate("/");
+        // navigate("/");
         console.log(error);
         dispatch(openSnackbar("invalid otp , please try again", "error"));
-        setVerified(false);
-        setModalContent("getOtp");
-        // window.recaptchaVerifier.reset();
+        // setVerified(false);
+        // setModalContent("getOtp");
+
         // User couldn't sign in (bad verification code?)
-        // window.recaptchaVerifier.render().then(function (widgetId) {
-        //   window.grecaptcha.reset(widgetId);
-        // });
 
         // ...
       });
