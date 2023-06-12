@@ -42,7 +42,7 @@ const PasswordReset = (props) => {
 
   const handleVerifyOtp = async (otp) => {
     await props?.verifyOtp(otp);
-    props?.setVerified(true);
+    // props?.setVerified(true);
   };
 
   // ===============================
