@@ -180,10 +180,23 @@ const getSingleGuest = asyncHandler(async (req, res) => {
 });
 
 const guestResponse = asyncHandler(async (req, res) => {
-  const { adult, child, status, eventId, singleGuestId } = req.body;
-  const guest = await Guest.findOne({ event: req.body.eventId });
+  const { adult, child, eventId, singleGuestId } = req.body;
+  console.log(singleGuestId);
+  const guest = await Guest.findOne({ event: eventId });
   const singleGuest = guest.guests.id(singleGuestId);
-  singleGuest.set({ adult, child, status });
+  singleGuest.set({ adult, child, status: "Attending" });
+  await guest.save();
+  res.json({
+    status: "success",
+    message: "Guest Response has been taken successfully",
+  });
+});
+
+const guestResponseDeny = asyncHandler(async (req, res) => {
+  const { eventId, singleGuestId } = req.body;
+  const guest = await Guest.findOne({ event: eventId });
+  const singleGuest = guest.guests.id(singleGuestId);
+  singleGuest.set({ status: "Not Attending" });
   await guest.save();
   res.json({
     status: "success",
@@ -266,6 +279,7 @@ export {
   getGuestList,
   getSingleGuest,
   guestResponse,
+  guestResponseDeny,
   getGuestListByUser,
   getGuestListByEvent,
   sendInvitation,
