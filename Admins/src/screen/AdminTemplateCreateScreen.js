@@ -206,6 +206,9 @@ const AdminTemplateCreateScreen = () => {
       e.target.src,
       (img) => {
         img.scale(0.2);
+        img.name = decodeURI(
+          e.target.src.split("\\")[e.target.src.split("\\").length - 1]
+        );
         editor.canvas.add(img);
         editor.canvas.renderAll();
       },

@@ -10,6 +10,7 @@ import {
   getGuestListByUserFiltered,
   getSingleGuest,
   guestResponse,
+  guestResponseDeny,
   leftInvitees,
   openStatus,
   sendInvitation,
@@ -45,6 +46,7 @@ guestRouter.post(
   checkAvailabilityOfInvitee,
   addGuestsFromAddressBook
 );
-guestRouter.patch("/response", userAuth, guestResponse);
+guestRouter.patch("/response", guestResponse);
+guestRouter.patch("/response-deny", guestResponseDeny);
 
 export default guestRouter;
