@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { CancelOutlined } from "@mui/icons-material";
 import { Sine } from "gsap";
-const AnimationEnvelope = ({ src, toggleAttendingModal, guestDetails }) => {
+const AnimationEnvelope = ({ src, toggleAttendingModal, guestDetails ,handleDeny}) => {
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [anim, setAnim] = useState("");
   const [open, setOpen] = useState(false);
@@ -198,7 +198,7 @@ const AnimationEnvelope = ({ src, toggleAttendingModal, guestDetails }) => {
                 disableElevation
                 variant="contained"
                 sx={{ color: "white" }}
-                //   onClick={saveAndContinue}
+                onClick={handleDeny}
               >
                 Not Attend
               </Button>
