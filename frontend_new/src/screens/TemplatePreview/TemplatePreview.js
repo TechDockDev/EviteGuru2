@@ -56,7 +56,6 @@ const TemplatePreview = (props) => {
           `${Constants.URL}/template/${props?.singleTemplateId}`
         );
         setSingleTemplateData(res?.data?.template);
-        console.log("singleData->", res?.data);
       } catch (error) {
         console.log(error);
       }
@@ -76,10 +75,10 @@ const TemplatePreview = (props) => {
   };
   // =====================================
   const handleOpenModal = () => {
+    closeModal();
     toggleLoginModal();
     dispatch(openSnackbar("You are not logged in , please login", "error"));
     // navigate("/");
-    closeModal();
   };
 
   useEffect(() => {

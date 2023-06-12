@@ -1,8 +1,9 @@
 import { Grid, Typography } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers";
+// import { DatePicker } from "@mui/x-date-pickers";
 import React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/lab";
 
 const SingleInput = ({
   labelText,
@@ -16,6 +17,9 @@ const SingleInput = ({
   helperText,
   rows,
 }) => {
+  const today = new Date();
+  const minDate = today.toISOString().split("T")[0];
+  console.log("datte=>", minDate);
   return (
     <>
       {inputType !== "textarea" ? (
@@ -38,73 +42,105 @@ const SingleInput = ({
           >
             {labelText} {requiredTrue ? "*" : ""}
           </Grid>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            {inputType === "date" ? (
-              <Grid
-                component={DatePicker}
-                required={requiredTrue}
-                type={inputType}
-                name={inputName}
-                value={inputValue}
-                onChange={onChangeHandler}
-                id={labelInputId}
-                disablePast={true}
-                placeholder={placeholderText}
-                item
-                xl={8}
-                lg={8}
-                md={8}
-                sm={8}
-                xs={12}
-                sx={{
-                  height: "50px",
-                  outline: "none",
-                  border: "1px solid black",
-                  borderRadius: "8px",
-                  paddingX: "10px",
-                  fontSize: "18px",
-                  "&:focus": { border: "2px solid #795DA8" },
-                  width: "100%",
-                  "& .css-1dofx41-MuiInputBase-root-MuiOutlinedInput-root": {
-                    border: "transparent",
-                    outline: "none",
-                    width: "100%",
-                  },
-                  "& .css-1dofx41-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
-                    {
-                      border: "none",
-                    },
-                }}
-              ></Grid>
-            ) : (
-              <Grid
-                component={"input"}
-                required={requiredTrue}
-                type={inputType}
-                name={inputName}
-                value={inputValue}
-                onChange={onChangeHandler}
-                id={labelInputId}
-                placeholder={placeholderText}
-                item
-                xl={8}
-                lg={8}
-                md={8}
-                sm={8}
-                xs={12}
-                sx={{
-                  height: "50px",
-                  outline: "none",
-                  border: "1px solid black",
-                  borderRadius: "8px",
-                  paddingX: "10px",
-                  fontSize: "18px",
-                  "&:focus": { border: "2px solid #795DA8" },
-                }}
-              ></Grid>
-            )}
-            {/* {children} */}
-          </LocalizationProvider>
+          {/* minDate={minDate} */}
+          {/* const today = new Date();
+  const minDate = today.toISOString().split('T')[0]; */}
+          {inputType === "date" ? (
+            // <LocalizationProvider dateAdapter={AdapterDayjs}>
+            //   <Grid
+            //     component={DatePicker}
+            //     required={requiredTrue}
+            //     type={inputType}
+            //     name={inputName}
+            //     value={inputValue}
+            //     onChange={onChangeHandler}
+            //     id={labelInputId}
+            //     disablePast={true}
+            //     placeholder={placeholderText}
+            //     item
+            //     xl={8}
+            //     lg={8}
+            //     md={8}
+            //     sm={8}
+            //     xs={12}
+            //     sx={{
+            //       height: "50px",
+            //       outline: "none",
+            //       border: "1px solid black",
+            //       borderRadius: "8px",
+            //       paddingX: "10px",
+            //       fontSize: "18px",
+            //       "&:focus": { border: "2px solid #795DA8" },
+            //       width: "100%",
+            //       "& .css-1dofx41-MuiInputBase-root-MuiOutlinedInput-root": {
+            //         border: "transparent",
+            //         outline: "none",
+            //         width: "100%",
+            //       },
+            //       "& .css-1dofx41-MuiInputBase-root-MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline":
+            //         {
+            //           border: "none",
+            //         },
+            //     }}
+            //   ></Grid>
+            // </LocalizationProvider>
+            <Grid
+              component={"input"}
+              required={requiredTrue}
+              type={"date"}
+              name={inputName}
+              value={inputValue}
+              onChange={onChangeHandler}
+              id={labelInputId}
+              placeholder={placeholderText}
+              min={minDate}
+              // inputProps={{
+              //   min: "12-06-2023",
+              // }}
+              item
+              xl={8}
+              lg={8}
+              md={8}
+              sm={8}
+              xs={12}
+              sx={{
+                height: "50px",
+                outline: "none",
+                border: "1px solid black",
+                borderRadius: "8px",
+                paddingX: "10px",
+                fontSize: "18px",
+                "&:focus": { border: "2px solid #795DA8" },
+              }}
+            ></Grid>
+          ) : (
+            <Grid
+              component={"input"}
+              required={requiredTrue}
+              type={inputType}
+              name={inputName}
+              value={inputValue}
+              onChange={onChangeHandler}
+              id={labelInputId}
+              placeholder={placeholderText}
+              item
+              xl={8}
+              lg={8}
+              md={8}
+              sm={8}
+              xs={12}
+              sx={{
+                height: "50px",
+                outline: "none",
+                border: "1px solid black",
+                borderRadius: "8px",
+                paddingX: "10px",
+                fontSize: "18px",
+                "&:focus": { border: "2px solid #795DA8" },
+              }}
+            ></Grid>
+          )}
+          {/* {children} */}
 
           {helperText ? (
             <Grid

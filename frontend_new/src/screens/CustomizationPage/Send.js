@@ -345,11 +345,13 @@ const Send = () => {
         // dispatch(openSnackbar(res.data.message, "success"));
         await getGuestListDetails(res.data.guestList?._id);
         dispatch(setCreatedListId(res.data.guestList?._id));
+        setLoading(false);
       }
     } catch (error) {
       // console.log("error=>", error);
       setListStatus(false);
       dispatch(openSnackbar("something went wrong", "error"));
+      setLoading(false);
     }
   };
   // ===end of gues list cretaion====
@@ -364,6 +366,7 @@ const Send = () => {
     } catch (error) {
       // console.log("error=>", error);
       dispatch(openSnackbar("something went wrong", "error"));
+      setLoading(false);
     }
   };
   // ===end of function ===========
@@ -374,6 +377,7 @@ const Send = () => {
       if (res.status === 200) {
         console.log("invitees=>", res);
         setLeft({ ...left, invitees: res?.data?.remainingInvitees });
+        setLoading(false);
       }
     } catch (error) {
       setLoading(false);

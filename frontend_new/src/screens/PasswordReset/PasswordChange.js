@@ -6,6 +6,7 @@ const PasswordChange = ({
   togglePasswordChangeModal,
   open,
   onClose,
+  recaptchaRef
 }) => {
   return (
     <Modal
@@ -31,6 +32,7 @@ const PasswordChange = ({
       >
         <VerifyEmailAddresss
           toggleEmailVerifyModal={togglePasswordChangeModal}
+          recaptchaRef={recaptchaRef}
         />
       </Paper>
     </Modal>

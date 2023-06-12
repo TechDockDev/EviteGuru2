@@ -26,6 +26,7 @@ import { login, openSnackbar } from "../../redux/action/userActions";
 
 import { Constants } from "../../redux/constants/action-types";
 import PasswordChange from "../PasswordReset/PasswordChange";
+import { useRef } from "react";
 
 const LogInModal = ({
   openLoginModal,
@@ -41,13 +42,13 @@ const LogInModal = ({
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const [openPasswordChangeModal, setOpenPasswordChangeModal] = useState(false);
   const [userValues, setUserValues] = useState(tempValues);
+  const recaptchaRef = useRef();
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
   const togglePasswordChangeModal = () => {
-    // alert("kkk")
-    // toggleLoginModalInside();
+   
     setOpenPasswordChangeModal(!openPasswordChangeModal);
   };
 
@@ -403,7 +404,7 @@ const LogInModal = ({
                 Register Now
               </Button>
             </Typography>
-            <div id="captcha-button"></div>
+            <div id="captcha-button" ref={recaptchaRef} ></div>
           </Stack>
         </Paper>
       </Modal>
@@ -411,6 +412,7 @@ const LogInModal = ({
         open={openPasswordChangeModal}
         onClose={togglePasswordChangeModal}
         togglePasswordChangeModal={togglePasswordChangeModal}
+        recaptchaRef={recaptchaRef}
       />
     </>
   );

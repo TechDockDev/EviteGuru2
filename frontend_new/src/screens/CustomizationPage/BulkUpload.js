@@ -123,7 +123,12 @@ const BulkUpload = (props) => {
       }
     } catch (error) {
       console.log("error=>", error);
-      dispatch(openSnackbar("something went wrong", "error"));
+      dispatch(
+        openSnackbar(
+          "something went wrong with your file download example and fill as instructed then upload,",
+          "error"
+        )
+      );
     }
   };
   // ====endl of handleupload ============

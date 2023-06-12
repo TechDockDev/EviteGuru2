@@ -80,6 +80,7 @@ const PasswordReset = (props) => {
               setOtp={setOtp}
               verifyOtp={handleVerifyOtp}
               verified={props?.verified}
+              toggleEmailVerifyModal={props?.toggleEmailVerifyModal}
             />
             <Typography variant="body" sx={{ color: "white" }}>
               Your Otp has been sent to this number{" "}

@@ -20,14 +20,15 @@ import { openSnackbar } from "../../redux/action/userActions";
 import axios from "axios";
 import { Constants } from "../../redux/constants/action-types";
 const UpdatePassword = ({ togglePasswordChangeModal, open, onClose }) => {
-  const dispatch = useDispatch();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [formData, setFormData] = useState({
+  const temp = {
     oldPassword: "",
     password: "",
     confirmPassword: "",
-  });
+  };
+  const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [formData, setFormData] = useState(temp);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowOldPassword = () => setShowOldPassword((show) => !show);
@@ -36,7 +37,7 @@ const UpdatePassword = ({ togglePasswordChangeModal, open, onClose }) => {
   };
 
   const onChangeHandler = (e) => {
-    console.log(formData);
+    // console.log(formData);
 
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -52,14 +53,25 @@ const UpdatePassword = ({ togglePasswordChangeModal, open, onClose }) => {
         if (res.status === 200) {
           console.log("res=>", res);
           dispatch(openSnackbar(res?.data?.message, "success"));
-        } else {
-          dispatch(openSnackbar("invalid old password", "success"));
-        }
+          setFormData(temp)
+          togglePasswordChangeModal();
+        } 
       } else {
+        setFormData(temp)
         dispatch(openSnackbar("Password Mismatch", "error"));
+        togglePasswordChangeModal();
       }
     } catch (error) {
-      dispatch(openSnackbar("error", "error"));
+      console.log("error=>", error);
+      if (error?.response?.data?.message) {
+        setFormData(temp)
+        dispatch(openSnackbar(error?.response?.data?.message, "error"));
+        togglePasswordChangeModal();
+      } else {
+        setFormData(temp)
+        dispatch(openSnackbar("error", "error"));
+        togglePasswordChangeModal();
+      }
     }
   };
   return (
