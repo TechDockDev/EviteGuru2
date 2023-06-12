@@ -6,25 +6,60 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import AnimationEnvelope from "./AnimationEnvelope";
+
+import { Constants } from "../../redux/constants/action-types";
+import { async } from "q";
+
+
 import AttendingModal from "./AttendingModal";
 
 const InviteesResponseScreen = () => {
   const [event, setEvent] = useState(null);
   const [openAttendingModal, setOpenAttendingModal] = useState(false)
+  const [guestDetails, setGuestDetails] = useState(null);
   const navigate = useNavigate();
-  const { eventId } = useParams();
+  const { eventId, guestId } = useParams();
   const dispatch = useDispatch();
-  console.log("id=>", eventId);
+  console.log("id=>", eventId, "guestId=>", guestId);
   //   const { eventDetailsPreviewData, userEventTemplate } = useSelector(
   //     (state) => state
   //   );
   //   console.log("eventPreviewDetails=>", userEventTemplate);
 
+
+  //
+  const invitationOpenState = async () => {
+    try {
+      const res = await axios.patch(`${Constants.URL}/guest/open`, {
+        eventId: eventId,
+        singleGuestId: guestId,
+      });
+      if (res.status === 200) {
+        console.log("response=>", res);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
+  const getGuestDetails = async () => {
+    try {
+      const res = await axios.get(
+        `${Constants.URL}/guest/single/${eventId}/${guestId}`
+      );
+      if (res.status === 200) {
+        console.log("response=>", res);
+        setGuestDetails(res.data?.singleGuest);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
   //=============================
   const toggleAttendingModal = ()=>{
     setOpenAttendingModal(!openAttendingModal)
   }
   //=============================
+
 
   // =========get Event Details =======
   const getEventDetails = async () => {
@@ -42,8 +77,10 @@ const InviteesResponseScreen = () => {
   // ===========================
   useEffect(() => {
     //  console.log('This Is TEmplate',events)
-    if (eventId) {
-      getEventDetails(eventId);
+    if (eventId && guestId) {
+      getEventDetails();
+      getGuestDetails();
+      invitationOpenState();
     }
   }, []);
   return (
@@ -240,7 +277,13 @@ const InviteesResponseScreen = () => {
                   height: "100%",
                 }}
               /> */}
-              <AnimationEnvelope toggleAttendingModal ={toggleAttendingModal} src={`/images/getImage?path=/${event?.variation?.previewImage}`}/>
+
+              {/* <AnimationEnvelope
+                guestDetails={guestDetails}
+                src={`/images/getImage?path=/${event?.variation?.previewImage}`}
+              /> */}
+
+              <AnimationEnvelope guestDetails={guestDetails} toggleAttendingModal ={toggleAttendingModal} src={`/images/getImage?path=/${event?.variation?.previewImage}`}/>
             </Grid>
 
             {/* == 👆 Template preview button and image 👆   ==*/}
