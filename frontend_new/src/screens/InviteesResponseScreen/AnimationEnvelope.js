@@ -11,11 +11,9 @@ import {
 } from "@mui/material";
 import { CancelOutlined } from "@mui/icons-material";
 import { Sine } from "gsap";
-
-const AnimationEnvelope = ({ src, toggleAttendingModal,guestDetails }) => {
+const AnimationEnvelope = ({ src, toggleAttendingModal, guestDetails }) => {
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [anim, setAnim] = useState("");
-
   const [open, setOpen] = useState(false);
   const toggleBackdrop = () => {
     if (open) {
@@ -27,9 +25,7 @@ const AnimationEnvelope = ({ src, toggleAttendingModal,guestDetails }) => {
       setAnim(pullOut());
     }
   };
-
   useEffect(() => {}, []);
-
   const pullOut = () => {
     const tl = gsap
       .timeline()
@@ -84,10 +80,8 @@ const AnimationEnvelope = ({ src, toggleAttendingModal,guestDetails }) => {
         scale: 0.85,
         ease: Sine.inOut,
       });
-
     return tl;
   };
-
   return (
     <>
       <Box
@@ -119,7 +113,7 @@ const AnimationEnvelope = ({ src, toggleAttendingModal,guestDetails }) => {
       >
         <div className="outerWrapper">
           <IconButton onClick={toggleBackdrop}>
-            <CancelOutlined sx={{ color: "#795da8", fontSize: "30px" }} />
+            <CancelOutlined sx={{ color: "#795DA8", fontSize: "30px" }} />
           </IconButton>
           <div className="invitation">
             <div className="perspective">
@@ -131,84 +125,48 @@ const AnimationEnvelope = ({ src, toggleAttendingModal,guestDetails }) => {
                     </div>
                   </div>
                 </div>
-
-                <div className="flap"></div>
-                {envelopeOpen && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEnvelopeOpen(false);
-                      anim.restart();
-                    }}
-                    className="restart"
-                  >
-                    Re-Open
-                  </button>
-                )}
-                <div className="backEnvelope">
-                  <Typography
-                    // width={"100%"}
-
-                    mt={4}
-                    textAlign={"center"}
-                    fontWeight={"800"}
-                    fontSize={"25px"}
-                    letterSpacing={"5px"}
-                    // border={"1px dashed white"}
-
-                    width={"60%"}
-                    fontStyle={"italic"}
-                    fontFamily={"pinyon script"}
-                    textTransform={"capitalize"}
-                    color="gold"
-                  >
-                    Invitation
-                  </Typography>
-                  <Typography
-                    width={"100%"}
-                    textAlign={"center"}
-                    fontWeight={"600"}
-                  >
-                    <span style={{ color: "white" }}>To :</span>{" "}
-                    {guestDetails?.name}
-                  </Typography>
-                </div>
               </div>
-              <Stack
-                direction={"row"}
-                alignItems={"center"}
-                justifyContent={"center"}
-                sx={{
-                  // border:"1px solid red",
-                  position: "absolute",
-                  width: "100%",
-                  bottom: "20px",
-                }}
-              >
-                <Box
-                  maxWidth={"500px"}
-                  width={"100%"}
-                  display={"flex"}
-                  justifyContent={"space-around"}
+              <div className="flap"></div>
+              {envelopeOpen && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEnvelopeOpen(false);
+                    anim.restart();
+                  }}
+                  className="restart"
                 >
-                  <Button
-                    disableElevation
-                    variant="contained"
-                    color="success"
-                    onClick={toggleAttendingModal}
-                  >
-                    Will Attend
-                  </Button>
-                  <Button
-                    disableElevation
-                    variant="contained"
-                    sx={{ color: "white" }}
-                    onClick={toggleAttendingModal}
-                  >
-                    Not Attend
-                  </Button>
-                </Box>
-              </Stack>
+                  Re-Open
+                </button>
+              )}
+              <div className="backEnvelope">
+                <Typography
+                  // width={"100%"}
+
+                  mt={5}
+                  textAlign={"center"}
+                  fontWeight={"800"}
+                  fontSize={"25px"}
+                  letterSpacing={"5px"}
+                  // border={"1px dashed white"}
+
+                  width={"60%"}
+                  fontStyle={"italic"}
+                  fontFamily={"pinyon script"}
+                  textTransform={"capitalize"}
+                  color="gold"
+                >
+                  Invitation
+                </Typography>
+                <Typography
+                  width={"100%"}
+                  textAlign={"center"}
+                  fontWeight={"600"}
+                >
+                  <span style={{ color: "white" }}>To :</span>{" "}
+                  {guestDetails?.name}
+                </Typography>
+              </div>
             </div>
           </div>
           <Stack
@@ -228,7 +186,12 @@ const AnimationEnvelope = ({ src, toggleAttendingModal,guestDetails }) => {
               display={"flex"}
               justifyContent={"space-around"}
             >
-              <Button disableElevation variant="contained" color="success">
+              <Button
+                disableElevation
+                variant="contained"
+                color="success"
+                onClick={toggleAttendingModal}
+              >
                 Will Attend
               </Button>
               <Button
@@ -246,9 +209,4 @@ const AnimationEnvelope = ({ src, toggleAttendingModal,guestDetails }) => {
     </>
   );
 };
-
 export default AnimationEnvelope;
-
-// =======================================================
-// =======================================================
-// ======================================================
