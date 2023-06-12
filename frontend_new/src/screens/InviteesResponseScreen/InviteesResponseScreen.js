@@ -10,24 +10,19 @@ import AnimationEnvelope from "./AnimationEnvelope";
 import { Constants } from "../../redux/constants/action-types";
 import { async } from "q";
 
-
 import AttendingModal from "./AttendingModal";
+import { openSnackbar } from "../../redux/action/userActions";
 
 const InviteesResponseScreen = () => {
   const [event, setEvent] = useState(null);
-  const [openAttendingModal, setOpenAttendingModal] = useState(false)
+  const [openAttendingModal, setOpenAttendingModal] = useState(false);
   const [guestDetails, setGuestDetails] = useState(null);
+  const [responseStatus, setOpenResponseStatus] = useState(true);
   const navigate = useNavigate();
   const { eventId, guestId } = useParams();
   const dispatch = useDispatch();
   console.log("id=>", eventId, "guestId=>", guestId);
-  //   const { eventDetailsPreviewData, userEventTemplate } = useSelector(
-  //     (state) => state
-  //   );
-  //   console.log("eventPreviewDetails=>", userEventTemplate);
 
-
-  //
   const invitationOpenState = async () => {
     try {
       const res = await axios.patch(`${Constants.URL}/guest/open`, {
@@ -48,6 +43,10 @@ const InviteesResponseScreen = () => {
       );
       if (res.status === 200) {
         console.log("response=>", res);
+        if (res?.data?.singleGuest?.status === "Pending") {
+          invitationOpenState();
+        }
+        setOpenResponseStatus(false);
         setGuestDetails(res.data?.singleGuest);
       }
     } catch (error) {
@@ -55,11 +54,10 @@ const InviteesResponseScreen = () => {
     }
   };
   //=============================
-  const toggleAttendingModal = ()=>{
-    setOpenAttendingModal(!openAttendingModal)
-  }
+  const toggleAttendingModal = () => {
+    setOpenAttendingModal(!openAttendingModal);
+  };
   //=============================
-
 
   // =========get Event Details =======
   const getEventDetails = async () => {
@@ -75,12 +73,24 @@ const InviteesResponseScreen = () => {
     }
   };
   // ===========================
+  //==============================
+  const handleDeny = async () => {
+    try {
+      const res = await axios.patch(`${Constants.URL}/guest/response-deny`, {
+        eventId: eventId,
+        singleGuestId: guestId,
+      });
+      if (res.status === 200) {
+        console.log("res=>", res);
+        dispatch(openSnackbar(res?.data?.message, "success"));
+      }
+    } catch (error) {}
+  };
   useEffect(() => {
     //  console.log('This Is TEmplate',events)
     if (eventId && guestId) {
       getEventDetails();
       getGuestDetails();
-      invitationOpenState();
     }
   }, []);
   return (
@@ -131,47 +141,6 @@ const InviteesResponseScreen = () => {
             borderRadius: "4px",
           }}
         >
-          {/* == 👇 Preview header container | From & Sender Name👇  ==*/}
-          {/* <Grid
-            item
-            xl={12}
-            lg={12}
-            md={12}
-            sm={12}
-            xs={12}
-            p={1}
-            display={"flex"}
-            flexDirection={"row"}
-            justifyContent={"space-between"}
-            // borderBottom="1px solid black"
-          >
-            <Typography fontSize="14px" fontWeight="bold">
-              From :{" "}
-              <Typography
-                component="span"
-                fontSize="14px"
-                fontWeight="normal"
-                p={1}
-              >
-                
-                {event?.hostName}
-              </Typography>
-            </Typography>
-            <Typography fontSize="14px" fontWeight="bold">
-              Event Name :{" "}
-              <Typography
-                component="span"
-                fontSize="14px"
-                fontWeight="normal"
-                p={1}
-              >
-               
-                {event?.name}
-              </Typography>
-            </Typography>
-          </Grid> */}
-          {/* == 👆 Preview header container  | From & Sender Name👆   ==*/}
-          {/* =================== */}
           {/* == 👇 Preview main section container |  Description and preview image 👇  ==*/}
           <Grid
             item
@@ -266,24 +235,12 @@ const InviteesResponseScreen = () => {
                 alignItems: "center",
               }}
             >
-              {/* <Box
-                component={"img"}
-                bgcolor={"red"}
-                src={`/images/getImage?path=/${event?.variation?.previewImage}`}
-                alt=""
-                sx={{
-                  width: "100%",
-
-                  height: "100%",
-                }}
-              /> */}
-
-              {/* <AnimationEnvelope
+              <AnimationEnvelope
                 guestDetails={guestDetails}
+                toggleAttendingModal={toggleAttendingModal}
                 src={`/images/getImage?path=/${event?.variation?.previewImage}`}
-              /> */}
-
-              <AnimationEnvelope guestDetails={guestDetails} toggleAttendingModal ={toggleAttendingModal} src={`/images/getImage?path=/${event?.variation?.previewImage}`}/>
+                handleDeny={handleDeny}
+              />
             </Grid>
 
             {/* == 👆 Template preview button and image 👆   ==*/}
@@ -353,13 +310,19 @@ const InviteesResponseScreen = () => {
                 justifyContent={"center"}
                 spacing={2}
               >
-                <Button onClick={()=>{toggleAttendingModal()}} variant="contained" color="success">
+                <Button
+                  onClick={() => {
+                    toggleAttendingModal();
+                  }}
+                  variant="contained"
+                  color="success"
+                >
                   Will Attend
                 </Button>
                 <Button
                   variant="contained"
                   sx={{ color: "white" }}
-                  //   onClick={saveAndContinue}
+                  onClick={handleDeny}
                 >
                   Not Attend
                 </Button>
@@ -386,7 +349,13 @@ const InviteesResponseScreen = () => {
         </Grid>
       </Stack>
       {/* === 👇 attending modal  👇   ===*/}
-      <AttendingModal toggleModal ={toggleAttendingModal} open={openAttendingModal}/>
+      <AttendingModal
+        toggleModal={toggleAttendingModal}
+        open={openAttendingModal}
+        eventId={eventId}
+        guestId={guestId}
+        handleDeny={handleDeny}
+      />
     </Box>
   );
 };

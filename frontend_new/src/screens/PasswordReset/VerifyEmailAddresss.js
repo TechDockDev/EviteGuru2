@@ -34,6 +34,10 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
   const [modalContent, setModalContent] = useState("getOtp");
   const [verified, setVerified] = useState(false);
   const [userPhone, setUserPhone] = useState("");
+  const handleClose = () => {
+    // window.recaptchaVerifier.reset()
+    toggleEmailVerifyModal();
+  };
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -46,11 +50,8 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
       if (res.status === 200) {
         console.log("response=>", res);
         setUserPhone(`+${res?.data?.phone}`);
-        // dispatch(openSnackbar(res.data.message, "success"));
-        await sendOtpVerificationCode(`+${res?.data?.phone}`);
-        // await sendOtpVerificationCode(`+917619866055`);
 
-        // setModalContent("updatePassword");
+        await sendOtpVerificationCode(`+${res?.data?.phone}`);
       }
     } catch (error) {
       console.log("error=>", error);
@@ -69,6 +70,10 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
         size: "invisible",
         callback: (response) => {
           // console.log(response);
+          // window.recaptchaVerifier.reset("captcha-button")
+          // window.recaptchaVerifier.render().then(function (widgetId) {
+          //   window.grecaptcha.reset(widgetId);
+          // });
         },
       },
       auth
@@ -79,6 +84,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
 
   // ========send otp ==============
   const sendOtpVerificationCode = async (phone) => {
+    
     // window.recaptchaVerifier.render();
     console.log("console is coming=>", phone);
     const auth = getAuth();
@@ -98,6 +104,8 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
         // Error; SMS not sent
         // ...
         console.log("error=>", error);
+        // window.recaptchaVerifier.reset()
+
         dispatch(openSnackbar("error", "error"));
       });
   };
@@ -111,6 +119,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
 
         const idToken = await Authentication.currentUser.getIdToken();
         setFormData({ ...formData, idToken: idToken });
+        // window.recaptchaVerifier.reset()
         setVerified(true);
         dispatch(
           openSnackbar(
@@ -120,12 +129,17 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
         );
       })
       .catch((error) => {
+        navigate("/");
         console.log(error);
-        setVerified(false);
-        // User couldn't sign in (bad verification code?)
-
         dispatch(openSnackbar("invalid otp , please try again", "error"));
-        navigate("/")
+        setVerified(false);
+        setModalContent("getOtp");
+        // window.recaptchaVerifier.reset();
+        // User couldn't sign in (bad verification code?)
+        // window.recaptchaVerifier.render().then(function (widgetId) {
+        //   window.grecaptcha.reset(widgetId);
+        // });
+
         // ...
       });
   };
@@ -155,7 +169,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
       <Box bgcolor={"transparent"}>
         {/* 👇Cross icon to close the modal👇  */}
         <IconButton
-          onClick={toggleEmailVerifyModal}
+          onClick={handleClose}
           sx={{
             color: "black",
             position: "absolute",
