@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import {
+  openSnackbar,
   setEventDetailsPreviewData,
   setEventTemplate,
 } from "../../redux/action/userActions";
@@ -34,23 +35,27 @@ const Details = (props) => {
   const submitHandler = async (e) => {
     e.preventDefault();
     if (userEventTemplate && userEventTemplate.jsonData) {
-      const dt = new Date(eventDetailsData.date);
-
+      const dt = new Date(eventDetailsData?.date);
+console.log("userEventTamplate=>",userEventTemplate)
       dt.setHours(
         eventDetailsData.time.split(":")[0],
         eventDetailsData.time.split(":")[1]
       );
+      
       dispatch(
         setEventTemplate({
           ...userEventTemplate,
           eventDetails: { ...eventDetailsData, dateFormat: dt },
         })
       );
-      dispatch(setPageTitle(eventDetailsData.name));
+      dispatch(setPageTitle(eventDetailsData?.name));
       props.tabChange({}, 2);
     } else {
-      console.log("please save design firts");
-      alert("please save design firts");
+      console.log("please save design first");
+      // alert("please save design first");
+      dispatch(
+        openSnackbar("your template is not saved, first save it", "error")
+      );
     }
     console.log("data=>", eventDetailsData, "=>user", userEventTemplate);
   };
@@ -144,7 +149,7 @@ const Details = (props) => {
         <SingleInput
           labelText={"Event Date"}
           inputType={"date"}
-          inputName={"eventDate"}
+          inputName={"date"}
           inputValue={eventDetailsData?.date || ""}
           onChangeHandler={(e) =>
             setEventDetailsData({

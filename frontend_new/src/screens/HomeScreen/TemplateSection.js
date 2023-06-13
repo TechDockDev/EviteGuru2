@@ -49,8 +49,6 @@ const TemplateSection = () => {
 
   const navigate = useNavigate();
   const toggleTemplatePreviewModal = (e, templateId) => {
-    console.log("netw=>", templateId, openTemplatePreviewModal);
-
     if (!openTemplatePreviewModal) {
       setSingleTemplateId(templateId);
       seTopenTemplatePreviewModal(!openTemplatePreviewModal);

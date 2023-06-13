@@ -1,4 +1,3 @@
-
 import { Box, Button, FormHelperText, InputLabel } from "@mui/material";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import React from "react";
@@ -26,6 +25,7 @@ const OtpScreen = (props) => {
       } else if (seconds === 0) {
         props.setOtp(false);
         dispatch(openSnackbar("otp expired", "warning"));
+        props?.toggleEmailVerifyModal();
       }
     }, 1000);
 

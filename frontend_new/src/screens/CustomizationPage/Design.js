@@ -306,7 +306,10 @@ const Design = (props) => {
     allImages.forEach((v) => {
       formData.append("image", v);
     });
-    const res = await axios.post(`${Constants.URL}/template/saveImage`, formData);
+    const res = await axios.post(
+      `${Constants.URL}/template/saveImage`,
+      formData
+    );
     // createPreview();
     console.log(res);
 
@@ -488,7 +491,105 @@ const Design = (props) => {
   return (
     <Grid container sx={{ width: "100%" }}>
       {/*  👇 edit tools container  👇    */}
-
+      {editor?.canvas?.getActiveObject()?.type === "i-text" && (
+        <>
+          {/*  👇 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED)  👇    */}
+          {/* <Draggable onDrag={handleDrag}> */}
+          <Grid
+            item
+            mt={2}
+            // component={Paper}
+            // md={6}
+            xs={12}
+            overflow={"auto"}
+            bgcolor={"white"}
+            sx={
+              {
+                // position: "absolute",
+                // left: `${position.x}`,
+                // right: `${position.y}`,
+                // cursor: "move",
+              }
+            }
+          >
+            <Stack
+              direction={"row"}
+              alignItems={"center"}
+              justifyContent={"center"}
+              border={"1px solid #E6E2E2"}
+              paddingX={"5px"}
+              boxSizing={"border-box"}
+              width={"100%"}
+              // sx={{ cursor: "move" }}
+            >
+              {/*  👇 change font type button  👇    */}
+              <ListItemButton sx={{ ...ListItemButtonStyle3 }}>
+                <FormControl fullWidth>
+                  <InputLabel id="font-family-select-label">Fonts</InputLabel>
+                  <Select
+                    labelId="font-family-select-label"
+                    id="font-family-select"
+                    value={font}
+                    label="Font Family"
+                    size="small"
+                    onChange={changeFont}
+                  >
+                    {fonts?.map((font, index) => {
+                      return (
+                        <MenuItem key={index} value={font}>
+                          {font}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </ListItemButton>
+              {/* 👆 change font type button 👆   */}
+              {/*  👇 change font COLOR button  👇    */}
+              <ListItemButton
+                sx={{ ...ListItemButtonStyle3 }}
+                onClick={changeColor}
+              >
+                <input type="color" onChange={changeColor} />
+              </ListItemButton>
+              {/* 👆 change font COLOR button 👆   */}
+              {/*  👇 Font Style BOLD  👇    */}
+              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={bold}>
+                <ListItemIcon>
+                  <FormatBoldIcon />
+                </ListItemIcon>
+              </ListItemButton>
+              {/* 👆 Font Style BOLD 👆   */}
+              {/*  👇 Font Style ITALIC  👇    */}
+              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={italic}>
+                <ListItemIcon>
+                  <FormatItalicIcon />
+                </ListItemIcon>
+              </ListItemButton>
+              {/* 👆 Font Style ITALIC 👆   */}
+              {/*  👇 Font Style UNDERLINE  👇    */}
+              <ListItemButton
+                sx={{ ...ListItemButtonStyle3 }}
+                onClick={underline}
+              >
+                <ListItemIcon>
+                  <FormatUnderlinedIcon />
+                </ListItemIcon>
+              </ListItemButton>
+              {/* 👆 Font Style UNDERLINE 👆   */}
+              {/*  👇 Font Style STRIKETHROUGH  👇    */}
+              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={strike}>
+                <ListItemIcon>
+                  <StrikethroughSIcon />
+                </ListItemIcon>
+              </ListItemButton>
+              {/* 👆 Font Style STRIKETHROUGH 👆   */}
+            </Stack>
+          </Grid>
+          {/* </Draggable> */}
+          {/* 👆 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED) 👆   */}
+        </>
+      )}
       <Grid
         item
         sm={2}
@@ -875,109 +976,6 @@ const Design = (props) => {
         <FabricJSCanvas className="fabCanvas" onReady={onReady} />
       </Grid>
       {/* 👆 image container 👆   */}
-      {editor?.canvas?.getActiveObject()?.type === "i-text" && (
-        <>
-          {/*  👇 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED)  👇    */}
-          <Draggable onDrag={handleDrag}>
-            <Grid
-              item
-              mt={2}
-              // component={Paper}
-              md={6}
-              xs={12}
-              overflow={"auto"}
-              bgcolor={"white"}
-              sx={{
-                position: "absolute",
-                left: `${position.x}`,
-                right: `${position.y}`,
-                cursor: "move",
-              }}
-            >
-              <Stack
-                direction={"row"}
-                alignItems={"center"}
-                justifyContent={"center"}
-                border={"1px solid #E6E2E2"}
-                paddingX={"5px"}
-                boxSizing={"border-box"}
-                width={"100%"}
-                sx={{ cursor: "move" }}
-              >
-                {/*  👇 change font type button  👇    */}
-                <ListItemButton sx={{ ...ListItemButtonStyle3 }}>
-                  <FormControl fullWidth>
-                    <InputLabel id="font-family-select-label">Fonts</InputLabel>
-                    <Select
-                      labelId="font-family-select-label"
-                      id="font-family-select"
-                      value={font}
-                      label="Font Family"
-                      size="small"
-                      onChange={changeFont}
-                    >
-                      {fonts?.map((font, index) => {
-                        return (
-                          <MenuItem key={index} value={font}>
-                            {font}
-                          </MenuItem>
-                        );
-                      })}
-                    </Select>
-                  </FormControl>
-                </ListItemButton>
-                {/* 👆 change font type button 👆   */}
-                {/*  👇 change font COLOR button  👇    */}
-                <ListItemButton
-                  sx={{ ...ListItemButtonStyle3 }}
-                  onClick={changeColor}
-                >
-                  <input type="color" onChange={changeColor} />
-                </ListItemButton>
-                {/* 👆 change font COLOR button 👆   */}
-                {/*  👇 Font Style BOLD  👇    */}
-                <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={bold}>
-                  <ListItemIcon>
-                    <FormatBoldIcon />
-                  </ListItemIcon>
-                </ListItemButton>
-                {/* 👆 Font Style BOLD 👆   */}
-                {/*  👇 Font Style ITALIC  👇    */}
-                <ListItemButton
-                  sx={{ ...ListItemButtonStyle3 }}
-                  onClick={italic}
-                >
-                  <ListItemIcon>
-                    <FormatItalicIcon />
-                  </ListItemIcon>
-                </ListItemButton>
-                {/* 👆 Font Style ITALIC 👆   */}
-                {/*  👇 Font Style UNDERLINE  👇    */}
-                <ListItemButton
-                  sx={{ ...ListItemButtonStyle3 }}
-                  onClick={underline}
-                >
-                  <ListItemIcon>
-                    <FormatUnderlinedIcon />
-                  </ListItemIcon>
-                </ListItemButton>
-                {/* 👆 Font Style UNDERLINE 👆   */}
-                {/*  👇 Font Style STRIKETHROUGH  👇    */}
-                <ListItemButton
-                  sx={{ ...ListItemButtonStyle3 }}
-                  onClick={strike}
-                >
-                  <ListItemIcon>
-                    <StrikethroughSIcon />
-                  </ListItemIcon>
-                </ListItemButton>
-                {/* 👆 Font Style STRIKETHROUGH 👆   */}
-              </Stack>
-            </Grid>
-          </Draggable>
-          {/* 👆 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED) 👆   */}
-        </>
-      )}
     </Grid>
   );
 };

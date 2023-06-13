@@ -23,7 +23,7 @@ import {
 import { Authentication } from "../../firebaseAuth/firebase";
 import { useNavigate } from "react-router";
 
-const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
+const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -37,6 +37,11 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
   const handleClose = () => {
     // window.recaptchaVerifier.reset()
     toggleEmailVerifyModal();
+  };
+
+  const resetRecaptcha = () => {
+    recaptchaRef.current.reset();
+    // setRecaptchaToken('');
   };
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,8 +59,12 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
         await sendOtpVerificationCode(`+${res?.data?.phone}`);
       }
     } catch (error) {
-      console.log("error=>", error);
-      dispatch(openSnackbar("error", "error"));
+      // console.log("error=>", error);
+      if (error?.response?.data?.message) {
+        dispatch(openSnackbar(error?.response?.data?.message, "error"));
+      } else {
+        dispatch(openSnackbar("error", "errsor"));
+      }
     }
   };
 
@@ -277,6 +286,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal }) => {
           setFormData={setFormData}
           formData={formData}
           updatePassword={updatePassword}
+          toggleEmailVerifyModal={toggleEmailVerifyModal}
         />
       ) : (
         ""

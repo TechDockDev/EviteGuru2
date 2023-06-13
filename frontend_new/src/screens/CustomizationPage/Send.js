@@ -247,7 +247,6 @@ const Send = () => {
       field: "name",
       headerName: "Name",
       width: 200,
-      
     },
     {
       field: "email",
@@ -321,7 +320,7 @@ const Send = () => {
   // ==get single event details =======
   const getSingleEventDetails = async () => {
     try {
-      const res = await axios.get(`/api/v1/user/event/${id}`);
+      const res = await axios.get(`${Constants.URL}/event/${id}`);
       if (res.status === 200) {
         dispatch(setCreatedEventDetail(res?.data?.event));
         dispatch(setPageTitle(`${res?.data?.event?.name}`));
@@ -337,7 +336,7 @@ const Send = () => {
   // =====create guest list =========
   const createGuestList = async () => {
     try {
-      const res = await axios.post("/api/v1/user/guest/create", {
+      const res = await axios.post(`${Constants.URL}/guest/create`, {
         eventId: id,
       });
       if (res.status === 200) {
@@ -345,18 +344,22 @@ const Send = () => {
         // dispatch(openSnackbar(res.data.message, "success"));
         await getGuestListDetails(res.data.guestList?._id);
         dispatch(setCreatedListId(res.data.guestList?._id));
+        setLoading(false);
       }
     } catch (error) {
       // console.log("error=>", error);
       setListStatus(false);
       dispatch(openSnackbar("something went wrong", "error"));
+      setLoading(false);
     }
   };
   // ===end of gues list cretaion====
   // =function to fetch geustList==
   const getGuestListDetails = async (guestListId) => {
     try {
-      const res = await axios.get(`/api/v1/user/guest/single/${guestListId}`);
+      const res = await axios.get(
+        `${Constants.URL}/guest/single/${guestListId}`
+      );
       if (res.status === 200) {
         setguestList(res?.data?.guestList?.guests);
         setLoading(false);
@@ -364,6 +367,7 @@ const Send = () => {
     } catch (error) {
       // console.log("error=>", error);
       dispatch(openSnackbar("something went wrong", "error"));
+      setLoading(false);
     }
   };
   // ===end of function ===========
@@ -374,6 +378,7 @@ const Send = () => {
       if (res.status === 200) {
         console.log("invitees=>", res);
         setLeft({ ...left, invitees: res?.data?.remainingInvitees });
+        setLoading(false);
       }
     } catch (error) {
       setLoading(false);

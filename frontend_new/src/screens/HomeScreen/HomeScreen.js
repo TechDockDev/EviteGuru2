@@ -1,4 +1,4 @@
-import { Box} from "@mui/material";
+import { Box } from "@mui/material";
 import React from "react";
 
 import FeaturesSection from "./FeaturesSection";
@@ -16,11 +16,13 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <Box sx={{ overflowX: "hidden" }}>
-      <HeroSection />
-      <FeaturesSection />
-      <TemplateSection />
-    </Box>
+    <>
+      <Box sx={{ overflowX: "hidden" }}>
+        <HeroSection />
+        <FeaturesSection />
+        <TemplateSection />
+      </Box>
+    </>
   );
 };
 

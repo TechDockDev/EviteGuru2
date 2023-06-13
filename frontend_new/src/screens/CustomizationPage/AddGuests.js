@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { Constants } from "../../redux/constants/action-types";
 
 const AddGuests = (props) => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ const AddGuests = (props) => {
           email: guest.email,
         };
       });
-      const res = await axios.patch("/api/v1/user/guest/add-guest", {
+      const res = await axios.patch(`${Constants.URL}/guest/add-guest`, {
         guestDetails: [...guestDetails],
         guestId: createdEventDetails?.guestListId,
       });
