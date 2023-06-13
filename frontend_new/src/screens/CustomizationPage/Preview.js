@@ -4,7 +4,10 @@ import { useEffect } from "react";
 import Moment from "react-moment";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { openSnackbar, setCreatedEventDetail } from "../../redux/action/userActions";
+import {
+  openSnackbar,
+  setCreatedEventDetail,
+} from "../../redux/action/userActions";
 import { Constants } from "../../redux/constants/action-types";
 
 const Preview = (props) => {
@@ -323,7 +326,11 @@ const Preview = (props) => {
         justifyContent={"center"}
         spacing={1}
       >
-        <Button variant="contained" color="inherit">
+        <Button
+          variant="contained"
+          color="inherit"
+          onClick={() => navigate("/")}
+        >
           Cancel
         </Button>
         <Button
