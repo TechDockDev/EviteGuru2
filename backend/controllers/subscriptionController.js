@@ -24,7 +24,14 @@ const purchasePlan = expressAsyncHandler(async (req, res) => {
     amount = plan.price[`${planType}ly`];
   }
   const session = await stripe.checkout.sessions.create({
-    metadata: { plan: plan.name, planId, planType, user: req.user.id },
+    metadata: {
+      plan: plan.name,
+      planId,
+      planType,
+      user: req.user.id,
+      templateLimit: plan.templateLimit,
+      guestLimit: plan.guestLimit,
+    },
     currency: "usd",
     line_items: [
       {
@@ -59,6 +66,8 @@ const paymentSuccess = expressAsyncHandler(async (req, res) => {
     user.subscription = session.metadata.planId;
     user.planType = session.metadata.planType;
     user.planStartDate = Date.now();
+    user.templateNum = session.metadata.templateLimit;
+    user.guestNum = session.metadata.guestLimit;
     await user.save();
   }
   const ipAddress = req.socket.remoteAddress;

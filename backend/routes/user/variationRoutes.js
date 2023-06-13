@@ -48,7 +48,7 @@ variationRouter.post(
   createVariation
 );
 variationRouter.post("/saveImage", userAuth, upload.array("image"), saveImage);
-variationRouter.get("/sendImage/:imgName", userAuth, sendImage);
+variationRouter.get("/sendImage/:imgName", sendImage);
 variationRouter.get("/stickers", userAuth, getStickers);
 variationRouter.get("/left-variation", userAuth, leftVariations);
 variationRouter
