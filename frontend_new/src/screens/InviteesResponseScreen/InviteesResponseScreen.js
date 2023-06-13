@@ -63,7 +63,7 @@ const InviteesResponseScreen = () => {
   const getEventDetails = async () => {
     console.log("working..");
     try {
-      const res = await axios.get(`/api/v1/user/event/${eventId}`);
+      const res = await axios.get(`${Constants.URL}/event/${eventId}`);
       if (res.status === 200) {
         console.log("response=>", res?.data?.event);
         setEvent(res?.data?.event);

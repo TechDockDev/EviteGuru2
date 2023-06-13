@@ -48,7 +48,6 @@ const LogInModal = ({
   };
 
   const togglePasswordChangeModal = () => {
-   
     setOpenPasswordChangeModal(!openPasswordChangeModal);
   };
 
@@ -65,7 +64,7 @@ const LogInModal = ({
     e.preventDefault();
     try {
       console.log("cred->", userValues);
-      const res = await axios.post("/api/v1/user/login", userValues);
+      const res = await axios.post(`${Constants.URL}/login`, userValues);
       if (res.status === 200) {
         dispatch(openSnackbar(res?.data?.message, "success"));
         toggleLogInModal();
@@ -404,7 +403,7 @@ const LogInModal = ({
                 Register Now
               </Button>
             </Typography>
-            <div id="captcha-button" ref={recaptchaRef} ></div>
+            <div id="captcha-button" ref={recaptchaRef}></div>
           </Stack>
         </Paper>
       </Modal>

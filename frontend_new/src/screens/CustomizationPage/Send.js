@@ -247,7 +247,6 @@ const Send = () => {
       field: "name",
       headerName: "Name",
       width: 200,
-      
     },
     {
       field: "email",
@@ -321,7 +320,7 @@ const Send = () => {
   // ==get single event details =======
   const getSingleEventDetails = async () => {
     try {
-      const res = await axios.get(`/api/v1/user/event/${id}`);
+      const res = await axios.get(`${Constants.URL}/event/${id}`);
       if (res.status === 200) {
         dispatch(setCreatedEventDetail(res?.data?.event));
         dispatch(setPageTitle(`${res?.data?.event?.name}`));
@@ -337,7 +336,7 @@ const Send = () => {
   // =====create guest list =========
   const createGuestList = async () => {
     try {
-      const res = await axios.post("/api/v1/user/guest/create", {
+      const res = await axios.post(`${Constants.URL}/guest/create`, {
         eventId: id,
       });
       if (res.status === 200) {
@@ -358,7 +357,9 @@ const Send = () => {
   // =function to fetch geustList==
   const getGuestListDetails = async (guestListId) => {
     try {
-      const res = await axios.get(`/api/v1/user/guest/single/${guestListId}`);
+      const res = await axios.get(
+        `${Constants.URL}/guest/single/${guestListId}`
+      );
       if (res.status === 200) {
         setguestList(res?.data?.guestList?.guests);
         setLoading(false);

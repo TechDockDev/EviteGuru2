@@ -27,7 +27,7 @@ const StickersModal = ({ open, handleClose, addStickers }) => {
   // ==== get all stickers ============
   const getAllStickers = async () => {
     try {
-      const res = await axios.get("/api/v1/user/variation/stickers");
+      const res = await axios.get(`${Constants.URL}/variation/stickers`);
       if (res.status === 200) {
         console.log("stickers=>", res);
         setStickers(res?.data?.stickers);
