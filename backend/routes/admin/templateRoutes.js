@@ -47,7 +47,7 @@ templateRouter.post(
   upload.single("previewImage"),
   saveImage
 );
-templateRouter.get("/sendImage/:imgName", adminAuth, sendImage);
+templateRouter.get("/sendImage/:imgName", sendImage);
 templateRouter.post(
   "/create",
   adminAuth,

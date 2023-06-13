@@ -30,7 +30,7 @@ templateUserRouter.post(
   upload.array("image"),
   saveImage
 );
-templateUserRouter.get("/sendImage/:imgName", userAuth, sendImage);
+templateUserRouter.get("/sendImage/:imgName", sendImage);
 templateUserRouter.get("/stickers", userAuth, getStickers);
 templateUserRouter.route("/:id").get(singleTemplate);
 
