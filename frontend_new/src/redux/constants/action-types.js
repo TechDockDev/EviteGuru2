@@ -31,7 +31,7 @@ export const ActionTypes = {
 };
 
 export const Constants = {
-  IMG_URL: "http://192.168.29.249:8085/api/v1/user",
+  IMG_URL: "http://localhost:8085/api/v1/user",
   URL: "/api/v1/user",
   IMG_PATH: "/images/getImage?path=",
 };

@@ -56,7 +56,7 @@ const SmallScreenDrawerMenu = (props) => {
           {/* ==== 👇 EVITEGURU topbar logo👇   ===== */}
           <Box
             component={NavLink}
-            to={"/"}
+            to={"/user"}
             sx={{
               width: "150px",
               display: "flex",
@@ -68,7 +68,8 @@ const SmallScreenDrawerMenu = (props) => {
           >
             <Box
               component={"img"}
-              src="./assets/EviteGuruLogoWhite.svg"
+              src="/assets/EviteGuruLogoWhite.svg"
+              alt="logo"
               sx={{ width: "100%" }}
             />
           </Box>
@@ -95,7 +96,7 @@ const SmallScreenDrawerMenu = (props) => {
           {/* ==== 👇 EVITEGURU topbar logo👇   ===== */}
           <Box
             component={NavLink}
-            to={"/"}
+            to={"/user"}
             sx={{
               width: "150px",
               display: "flex",
@@ -108,7 +109,8 @@ const SmallScreenDrawerMenu = (props) => {
           >
             <Box
               component={"img"}
-              src="./assets/EviteGuruLogo.svg"
+              src="assets/EviteGuruLogo.svg"
+              alt="logo"
               sx={{ width: "100%" }}
             />
           </Box>

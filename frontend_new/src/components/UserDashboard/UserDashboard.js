@@ -113,7 +113,8 @@ const UserDashboard = () => {
               <Box
                 component={"img"}
                 bgcolor="transparent"
-                src={"/assets/EviteGuruLogoWhite.svg"}
+                alt="logo-dash"
+                src={"/user/assets/EviteGuruLogoWhite.svg"}
                 sx={{
                   height: "100%",
                   width: "100%",
@@ -202,6 +203,8 @@ const UserDashboard = () => {
           {/* hamburger icon for opening menu on small screens */}
           {/* == topbar right eviteguru logo |vsisible on small screen ==*/}
           <Box
+            component={NavLink}
+            to="/"
             sx={{
               height: "100%",
               width: "100%",
@@ -219,7 +222,8 @@ const UserDashboard = () => {
           >
             <Box
               component={"img"}
-              src={"/assets/EviteGuruLogo.svg"}
+              alt="logo-dasboard"
+              src={"/user/assets/EviteGuruLogo.svg"}
               sx={{ height: "100%" }}
             />
           </Box>
@@ -303,7 +307,7 @@ const UserDashboard = () => {
                 >
                   <Box
                     component={"img"}
-                    src={"/assets/EviteGuruLogoWhite.svg"}
+                    src={"/user/assets/EviteGuruLogoWhite.svg"}
                     sx={{ height: "100%" }}
                     onClick={() => {
                       navigate("/");
