@@ -1,17 +1,4 @@
-import {
-  Grid,
-  Button,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Paper,
-} from "@mui/material";
+import { Grid, Button, Box, Typography } from "@mui/material";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
 
@@ -20,49 +7,44 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Buffer } from "buffer";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 import {
   getSingleTemplate,
   setEventTemplate,
 } from "../../redux/action/userActions";
-import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import {
-  TbLayersDifference,
-  TbLayersSubtract,
-  TbTextRecognition,
-} from "react-icons/tb";
-import { FaRegObjectGroup } from "react-icons/fa";
-import { FaRegObjectUngroup } from "react-icons/fa";
-import { BsLayerBackward } from "react-icons/bs";
-import { BsLayerForward } from "react-icons/bs";
-import { ImMakeGroup } from "react-icons/im";
-import ExtensionIcon from "@mui/icons-material/Extension";
+
+import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
+
 import StickersModal from "./StickersModal";
-import FormatBoldIcon from "@mui/icons-material/FormatBold";
-import FormatItalicIcon from "@mui/icons-material/FormatItalic";
-import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
-import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import Draggable from "react-draggable";
+
 import { Constants } from "../../redux/constants/action-types";
+import { json, svgData } from "../templateJson";
+import Dialogue from "./Dialogue";
+import TextTools from "./TextTools";
+import GroupTools from "./Tools";
+import AddTools from "./AddTools";
 const Design = (props) => {
-  const [color, setColor] = useState("");
+  const [dialogueOpen, setDialogueOpen] = useState(false);
+  const ref = useRef(null);
+  const [screenSize, setScreenSize] = useState({
+    width: ref?.current?.clientWidth,
+    height: ref?.current?.clientHeight,
+  });
+  console.log("screen=>", screenSize);
+  const handleShowDialogue = () => {
+    setDialogueOpen(!dialogueOpen);
+  };
+  const [color, setColor] = useState("#000000");
   const [font, setfont] = useState("Montserrat");
   const { editor, onReady } = useFabricJSEditor();
   const [data, setData] = useState();
   const [templateData, setTemplateData] = useState();
   const [addStickersModal, setAddStickersModal] = useState(false);
   const [allImages, setAllImages] = useState([]);
+  const [isLandscape, setIsLandscape] = useState(false);
+  // ==================================
 
-  const fonts = [
-    "Sacramento",
-    "Parisienne",
-    "Montserrat",
-    "Pinyon Script",
-    "Arial",
-    "Helvetica",
-  ];
+  // ==================================
 
   const navigate = useNavigate();
   // =========== 👇 code for draggable tools bar for text edit👆👆=======
@@ -93,7 +75,7 @@ const Design = (props) => {
   const { templateDetails, userDetail, userEventTemplate } = useSelector(
     (state) => state
   );
-  console.log(userDetail);
+  // console.log(userDetail);
 
   // =================== Ading Text Fuc
   const addText = () => {
@@ -257,17 +239,7 @@ const Design = (props) => {
       alert("No object slected");
     }
   };
-  // ===👆 text style STRIKE THROUGH👆
 
-  //   ========================font size ===
-  // const changeFontSize = (e) => {
-  //   console.log("font working>-");
-  //   const o = editor.canvas
-  //     .getActiveObject()
-  //     .set("fontSize", e.target.value * 1);
-  //   editor.canvas.renderAll();
-  // };
-  // ========================================
   //  ===👇 Clone Selected object👇
   const clone = () => {
     editor?.canvas?.getActiveObject().clone((cloned) => {
@@ -319,12 +291,17 @@ const Design = (props) => {
     const ext = "png";
     const image = editor?.canvas?.toDataURL({
       format: "png",
-      // multiplier: 2,
+      quality: 1,
+      width: 475,
+      height: 600,
+      pixelRatio: 3,
+      multiplier: 2,
       // enableRetinaScaling: true,
     });
     // ================================
     function dataURLtoFile(dataurl, filename) {
       const uint8Buffer = Buffer.from(dataurl.split(",")[1], "base64");
+      console.log("base64=>");
       return new File([uint8Buffer], filename, { type: "image/png" });
     }
     // Usage example:
@@ -342,6 +319,10 @@ const Design = (props) => {
     props.tabChange({}, 1);
   };
   // ==================================
+  // const toSvg = () => {
+  //   const svgData = editor.canvas.toSVG();
+  //   console.log("ato-=<>", svgData);
+  // };
   //=================== This Fnc For Adding Extra Image
   const onUploadImage = (e) => {
     console.log("clicked");
@@ -369,14 +350,22 @@ const Design = (props) => {
   //   ====load canvas from json =====
   const loadCanvasFromJson = () => {
     // let object = new fabric.Canvas("canvas");
+
     console.log(templateData);
     if (userEventTemplate?.jsonData) {
+      console.log("userEventTemplate=>", userEventTemplate?.jsonData);
+
       editor?.canvas.loadFromJSON(userEventTemplate?.jsonData);
+      editor?.canvas?.renderAll();
     } else if (!userEventTemplate?.jsonData && templateData) {
+      console.log("!userEventTemplate=> and templateData");
       editor?.canvas.loadFromJSON(templateData);
+      editor?.canvas?.renderAll();
     }
   };
+
   // ==================================
+
   // =================== This is YOur Handler + Image Downloader
   const downloadImage = (e) => {
     e.preventDefault();
@@ -389,7 +378,7 @@ const Design = (props) => {
     link.href = base64;
     link.download = `Template_Example.${ext}`;
     console.log("Running", base64);
-    // dispatch(EditTemplate(base64));
+
     // { THis link.Click For Dowload Editd Image , Whene You remove That Commit And that Image will Download}
     link.click();
   };
@@ -411,572 +400,222 @@ const Design = (props) => {
   const handleCancel = () => {
     navigate("/dashboard/my-events");
   };
+
+  const handleOrientationChange = () => {
+    const isSmallScreen = window.innerWidth < 550; // Adjust the breakpoint as needed
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    console.log("windowlenth=>", isSmallScreen, " isPortRait=>", isPortrait);
+    if (isSmallScreen) {
+      setIsLandscape(true);
+      document.getElementById("d-parent").style.zoom = "35%";
+      handleShowDialogue();
+    } else {
+      document.getElementById("d-parent").style.zoom = "100%";
+      setIsLandscape(false);
+      setDialogueOpen(false);
+    }
+  };
+
+  const handleObjectSelect = (event) => {
+    const selectedObject = event.target;
+    // const selectedObject =  editor?.canvas?.getActiveObject();
+    console.log("Object Selected:", editor?.canvas?.getActiveObject());
+    if (editor?.canvas?.getActiveObject()?.type === "i-text") {
+      console.log(
+        "fontFamily=>",
+        typeof editor?.canvas?.getActiveObject()?.fontFamily
+      );
+      setfont(editor?.canvas?.getActiveObject()?.fontFamily);
+    }
+
+    // Perform any desired actions with the selected object
+  };
+
   // =endOf handleCancel==
   // ===============
   useEffect(() => {
     // getAllStickers();
-    if (id && id !== "fresh-template") {
-      getTemplate();
-    }
+    // if (id && id !== "fresh-template") {
+    getTemplate();
+    // }
   }, []);
   // =============
 
   useEffect(() => {
+    handleOrientationChange();
     loadCanvasFromJson();
+    return () => {
+      loadCanvasFromJson();
+    };
   }, [templateData]);
   // ================
-  // ===👇 Toolbar button 👇===
-  const ListItemButtonStyle = {
-    padding: "5px 0px",
-    transition: "all 200ms ease",
-    border: "1px solid #E6E2E2",
-    width: "85px",
-    maxWidth: "85px",
-    marginY: "8px",
-    display: "flex",
-    flexDirection: "column",
-    "&:hover": {
-      bgcolor: "transparent",
-      borderColor: "#795DA8",
-      "& svg": { color: "#795DA8" },
-      "& span": { color: "#795DA8" },
-    },
-    "&:active": { scale: ".9" },
-  };
-  // ===👇 Toolbar button type 2 👇===
 
-  const ListItemButtonStyle2 = {
-    padding: "0px",
-    transition: "all 200ms ease",
-    // width: "85px",
-    marginY: "8px",
-    display: "flex",
-    "& svg": {
-      fontSize: "25px",
-      marginRight: "5px",
-    },
-    "& span": { fontWeight: "500" },
-    "&:hover": {
-      bgcolor: "transparent",
-      borderColor: "#795DA8",
-      "& svg": { color: "#795DA8" },
-      "& span": { color: "#795DA8" },
-    },
-    "&:active": { scale: ".9" },
-  };
-  // ===👇 TEXT Toolbar button type 3 👇===
+  useEffect(() => {
+    handleOrientationChange();
+    editor?.canvas.on("selection:updated", handleObjectSelect);
+    if (isLandscape) {
+      document.getElementById("d-parent").style.zoom = "35%";
+    }
+    window.addEventListener("resize", handleOrientationChange);
 
-  const ListItemButtonStyle3 = {
-    padding: "0px",
-    transition: "all 200ms ease",
-    marginY: "8px",
-    display: "flex",
-    justifyContent: "center",
-    "& .MuiListItemIcon-root": {
-      minWidth: "",
-    },
-    "& svg": {
-      fontSize: "25px",
-      marginRight: "5px",
-    },
-    "&:hover": {
-      bgcolor: "transparent",
-      borderColor: "#795DA8",
-      "& svg": { color: "#795DA8" },
-      "& span": { color: "#795DA8" },
-    },
-    "&:active": { scale: ".9" },
-  };
+    return () => {
+      window.removeEventListener("resize", handleOrientationChange);
+      // document.getElementById("d-parent").style.zoom = "100%";
+    };
+  }, []);
 
   return (
-    <Grid container sx={{ width: "100%" }}>
-      {/*  👇 edit tools container  👇    */}
-      {editor?.canvas?.getActiveObject()?.type === "i-text" && (
-        <>
-          {/*  👇 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED)  👇    */}
-          {/* <Draggable onDrag={handleDrag}> */}
+    <>
+      <Box overflow={"auto"} p={1} id="d-parent">
+        <Grid container sx={{ width: "100%" }}>
           <Grid
             item
-            mt={2}
-            // component={Paper}
-            // md={6}
+            container
             xs={12}
-            overflow={"auto"}
-            bgcolor={"white"}
-            sx={
-              {
-                // position: "absolute",
-                // left: `${position.x}`,
-                // right: `${position.y}`,
-                // cursor: "move",
-              }
-            }
+            justifyContent={"space-between"}
+            borderBottom={"1px solid black"}
+            mb={1}
+            id="d-children"
           >
-            <Stack
-              direction={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              border={"1px solid #E6E2E2"}
-              paddingX={"5px"}
-              boxSizing={"border-box"}
-              width={"100%"}
-              // sx={{ cursor: "move" }}
-            >
-              {/*  👇 change font type button  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle3 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="font-family-select-label">Fonts</InputLabel>
-                  <Select
-                    labelId="font-family-select-label"
-                    id="font-family-select"
-                    value={font}
-                    label="Font Family"
-                    size="small"
-                    onChange={changeFont}
-                  >
-                    {fonts?.map((font, index) => {
-                      return (
-                        <MenuItem key={index} value={font}>
-                          {font}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </ListItemButton>
-              {/* 👆 change font type button 👆   */}
-              {/*  👇 change font COLOR button  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle3 }}
-                onClick={changeColor}
+            <AddTools
+              addText={addText}
+              toggleStickersModal={toggleStickersModal}
+              onUploadImage={onUploadImage}
+            />
+            <Box display={"flex"} flexDirection={"row"} alignItems={"center"}>
+              <Button
+                disableElevation
+                variant="outlined"
+                onClick={handleCancel}
+                sx={{ mr: 1 }}
               >
-                <input type="color" onChange={changeColor} />
-              </ListItemButton>
-              {/* 👆 change font COLOR button 👆   */}
-              {/*  👇 Font Style BOLD  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={bold}>
-                <ListItemIcon>
-                  <FormatBoldIcon />
-                </ListItemIcon>
-              </ListItemButton>
-              {/* 👆 Font Style BOLD 👆   */}
-              {/*  👇 Font Style ITALIC  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={italic}>
-                <ListItemIcon>
-                  <FormatItalicIcon />
-                </ListItemIcon>
-              </ListItemButton>
-              {/* 👆 Font Style ITALIC 👆   */}
-              {/*  👇 Font Style UNDERLINE  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle3 }}
-                onClick={underline}
+                Cancel
+              </Button>
+              <Button
+                disableElevation
+                variant="contained"
+                onClick={
+                  !userDetail?.isUser
+                    ? () => {}
+                    : () => {
+                        saveTemplateData();
+                      }
+                }
+                sx={{ color: "#fff", ml: 1 }}
               >
-                <ListItemIcon>
-                  <FormatUnderlinedIcon />
-                </ListItemIcon>
-              </ListItemButton>
-              {/* 👆 Font Style UNDERLINE 👆   */}
-              {/*  👇 Font Style STRIKETHROUGH  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={strike}>
-                <ListItemIcon>
-                  <StrikethroughSIcon />
-                </ListItemIcon>
-              </ListItemButton>
-              {/* 👆 Font Style STRIKETHROUGH 👆   */}
-            </Stack>
+                Next
+              </Button>
+            </Box>
           </Grid>
-          {/* </Draggable> */}
-          {/* 👆 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED) 👆   */}
-        </>
-      )}
-      <Grid
-        item
-        sm={2}
-        xs={12}
-        boxSizing={"border-box"}
-        sx={{
-          // padding: "20px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          order: { xs: 1, sm: 0 },
-        }}
-      >
-        <Stack
-          sx={{
-            maxHeight: "450px",
-            overflow: "auto",
-            width: "100%",
-            boxSizing: "border-box",
-            "&::-webkit-scrollbar": {
-              width: "8px",
-            },
-            "&::-webkit-scrollbar-track": {
-              background: "#CEC5DC",
-              borderRadius: "4px",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              background: "#795DA8",
-              borderRadius: "4px",
-            },
-            "&::-webkit-scrollbar-thumb:hover": {
-              background: "#5a3991",
-              borderRadius: "4px",
-            },
-          }}
-        >
-          <List
-            disablePadding
+          <Grid
+            item
+            xs={12}
+            boxSizing={"border-box"}
             sx={{
-              width: { xs: "1190px", sm: "100%" },
+              // padding: "20px",
               display: "flex",
-              flexDirection: { xs: "row", sm: "column" },
-              justifyContent: { xs: "space-around", sm: "center" },
+              flexDirection: "row",
+              justifyContent: "center",
               alignItems: "center",
-              boxSizing: "border-box",
-              "& .MuiListItemIcon-root": {
-                minWidth: "",
-              },
+              order: { xs: 1, sm: 0 },
+              minWidth: "750px",
             }}
           >
-            {/*  👇==== Add Photo ====  👇    */}
+            <Box width={"250px"}>
+              {editor?.canvas?.getActiveObject() ? (
+                ""
+              ) : (
+                <Box
+                  width={"100%"}
+                  p={1}
+                  border={"1px solid black"}
+                  display={"flex"}
+                  flexDirection={"row"}
+                  alignItems={"center"}
+                  justifyContent={"space-between"}
+                >
+                  <ColorLensOutlinedIcon />
+                  <Typography variant="body1" component={"p"} ml={1}>
+                    Change your Card’s text, style and more. Add additional text
+                    boxes where you want them.
+                  </Typography>
+                </Box>
+              )}
 
-            <ListItemButton
-              component={"label"}
+              {/*  👇 edit tools container  👇    */}
+              {editor?.canvas?.getActiveObject()?.type === "i-text" && (
+                <TextTools
+                  changeFont={changeFont}
+                  changeColor={changeColor}
+                  bold={bold}
+                  italic={italic}
+                  underline={underline}
+                  strike={strike}
+                  setfont={setfont}
+                  font={font}
+                  color={color}
+                />
+              )}
+              {editor?.canvas?.getActiveObject() && (
+                <GroupTools
+                  groupSelectedLayers={groupSelectedLayers}
+                  groupAllLayers={groupAllLayers}
+                  unGroup={unGroup}
+                  bringToTop={bringToTop}
+                  moveBackward={moveBackward}
+                  moveToBack={moveToBack}
+                  moveForward={moveForward}
+                  clone={clone}
+                  removeSelectedObject={removeSelectedObject}
+                />
+              )}
+            </Box>
+            {/* 👆 edit tools container 👆   */}
+            {/*  👇 image container  👇    */}
+
+            <Box
               sx={{
-                ...ListItemButtonStyle,
+                // padding: "5px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                alignContent: "center",
+                width: "100%",
+                "& .fabCanvas": {
+                  height: "100%",
+                  width: "100%",
+                },
+                "& .upper-canvas": {
+                  background: "none",
+                },
               }}
             >
-              <ListItemIcon
-                sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
+              {/* 625 x 875 */}
+              <Box
+                width={{ md: "475px", sm: "475px", xs: "475px" }}
+                height={"600px"}
+                ref={ref}
+                sx={{ margin: "auto", border: "1px solid black" }}
               >
-                <input
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  type="file"
-                  onChange={onUploadImage}
+                <FabricJSCanvas
+                  className="fabCanvas"
+                  onReady={onReady}
+                  width="100%"
+                  height="100%"
                 />
-                <InsertPhotoIcon />
-              </ListItemIcon>
-              <ListItemText
-                primaryTypographyProps={{
-                  sx: {
-                    color: "black",
-                    fontSize: "12px",
-                    fontFamily: "Montserrat",
-                    textAlign: "center",
-                  },
-                }}
-              >
-                Image
-              </ListItemText>
-            </ListItemButton>
-
-            {/* 👆 ==== Add Photo ==== 👆   */}
-
-            {/*  👇==== Add text ====  👇    */}
-            <ListItemButton sx={{ ...ListItemButtonStyle }} onClick={addText}>
-              <ListItemIcon
-                sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
-              >
-                <TbTextRecognition />
-              </ListItemIcon>
-              <ListItemText
-                primaryTypographyProps={{
-                  sx: {
-                    color: "black",
-                    fontSize: "12px",
-                    fontFamily: "Montserrat",
-                    textAlign: "center",
-                  },
-                }}
-              >
-                Text
-              </ListItemText>
-            </ListItemButton>
-            {/* 👆 ==== Add text ==== 👆   */}
-            {/*  👇==== Stickers ====  👇    */}
-            <ListItemButton
-              sx={{ ...ListItemButtonStyle }}
-              onClick={toggleStickersModal}
-            >
-              <ListItemIcon
-                sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
-              >
-                <ExtensionIcon />
-              </ListItemIcon>
-              <ListItemText
-                primaryTypographyProps={{
-                  sx: {
-                    color: "black",
-                    fontSize: "12px",
-                    fontFamily: "Montserrat",
-                    textAlign: "center",
-                  },
-                }}
-              >
-                Stickers
-              </ListItemText>
-            </ListItemButton>
-            <StickersModal
-              open={addStickersModal}
-              handleClose={toggleStickersModal}
-              addStickers={addStickers}
-            />
-
-            {/* 👆 ==== Stickers ==== 👆   */}
-            <Stack
-              mt={1}
-              alignItems={"start"}
-              direction={{ xs: "row", sm: "column" }}
-              width={{ xs: "890px", sm: "100%" }}
-            >
-              {/*  👇==== Group Selected ====  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle2 }}
-                onClick={groupSelectedLayers}
-              >
-                <ListItemIcon sx={{ color: "#667087" }}>
-                  <ImMakeGroup />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Group Selected
-                </ListItemText>
-              </ListItemButton>
-
-              {/* 👆 ==== Group Selected ==== 👆   */}
-              {/*  👇==== GroupAll ====  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle2 }}
-                onClick={groupAllLayers}
-              >
-                <ListItemIcon sx={{ color: "#667087" }}>
-                  <FaRegObjectGroup />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Group ALL
-                </ListItemText>
-              </ListItemButton>
-
-              {/* 👆 ==== GroupAll ==== 👆 TbLayersSubtract  */}
-              {/*  👇==== UnGroup ====  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle2 }}
-                onClick={unGroup}
-              >
-                <ListItemIcon
-                  sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
-                >
-                  <FaRegObjectUngroup />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Ungroup
-                </ListItemText>
-              </ListItemButton>
-
-              {/* 👆 ==== UnGroup ==== 👆   */}
-              {/*  👇==== Bring To Top ====  👇    */}
-              <ListItemButton
-                onClick={bringToTop}
-                sx={{ ...ListItemButtonStyle2 }}
-              >
-                <ListItemIcon sx={{ color: "#667087" }}>
-                  <BsLayerForward />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: { color: "black", fontSize: "12px", fontWeight: "800" },
-                  }}
-                >
-                  Move Forward
-                </ListItemText>
-              </ListItemButton>
-
-              {/* 👆 ==== Bring To Top ==== 👆   */}
-              {/*  👇==== move layer back  ====  👇    */}
-              <ListItemButton
-                onClick={moveBackward}
-                sx={{ ...ListItemButtonStyle2 }}
-              >
-                <ListItemIcon sx={{ color: "#667087" }}>
-                  <BsLayerBackward />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: { color: "black", fontSize: "12px", fontWeight: "800" },
-                  }}
-                >
-                  Move to back
-                </ListItemText>
-              </ListItemButton>
-              {/* 👆 ==== move layer back ==== 👆   */}
-              {/* ====move layers backward */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle2 }}
-                onClick={moveToBack}
-              >
-                <ListItemIcon sx={{ color: "#667087" }}>
-                  <TbLayersDifference />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Push to Back
-                </ListItemText>
-              </ListItemButton>
-              {/* mover layer backward === */}
-              {/* ====move layers to front */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle2 }}
-                onClick={moveForward}
-              >
-                <ListItemIcon sx={{ color: "#667087" }}>
-                  <TbLayersSubtract />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Bring To Top
-                </ListItemText>
-              </ListItemButton>
-              {/* mover layer to top === */}
-              {/*  👇==== Clone Object  ====  👇    */}
-              <ListItemButton onClick={clone} sx={{ ...ListItemButtonStyle2 }}>
-                <ListItemIcon sx={{ color: "#667087" }}>
-                  <FileCopyIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: { color: "black", fontSize: "12px", fontWeight: "800" },
-                  }}
-                >
-                  Clone
-                </ListItemText>
-              </ListItemButton>
-              {/* 👆 ==== Clone Object ==== 👆   */}
-              {/*  👇==== Remove ====  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle2 }}
-                onClick={removeSelectedObject}
-              >
-                <ListItemIcon
-                  sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
-                >
-                  <DeleteIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Remove
-                </ListItemText>
-              </ListItemButton>
-              {/* 👆 ==== Remove ==== 👆   */}
-            </Stack>
-          </List>
-        </Stack>
-        <Button
-          fullWidth
-          disableElevation
-          variant="contained"
-          onClick={
-            !userDetail?.isUser
-              ? () => {}
-              : () => {
-                  saveTemplateData();
-                }
-          }
-          sx={{ color: "#fff", mt: 2 }}
-        >
-          Next
-        </Button>
-        <Button
-          fullWidth
-          disableElevation
-          variant="outlined"
-          onClick={handleCancel}
-          sx={{ mt: 1 }}
-        >
-          Cancel
-        </Button>
-      </Grid>
-      {/* 👆 edit tools container 👆   */}
-      {/*  👇 image container  👇    */}
-
-      <Grid
-        item
-        xl={10}
-        lg={10}
-        md={10}
-        sm={10}
-        xs={12}
-        sx={{
-          padding: "5px",
-          width: "100%",
-          height: "75vh",
-          "& .fabCanvas": {
-            height: "100%",
-            width: "100%",
-            // border: "2px solid green",
-          },
-          "& .upper-canvas": {
-            background: "none",
-          },
-        }}
-      >
-        <FabricJSCanvas className="fabCanvas" onReady={onReady} />
-      </Grid>
-      {/* 👆 image container 👆   */}
-    </Grid>
+              </Box>
+            </Box>
+            {/* 👆 image container 👆   */}
+          </Grid>
+        </Grid>
+        <StickersModal
+          open={addStickersModal}
+          handleClose={toggleStickersModal}
+          addStickers={addStickers}
+        />
+        <Dialogue open={dialogueOpen} handleClose={handleShowDialogue} />
+      </Box>
+    </>
   );
 };
 

@@ -42,6 +42,7 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import { DataContext } from "../AppContext";
 import { url } from "../url";
+import Dialogue from "./Dialogue";
 
 const AdminTemplateCreateScreen = () => {
   const [descModal, setDescModal] = useState(false);
@@ -49,6 +50,7 @@ const AdminTemplateCreateScreen = () => {
   const [templateDesc, setTemplateDesc] = useState("");
   const { snackbar } = useContext(DataContext);
   const navigate = useNavigate();
+  const ref = useRef(null);
   const [allImages, setAllImages] = useState([]);
   const [color, setColor] = useState("");
   const { editor, onReady, selectedObjects } = useFabricJSEditor();
@@ -56,7 +58,16 @@ const AdminTemplateCreateScreen = () => {
   const [templateData, setTemplateData] = useState();
   const [addStickersModal, setAddStickersModal] = useState(false);
   const [selectedFont, setSelectedFont] = useState("Pinyon Script");
-
+  const [dialogueOpen, setDialogueOpen] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
+  const [screenSize, setScreenSize] = useState({
+    width: ref?.current?.clientWidth,
+    height: ref?.current?.clientHeight,
+  });
+  console.log("screen=>", screenSize);
+  const handleShowDialogue = () => {
+    setDialogueOpen(!dialogueOpen);
+  };
   const fonts = [
     "Sacramento",
     "Parisienne",
@@ -73,6 +84,7 @@ const AdminTemplateCreateScreen = () => {
   // ===========👇 Add background IMAGE👇  ===================
   const setBackgroundImage = (e) => {
     const reader = new FileReader();
+    console.log("img=>",e.target.files[0].width)
     setAllImages([...allImages, e.target.files[0]]);
 
     reader.onload = function (event) {
@@ -80,8 +92,8 @@ const AdminTemplateCreateScreen = () => {
       imgObj.crossOrigin = "Anonymous";
       imgObj.src = event.target.result;
       imgObj.width = width;
-      // console.log(imgObj.height);
-
+      console.log("=>", imgObj.width);
+      console.log("allImages=>", allImages);
       const scaleFactor = Math.min(
         width / imgObj.width,
         height / imgObj.height
@@ -210,7 +222,7 @@ const AdminTemplateCreateScreen = () => {
           e.target.src.split("\\")[e.target.src.split("\\").length - 1]
         );
         editor.canvas.add(img);
-        editor.canvas.renderAll();
+        // editor.canvas.renderAll();
       },
       {
         left: width / 2,
@@ -402,9 +414,22 @@ const AdminTemplateCreateScreen = () => {
 
   useEffect(() => {
     loadCanvasFromJson();
+    handleOrientationChange();
   }, [templateData]);
   // ================
+  useEffect(() => {
+    handleOrientationChange();
 
+    if (isLandscape) {
+      document.getElementById("d-parent").style.zoom = "35%";
+    }
+    window.addEventListener("resize", handleOrientationChange);
+
+    return () => {
+      window.removeEventListener("resize", handleOrientationChange);
+      // document.getElementById("d-parent").style.zoom = "100%";
+    };
+  }, []);
   const toggleDescModal = () => {
     setTemplateName("");
     setTemplateDesc("");
@@ -484,7 +509,7 @@ const AdminTemplateCreateScreen = () => {
       });
       const res = await axios.post("/template/saveImage", formData);
       createPreview();
-      // console.log(res);
+      console.log(res);
     } catch (error) {
       // console.log(error);
     }
@@ -495,6 +520,11 @@ const AdminTemplateCreateScreen = () => {
     const canvasPng = editor?.canvas.toDataURL({
       format: "png",
       // quality: 0.8,
+      quality: 1,
+      width: 475,
+      height: 600,
+      pixelRatio: 3,
+      multiplier: 2,
     });
     function dataURLtoFile(dataurl, filename) {
       const uint8Buffer = Buffer.from(dataurl.split(",")[1], "base64");
@@ -533,12 +563,27 @@ const AdminTemplateCreateScreen = () => {
     }
   }
 
+  const handleOrientationChange = () => {
+    const isSmallScreen = window.innerWidth < 550; // Adjust the breakpoint as needed
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    console.log("windowlenth=>", isSmallScreen, " isPortRait=>", isPortrait);
+    if (isSmallScreen) {
+      setIsLandscape(true);
+      document.getElementById("d-parent").style.zoom = "35%";
+      handleShowDialogue();
+    } else {
+      document.getElementById("d-parent").style.zoom = "100%";
+      setIsLandscape(false);
+      setDialogueOpen(false);
+    }
+  };
+
   // =======================================================
   // =======================================================
   // =======================================================
   return (
     <>
-      <Box paddingX={"10px"} boxSizing={"border-box"}>
+      <Box paddingX={"10px"} boxSizing={"border-box"} id="d-parent">
         <Typography
           variant="h1"
           align="center"
@@ -1022,7 +1067,7 @@ const AdminTemplateCreateScreen = () => {
               boxSizing: "border-box",
               //  padding: "5px",
               width: "100%",
-              height: "70vh",
+              // height: "70vh",
               order: 0,
               paddingX: "5px",
               "& .fabCanvas": {
@@ -1036,7 +1081,14 @@ const AdminTemplateCreateScreen = () => {
               },
             }}
           >
-            <FabricJSCanvas className="fabCanvas" onReady={onReady} />
+            <Box
+              width={{ md: "475px", sm: "475px", xs: "475px" }}
+              height={"600px"}
+              ref={ref}
+              sx={{ margin: "auto", border: "1px solid black" }}
+            >
+              <FabricJSCanvas className="fabCanvas" onReady={onReady} />
+            </Box>
           </Grid>
         </Grid>
       </Box>
@@ -1130,6 +1182,7 @@ const AdminTemplateCreateScreen = () => {
           </>
         </Box>
       </Modal>
+      <Dialogue open={dialogueOpen} handleClose={handleShowDialogue} />
     </>
   );
 };

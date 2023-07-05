@@ -41,8 +41,10 @@ import StickersModal from "../StickersModal";
 import { useContext } from "react";
 import { DataContext } from "../../AppContext";
 import { url } from "../../url";
+import Dialogue from "../Dialogue";
 
 const TemplateEdit = () => {
+  const ref = useRef(null);
   const { snackbar } = useContext(DataContext);
   const [allImages, setAllImages] = useState([]);
   const [color, setColor] = useState("");
@@ -61,32 +63,53 @@ const TemplateEdit = () => {
     "Arial",
     "Helvetica",
   ];
-
+  const [dialogueOpen, setDialogueOpen] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
+  const [screenSize, setScreenSize] = useState({
+    width: ref?.current?.clientWidth,
+    height: ref?.current?.clientHeight,
+  });
+  console.log("screen=>", screenSize);
+  const handleShowDialogue = () => {
+    setDialogueOpen(!dialogueOpen);
+  };
   const navigate = useNavigate();
   // ===========👇 Add background IMAGE👇  ===================
+  let canvasEl = document.querySelector(".canvas-container");
+  let height = canvasEl?.clientHeight;
+  let width = canvasEl?.clientWidth;
   const setBackgroundImage = (e) => {
     const reader = new FileReader();
     setAllImages([...allImages, e.target.files[0]]);
-    // set background image options
+    
     var bgImgOptions = {
-      // set the background color to white
+     
       backgroundColor: "red",
-      // set the scaling mode to "cover"
+      
       backgroundScaleMode: "cover",
     };
-    // load the background image
+   
     reader.onload = function (event) {
       var imgObj = new Image();
       imgObj.crossOrigin = "Anonymous";
       imgObj.src = event.target.result;
+      imgObj.width = width;
+      const scaleFactor = Math.min(
+        width / imgObj.width,
+        height / imgObj.height
+      );
       imgObj.onload = function () {
         var image = new fabric.Image(imgObj);
         image.name = e.target.files[0].name;
-        // set the image as the background of the canvas
+        
         editor?.canvas?.setBackgroundImage(
           image,
           editor.canvas.renderAll.bind(editor.canvas),
-          bgImgOptions
+          // bgImgOptions,
+          {
+            scaleX: editor.canvas.width / image.width,
+            scaleY: editor.canvas.height / image.height,
+          }
         );
       };
     };
@@ -94,9 +117,9 @@ const TemplateEdit = () => {
   };
   // ============👆Add background IMAGE👆   =================
   // ==================👇 dynamically getting canvas height and width👇  =========================
-  let canvasEl = document.querySelector(".canvas-container");
-  let height = canvasEl?.clientHeight;
-  let width = canvasEl?.clientWidth;
+  // let canvasEl = document.querySelector(".canvas-container");
+  // let height = canvasEl?.clientHeight;
+  // let width = canvasEl?.clientWidth;
 
   // ===========================================
 
@@ -111,9 +134,9 @@ const TemplateEdit = () => {
 
   console.log("id...", id);
 
-  const templateDetails = useSelector((state) => state.templateData);
+  // const templateDetails = useSelector((state) => state.templateData);
   // const { template, loading, error } = templateDetails;
-  console.log("template data", templateDetails);
+  // console.log("template data", templateDetails);
 
   // =================== Ading Text Fuc
   const addText = () => {
@@ -387,9 +410,9 @@ const TemplateEdit = () => {
     editor?.canvas?.renderAll();
   };
 
-  useEffect(() => {
-    loadCanvasFromJson();
-  }, [templateData]);
+  // useEffect(() => {
+  //   loadCanvasFromJson();
+  // }, [templateData]);
   // ================
   // ===👇 Toolbar button 👇===
   const ListItemButtonStyle = {
@@ -473,6 +496,11 @@ const TemplateEdit = () => {
     const canvasPng = editor?.canvas.toDataURL({
       format: "png",
       // quality: 0.8,
+      quality: 1,
+      width: 475,
+      height: 600,
+      pixelRatio: 3,
+      multiplier: 2,
     });
     function dataURLtoFile(dataurl, filename) {
       const uint8Buffer = Buffer.from(dataurl.split(",")[1], "base64");
@@ -495,8 +523,8 @@ const TemplateEdit = () => {
         };
       })(fabric.Image.prototype.toObject);
       const formData = new FormData();
-      formData.append("name", "badhiya template");
-      formData.append("description", "arre bahut badhiya template");
+      formData.append("name", templateData?.name);
+      formData.append("description", templateData?.description);
       formData.append("templateJson", JSON.stringify(editor?.canvas.toJSON()));
       formData.append("previewImage", file);
       const response = await axios.patch(`/template/${templateId}`, formData);
@@ -511,14 +539,31 @@ const TemplateEdit = () => {
   const getTemplateJson = async () => {
     try {
       const { data } = await axios.get(`/template/${templateId}`);
+      console.log("data=>", data);
+      setTemplateData(data.template);
       setTemplateJson(data.template.templateJson);
     } catch (error) {
       console.log(error);
     }
   };
-  useEffect(() => {
-    editor?.canvas?.setDimensions({ height: height, width: width });
-  }, [editor]);
+
+  const handleOrientationChange = () => {
+    const isSmallScreen = window.innerWidth < 550; // Adjust the breakpoint as needed
+    const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+    console.log("windowlenth=>", isSmallScreen, " isPortRait=>", isPortrait);
+    if (isSmallScreen) {
+      setIsLandscape(true);
+      document.getElementById("d-parent").style.zoom = "35%";
+      handleShowDialogue();
+    } else {
+      document.getElementById("d-parent").style.zoom = "100%";
+      setIsLandscape(false);
+      setDialogueOpen(false);
+    }
+  };
+  // useEffect(() => {
+  //   editor?.canvas?.setDimensions({ height: height, width: width });
+  // }, [editor]);
 
   useEffect(() => {
     editor?.canvas.loadFromJSON(templateJson);
@@ -527,342 +572,201 @@ const TemplateEdit = () => {
     getTemplateJson();
   }, []);
 
+  useEffect(() => {
+    handleOrientationChange();
+
+    if (isLandscape) {
+      document.getElementById("d-parent").style.zoom = "35%";
+    }
+    window.addEventListener("resize", handleOrientationChange);
+
+    return () => {
+      window.removeEventListener("resize", handleOrientationChange);
+      // document.getElementById("d-parent").style.zoom = "100%";
+    };
+  }, []);
+
   // =======================================================
   // =======================================================
   // =======================================================
   return (
-    <Box paddingX={"10px"} boxSizing={"border-box"}>
-      <Typography
-        variant="h1"
-        align="center"
-        fontWeight="800"
-        fontSize={"28px"}
-        mb={2}
-        sx={{
-          color: "#795da8",
-          width: "100%",
-        }}
-      >
-        Edit Template
-      </Typography>
-      {editor?.canvas?.getActiveObject()?.type === "i-text" && (
-        <>
-          {/*  👇 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED)  👇    */}
-          <Grid item mt={2} xs={12} overflow={"auto"}>
-            <Stack
-              direction={"row"}
-              alignItems={"center"}
-              justifyContent={"center"}
-              border={"1px solid #E6E2E2"}
-              paddingX={"5px"}
-              boxSizing={"border-box"}
-              width={"100%"}
-            >
-              {/*  👇 change font type button  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle3 }}>
-                <FormControl fullWidth>
-                  <InputLabel id="font-family-select-label">Fonts</InputLabel>
-                  <Select
-                    labelId="font-family-select-label"
-                    id="font-family-select"
-                    value={selectedFont}
-                    label="Font Family"
-                    size="small"
-                    onChange={changeFont}
-                  >
-                    {fonts?.map((font, index) => {
-                      return (
-                        <MenuItem key={index} value={font}>
-                          {font}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </ListItemButton>
-              {/* 👆 change font type button 👆   */}
-              {/*  👇 change font COLOR button  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle3 }}
-                onClick={changeColor}
-              >
-                <input type="color" onChange={changeColor} />
-              </ListItemButton>
-              {/* 👆 change font COLOR button 👆   */}
-              {/*  👇 Font Style BOLD  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={bold}>
-                <ListItemIcon>
-                  <FormatBoldIcon />
-                </ListItemIcon>
-              </ListItemButton>
-              {/* 👆 Font Style BOLD 👆   */}
-              {/*  👇 Font Style ITALIC  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={italic}>
-                <ListItemIcon>
-                  <FormatItalicIcon />
-                </ListItemIcon>
-              </ListItemButton>
-              {/* 👆 Font Style ITALIC 👆   */}
-              {/*  👇 Font Style UNDERLINE  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle3 }}
-                onClick={underline}
-              >
-                <ListItemIcon>
-                  <FormatUnderlinedIcon />
-                </ListItemIcon>
-              </ListItemButton>
-              {/* 👆 Font Style UNDERLINE 👆   */}
-              {/*  👇 Font Style STRIKETHROUGH  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={strike}>
-                <ListItemIcon>
-                  <StrikethroughSIcon />
-                </ListItemIcon>
-              </ListItemButton>
-              {/* 👆 Font Style STRIKETHROUGH 👆   */}
-            </Stack>
-          </Grid>
-          {/* 👆 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED) 👆   */}
-        </>
-      )}
-
-      <Grid container sx={{ width: "100%" }}>
-        {/*  👇 edit tools container  👇    */}
-
-        <Grid
-          item
-          sm={2}
-          xs={12}
-          boxSizing={"border-box"}
+    <>
+      <Box paddingX={"10px"} boxSizing={"border-box"} id="d-parent" >
+        <Typography
+          variant="h1"
+          align="center"
+          textAlign={"center"}
+          fontWeight="800"
+          fontSize={"28px"}
+          mb={2}
           sx={{
-            // padding: "20px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            boxSizing: "border-box",
-            order: { xs: 1, sm: 0 },
-            // border: "1px solid green",
+            color: "#795da8",
+            width: "100%",
           }}
         >
-          <Stack
+          Edit Template
+        </Typography>
+        {editor?.canvas?.getActiveObject()?.type === "i-text" && (
+          <>
+            {/*  👇 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED)  👇    */}
+            <Grid item mt={2} xs={12} overflow={"auto"}>
+              <Stack
+                direction={"row"}
+                alignItems={"center"}
+                justifyContent={"center"}
+                border={"1px solid #E6E2E2"}
+                paddingX={"5px"}
+                boxSizing={"border-box"}
+                width={"100%"}
+              >
+                {/*  👇 change font type button  👇    */}
+                <ListItemButton sx={{ ...ListItemButtonStyle3 }}>
+                  <FormControl fullWidth>
+                    <InputLabel id="font-family-select-label">Fonts</InputLabel>
+                    <Select
+                      labelId="font-family-select-label"
+                      id="font-family-select"
+                      value={selectedFont}
+                      label="Font Family"
+                      size="small"
+                      onChange={changeFont}
+                    >
+                      {fonts?.map((font, index) => {
+                        return (
+                          <MenuItem key={index} value={font}>
+                            {font}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                </ListItemButton>
+                {/* 👆 change font type button 👆   */}
+                {/*  👇 change font COLOR button  👇    */}
+                <ListItemButton
+                  sx={{ ...ListItemButtonStyle3 }}
+                  onClick={changeColor}
+                >
+                  <input type="color" onChange={changeColor} />
+                </ListItemButton>
+                {/* 👆 change font COLOR button 👆   */}
+                {/*  👇 Font Style BOLD  👇    */}
+                <ListItemButton sx={{ ...ListItemButtonStyle3 }} onClick={bold}>
+                  <ListItemIcon>
+                    <FormatBoldIcon />
+                  </ListItemIcon>
+                </ListItemButton>
+                {/* 👆 Font Style BOLD 👆   */}
+                {/*  👇 Font Style ITALIC  👇    */}
+                <ListItemButton
+                  sx={{ ...ListItemButtonStyle3 }}
+                  onClick={italic}
+                >
+                  <ListItemIcon>
+                    <FormatItalicIcon />
+                  </ListItemIcon>
+                </ListItemButton>
+                {/* 👆 Font Style ITALIC 👆   */}
+                {/*  👇 Font Style UNDERLINE  👇    */}
+                <ListItemButton
+                  sx={{ ...ListItemButtonStyle3 }}
+                  onClick={underline}
+                >
+                  <ListItemIcon>
+                    <FormatUnderlinedIcon />
+                  </ListItemIcon>
+                </ListItemButton>
+                {/* 👆 Font Style UNDERLINE 👆   */}
+                {/*  👇 Font Style STRIKETHROUGH  👇    */}
+                <ListItemButton
+                  sx={{ ...ListItemButtonStyle3 }}
+                  onClick={strike}
+                >
+                  <ListItemIcon>
+                    <StrikethroughSIcon />
+                  </ListItemIcon>
+                </ListItemButton>
+                {/* 👆 Font Style STRIKETHROUGH 👆   */}
+              </Stack>
+            </Grid>
+            {/* 👆 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED) 👆   */}
+          </>
+        )}
+
+        <Grid container sx={{ width: "100%" }}>
+          {/*  👇 edit tools container  👇    */}
+
+          <Grid
+            item
+            sm={2}
+            xs={12}
+            boxSizing={"border-box"}
             sx={{
-              maxHeight: "450px",
-              overflow: "auto",
-              width: "100%",
+              // padding: "20px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
               boxSizing: "border-box",
-              "&::-webkit-scrollbar": {
-                width: "8px",
-              },
-              "&::-webkit-scrollbar-track": {
-                background: "#CEC5DC",
-                borderRadius: "4px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                background: "#795DA8",
-                borderRadius: "4px",
-              },
-              "&::-webkit-scrollbar-thumb:hover": {
-                background: "#5a3991",
-                borderRadius: "4px",
-              },
+              order: { xs: 1, sm: 0 },
+              // border: "1px solid green",
             }}
           >
-            <List
-              disablePadding
+            <Stack
               sx={{
-                width: { xs: "1190px", sm: "100%" },
-                display: "flex",
-                flexDirection: { xs: "row", sm: "column" },
-                justifyContent: { xs: "space-around", sm: "center" },
-                alignItems: "center",
+                maxHeight: "450px",
+                overflow: "auto",
+                width: "100%",
                 boxSizing: "border-box",
-                "& .MuiListItemIcon-root": {
-                  minWidth: "",
+                "&::-webkit-scrollbar": {
+                  width: "8px",
+                },
+                "&::-webkit-scrollbar-track": {
+                  background: "#CEC5DC",
+                  borderRadius: "4px",
+                },
+                "&::-webkit-scrollbar-thumb": {
+                  background: "#795DA8",
+                  borderRadius: "4px",
+                },
+                "&::-webkit-scrollbar-thumb:hover": {
+                  background: "#5a3991",
+                  borderRadius: "4px",
                 },
               }}
             >
-              {/*  👇==== Add Background Image ====  👇    */}
-
-              <ListItemButton
-                component={"label"}
+              <List
+                disablePadding
                 sx={{
-                  ...ListItemButtonStyle,
+                  width: { xs: "1190px", sm: "100%" },
+                  display: "flex",
+                  flexDirection: { xs: "row", sm: "column" },
+                  justifyContent: { xs: "space-around", sm: "center" },
+                  alignItems: "center",
+                  boxSizing: "border-box",
+                  "& .MuiListItemIcon-root": {
+                    minWidth: "",
+                  },
                 }}
               >
-                <ListItemIcon
-                  sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
-                >
-                  <input
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    type="file"
-                    onChange={setBackgroundImage}
-                  />
-                  <WallpaperIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Add Background
-                </ListItemText>
-              </ListItemButton>
+                {/*  👇==== Add Background Image ====  👇    */}
 
-              {/* 👆 ==== Add Background Image ==== 👆   */}
-              {/*  👇==== Add Photo ====  👇    */}
-
-              <ListItemButton
-                component={"label"}
-                sx={{
-                  ...ListItemButtonStyle,
-                }}
-              >
-                <ListItemIcon
-                  sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
-                >
-                  <input
-                    accept="image/*"
-                    style={{ display: "none" }}
-                    type="file"
-                    onChange={onUploadImage}
-                  />
-                  <InsertPhotoIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Image
-                </ListItemText>
-              </ListItemButton>
-
-              {/* 👆 ==== Add Photo ==== 👆   */}
-
-              {/*  👇==== Add text ====  👇    */}
-              <ListItemButton sx={{ ...ListItemButtonStyle }} onClick={addText}>
-                <ListItemIcon
-                  sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
-                >
-                  <TbTextRecognition />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Text
-                </ListItemText>
-              </ListItemButton>
-              {/* 👆 ==== Add text ==== 👆   */}
-              {/*  👇==== Stickers ====  👇    */}
-              <ListItemButton
-                sx={{ ...ListItemButtonStyle }}
-                onClick={toggleStickersModal}
-              >
-                <ListItemIcon
-                  sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
-                >
-                  <ExtensionIcon />
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{
-                    sx: {
-                      color: "black",
-                      fontSize: "12px",
-                      fontFamily: "Montserrat",
-                      textAlign: "center",
-                    },
-                  }}
-                >
-                  Stickers
-                </ListItemText>
-              </ListItemButton>
-              <StickersModal
-                open={addStickersModal}
-                handleClose={toggleStickersModal}
-                addStickers={addStickers}
-              />
-
-              {/* 👆 ==== Stickers ==== 👆   */}
-              <Stack
-                mt={1}
-                alignItems={"start"}
-                direction={{ xs: "row", sm: "column" }}
-                width={{ xs: "890px", sm: "100%" }}
-              >
-                {/*  👇==== Group Selected ====  👇    */}
                 <ListItemButton
-                  sx={{ ...ListItemButtonStyle2 }}
-                  onClick={groupSelectedLayers}
-                >
-                  <ListItemIcon sx={{ color: "#667087" }}>
-                    <ImMakeGroup />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      sx: {
-                        color: "black",
-                        fontSize: "12px",
-                        fontFamily: "Montserrat",
-                        textAlign: "center",
-                      },
-                    }}
-                  >
-                    Group Selected
-                  </ListItemText>
-                </ListItemButton>
-
-                {/* 👆 ==== Group Selected ==== 👆   */}
-                {/*  👇==== GroupAll ====  👇    */}
-                <ListItemButton
-                  sx={{ ...ListItemButtonStyle2 }}
-                  onClick={groupAllLayers}
-                >
-                  <ListItemIcon sx={{ color: "#667087" }}>
-                    <FaRegObjectGroup />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      sx: {
-                        color: "black",
-                        fontSize: "12px",
-                        fontFamily: "Montserrat",
-                        textAlign: "center",
-                      },
-                    }}
-                  >
-                    Group ALL
-                  </ListItemText>
-                </ListItemButton>
-
-                {/* 👆 ==== GroupAll ==== 👆   */}
-                {/*  👇==== UnGroup ====  👇    */}
-                <ListItemButton
-                  sx={{ ...ListItemButtonStyle2 }}
-                  onClick={unGroup}
+                  component={"label"}
+                  sx={{
+                    ...ListItemButtonStyle,
+                  }}
                 >
                   <ListItemIcon
                     sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
                   >
-                    <FaRegObjectUngroup />
+                    <input
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      type="file"
+                      onChange={setBackgroundImage}
+                    />
+                    <WallpaperIcon />
                   </ListItemIcon>
                   <ListItemText
                     primaryTypographyProps={{
@@ -874,84 +778,29 @@ const TemplateEdit = () => {
                       },
                     }}
                   >
-                    Ungroup
+                    Add Background
                   </ListItemText>
                 </ListItemButton>
 
-                {/* 👆 ==== UnGroup ==== 👆   */}
-                {/*  👇==== Bring To Top ====  👇    */}
-                <ListItemButton
-                  onClick={bringToTop}
-                  sx={{ ...ListItemButtonStyle2 }}
-                >
-                  <ListItemIcon sx={{ color: "#667087" }}>
-                    <BsLayerForward />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      sx: {
-                        color: "black",
-                        fontSize: "12px",
-                        fontWeight: "800",
-                      },
-                    }}
-                  >
-                    Bring To Top
-                  </ListItemText>
-                </ListItemButton>
+                {/* 👆 ==== Add Background Image ==== 👆   */}
+                {/*  👇==== Add Photo ====  👇    */}
 
-                {/* 👆 ==== Bring To Top ==== 👆   */}
-                {/*  👇==== move layer back  ====  👇    */}
                 <ListItemButton
-                  onClick={moveBackward}
-                  sx={{ ...ListItemButtonStyle2 }}
-                >
-                  <ListItemIcon sx={{ color: "#667087" }}>
-                    <BsLayerBackward />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      sx: {
-                        color: "black",
-                        fontSize: "12px",
-                        fontWeight: "800",
-                      },
-                    }}
-                  >
-                    Move to back
-                  </ListItemText>
-                </ListItemButton>
-                {/* 👆 ==== move layer back ==== 👆   */}
-                {/*  👇==== Clone Object  ====  👇    */}
-                <ListItemButton
-                  onClick={clone}
-                  sx={{ ...ListItemButtonStyle2 }}
-                >
-                  <ListItemIcon sx={{ color: "#667087" }}>
-                    <FileCopyIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      sx: {
-                        color: "black",
-                        fontSize: "12px",
-                        fontWeight: "800",
-                      },
-                    }}
-                  >
-                    Clone
-                  </ListItemText>
-                </ListItemButton>
-                {/* 👆 ==== Clone Object ==== 👆   */}
-                {/*  👇==== Remove ====  👇    */}
-                <ListItemButton
-                  sx={{ ...ListItemButtonStyle2 }}
-                  onClick={removeSelectedObject}
+                  component={"label"}
+                  sx={{
+                    ...ListItemButtonStyle,
+                  }}
                 >
                   <ListItemIcon
                     sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
                   >
-                    <DeleteIcon />
+                    <input
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      type="file"
+                      onChange={onUploadImage}
+                    />
+                    <InsertPhotoIcon />
                   </ListItemIcon>
                   <ListItemText
                     primaryTypographyProps={{
@@ -963,65 +812,295 @@ const TemplateEdit = () => {
                       },
                     }}
                   >
-                    Remove
+                    Image
                   </ListItemText>
                 </ListItemButton>
-                {/* 👆 ==== Remove ==== 👆   */}
-              </Stack>
-            </List>
-          </Stack>
-          <Button
-            fullWidth
-            disableElevation
-            variant="contained"
-            //  onClick={downloadImage}
-            // onClick={toJSON}
-            onClick={uploadImage}
-            sx={{ color: "#fff", mt: 2 }}
-          >
-            Update
-          </Button>
-          <Button
-            fullWidth
-            disableElevation
-            variant="outlined"
-            onClick={() => navigate("/admin/template-list")}
-            sx={{ mt: 1 }}
-          >
-            Cancel
-          </Button>
-        </Grid>
-        {/* 👆 edit tools container 👆   */}
-        {/*  👇 image container  👇    */}
-        <Grid
-          item
-          xl={10}
-          lg={10}
-          md={10}
-          sm={10}
-          xs={12}
-          sx={{
-            boxSizing: "border-box",
-            //  padding: "5px",
-            width: "100%",
-            height: "70vh",
-            order: 0,
-            paddingX: "5px",
-            "& .fabCanvas": {
-              height: "100%",
-              width: "100%",
-              border: "1px solid #795DA8",
+
+                {/* 👆 ==== Add Photo ==== 👆   */}
+
+                {/*  👇==== Add text ====  👇    */}
+                <ListItemButton
+                  sx={{ ...ListItemButtonStyle }}
+                  onClick={addText}
+                >
+                  <ListItemIcon
+                    sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
+                  >
+                    <TbTextRecognition />
+                  </ListItemIcon>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      sx: {
+                        color: "black",
+                        fontSize: "12px",
+                        fontFamily: "Montserrat",
+                        textAlign: "center",
+                      },
+                    }}
+                  >
+                    Text
+                  </ListItemText>
+                </ListItemButton>
+                {/* 👆 ==== Add text ==== 👆   */}
+                {/*  👇==== Stickers ====  👇    */}
+                <ListItemButton
+                  sx={{ ...ListItemButtonStyle }}
+                  onClick={toggleStickersModal}
+                >
+                  <ListItemIcon
+                    sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
+                  >
+                    <ExtensionIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      sx: {
+                        color: "black",
+                        fontSize: "12px",
+                        fontFamily: "Montserrat",
+                        textAlign: "center",
+                      },
+                    }}
+                  >
+                    Stickers
+                  </ListItemText>
+                </ListItemButton>
+                <StickersModal
+                  open={addStickersModal}
+                  handleClose={toggleStickersModal}
+                  addStickers={addStickers}
+                />
+
+                {/* 👆 ==== Stickers ==== 👆   */}
+                <Stack
+                  mt={1}
+                  alignItems={"start"}
+                  direction={{ xs: "row", sm: "column" }}
+                  width={{ xs: "890px", sm: "100%" }}
+                >
+                  {/*  👇==== Group Selected ====  👇    */}
+                  <ListItemButton
+                    sx={{ ...ListItemButtonStyle2 }}
+                    onClick={groupSelectedLayers}
+                  >
+                    <ListItemIcon sx={{ color: "#667087" }}>
+                      <ImMakeGroup />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        sx: {
+                          color: "black",
+                          fontSize: "12px",
+                          fontFamily: "Montserrat",
+                          textAlign: "center",
+                        },
+                      }}
+                    >
+                      Group Selected
+                    </ListItemText>
+                  </ListItemButton>
+
+                  {/* 👆 ==== Group Selected ==== 👆   */}
+                  {/*  👇==== GroupAll ====  👇    */}
+                  <ListItemButton
+                    sx={{ ...ListItemButtonStyle2 }}
+                    onClick={groupAllLayers}
+                  >
+                    <ListItemIcon sx={{ color: "#667087" }}>
+                      <FaRegObjectGroup />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        sx: {
+                          color: "black",
+                          fontSize: "12px",
+                          fontFamily: "Montserrat",
+                          textAlign: "center",
+                        },
+                      }}
+                    >
+                      Group ALL
+                    </ListItemText>
+                  </ListItemButton>
+
+                  {/* 👆 ==== GroupAll ==== 👆   */}
+                  {/*  👇==== UnGroup ====  👇    */}
+                  <ListItemButton
+                    sx={{ ...ListItemButtonStyle2 }}
+                    onClick={unGroup}
+                  >
+                    <ListItemIcon
+                      sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
+                    >
+                      <FaRegObjectUngroup />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        sx: {
+                          color: "black",
+                          fontSize: "12px",
+                          fontFamily: "Montserrat",
+                          textAlign: "center",
+                        },
+                      }}
+                    >
+                      Ungroup
+                    </ListItemText>
+                  </ListItemButton>
+
+                  {/* 👆 ==== UnGroup ==== 👆   */}
+                  {/*  👇==== Bring To Top ====  👇    */}
+                  <ListItemButton
+                    onClick={bringToTop}
+                    sx={{ ...ListItemButtonStyle2 }}
+                  >
+                    <ListItemIcon sx={{ color: "#667087" }}>
+                      <BsLayerForward />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        sx: {
+                          color: "black",
+                          fontSize: "12px",
+                          fontWeight: "800",
+                        },
+                      }}
+                    >
+                      Bring To Top
+                    </ListItemText>
+                  </ListItemButton>
+
+                  {/* 👆 ==== Bring To Top ==== 👆   */}
+                  {/*  👇==== move layer back  ====  👇    */}
+                  <ListItemButton
+                    onClick={moveBackward}
+                    sx={{ ...ListItemButtonStyle2 }}
+                  >
+                    <ListItemIcon sx={{ color: "#667087" }}>
+                      <BsLayerBackward />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        sx: {
+                          color: "black",
+                          fontSize: "12px",
+                          fontWeight: "800",
+                        },
+                      }}
+                    >
+                      Move to back
+                    </ListItemText>
+                  </ListItemButton>
+                  {/* 👆 ==== move layer back ==== 👆   */}
+                  {/*  👇==== Clone Object  ====  👇    */}
+                  <ListItemButton
+                    onClick={clone}
+                    sx={{ ...ListItemButtonStyle2 }}
+                  >
+                    <ListItemIcon sx={{ color: "#667087" }}>
+                      <FileCopyIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        sx: {
+                          color: "black",
+                          fontSize: "12px",
+                          fontWeight: "800",
+                        },
+                      }}
+                    >
+                      Clone
+                    </ListItemText>
+                  </ListItemButton>
+                  {/* 👆 ==== Clone Object ==== 👆   */}
+                  {/*  👇==== Remove ====  👇    */}
+                  <ListItemButton
+                    sx={{ ...ListItemButtonStyle2 }}
+                    onClick={removeSelectedObject}
+                  >
+                    <ListItemIcon
+                      sx={{ color: "#667087", "& svg": { fontSize: "50px" } }}
+                    >
+                      <DeleteIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        sx: {
+                          color: "black",
+                          fontSize: "12px",
+                          fontFamily: "Montserrat",
+                          textAlign: "center",
+                        },
+                      }}
+                    >
+                      Remove
+                    </ListItemText>
+                  </ListItemButton>
+                  {/* 👆 ==== Remove ==== 👆   */}
+                </Stack>
+              </List>
+            </Stack>
+            <Button
+              fullWidth
+              disableElevation
+              variant="contained"
+              //  onClick={downloadImage}
+              // onClick={toJSON}
+              onClick={uploadImage}
+              sx={{ color: "#fff", mt: 2 }}
+            >
+              Update
+            </Button>
+            <Button
+              fullWidth
+              disableElevation
+              variant="outlined"
+              onClick={() => navigate("/admin/template-list")}
+              sx={{ mt: 1 }}
+            >
+              Cancel
+            </Button>
+          </Grid>
+          {/* 👆 edit tools container 👆   */}
+          {/*  👇 image container  👇    */}
+          <Grid
+            item
+            xl={10}
+            lg={10}
+            md={10}
+            sm={10}
+            xs={12}
+            sx={{
               boxSizing: "border-box",
-            },
-            "& .upper-canvas": {
-              background: "none",
-            },
-          }}
-        >
-          <FabricJSCanvas className="fabCanvas" onReady={onReady} />
+              //  padding: "5px",
+              width: "100%",
+              // height: "70vh",
+              order: 0,
+              paddingX: "5px",
+              "& .fabCanvas": {
+                height: "100%",
+                width: "100%",
+                border: "1px solid #795DA8",
+                boxSizing: "border-box",
+              },
+              "& .upper-canvas": {
+                background: "none",
+              },
+            }}
+          >
+            <Box
+              width={{ md: "475px", sm: "475px", xs: "475px" }}
+              height={"600px"}
+              ref={ref}
+              sx={{ margin: "auto", border: "1px solid black" }}
+            >
+              <FabricJSCanvas className="fabCanvas" onReady={onReady} />
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
+      </Box>
+      <Dialogue open={dialogueOpen} handleClose={handleShowDialogue} />
+    </>
   );
 };
 

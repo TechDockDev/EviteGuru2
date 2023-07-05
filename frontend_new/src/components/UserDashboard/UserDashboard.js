@@ -108,6 +108,7 @@ const UserDashboard = () => {
                 width: "100%",
                 textAlign: "center",
                 boxSizing: "border-box",
+                p: 2,
               }}
             >
               <Box
@@ -220,7 +221,7 @@ const UserDashboard = () => {
             <Box
               component={"img"}
               src={"/assets/EviteGuruLogo.svg"}
-              sx={{ height: "100%" }}
+              sx={{ height: "100%", width: { sm: "20%", xs: "30%" } }}
             />
           </Box>
 
@@ -304,7 +305,7 @@ const UserDashboard = () => {
                   <Box
                     component={"img"}
                     src={"/assets/EviteGuruLogoWhite.svg"}
-                    sx={{ height: "100%" }}
+                    sx={{ height: "100%", width: "100%" }}
                     onClick={() => {
                       navigate("/");
                       handleDrawerToggle();

@@ -20,33 +20,37 @@ const Preview = (props) => {
 
   //   save and continue =====
   const saveAndContinue = async () => {
-    if (userDetail?.subscription) {
-      try {
-        const form = new FormData();
-        form.append("variationJson", userEventTemplate?.jsonData);
-        form.append("preview", userEventTemplate?.previewImage);
-        form.append("templateId", id);
-        const response = await axios.post(
-          `${Constants.URL}/variation/create`,
-          form
-        );
-        if (response.status === 200) {
-          // console.log("response=>", response?.data?.variation?._id);
-          await createEvent(response?.data?.variation?._id);
-        } else {
-        }
-      } catch (error) {
-        console.log("error=>", error);
+    // if (userDetail?.subscription) {
+    try {
+      const form = new FormData();
+      form.append("variationJson", userEventTemplate?.jsonData);
+      form.append("preview", userEventTemplate?.previewImage);
+      form.append("templateId", id);
+      const response = await axios.post(
+        `${Constants.URL}/variation/create`,
+        form
+      );
+      if (response.status === 200) {
+        // console.log("response=>", response?.data?.variation?._id);
+        await createEvent(response?.data?.variation?._id);
+      } else {
+      }
+    } catch (error) {
+      console.log("error=>", error);
+      if (error?.response?.data?.message) {
+        dispatch(openSnackbar(error?.response?.data?.message, "error"));
+      } else {
         dispatch(openSnackbar("something went wrong", "error"));
       }
-    } else {
-      dispatch(
-        openSnackbar(
-          "This required subscription , you don't have any active plan! please subscribe to get this feature.",
-          "warning"
-        )
-      );
     }
+    // } else {
+    //   dispatch(
+    //     openSnackbar(
+    //       "This required subscription , you don't have any active plan! please subscribe to get this feature.",
+    //       "warning"
+    //     )
+    //   );
+    // }
   };
   // =========================
 
@@ -69,7 +73,11 @@ const Preview = (props) => {
         dispatch(openSnackbar(res?.data?.message, "error"));
       }
     } catch (error) {
-      dispatch(openSnackbar("something went wrong.", "error"));
+      if (error?.response?.data?.message) {
+        dispatch(openSnackbar(error?.response?.data?.message, "error"));
+      } else {
+        dispatch(openSnackbar("something went wrong.", "error"));
+      }
     }
   };
   // ===========================
@@ -77,8 +85,15 @@ const Preview = (props) => {
     //  console.log('This Is TEmplate',events)
   }, []);
   return (
-    <>
-      <Stack>
+    <Stack
+      width={"100%"}
+      // display={"flex"}
+      marginBottom={"auto"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      flexDirection={"columns"}
+    >
+      <Stack width={"100%"}>
         <Typography
           variant="h1"
           fontSize="18px"
@@ -92,101 +107,104 @@ const Preview = (props) => {
         </Typography>
         <Grid
           container
+          width={"100%"}
+          // bgcolor={"red"}s
           sx={{
             border: "1px solid black",
             borderRadius: "4px",
           }}
         >
-          {/* == 👇 Preview header container | From & Sender Name👇  ==*/}
-          <Grid
-            item
-            xl={12}
-            lg={12}
-            md={12}
-            sm={12}
-            xs={12}
-            p={1}
-            borderBottom="1px solid black"
-          >
-            <Typography fontSize="14px" fontWeight="bold">
-              From :{" "}
-              <Typography
-                component="span"
-                fontSize="14px"
-                fontWeight="normal"
-                p={1}
-              >
-                {/* Sunder Bandar */}
-                {userEventTemplate?.eventDetails?.hostName}
-              </Typography>
-            </Typography>
-            <Typography fontSize="14px" fontWeight="bold">
-              Event Name :{" "}
-              <Typography
-                component="span"
-                fontSize="14px"
-                fontWeight="normal"
-                p={1}
-              >
-                {/* Sunder ki shadi */}
-                {userEventTemplate?.eventDetails?.name}
-              </Typography>
-            </Typography>
-          </Grid>
-          {/* == 👆 Preview header container  | From & Sender Name👆   ==*/}
-          {/* =================== */}
-          {/* == 👇 Preview main section container |  Description and preview image 👇  ==*/}
           <Grid
             item
             container
+            justifyContent={"center"}
             xl={12}
             lg={12}
             md={12}
             sm={12}
             xs={12}
             p={1}
-            sx={{ display: "flex", justifyContent: "center" }}
           >
-            {/* 👇 Description 👇 */}
+            {/* 👇 Bottom address details 👇 */}
             <Grid
+              container
               item
-              xl={4}
-              lg={4}
-              md={5}
-              sm={10}
-              xs={10}
+              xl={6}
+              lg={6}
+              md={6}
+              sm={12}
+              xs={12}
               p={1}
-              m={2}
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
               // border="1px solid green"
+              spacing={1}
             >
-              <Typography
-                fontSize="14px"
-                fontWeight="normal"
-                textAlign={"center"}
-              >
-                {/* dynamic host name */}
+              <Typography variant="h5">Venue</Typography>
+              <Stack p={1} border={"1px solid green"} mt={1} mb={1}>
                 <Typography
-                  component="span"
-                  display="block"
                   fontSize="14px"
-                  fontWeight="bold"
+                  fontWeight="normal"
+                  textAlign={"center"}
                 >
-                  {userEventTemplate?.eventDetails?.hostName}
+                  <Typography
+                    component="span"
+                    display="block"
+                    fontSize="14px"
+                    fontWeight="bold"
+                  >
+                    {userEventTemplate?.eventDetails?.hostName}
+                  </Typography>
+                  sent you an invitation for
+                  <Typography
+                    component="span"
+                    display="block"
+                    fontSize="14px"
+                    fontWeight="bold"
+                  >
+                    {userEventTemplate?.eventDetails?.name}
+                  </Typography>
+                  on
+                  <Typography
+                    component="span"
+                    display="block"
+                    fontSize="14px"
+                    fontWeight="bold"
+                  >
+                    <Moment
+                      date={userEventTemplate?.eventDetails?.dt}
+                      format="hh:mm A, dddd, MMMM DD, YYYY"
+                    />
+                  </Typography>
                 </Typography>
-                {/* dynamic host name */}
-                sent you an invitation for
-                {/* dynamic event name */}
+              </Stack>
+
+              <Typography variant="h5">At</Typography>
+              <Stack mt={1} border={"1px solid green"} p={1}>
                 <Typography
-                  component="span"
-                  display="block"
                   fontSize="14px"
-                  fontWeight="bold"
+                  fontWeight="normal"
+                  textAlign={"center"}
                 >
-                  {userEventTemplate?.eventDetails?.name}
+                  {userEventTemplate?.eventDetails?.venue}
                 </Typography>
-                {/* dynamic event name */}
-                on
-                {/* dynamic event date and time */}
+
+                <Typography
+                  fontSize="14px"
+                  fontWeight="normal"
+                  textAlign={"center"}
+                >
+                  {userEventTemplate?.eventDetails?.address}
+                </Typography>
+                <Typography
+                  fontSize="14px"
+                  fontWeight="normal"
+                  textAlign={"center"}
+                >
+                  {userEventTemplate?.eventDetails?.additionalInfo}
+                </Typography>
                 <Typography
                   component="span"
                   display="block"
@@ -198,127 +216,66 @@ const Preview = (props) => {
                     format="hh:mm A, dddd, MMMM DD, YYYY"
                   />
                 </Typography>
-                {/* dynamic event date and time */}
-              </Typography>
-            </Grid>
-            {/* 👆 Description 👆 */}
+              </Stack>
 
-            {/* == 👇 Template preview button and image 👇  ==*/}
+              {/* dynamic venue address and date time */}
+            </Grid>
+            {/* 👆 Bottom address details  👆 */}
             <Grid
               item
-              container
-              xl={12}
-              lg={12}
-              md={12}
-              sm={12}
-              xs={12}
               p={1}
+              xl={6}
+              lg={6}
+              md={6}
+              sm={10}
+              xs={12}
               sx={{
                 display: "flex",
                 justifyContent: "center",
                 flexDirection: "column",
                 alignItems: "center",
+                // width: { md: "550px", xs: "70%" },
               }}
             >
-              {/* <Button
-                variant="contained"
-                sx={{ color: "white", mb: 3 }}
-                disableElevation={true}
-              >
-                Open Preview
-              </Button> */}
               <Box
                 component={"img"}
                 src={userEventTemplate?.tempPreviewImage}
                 alt=""
                 sx={{
-                  width: "70%",
+                  width: "100%",
                   border: "1px solid green",
-                  height: "400px",
+                  height: "100%",
+                  // bgcolor:"red"
                 }}
               />
-              <Typography fontSize="12px" fontWeight="bold" mt={2}>
-                This email is personalized for you. Please do not forward
-              </Typography>
             </Grid>
+
             {/* == 👆 Template preview button and image 👆   ==*/}
-            {/* 👇 Bottom address details 👇 */}
-            <Grid
-              item
-              xl={4}
-              lg={4}
-              md={5}
-              sm={10}
-              xs={10}
-              p={1}
-              m={2}
-              container
-              display={"flex"}
-              direction={"column"}
-              justifyContent={"center"}
-              alignItems={"center"}
-              // border="1px solid green"
-            >
-              {/* dynamic venue address and date time */}
-
-              <Typography
-                fontSize="14px"
-                fontWeight="normal"
-                textAlign={"center"}
-              >
-                {userEventTemplate?.eventDetails?.venue}
-              </Typography>
-
-              <Typography
-                fontSize="14px"
-                fontWeight="normal"
-                textAlign={"center"}
-              >
-                {userEventTemplate?.eventDetails?.address}
-              </Typography>
-              <Typography
-                fontSize="14px"
-                fontWeight="normal"
-                textAlign={"center"}
-              >
-                {userEventTemplate?.eventDetails?.additionalInfo}
-              </Typography>
-              <Typography
-                component="span"
-                display="block"
-                fontSize="14px"
-                fontWeight="bold"
-              >
-                <Moment
-                  date={userEventTemplate?.eventDetails?.dt}
-                  format="hh:mm A, dddd, MMMM DD, YYYY"
-                />
-              </Typography>
-              {/* dynamic venue address and date time */}
-            </Grid>
-            {/* 👆 Bottom address details  👆 */}
-            {/* 👇 powered by text 👇 */}
-
-            <Grid item xl={12} lg={12} md={12} sm={12} xs={12} m={2}>
-              <Typography
-                fontSize="14px"
-                bgcolor="black"
-                color="white"
-                fontWeight="bold"
-                width="60%"
-                textAlign={"center"}
-                margin="auto"
-                p={1}
-                borderRadius="4px"
-              >
-                Powered by Evite Guru
-              </Typography>
-            </Grid>
-            {/* 👆 powered by text  👆 */}
           </Grid>
+          {/* 👇 powered by text 👇 */}
+
+          <Grid item xl={12} lg={12} md={12} sm={12} xs={12} m={2}>
+            <Typography
+              fontSize="14px"
+              bgcolor="black"
+              color="white"
+              fontWeight="bold"
+              width="60%"
+              textAlign={"center"}
+              margin="auto"
+              p={1}
+              borderRadius="4px"
+            >
+              Powered by Evite Guru
+            </Typography>
+          </Grid>
+          {/* 👆 powered by text  👆 */}
           {/* == 👆 Preview main section container  | Description and preview image 👆   ==*/}
         </Grid>
       </Stack>
+      <Typography fontSize="12px" fontWeight="bold" textAlign={"center"} mt={2}>
+        This email is personalized for you. Please do not forward
+      </Typography>
       <Stack
         direction={"row"}
         mt={1}
@@ -341,7 +298,7 @@ const Preview = (props) => {
           Save & continue
         </Button>
       </Stack>
-    </>
+    </Stack>
   );
 };
 

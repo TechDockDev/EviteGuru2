@@ -112,7 +112,7 @@ const Header = () => {
                 component={NavLink}
                 to={"/"}
                 sx={{
-                  width: "150px",
+                  width: "140px",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
@@ -189,7 +189,7 @@ const Header = () => {
                     disableGutters
                     sx={{ "&:hover": { bgcolor: "white" } }}
                   >
-                    <ListItemText>Template</ListItemText>
+                    <ListItemText>Templates</ListItemText>
                   </ListItemButton>
                 </ListItem>
                 <ListItem

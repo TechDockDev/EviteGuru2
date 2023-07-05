@@ -245,6 +245,8 @@ const EventStats = () => {
             borderRadius={"15px"}
             width={"100%"}
             maxHeight={"290px"}
+            border={"1px solid green"}
+            maxWidth={"250px"}
             src={`/images/getImage?path=/${state?.event?.variation?.previewImage}`}
           />
         </Grid>
