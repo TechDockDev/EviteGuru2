@@ -145,7 +145,7 @@ const SmallScreenDrawerMenu = (props) => {
               onClick={handleDrawerToggle}
             >
               <ListItemButton>
-                <ListItemText>Template</ListItemText>
+                <ListItemText>Templates</ListItemText>
               </ListItemButton>
             </ListItem>
             <ListItem

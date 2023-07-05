@@ -97,8 +97,13 @@ const Send = () => {
         }
       } catch (error) {
         // console.log("error=>",error)
-        dispatch(openSnackbar("something went wrong", "error"));
-        setinsideButton({ ...insideButton, loading: false, id: "" });
+        if (error?.response?.data?.message) {
+          setinsideButton({ ...insideButton, loading: false, id: "" });
+          dispatch(openSnackbar(error?.response?.data?.message, "error"));
+        } else {
+          dispatch(openSnackbar("something went wrong", "error"));
+          setinsideButton({ ...insideButton, loading: false, id: "" });
+        }
       }
     } else {
       dispatch(
@@ -132,11 +137,19 @@ const Send = () => {
           getGuestListDetails(createdEventDetails?.guestListId);
         }
       } catch (error) {
-        dispatch(openSnackbar("something went wrong", "success"));
-        setinsideButton({
-          ...insideButton,
-          sendMany: false,
-        });
+        if (error?.response?.data?.message) {
+          dispatch(openSnackbar(error?.response?.data?.message, "danger"));
+          setinsideButton({
+            ...insideButton,
+            sendMany: false,
+          });
+        } else {
+          dispatch(openSnackbar("something went wrong", "danger"));
+          setinsideButton({
+            ...insideButton,
+            sendMany: false,
+          });
+        }
       }
     } else {
       dispatch(

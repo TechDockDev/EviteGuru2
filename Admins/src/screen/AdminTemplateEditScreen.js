@@ -7,10 +7,13 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { DataContext } from "../AppContext";
 
-const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
-  const { snackbar} = React.useContext( DataContext )
+const AdminTemplateEditScreen = ({
+  templateId,
+  closeModal,
+  getTemplateData,
+}) => {
+  const { snackbar } = React.useContext(DataContext);
   const [templateData, setTemplateData] = useState({
-
     name: "",
     description: "",
   });
@@ -21,11 +24,12 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
       const res = await axios.patch(`/template/${templateId}`, {
         name: templateData.name,
         description: templateData.description,
-      });      
-      snackbar(res.data.status, res.data.message)
+      });
+      snackbar(res.data.status, res.data.message);
+      getTemplateData();
       closeModal();
     } catch (error) {
-      snackbar("error", error.message)
+      snackbar("error", error.message);
     }
   };
 
@@ -44,13 +48,13 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width:{xs:"90%", sm: 500},
+    width: { xs: "90%", sm: 500 },
     bgcolor: "white",
     border: "2px solid #795DA8",
-    borderRadius:"8px",
+    borderRadius: "8px",
     boxShadow: 24,
     p: 4,
-    boxSizing:"border-box"
+    boxSizing: "border-box",
   };
 
   return (
@@ -59,16 +63,17 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
         <>
           <form onSubmit={(e) => submitHandler(e)}>
             <Grid container sx={{ p: 1 }}>
-            <Typography
-               variant="h1"
-               align="center"
-               fontWeight="800"
-               fontSize={"28px"}
-               mb={2}
-               sx={{
+              <Typography
+                variant="h1"
+                align="center"
+                fontWeight="800"
+                fontSize={"28px"}
+                mb={2}
+                sx={{
                   color: "#795da8",
                   width: "100%",
-               }}>
+                }}
+              >
                 Edit Template
               </Typography>
               <Grid item xs={12} sx={{ mb: 4 }}>
@@ -110,10 +115,20 @@ const AdminTemplateEditScreen = ({ templateId, closeModal }) => {
                   />
                 </FormControl>
               </Grid>
-              <Button disableElevation sx={{ m: "auto", color:"white" }} variant="contained" type="submit">
+              <Button
+                disableElevation
+                sx={{ m: "auto", color: "white" }}
+                variant="contained"
+                type="submit"
+              >
                 Submit
               </Button>
-              <Button disableElevation sx={{ m: "auto" }} variant="outlined" onClick={closeModal} >
+              <Button
+                disableElevation
+                sx={{ m: "auto" }}
+                variant="outlined"
+                onClick={closeModal}
+              >
                 Cancel
               </Button>
             </Grid>

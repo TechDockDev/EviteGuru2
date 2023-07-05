@@ -41,11 +41,6 @@ const PricingCard = (props) => {
   const handlePurchasePlan = async (plan, type) => {
     if (userDetail?.isUser) {
       try {
-        // const res = await axios.post(`${Constants.URL}/plan/purchase`, {
-        //   planId: planId,
-        //   planType: type,
-        // });
-        // window.location.href = res.data.url;
         navigate("/discount", { state: { plan: plan, requestType: type } });
       } catch (error) {
         console.log("error=>", error);
@@ -112,29 +107,37 @@ const PricingCard = (props) => {
             {props?.plan?.description &&
               props?.plan?.description?.map((item, index) => {
                 // console.log("plan=>", props?.plan?._id);
-                return (
-                  <ListItem disablePadding key={index} sx={{ marginY: "5px" }}>
-                    <ListItemIcon sx={{ minWidth: "", marginRight: "15px" }}>
-                      {/* {item.status ? ( */}
-                      <AiFillCheckCircle
-                        style={{
-                          color: "rgba(59, 40, 91, 1)",
-                          fontSize: "20px",
-                        }}
-                      />
-                    </ListItemIcon>
+                if (item !== "") {
+                  return (
+                    <ListItem
+                      disablePadding
+                      key={index}
+                      sx={{ marginY: "5px" }}
+                    >
+                      <ListItemIcon sx={{ minWidth: "", marginRight: "15px" }}>
+                        {/* {item.status ? ( */}
+                        <AiFillCheckCircle
+                          style={{
+                            color: "rgba(59, 40, 91, 1)",
+                            fontSize: "20px",
+                          }}
+                        />
+                      </ListItemIcon>
 
-                    <ListItemText
-                      primaryTypographyProps={{
-                        sx: {
-                          fontFamily: "Poppins",
-                          color: "#333333",
-                        },
-                      }}
-                      primary={item}
-                    />
-                  </ListItem>
-                );
+                      <ListItemText
+                        primaryTypographyProps={{
+                          sx: {
+                            fontFamily: "Poppins",
+                            color: "#333333",
+                          },
+                        }}
+                        primary={item}
+                      />
+                    </ListItem>
+                  );
+                } else {
+                  return null;
+                }
               })}
           </List>
         </CardContent>

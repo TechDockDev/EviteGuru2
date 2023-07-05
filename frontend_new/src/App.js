@@ -17,7 +17,7 @@ import MyEvents from "./screens/MyEvents/MyEvents";
 import EventStats from "./screens/EventStats/EventStats";
 import Subscriptions from "./screens/Subscription/Subscription";
 import PaymentGateway from "./screens/pricing/PaymentGateway";
-import Test from "./screens/CustomizationPage/test";
+
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -33,8 +33,10 @@ import { Constants } from "./redux/constants/action-types";
 import PaymentSuccessScreen from "./screens/PaymentSuccessScreen/PaymentSuccessScreen";
 import { Alert, Snackbar } from "@mui/material";
 import AddressBook from "./screens/CustomizationPage/AddressBook";
-import Coupons from "./screens/Coupons/Coupons";
+
 import DiscountCheckOut from "./screens/pricing/DiscountCheckOut";
+import Test from "./screens/CustomizationPage/Test.js";
+import NewTest from "./screens/CustomizationPage/NewTest";
 
 const App = () => {
   const { snackbar, userDetail } = useSelector((state) => state);
@@ -87,6 +89,7 @@ const App = () => {
           path="/guest-event-view-screen/:eventId/:guestId"
           element={<InviteesResponseScreen />}
         />
+        <Route path="/new-test" element={<NewTest />} />
         <Route path="/" element={<Header />}>
           <Route index element={<HomeScreen />} />
           <Route path="/browse_template" element={<BrowseTemplate />} />

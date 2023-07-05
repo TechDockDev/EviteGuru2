@@ -88,7 +88,7 @@ function Pricing() {
           Evite Guru Pricing
         </Typography>
         <Typography variant="h6" fontSize={{ xs: "12px", md: "18px" }}>
-          Start now for free, upgrade later. No hidden fees.
+          Get a plan ,Start now. No hidden fees.
         </Typography>
       </Stack>
       <Stack mt={4}>

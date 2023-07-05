@@ -108,13 +108,14 @@ const CustomizationPage = () => {
       sx={{
         // border: "2px solid red",
         height: "100%",
-        width: {
-          xl: "calc(100vw - 250px)",
-          lg: "calc(100vw - 270px)",
-          md: "calc(100vw - 270px)",
-          sm: "100vw",
-          xs: "100vw",
-        },
+        // width: {
+        //   xl: "calc(100vw - 250px)",
+        //   lg: "calc(100vw - 270px)",
+        //   md: "calc(100vw - 270px)",
+        //   sm: "100vw",
+        //   xs: "100vw",
+        // },
+        width: "100%",
         maxWidth: "1150px",
         padding: "0 20px 20px 20px",
         boxSizing: "border-box",
@@ -127,6 +128,7 @@ const CustomizationPage = () => {
           margin: "auto",
           display: "flex",
           justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Tabs
@@ -218,30 +220,6 @@ const CustomizationPage = () => {
             }}
           />
           {/* === 👆Preview tab button👆  ===*/}
-          {/* === 👇Send tab button👇  ===*/}
-
-          {/* <Tab
-            component={Button}
-            label="Send"
-            id={`send-tab-3`}
-            aria-controls={`send-tabpanel-3`}
-            icon={<MailOutlinedIcon />}
-            disabled={
-              userEventTemplate && userEventTemplate?.eventDetails
-                ? false
-                : true
-            }
-            iconPosition="start"
-            sx={{
-              color: "black",
-              minHeight: "0",
-              textTransform: "none",
-              "& svg": { fontSize: "20px", bgcolor: "transparent" },
-              "&:hover": { border: "none", bgcolor: "#E7E2ED" },
-              width: "150px",
-            }}
-          /> */}
-          {/* === 👆Send tab button👆  ===*/}
         </Tabs>
         {/* ======================================================================= */}
 

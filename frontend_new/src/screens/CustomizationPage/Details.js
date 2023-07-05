@@ -26,7 +26,7 @@ const Details = (props) => {
     additionalInfo: "",
     time: "",
   });
-
+  const [timeZone, setTimeZone] = useState({ timezone: "", offset: "" });
   const { userEventTemplate } = useSelector((state) => state);
 
   console.log("userEventTemplate =>", userEventTemplate);
@@ -36,12 +36,12 @@ const Details = (props) => {
     e.preventDefault();
     if (userEventTemplate && userEventTemplate.jsonData) {
       const dt = new Date(eventDetailsData?.date);
-console.log("userEventTamplate=>",userEventTemplate)
+      console.log("userEventTamplate=>", userEventTemplate);
       dt.setHours(
         eventDetailsData.time.split(":")[0],
         eventDetailsData.time.split(":")[1]
       );
-      
+
       dispatch(
         setEventTemplate({
           ...userEventTemplate,
@@ -59,8 +59,27 @@ console.log("userEventTamplate=>",userEventTemplate)
     }
     console.log("data=>", eventDetailsData, "=>user", userEventTemplate);
   };
+  const getTimezone = () => {
+    const offset = new Date().getTimezoneOffset();
+    const hours = Math.floor(Math.abs(offset) / 60);
+    const minutes = Math.abs(offset) % 60;
+    const sign = offset < 0 ? "+" : "-";
+    setTimeZone({
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      offset: `GMT ${sign}${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}`,
+    });
+    console.log(
+      "offset=>",
+      `${sign}${hours.toString().padStart(2, "0")}:${minutes
+        .toString()
+        .padStart(2, "0")}`
+    );
+  };
 
   useEffect(() => {
+    getTimezone();
     if (userEventTemplate?.eventDetails) {
       setEventDetailsData(userEventTemplate?.eventDetails);
     }
@@ -177,7 +196,7 @@ console.log("userEventTamplate=>",userEventTemplate)
           labelInputId={"time"}
           requiredTrue={true}
           placeholderText={""}
-          helperText={"Timezone : (GMT+05:30) Kolkata"}
+          helperText={`Timezone : (${timeZone?.offset}) ${timeZone?.timezone}`}
         />
         {/* == 👆Event time👆   ==*/}
         {/* == 👇Additional Information for Location 👇  ==*/}

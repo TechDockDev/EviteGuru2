@@ -76,7 +76,7 @@ const FooterSection = () => {
             >
               Get in Touch
             </Typography>
-            <Typography
+            {/* <Typography
               color={"#3B285B"}
               fontSize={"14px"}
               bgcolor="transparent"
@@ -89,41 +89,41 @@ const FooterSection = () => {
               bgcolor="transparent"
             >
               +00083328736
-            </Typography>
+            </Typography> */}
             <Typography
               color={"#3B285B"}
               fontSize={"14px"}
               bgcolor="transparent"
             >
-              contact@eviteguru.me
+              contact@eviteguru.com
             </Typography>
             {/* ========================== */}
             {/* icons row */}
             <Box bgcolor="transparent" mt={1}>
               {/* ========= */}
-              <IconButton sx={{ bgcolor: "transparent" }}>
+              {/* <IconButton sx={{ bgcolor: "transparent" }}>
                 <Box
                   bgcolor="transparent"
                   component={"img"}
                   src="./assets/facebook.svg"
                 />
-              </IconButton>
+              </IconButton> */}
               {/* ========= */}
-              <IconButton sx={{ bgcolor: "transparent" }}>
+              {/* <IconButton sx={{ bgcolor: "transparent" }}>
                 <Box
                   bgcolor="transparent"
                   component={"img"}
                   src="./assets/twitter.svg"
                 />
-              </IconButton>
+              </IconButton> */}
               {/* ========= */}
-              <IconButton sx={{ bgcolor: "transparent" }}>
+              {/* <IconButton sx={{ bgcolor: "transparent" }}>
                 <Box
                   bgcolor="transparent"
                   component={"img"}
                   src="./assets/linkedin.svg"
                 />
-              </IconButton>
+              </IconButton> */}
               {/* ========= */}
               <IconButton sx={{ bgcolor: "transparent" }}>
                 <Box
