@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkadmin_frontend=self.webpackChunkadmin_frontend||[]).push([[110],{3110:function(n,e,t){t.r(e);var r=t(4554),i=t(890),o=(t(2791),t(184));e.default=function(){return(0,o.jsxs)(r.Z,{sx:{padding:"20px",boxSizing:"border-box",width:"100%"},children:[(0,o.jsx)(i.Z,{variant:"h1",fontSize:"30px",color:"#795DA8",fontWeight:"800",textAlign:"center",children:" Access Denied"}),(0,o.jsx)(i.Z,{fontFamily:"Montserrat",textAlign:"center",mt:1,children:" Sorry! You are not authorized for this section"})]})}}}]);
+//# sourceMappingURL=110.d56de334.chunk.js.map

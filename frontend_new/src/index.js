@@ -14,12 +14,10 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <BrowserRouter>
-        <App />
+        <BrowserRouter basename="/user/">
+          <App />
         </BrowserRouter>
       </Provider>
     </ThemeProvider>
   </React.StrictMode>
 );
-
-

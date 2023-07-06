@@ -35,7 +35,7 @@ import { Alert, Snackbar } from "@mui/material";
 import AddressBook from "./screens/CustomizationPage/AddressBook";
 
 import DiscountCheckOut from "./screens/pricing/DiscountCheckOut";
-import Test from "./screens/CustomizationPage/Test.js";
+// import Test from "./screens/CustomizationPage/Test.js";
 import NewTest from "./screens/CustomizationPage/NewTest";
 
 const App = () => {
@@ -96,7 +96,7 @@ const App = () => {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/enterprise" element={<Enterprise />} />
           <Route path="/paymentGateway" element={<PaymentGateway />} />
-          <Route path="/test" element={<Test />} />
+          {/* <Route path="/test" element={<Test />} /> */}
           <Route path="/discount" element={<DiscountCheckOut />} />
         </Route>
         <Route path="*" element={<h4>Error 404 Page Not Found</h4>} />
