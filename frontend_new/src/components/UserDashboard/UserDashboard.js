@@ -114,7 +114,7 @@ const UserDashboard = () => {
               <Box
                 component={"img"}
                 bgcolor="transparent"
-                src={"/assets/EviteGuruLogoWhite.svg"}
+                src={"/user/assets/EviteGuruLogoWhite.svg"}
                 sx={{
                   height: "100%",
                   width: "100%",
@@ -220,7 +220,7 @@ const UserDashboard = () => {
           >
             <Box
               component={"img"}
-              src={"/assets/EviteGuruLogo.svg"}
+              src={"/user/assets/EviteGuruLogo.svg"}
               sx={{ height: "100%", width: { sm: "20%", xs: "30%" } }}
             />
           </Box>
@@ -304,7 +304,7 @@ const UserDashboard = () => {
                 >
                   <Box
                     component={"img"}
-                    src={"/assets/EviteGuruLogoWhite.svg"}
+                    src={"/user/assets/EviteGuruLogoWhite.svg"}
                     sx={{ height: "100%", width: "100%" }}
                     onClick={() => {
                       navigate("/");

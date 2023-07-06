@@ -125,7 +125,7 @@ const App = () => {
         }
       >
         <Routes>
-          <Route path="/" element={<LogInModal />} />
+          <Route path="/admin/" element={<LogInModal />} />
           {isLoggedIn && (
             <Route element={<AdminDashboard />}>
               <Route

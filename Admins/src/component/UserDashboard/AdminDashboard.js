@@ -44,8 +44,10 @@ const AdminDashboard = () => {
       setIsLoggedIn(false);
       setAdminAuthData("");
       snackbar(data.status, data.message);
-      navigate("/");
-    } catch (error) {}
+      navigate("/admin/");
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>
@@ -126,7 +128,7 @@ const AdminDashboard = () => {
                 component={"img"}
                 bgcolor="transparent"
                 width={{ sm: "60%", xs: "30%" }}
-                src={"/assets/EviteGuruLogoWhite.svg"}
+                src={"/admin/assets/EviteGuruLogoWhite.svg"}
                 sx={{ height: "100%" }}
               />
             </Box>
@@ -330,7 +332,7 @@ const AdminDashboard = () => {
           >
             <Box
               component={"img"}
-              src={"/assets/EviteGuruLogo.svg"}
+              src={"/admin/assets/EviteGuruLogo.svg"}
               sx={{ height: "100%" }}
               width={{ md: "25%", sm: "20%", xs: "30%" }}
             />
@@ -430,7 +432,7 @@ const AdminDashboard = () => {
                 >
                   <Box
                     component={"img"}
-                    src={"/assets/EviteGuruLogoWhite.svg"}
+                    src={"/admin/assets/EviteGuruLogoWhite.svg"}
                     sx={{ height: "100%" }}
                     width={{ sm: "95%", xs: "70%", md: "60%" }}
                   />
