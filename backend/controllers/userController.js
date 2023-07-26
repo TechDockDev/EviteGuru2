@@ -1,12 +1,16 @@
 import asyncHandler from "express-async-handler";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import relativeTime from "dayjs/plugin/relativeTime.js";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+dayjs.extend(relativeTime);
+dayjs.extend(customParseFormat);
 
 //import file
 import User from "../models/userModel.js";
-import Subscription from "../models/subscriptionModel.js";
 import { Authentication } from "../utils/firebase.js";
 import auth from "firebase-admin";
+import dayjs from "dayjs";
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -131,6 +135,13 @@ const signUp = async (req, res, next) => {
 
 const googleSignUp = asyncHandler(async (req, res) => {
   const details = await Authentication.verifyIdToken(req.body.idToken);
+  const checkIfAlreadyExists = await User.find({ email: details.email });
+  if (checkIfAlreadyExists) {
+    return res.status(403).json({
+      status: "error",
+      message: "You are already registered",
+    });
+  }
   const user = await User.create({
     name: details.name,
     email: details.email,
@@ -178,7 +189,7 @@ const updateProfilePhoto = asyncHandler(async (req, res) => {
     status: "success",
     message: "user profile has been successfully updated",
     user,
-  }); 
+  });
 });
 
 const getUser = asyncHandler(async (req, res) => {
@@ -219,40 +230,6 @@ const updateUser = asyncHandler(async (req, res) => {
   });
 });
 
-// Update user's subscription plan
-const userPlans = asyncHandler(async (req, res) => {
-  let user = await User.findById(req.params.id);
-  let google = await userGooglefbs.findById(req.params.id);
-  try {
-    if (!req.params.id) {
-      return res.status(404).send({ error: "User not found" });
-    }
-    const subscription = await Subscription.findById(req.body.subscriptionId);
-
-    if (!subscription) {
-      return res.status(404).send({ error: "Subscription plan not found" });
-    } else if (user) {
-      user.subscriptionName = subscription.name;
-      user.subscriptionId = subscription._id;
-      user.template_num = subscription.templateLimits;
-      user.guest_num = subscription.guestLimits;
-
-      await user.save();
-      res.send(user);
-    } else if (google) {
-      google.subscriptionName = subscription.name;
-      google.subscriptionId = subscription._id;
-      google.template_num = subscription.templateLimits;
-      google.guest_num = subscription.guestLimits;
-
-      await google.save();
-      res.send(google);
-    }
-  } catch (error) {
-    res.status(400).send({ error: error.message });
-  }
-});
-
 // logout
 const logOut = asyncHandler(async (req, res) => {
   res
@@ -271,7 +248,6 @@ export {
   updateProfilePhoto,
   getUser,
   allUser,
-  userPlans,
   authenticated,
   changePassword,
   changeForgetPasssword,

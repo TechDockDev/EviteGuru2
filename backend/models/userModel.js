@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import dayjs from "dayjs";
+import cron from "node-cron";
 import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(
@@ -82,3 +83,28 @@ const userSchema = mongoose.Schema(
 const User = mongoose.model("User", userSchema);
 
 export default User;
+
+// Schedule the cron job to run daily at midnight (adjust the timing as needed)
+cron.schedule("0 0 * * *", async () => {
+  try {
+    const users = await User.find({
+      planEndDate: { $lte: new Date() },
+      subscription: { $exists: true },
+    });
+    let expiredSubscriptions = users.filter(
+      (user) => dayjs(user.planEndDate, "DD-MM-YYYY").toDate() < new Date()
+    );
+    expiredSubscriptions = expiredSubscriptions.map((user) => user._id);
+    const updateData = {
+      subscription: undefined,
+      planStartDate: undefined,
+      planType: undefined,
+    };
+    await User.updateMany(
+      { _id: { $in: expiredSubscriptions } },
+      { $set: updateData }
+    );
+  } catch (error) {
+    console.error("Error deleting expired subscriptions:", error);
+  }
+});

@@ -5,6 +5,30 @@ import { sendBulkPersonalizedEmails } from "../middlewares/mailMiddleware.js";
 import { sendSms } from "../middlewares/smsMiddleware.js";
 import Event from "../models/eventModel.js";
 import excelToJson from "convert-excel-to-json";
+import expressAsyncHandler from "express-async-handler";
+
+const createAddressBook = asyncHandler(async (req, res) => {
+  const existingGuestList = await Guest.findOne({
+    user: req.user.id,
+    listType: "addressBook",
+  });
+  if (existingGuestList) {
+    return res.status(200).json({
+      status: "success",
+      message: "List has already been created",
+      guestList: existingGuestList,
+    });
+  }
+  const guestList = await Guest.create({
+    user: req.user.id,
+    listType: "addressBook",
+  });
+  res.json({
+    status: "success",
+    message: "Guest List has been created",
+    guestList,
+  });
+});
 
 const createGuest = asyncHandler(async (req, res) => {
   const existingGuestList = await Guest.findOne({ event: req.body.eventId });
@@ -18,6 +42,7 @@ const createGuest = asyncHandler(async (req, res) => {
   const guestList = await Guest.create({
     user: req.user.id,
     event: req.body.eventId,
+    listType: "event",
   });
   res.json({
     status: "success",
@@ -29,7 +54,7 @@ const createGuest = asyncHandler(async (req, res) => {
 const addGuest = asyncHandler(async (req, res) => {
   const { name, email, phone, membersAllowed, guestId } = req.body;
   const { guestDetails } = req.body;
-  await Guest.findByIdAndUpdate(
+  const g = await Guest.findByIdAndUpdate(
     guestId,
     {
       $push: { guests: { $each: guestDetails } },
@@ -152,6 +177,24 @@ const getGuestListByUser = asyncHandler(async (req, res) => {
   });
 });
 
+const getAddressBook = asyncHandler(async (req, res) => {
+  let guestList = await Guest.findOne({
+    user: req.user.id,
+    listType: "addressBook",
+  });
+  if (!guestList) {
+    return res.status(404).json({
+      status: "error",
+      message: "No AddressBook Found",
+    });
+  }
+  res.json({
+    status: "success",
+    message: "Guest List has been fetched successfully",
+    guestList,
+  });
+});
+
 const getGuestListByUserFiltered = asyncHandler(async (req, res) => {
   let guestList = await Guest.find({ user: req.user.id });
   const eventGuestList = await Guest.findOne({ event: req.params.eventId });
@@ -181,7 +224,6 @@ const getSingleGuest = asyncHandler(async (req, res) => {
 
 const guestResponse = asyncHandler(async (req, res) => {
   const { adult, child, eventId, singleGuestId } = req.body;
-  console.log(singleGuestId);
   const guest = await Guest.findOne({ event: eventId });
   const singleGuest = guest.guests.id(singleGuestId);
   singleGuest.set({ adult, child, status: "Attending" });
@@ -271,8 +313,59 @@ const addGuestsFromAddressBook = asyncHandler(async (req, res) => {
   });
 });
 
+const editGuestInEvent = expressAsyncHandler(async (req, res) => {
+  const { name, email, phone, membersAllowed, singleGuestId, eventId } =
+    req.body;
+  const guest = await Guest.findOne({ event: eventId });
+  const singleGuest = guest.guests.id(singleGuestId);
+  singleGuest.set({ name, email, phone, membersAllowed });
+  await guest.save();
+  res.json({
+    status: "success",
+    message: "Guest has been updated successfully",
+  });
+});
+
+const editGuestInAddressBook = expressAsyncHandler(async (req, res) => {
+  const { name, email, phone, membersAllowed, singleGuestId } = req.body;
+  const guest = await Guest.findOne({ user: req.user.id, listType: "addressBook" });
+  const singleGuest = guest.guests.id(singleGuestId);
+  singleGuest.set({ name, email, phone, membersAllowed });
+  await guest.save();
+  res.json({
+    status: "success",
+    message: "Guest has been updated successfully",
+  });
+});
+
+const deleteGuestsFromAddressBook = expressAsyncHandler(async (req, res) => {
+  const { guestIds } = req.body;
+  console.log(guestIds);
+  await Guest.updateOne(
+    { user: req.user.id, listType: "addressBook" },
+    { $pull: { guests: { _id: { $in: guestIds } } } }
+  );
+  res.json({
+    status: "success",
+    message: "Guest has been deleted successfully",
+  });
+});
+
+const deleteGuestsFromEvent = expressAsyncHandler(async (req, res) => {
+  const { guestIds, eventId } = req.body;
+  await Guest.updateOne(
+    { event: eventId },
+    { $pull: { guests: { _id: { $in: guestIds } } } }
+  );
+  res.json({
+    status: "success",
+    message: "Guest has been deleted successfully",
+  });
+});
+
 export {
   createGuest,
+  createAddressBook,
   addGuest,
   addGuestInBulk,
   openStatus,
@@ -286,4 +379,9 @@ export {
   leftInvitees,
   addGuestsFromAddressBook,
   getGuestListByUserFiltered,
+  getAddressBook,
+  editGuestInEvent,
+  editGuestInAddressBook,
+  deleteGuestsFromAddressBook,
+  deleteGuestsFromEvent,
 };
