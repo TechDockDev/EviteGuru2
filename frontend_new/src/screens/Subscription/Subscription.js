@@ -40,6 +40,7 @@ const Subscriptions = () => {
         sx={{
           // border: "2px solid red",
           height: "100%",
+          mt: 4,
           width: {
             xl: "calc(100vw - 250px)",
             lg: "calc(100vw - 270px)",
@@ -59,11 +60,11 @@ const Subscriptions = () => {
             fontSize={{ md: "38px" }}
             fontWeight={"900"}
           >
-            Evite Guru Pricing
+            EviteGuru Pricing
           </Typography>
-          <Typography variant="h6" fontSize={{ xs: "12px", md: "18px" }}>
+          {/* <Typography variant="h6" fontSize={{ xs: "12px", md: "18px" }}>
             Start now for free, upgrade later. No hidden fees.
-          </Typography>
+          </Typography> */}
         </Stack>
         <Stack
           mt={3}

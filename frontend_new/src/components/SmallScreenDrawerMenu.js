@@ -1,7 +1,7 @@
 import * as React from "react";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Avatar,
@@ -14,6 +14,7 @@ import {
   ListItemText,
   Stack,
   Toolbar,
+  Typography,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 const drawerWidth = 240;
@@ -21,7 +22,7 @@ const drawerWidth = 240;
 const SmallScreenDrawerMenu = (props) => {
   const { toggleLogInModal, toggleRegisterModal, setOpenLoginModal } = props;
   //   const [isLoggedInd, setIsLoggedInd] = React.useState(false);
-
+  const navigate = useNavigate();
   const { userDetail } = useSelector((state) => state);
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -96,6 +97,7 @@ const SmallScreenDrawerMenu = (props) => {
           <Box
             component={NavLink}
             to={"/"}
+            onClick={handleDrawerToggle}
             sx={{
               width: "150px",
               display: "flex",
@@ -119,8 +121,9 @@ const SmallScreenDrawerMenu = (props) => {
             disablePadding={true}
             dense
             sx={{
+              mt: 1,
               color: "black",
-
+              borderTop: "1px solid",
               "& .MuiListItemText-root": { color: "black" },
             }}
           >
@@ -128,6 +131,7 @@ const SmallScreenDrawerMenu = (props) => {
               component={NavLink}
               to="/"
               onClick={handleDrawerToggle}
+
               // sx={{
               //   "& .active": {
               //     color: "rgba(121, 93, 168, 1)",
@@ -157,15 +161,7 @@ const SmallScreenDrawerMenu = (props) => {
                 <ListItemText>Pricing</ListItemText>
               </ListItemButton>
             </ListItem>
-            {/* <ListItem
-              component={NavLink}
-              to="/enterprise"
-              onClick={handleDrawerToggle}
-            >
-              <ListItemButton>
-                <ListItemText>Enterprise</ListItemText>
-              </ListItemButton>
-            </ListItem> */}
+
             {/*👆 topbar left menu list👆 */}
             {/*👇 topbar right buttons 👇 */}
             {userDetail?.isUser ? (
@@ -229,10 +225,71 @@ const SmallScreenDrawerMenu = (props) => {
             )}
           </List>
 
+          <List
+            disablePadding={true}
+            dense
+            sx={{
+              color: "black",
+              borderTop: "1px solid",
+              mt: 2,
+              "& .MuiListItemText-root": { color: "black" },
+            }}
+          >
+            <ListItem sx={{ fontWeight: "bolder" }}>
+              <ListItemButton>
+                <Typography variant="h6">Additional Links</Typography>
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton
+                component="a"
+                to="/termsAndConditions"
+                target="_blank"
+              >
+                <ListItemText>Privacy Policy</ListItemText>
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton component="a" to="/privacyPolicy" target="_blank">
+                <ListItemText>Terms and conditions</ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </List>
+          <List
+            disablePadding={true}
+            dense
+            sx={{
+              color: "black",
+              borderTop: "1px solid",
+              mt: 2,
+              "& .MuiListItemText-root": { color: "black" },
+            }}
+          >
+            <ListItem sx={{ fontWeight: "bolder" }}>
+              <ListItemButton>
+                <Typography variant="h6">Social Links</Typography>
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton
+                component="a"
+                to="https://www.instagram.com/eviteguru/"
+                target="_blank"
+              >
+                <ListItemText>
+                  <Box
+                    bgcolor="transparent"
+                    component={"img"}
+                    src="./assets/instagram.svg"
+                  />
+                </ListItemText>
+              </ListItemButton>
+            </ListItem>
+          </List>
           {/*👆 topbar right buttons👆 */}
+          {/* ==== 👆 Left menu drawer for small screens 👆   ===== */}
         </Stack>
       </Drawer>
-      {/* ==== 👆 Left menu drawer for small screens 👆   ===== */}
     </Box>
   );
 };

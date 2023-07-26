@@ -104,7 +104,7 @@ const BrowseTemplate = () => {
           // border:"1px solid green"
         }}
       >
-        Browse Template
+        Browse Templates
       </Typography>
       <Grid
         container
@@ -228,7 +228,7 @@ const BrowseTemplate = () => {
         sx={{ width: "220px", margin: "auto" }}
         onClick={() => loadMoreContent()}
       >
-        {page === totalPages ? "Nothing more to display" : "see more template"}
+        {page === totalPages ? "Nothing more to display" : "see more templates"}
       </Button>
       <TemplatePreview
         carouselClick={carouselClick}

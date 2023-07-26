@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import LogInModal from "../LoginModal/LogInModal";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import RegisterModal from "../RegisterModal/RegisterModal";
 
 const HeroSection = () => {
   const { userDetail } = useSelector((state) => state);
@@ -12,6 +13,7 @@ const HeroSection = () => {
   // =====================================
   const [openLoginModal, setOpenLoginModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
+
   const toggleLogInModal = () => {
     setOpenLoginModal(!openLoginModal);
   };
@@ -172,7 +174,10 @@ const HeroSection = () => {
         toggleLogInModal={toggleLogInModal}
         toggleRegisterModal={toggleRegisterModal}
         setOpenLoginModal={setOpenLoginModal}
-        
+      />
+      <RegisterModal
+        openRegisterModal={openRegisterModal}
+        setOpenRegisterModal={setOpenRegisterModal}
       />
     </Box>
   );

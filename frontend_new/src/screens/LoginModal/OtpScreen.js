@@ -100,10 +100,13 @@ const OtpScreen = (props) => {
           <Button
             disabled={code.length === 6 ? false : true}
             onClick={handleVerify}
+            variant="contained"
             size="small"
             sx={{
               color: "white",
               textTransform: "none",
+              // borderColor:"red"
+              // bgcolor:"red"
             }}
           >
             Verify

@@ -28,7 +28,7 @@ const Faqs = (props) => {
               key={index}
               sx={{
                 bgcolor: "rgba(250, 250, 250, 1)",
-                width: { md: "85%", sm: "100%" },
+                width: { md: "85%", sm: "100%", xs: "100%" },
 
                 marginBottom: "2px",
                 "&:before": {
@@ -63,10 +63,14 @@ const Faqs = (props) => {
                     0{index + 1}
                   </Typography>
                   <Typography
+                    variant="h6"
+                    component={"p"}
                     sx={{
-                      flexShrink: 0,
+                      // flexShrink: 0,
                       fontWeight: "900",
-                      fontSize: { md: "30px", sm: "20px" },
+
+                      fontSize: { md: "30px", sm: "20px", xs: "17px" },
+                      // overflowWrap: "break-word",
                     }}
                   >
                     {item?.question}

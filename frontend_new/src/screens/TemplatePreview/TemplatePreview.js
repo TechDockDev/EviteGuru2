@@ -17,28 +17,30 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import TemplatePreviewCarousel from "./TemplatePreviewCarousel";
 import { Constants } from "../../redux/constants/action-types";
 import { openSnackbar } from "../../redux/action/userActions";
-import LogInModal from "../LoginModal/LogInModal";
 import RegisterModal from "../RegisterModal/RegisterModal";
+import LogInModal from "../LoginModal/LogInModal";
+
 // import Design from "../CustomizationPage/Design";
 
 const TemplatePreview = (props) => {
   const [singleTemplateData, setSingleTemplateData] = useState({});
-  // const [openLoginModal, setOpenLoginModal] = useState(false);
+  const [openLoginModal, setOpenLoginModal] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [open, setopen] = useState(false);
+  // const [open, setopen] = useState(false);
   const [registerOpen, setregisterOpen] = useState(false);
   const toggleRegisterModal = () => {
     setregisterOpen(!registerOpen);
   };
-  const toggleLoginModal = () => {
-    setopen(!open);
-  };
+  // const toggleLoginModal = () => {
+  //   setopen(!open);
+  // };
   const { userDetail } = useSelector((state) => state);
 
-  // const toggleLogInModal = () => {
-  //    setOpenLoginModal(!openLoginModal);
-  //  };
+  const toggleLoginModal = () => {
+     setOpenLoginModal(!openLoginModal);
+   };
+   console.log("--->", openLoginModal)
 
   const closeModal = () => {
     if (props?.openTemplatePreviewModal) {
@@ -75,7 +77,7 @@ const TemplatePreview = (props) => {
   };
   // =====================================
   const handleOpenModal = () => {
-    closeModal();
+    // closeModal();
     toggleLoginModal();
     dispatch(openSnackbar("You are not logged in , please login", "error"));
     // navigate("/");
@@ -288,13 +290,13 @@ const TemplatePreview = (props) => {
         </Grid>
       </Modal>
       <LogInModal
-        openLoginModal={open}
+        openLoginModal={openLoginModal}
         toggleLogInModal={toggleLoginModal}
         toggleRegisterModal={toggleRegisterModal}
-        setOpenLoginModal={setopen}
+        setOpenLoginModal={setOpenLoginModal}
       />
       <RegisterModal
-        openRegisterModal={registerOpen}
+              openRegisterModal={registerOpen}
         setOpenRegisterModal={setregisterOpen}
       />
     </>

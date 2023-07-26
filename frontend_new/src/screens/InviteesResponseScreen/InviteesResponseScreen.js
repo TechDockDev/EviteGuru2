@@ -8,7 +8,7 @@ import { useState } from "react";
 import AnimationEnvelope from "./AnimationEnvelope";
 
 import { Constants } from "../../redux/constants/action-types";
-import { async } from "q";
+
 
 import AttendingModal from "./AttendingModal";
 import { openSnackbar } from "../../redux/action/userActions";
@@ -42,7 +42,7 @@ const InviteesResponseScreen = () => {
         `${Constants.URL}/guest/single/${eventId}/${guestId}`
       );
       if (res.status === 200) {
-        console.log("response=>", res);
+        console.log("response=>=>", res);
         if (res?.data?.singleGuest?.status === "Pending") {
           invitationOpenState();
         }
@@ -65,7 +65,7 @@ const InviteesResponseScreen = () => {
     try {
       const res = await axios.get(`${Constants.URL}/event/${eventId}`);
       if (res.status === 200) {
-        console.log("response=>", res?.data?.event);
+        console.log("response=>...", res?.data?.event);
         setEvent(res?.data?.event);
       }
     } catch (error) {
@@ -86,6 +86,7 @@ const InviteesResponseScreen = () => {
       }
     } catch (error) {}
   };
+  console.log("evernt=>",event)
   useEffect(() => {
     //  console.log('This Is TEmplate',events)
     if (eventId && guestId) {
@@ -122,7 +123,7 @@ const InviteesResponseScreen = () => {
           mt={1}
           mb={1}
         >
-          Hey,{" "}
+          For,{" "}
           <span
             style={{
               color: "rgba(121, 93, 168, 1)",
@@ -131,8 +132,9 @@ const InviteesResponseScreen = () => {
           >
             {/* {event?.hostName} */}
           </span>{" "}
-          You are invited to a celebration of the beginning of our new life as i
-          am going to start new journey of my life
+          {/* You are invited to a celebration of the beginning of our new life as i
+          am going to start new journey of my life */}
+          {guestDetails?.name}
         </Typography>
         <Grid
           container
@@ -179,7 +181,7 @@ const InviteesResponseScreen = () => {
                 >
                   {/* {event?.hostName} */}
                 </Typography>
-                {/* dynamic host name */}I am{" "}
+                {/* I am{" "} */}
                 <span
                   style={{
                     color: "rgba(121, 93, 168, 1)",
@@ -189,7 +191,7 @@ const InviteesResponseScreen = () => {
                 >
                   {event?.hostName}
                 </span>{" "}
-                sent you an invitation for marriage ceremony
+                {/* sent you an invitation for marriage ceremony */}
                 {/* dynamic event name */}
                 <Typography
                   component="span"
@@ -200,9 +202,9 @@ const InviteesResponseScreen = () => {
                   {/* {event?.name} */}
                 </Typography>
                 {/* dynamic event name */}
-                on
+                {/* on */}
                 {/* dynamic event date and time */}
-                <Typography
+                {/* <Typography
                   component="span"
                   display="block"
                   fontSize="14px"
@@ -212,7 +214,7 @@ const InviteesResponseScreen = () => {
                     date={event?.date}
                     format="hh:mm A, dddd, MMMM DD, YYYY"
                   />
-                </Typography>
+                </Typography> */}
                 {/* dynamic event date and time */}
               </Typography>
             </Grid>
@@ -239,8 +241,13 @@ const InviteesResponseScreen = () => {
                 guestDetails={guestDetails}
                 toggleAttendingModal={toggleAttendingModal}
                 src={`/images/getImage?path=/${event?.variation?.previewImage}`}
+                // src={
+                //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSshrGc3H1tmJPwlIDts0DaK67hMU45v6NH6y_5txdY&s"
+                // }
+                // src={`/images/getImage?path=/uploads/variations/previewImages/previewImage1688821028156.png`}
                 handleDeny={handleDeny}
               />
+              {/* "uploads/variations/previewImages/previewImage1688821028156.png" */}
             </Grid>
 
             {/* == 👆 Template preview button and image 👆   ==*/}
@@ -340,7 +347,7 @@ const InviteesResponseScreen = () => {
                 p={1}
                 borderRadius="4px"
               >
-                Powered by Evite Guru
+                Powered by EviteGuru
               </Typography>
             </Grid>
             {/* 👆 powered by text  👆 */}
@@ -355,6 +362,7 @@ const InviteesResponseScreen = () => {
         eventId={eventId}
         guestId={guestId}
         handleDeny={handleDeny}
+        guestDetails={guestDetails}
       />
     </Box>
   );

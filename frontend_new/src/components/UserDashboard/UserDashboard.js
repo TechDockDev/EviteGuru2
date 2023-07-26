@@ -13,15 +13,20 @@ import {
 import { RxHamburgerMenu } from "react-icons/rx";
 import { AiOutlineClose } from "react-icons/ai";
 import SidebarMenu from "./SidebarMenu";
-import { useSelector } from "react-redux";
-import { openSnackbar } from "../../redux/action/userActions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  openSnackbar,
+  setDialogueBoxOpen,
+  setNavigate,
+} from "../../redux/action/userActions";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
   // useSelector to use Title
-  const { pageTitle, userDetail } = useSelector((state) => state);
+  const { pageTitle, userDetail, unsaved } = useSelector((state) => state);
   //👇 onClick function for hamburger menu to open left drawer on small screen  👇
 
   const handleDrawerToggle = () => {
@@ -35,6 +40,17 @@ const UserDashboard = () => {
       children: `${fName[0]}${sName[0]}`,
     };
   }
+
+  const handleNavigate = (path) => {
+    console.log("unsaved=>", unsaved);
+    console.log("navigateConsole is coming");
+    if (unsaved) {
+      dispatch(setNavigate(true, path));
+      dispatch(setDialogueBoxOpen(true));
+    } else {
+      navigate(path);
+    }
+  };
   // ============================================
   if (userDetail?.isUser) {
     return (
@@ -93,8 +109,9 @@ const UserDashboard = () => {
           >
             {/* == left eviteguru logo ==*/}
             <Box
-              component={NavLink}
-              to="/"
+              // component={NavLink}
+              // to="/"
+              onClick={() => handleNavigate("/")}
               sx={{
                 height: {
                   md: "70px",
@@ -103,7 +120,7 @@ const UserDashboard = () => {
                   sm: "60px",
                   xs: "60px",
                 },
-
+                cursor: "pointer",
                 bgcolor: "rgba(121, 93, 168, 1)",
                 width: "100%",
                 textAlign: "center",
@@ -292,11 +309,12 @@ const UserDashboard = () => {
                 }}
               >
                 <Box
-                  component={NavLink}
-                  to="/"
+                  // component={NavLink}
+                  // to="/"
+                  onClick={() => handleNavigate("/")}
                   sx={{
                     height: "60px",
-
+                    cursor: "pointer",
                     textAlign: "center",
                     padding: "2px",
                     margin: " 0 20px",
@@ -387,10 +405,10 @@ const UserDashboard = () => {
               <Typography
                 sx={{
                   bgcolor: "transparent",
-                  fontWeight: "bold",
-
+                  fontWeight: "bolder",
+                  textTransform: "uppercase",
                   marginLeft: "2vw",
-                  textShadow: "2px 2px rgba(205, 181, 234, 1)",
+                  // textShadow: "2px 2px rgba(205, 181, 234, 1)",
                 }}
                 variant="h5"
               >
@@ -408,7 +426,7 @@ const UserDashboard = () => {
               }}
             >
               <Avatar
-                sx={{ bgcolor: "rgba(121, 93, 168, 1)" }}
+                // sx={{ bgcolor: "rgba(121, 93, 168, 1)" }}
                 // {...stringAvatar(`${userDetail?.name}`)}
                 alt={userDetail?.name}
                 src={`data:image/jpeg;base64,${userDetail?.profilePhoto}`}

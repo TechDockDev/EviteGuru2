@@ -63,12 +63,13 @@ const PricingCard = (props) => {
         elevation={userDetail?.subscription?._id === props?.plan?._id ? 24 : 4}
         sx={{
           mt: 1,
-          minWidth: " 300px",
+          minWidth: " 280px",
           backgroundColor: "#FAFAFA",
           borderRadius: "8px",
           padding: "10px 10px",
           bgcolor: "#FAFAFA",
           boxSizing: "border-box",
+          minHeight:"320px"
         }}
       >
         <CardContent>

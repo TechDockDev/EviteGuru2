@@ -144,7 +144,7 @@ const Details = (props) => {
             })
           }
           requiredTrue={true}
-          placeholderText={"e.g. The Oberoi"}
+          placeholderText={"e.g. Le Jardin"}
         />
         {/* == 👆 venue Name 👆   ==*/}
         {/* == 👇 venue Address 👇  ==*/}
@@ -213,7 +213,7 @@ const Details = (props) => {
           }
           labelInputId={"additionalInfo"}
           requiredTrue={true}
-          placeholderText={"e.g Opposite sapna clark inn"}
+          placeholderText={"e.g. North of the Swan Lake"}
           rows={"3"}
         />
         {/* == 👆Additional Information for Location👆   ==*/}

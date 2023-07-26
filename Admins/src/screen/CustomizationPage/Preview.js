@@ -112,7 +112,7 @@ const Preview = () => {
 
                   <Grid item xl={12} lg={12} md={12} sm={12} xs={12}  m={2}  >
                      <Typography fontSize="14px" bgcolor="black" color="white" fontWeight="bold" width="60%" textAlign={"center"} margin="auto" p={1} borderRadius="4px">
-                        Powered by Evite Guru
+                        Powered by EviteGuru
                      </Typography>
                   </Grid>
                   {/* 👆 powered by text  👆 */}

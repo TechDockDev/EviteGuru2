@@ -1,5 +1,12 @@
 import { combineReducers } from "redux";
-import { snacbarReducer, userEventReducer, userReducer } from "./userReducer";
+import {
+  setIsLoading,
+  setIsNavigate,
+  setUnsaved,
+  snacbarReducer,
+  userEventReducer,
+  userReducer,
+} from "./userReducer";
 import {
   createdEventDetail,
   eventReducer,
@@ -12,7 +19,6 @@ import {
   titleReducer,
 } from "./defaultActionReducer";
 import { userAuth } from "../action/userActions";
-import { snackbarClasses } from "@mui/material";
 
 const user_reducer = combineReducers({
   userDetail: userReducer,
@@ -26,6 +32,9 @@ const user_reducer = combineReducers({
   userAuth: userAuth,
   createdEventDetails: createdEventDetail,
   snackbar: snacbarReducer,
+  loading: setIsLoading,
+  isNavigate: setIsNavigate,
+  unsaved: setUnsaved,
 });
 
 export default user_reducer;

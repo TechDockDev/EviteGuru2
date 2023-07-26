@@ -7,19 +7,22 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { Constants } from "../../redux/constants/action-types";
+import { isLoading, openSnackbar } from "../../redux/action/userActions";
 
 const AddGuests = (props) => {
   const dispatch = useDispatch();
 
   const [guests, setGuests] = useState([{}]);
-  const { userDetail, createdEventDetails } = useSelector((state) => state);
+  const { userDetail, createdEventDetails, loading } = useSelector(
+    (state) => state
+  );
 
-  console.log("eventDetails", createdEventDetails);
+  console.log("eventDetails", loading.open);
 
   //   const id = temp._id;
 
@@ -30,30 +33,62 @@ const AddGuests = (props) => {
     // setSingle_guest(tempValues)
     console.log(tempValues);
   };
-
-  const SubmitHamdler = async (e) => {
+  console.log("contactDetails=>", props?.contactDetails);
+  const SubmitHandler = async (e) => {
     e.preventDefault();
     try {
+      dispatch(isLoading(true));
       // console.log("console is coming=>");
-      const guestDetails = guests.map((guest, index) => {
-        return {
-          name: `${guest.first_name} ${guest.last_name}`,
-          membersAllowed: guest.membersAllowed,
-          phone: guest.phone,
-          email: guest.email,
-        };
-      });
-      const res = await axios.patch(`${Constants.URL}/guest/add-guest`, {
-        guestDetails: [...guestDetails],
-        guestId: createdEventDetails?.guestListId,
-      });
-      if (res.status === 200) {
-        console.log("response=>", res);
-        await props?.getGuestListDetails(createdEventDetails?.guestListId);
-        props.toggleAddUserModal();
+      if (props?.modalType === "edit") {
+        const res = await axios.patch(
+          `${Constants.URL}/guest/edit-guest-from-event`,
+          {
+            name: `${guests[0].first_name} ${guests[0].last_name}`,
+            email: guests[0].email,
+            phone: guests[0].phone,
+            singleGuestId: props?.contactDetails?._id,
+            membersAllowed: guests[0].membersAllowed,
+            eventId: props?.eventId,
+          }
+        );
+        if (res.status === 200) {
+          console.log("updated=>", res);
+          await props?.getGuestListDetails(createdEventDetails?.guestListId);
+          // props?.getContactList();
+          setGuests([{}]);
+          dispatch(isLoading(false));
+          props.toggleAddUserModal();
+          dispatch(openSnackbar("updated", "success"));
+        }
+      } else {
+        const guestDetails = guests.map((guest, index) => {
+          return {
+            name: `${guest.first_name} ${guest.last_name}`,
+            membersAllowed: guest.membersAllowed,
+            phone: guest.phone,
+            email: guest.email,
+          };
+        });
+        const res = await axios.patch(`${Constants.URL}/guest/add-guest`, {
+          guestDetails: [...guestDetails],
+          guestId: createdEventDetails?.guestListId,
+        });
+        if (res.status === 200) {
+          dispatch(isLoading(false));
+          console.log("response=>", res);
+          await props?.getGuestListDetails(createdEventDetails?.guestListId);
+          props.toggleAddUserModal();
+        }
       }
     } catch (error) {
-      console.log("error=>", error);
+      if (error.response.data.message) {
+        dispatch(isLoading(false));
+        dispatch(openSnackbar(error.response.data.message, "error"));
+      } else {
+        console.log("error=>", error);
+        dispatch(isLoading(false));
+      }
+      props.toggleAddUserModal();
     }
   };
 
@@ -62,11 +97,29 @@ const AddGuests = (props) => {
   };
 
   // =======end of useEffect ====
+  useEffect(() => {
+    if (props?.modalType === "edit" && props.contactDetails) {
+      console.log("contactDetails=>", props.contactDetails);
+      setGuests([
+        {
+          ...props?.contactDetails,
+          first_name: props?.contactDetails?.name?.split(" ")[0],
+          last_name: props?.contactDetails?.name.split(" ")[1]
+            ? props?.contactDetails?.name.split(" ")[1]
+            : "",
+        },
+      ]);
+    }
+
+    return () => {
+      setGuests([{}]);
+    };
+  }, []);
 
   return (
     <Stack
       component="form"
-      onSubmit={SubmitHamdler}
+      onSubmit={SubmitHandler}
       sx={{
         position: "absolute",
         top: "50%",
@@ -234,6 +287,7 @@ const AddGuests = (props) => {
       </Grid>
       <Box width="100%" textAlign="center">
         <Button
+          disabled={loading.open ? true : false}
           variant="contained"
           type="submit"
           sx={{ color: "white", width: "150px" }}

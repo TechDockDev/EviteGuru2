@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   FormControl,
   IconButton,
   InputAdornment,
@@ -43,6 +44,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
   const [otp, setOtp] = useState(false);
   const [phone, setphone] = useState({ number: "", length: 0 });
   const [values, setValues] = useState(tempvalues);
+  const [check, setcheck] = useState(false);
 
   const { userDetail } = useSelector((state) => state);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -73,7 +75,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
       {
         size: "invisible",
         callback: (response) => {
-          // console.log(response);
+          console.log("==>", response);
         },
       },
       auth
@@ -87,7 +89,9 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
     // window.recaptchaVerifier.render();
 
     const auth = getAuth();
-    configureCaptcha();
+    if (!window.confirmationResult) {
+      configureCaptcha();
+    }
     signInWithPhoneNumber(auth, phone?.number, window.recaptchaVerifier)
       .then((confirmationResult) => {
         setOtp(true);
@@ -95,13 +99,14 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
           openSnackbar("Otp has been sent to your mobile number", "success")
         );
         window.confirmationResult = confirmationResult;
-        // console.log("resp", window.confirmationResult);
+        console.log("resp", window.confirmationResult);
         // ...
       })
       .catch((error) => {
         // Error; SMS not sent
         // ...
-
+        // window.recaptchaVerifier = new RecaptchaVerifier().clear()
+        console.log("===>", error);
         dispatch(openSnackbar(error.message, "error"));
       });
   };
@@ -155,71 +160,83 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
   };
   // ====end of handleChange==
   const submitHandler = async (e) => {
-    const { name, email, phone, password, confirmPassword, idToken } = values;
-    e.preventDefault();
-    try {
-      if (password !== confirmPassword) {
-        dispatch(openSnackbar("password does not matched", "warning"));
-      } else {
-        const res = await axios.post(`${Constants.URL}/register`, {
-          name,
-          email,
-          password,
-          idToken,
-        });
-        if (res.status === 200) {
-          dispatch(openSnackbar(res?.data?.message, "success"));
-          dispatch(login(res?.data?.user));
-          setValues(tempvalues);
-          closeRegisterModal();
-          // toggleRegisterModal();
+    if (check) {
+      const { name, email, phone, password, confirmPassword, idToken } = values;
+      e.preventDefault();
+      try {
+        if (password !== confirmPassword) {
+          dispatch(openSnackbar("password does not matched", "warning"));
+        } else {
+          const res = await axios.post(`${Constants.URL}/register`, {
+            name,
+            email,
+            password,
+            idToken,
+          });
+          if (res.status === 200) {
+            dispatch(openSnackbar(res?.data?.message, "success"));
+            dispatch(login(res?.data?.user));
+            setValues(tempvalues);
+            closeRegisterModal();
+            // toggleRegisterModal();
+          }
         }
+      } catch (error) {
+        dispatch(openSnackbar("something went wrong", "error"));
       }
-    } catch (error) {
-      dispatch(openSnackbar("something went wrong", "error"));
+    } else {
+      dispatch(openSnackbar("Accept terms and condition", "warning"));
     }
   };
 
   const googleHandler = async () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(Authentication, provider)
-      .then(async (result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
+    if (check) {
+      const provider = new GoogleAuthProvider();
+      signInWithPopup(Authentication, provider)
+        .then(async (result) => {
+          // This gives you a Google Access Token. You can use it to access the Google API.
 
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          const token = credential.accessToken;
 
-        const idToken = await Authentication.currentUser.getIdToken();
+          const idToken = await Authentication.currentUser.getIdToken();
 
-        // The signed-in user info.
-        const user = result.user;
+          // The signed-in user info.
+          const user = result.user;
 
-        const res = await axios.post(`${Constants?.URL}/register/google`, {
-          idToken: idToken,
+          const res = await axios.post(`${Constants?.URL}/register/google`, {
+            idToken: idToken,
+          });
+          // =====================
+          if (res.status === 200) {
+            dispatch(login(res?.data?.data?.user));
+            closeRegisterModal();
+            // toggleRegisterModal();
+          }
+          // IdP data available using getAdditionalUserInfo(result)
+          // ...
+        })
+        .catch((error) => {
+          // Handle Errors here.
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.log("error=>", error);
+          if (error.response.data.message) {
+            dispatch(openSnackbar(error.response.data.message, "error"));
+            const credential = GoogleAuthProvider.credentialFromError(error);
+          } else {
+            dispatch(openSnackbar(error.message, "error"));
+
+            const credential = GoogleAuthProvider.credentialFromError(error);
+          }
+          // ...
         });
-        // =====================
-        if (res.status === 200) {
-          dispatch(login(res?.data?.data?.user));
-          closeRegisterModal();
-          // toggleRegisterModal();
-        }
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-
-        dispatch(openSnackbar(error.message, "error"));
-
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
+    } else {
+      dispatch(openSnackbar("Accept terms and condition", "warning"));
+    }
   };
 
   useEffect(() => {
-    // configureCaptcha();
     return () => {
       setValues(tempvalues);
       setOtp(false);
@@ -279,7 +296,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
                   sx={{
                     width: "150px",
                     position: "absolute",
-                    top: "10px",
+                    top: "20px",
                     left: "30px",
                   }}
                 >
@@ -590,7 +607,38 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
 
                 {/*👆 LogIn button👆 */}
                 {/*👆 Form Container👆 */}
-
+                <Stack>
+                  <Box alignItems={"center"} display={"flex"}>
+                    <Checkbox
+                      // color="default"
+                      sx={{
+                        color: "white",
+                        "&.Mui-checked": {
+                          color: "white",
+                        },
+                      }}
+                      onClick={() => setcheck(!check)}
+                      checked={check}
+                    />
+                    <Typography
+                      color={"white"}
+                      variant="a"
+                      fontSize={{ xs: "10px", sm: "15px", md: "18px" }}
+                      fontFamily={
+                        "Montserrat,Comforter Brush,Abhaya Libre,Poppins"
+                      }
+                    >
+                      I Accept{" "}
+                      <a
+                        href="/termsAndConditions"
+                        // style={{ color: "white" }}s
+                        target="_blank"
+                      >
+                        Terms & Conditions
+                      </a>
+                    </Typography>
+                  </Box>
+                </Stack>
                 <Stack
                   // direction="row"
                   justifyContent="space-around"
@@ -610,6 +658,7 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
                   <Button
                     variant="contained"
                     fullWidth
+                    onClick={googleHandler}
                     sx={{
                       bgcolor: "white",
 
@@ -620,24 +669,18 @@ const RegisterModal = ({ openRegisterModal, setOpenRegisterModal }) => {
                       mt: 1,
                     }}
                   >
-                    <Stack
-                    // onChange={submit}
-                    // onClick={submit}
-                    >
-                      <Box
-                        component="img"
-                        bgcolor={"transparent"}
-                        onClick={googleHandler}
-                        src="./assets/google_color_icon.svg"
-                      />
-                    </Stack>
+                    <Box
+                      component="img"
+                      bgcolor={"transparent"}
+                      src="./assets/google_color_icon.svg"
+                    />
                   </Button>
                 </Stack>
-                <div id="captcha-button"></div>
               </Box>
               {/*👆 Form Container👆 */}
             </Stack>
           </Paper>
+          <div id="captcha-button"></div>
         </>
       </Modal>
     </>

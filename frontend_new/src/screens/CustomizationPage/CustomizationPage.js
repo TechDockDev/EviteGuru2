@@ -108,6 +108,7 @@ const CustomizationPage = () => {
       sx={{
         // border: "2px solid red",
         height: "100%",
+        mt: 4,
         // width: {
         //   xl: "calc(100vw - 250px)",
         //   lg: "calc(100vw - 270px)",

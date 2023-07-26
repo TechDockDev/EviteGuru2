@@ -1,4 +1,11 @@
-import { Button, Grid, IconButton, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  IconButton,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { DataGrid, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import axios from "axios";
 import React from "react";
@@ -6,11 +13,14 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Constants } from "../../redux/constants/action-types";
+import { isLoading } from "../../redux/action/userActions";
 
 const ImportContacts = (props) => {
+  const dispatch = useDispatch();
   const { createdEventDetails } = useSelector((state) => state);
+  const [loading, setloading] = useState(false);
   const [allContacts, setAllContacts] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
   const { id } = useParams();
@@ -81,20 +91,28 @@ const ImportContacts = (props) => {
   ];
   // ==== get contact list ====
   const getContactList = async () => {
+    dispatch(isLoading(true));
+    setloading(true);
     try {
       const res = await axios.get(`${Constants.URL}/guest/user/${id}`);
       if (res.status === 200) {
         console.log("response=>", res?.data?.guestList);
         // extractAllcontacts(res?.data?.guestList);
         setAllContacts(res?.data?.guestList);
+        dispatch(isLoading(false));
+        setloading(false);
       }
     } catch (error) {
+      dispatch(isLoading(false));
+      setloading(false);
       console.log("error=>", error);
     }
   };
   // ====end of contact list===
   // ===handle Import =========
   const handleImport = async () => {
+    dispatch(isLoading(true));
+    setloading(true);
     try {
       console.log("imported contact", rowSelectionModel);
       const res = await axios.post(
@@ -105,8 +123,11 @@ const ImportContacts = (props) => {
         console.log("response=>", res);
         props.toggleImportModal();
         props.getGuestListDetails(createdEventDetails?.guestListId);
+        dispatch(isLoading(false));
+        setloading(false);
       }
     } catch (error) {
+      dispatch(isLoading(false));
       console.log("error=>", error);
     }
   };
@@ -150,65 +171,84 @@ const ImportContacts = (props) => {
         Select and Import Contacts
       </Typography>
 
-      <DataGrid
-        components={{ Toolbar: CustomeToolBar }}
-        //   slots={{ toolbar: QuickSearchToolbar }}
-        rows={allContacts}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
-            },
-          },
-        }}
-        onRowSelectionModelChange={(newRowSelectionModel) => {
-          setRowSelectionModel(newRowSelectionModel);
-        }}
-        getRowId={(row) => row._id}
-        autoHeight={true}
-        pageSizeOptions={[5]}
-        checkboxSelection
-        disableRowSelectionOnClick
-        getRowClassName={(params) =>
-          params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-        }
-        sx={{
-          bgcolor: "none",
-          border: "none",
-          mt: 2,
-          "& .odd": { bgcolor: "#F7F7F7 !important" },
-          "& .MuiCheckbox-root": {
-            color: "black",
-          },
-          "& .MuiDataGrid-columnHeaderTitle": {
-            fontWeight: "800",
-          },
-        }}
-      />
-      <Stack
-        direction={"row"}
-        spacing={2}
-        alignContent={"center"}
-        justifyContent={"center"}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ color: "white" }}
-          disabled={rowSelectionModel.length >= 1 ? false : true}
-          onClick={handleImport}
+      {loading ? (
+        <Stack
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "20px",
+          }}
         >
-          Add To Invitees
-        </Button>
-        <Button
-          variant="contained"
-          color="inherit"
-          onClick={props.toggleImportModal}
-        >
-          Cancel
-        </Button>
-      </Stack>
+          <CircularProgress
+            color="primary"
+            sx={{
+              bgcolor: "transparent !important",
+              "& svg": {
+                bgcolor: "transparent !important",
+              },
+            }}
+          />{" "}
+        </Stack>
+      ) : (
+        <>
+          <DataGrid
+            // components={{ Toolbar: CustomeToolBar }}
+            slots={{ toolbar: CustomeToolBar }}
+            rows={allContacts}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
+              },
+            }}
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              setRowSelectionModel(newRowSelectionModel);
+            }}
+            getRowId={(row) => row._id}
+            autoHeight={true}
+            pageSizeOptions={[5]}
+            checkboxSelection
+            disableRowSelectionOnClick
+            getRowClassName={(params) =>
+              params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+            }
+            sx={{
+              bgcolor: "none",
+              border: "none",
+              mt: 2,
+              "& .odd": { bgcolor: "#F7F7F7 !important" },
+              "& .MuiCheckbox-root": {
+                color: "black",
+              },
+              "& .MuiDataGrid-columnHeaderTitle": {
+                fontWeight: "800",
+              },
+            }}
+          />
+          <Stack
+            direction={"row"}
+            spacing={2}
+            alignContent={"center"}
+            justifyContent={"center"}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              sx={{ color: "white" }}
+              disabled={rowSelectionModel.length >= 1 ? false : true}
+              onClick={handleImport}
+            >
+              Add To Invitees
+            </Button>
+            <Button color="inherit" onClick={props.toggleImportModal}>
+              Cancel
+            </Button>
+          </Stack>
+        </>
+      )}
     </Stack>
   );
 };

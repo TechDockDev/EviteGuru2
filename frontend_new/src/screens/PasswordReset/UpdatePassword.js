@@ -120,7 +120,7 @@ const UpdatePassword = ({ togglePasswordChangeModal, open, onClose }) => {
             sx={{
               width: "150px",
               position: "absolute",
-              top: "10px",
+              top: "20px",
               left: "30px",
             }}
           >

@@ -42,7 +42,6 @@ export const getSingleTemplate = (data) => {
   };
 };
 
-
 export const setCreatedEventDetail = (data) => {
   return {
     type: ActionTypes.SET_CREATED_EVENT_DETAILS,
@@ -90,4 +89,26 @@ export const closeSnackbar = () => {
     type: ActionTypes.CLOSE_SNACKBAR,
     payload: {},
   };
+};
+
+export const isLoading = (open) => {
+  return {
+    type: ActionTypes.SET_ISLOADING,
+    payload: open,
+  };
+};
+
+export const setNavigate = (status, path,open) => {
+  return {
+    type: ActionTypes.SET_NAVIGATE,
+    payload: { status: status, path: path ,open:open},
+  };
+};
+
+export const setDialogueBoxOpen = (open) => {
+  return { type: ActionTypes.OPEN_DIALOGUE, payload: { open: open } };
+};
+
+export const setUnsavedStatus = (saved) => {
+  return { type: ActionTypes.UNSAVED_STATUS, payload: saved };
 };

@@ -19,21 +19,36 @@ import { useState } from "react";
 import ArchitectureIcon from "@mui/icons-material/Architecture";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useDispatch, useSelector } from "react-redux";
-import { logout, openSnackbar } from "../../redux/action/userActions";
+import {
+  logout,
+  openSnackbar,
+  setNavigate,
+} from "../../redux/action/userActions";
 import axios from "axios";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Constants } from "../../redux/constants/action-types";
 const SidebarMenu = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { tempTemplate, viewEventDetails, createdEventDetails, pageTitle } =
-    useSelector((state) => state);
+  const {
+    tempTemplate,
+    viewEventDetails,
+    createdEventDetails,
+    pageTitle,
+    isNavigate,
+  } = useSelector((state) => state);
 
   //👇  state for open small screen left drawer  👇
   const [openLeftDrawer, setOpenLeftDrawer] = useState();
 
   //👇 onClick function for hamburger menu to open left drawer on small screen  👇
-
+  const handleNavigate = (path) => {
+    if (isNavigate) {
+      navigate(path);
+    } else {
+      dispatch(setNavigate(false,path));
+    }
+  };
   const handleDrawerToggle = () => {
     setOpenLeftDrawer(!openLeftDrawer);
   };

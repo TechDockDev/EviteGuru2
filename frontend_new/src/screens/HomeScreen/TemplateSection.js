@@ -13,6 +13,8 @@ import { useDispatch, useSelector } from "react-redux";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
 import { setTemplateList } from "../../redux/action/userActions";
 import { Constants } from "../../redux/constants/action-types";
+import LogInModal from "../LoginModal/LogInModal";
+import RegisterModal from "../RegisterModal/RegisterModal";
 
 const TemplateSection = () => {
   // const [templateData, setTemplateData] = useState();
@@ -22,6 +24,15 @@ const TemplateSection = () => {
   const [singleTemplateId, setSingleTemplateId] = useState("");
 
   const dispatch = useDispatch();
+
+  const [open, setopen] = useState(false);
+  const [registerOpen, setregisterOpen] = useState(false);
+  const toggleRegisterModal = () => {
+    setregisterOpen(!registerOpen);
+  };
+  const toggleLoginModal = () => {
+    setopen(!open);
+  };
 
   const templateList = useSelector((state) => state?.allTemplates);
   // const { template, error, loading } = templateList;
@@ -63,150 +74,160 @@ const TemplateSection = () => {
   };
 
   return (
-    <Stack mt={3} mb={3} padding={"10px"}>
-      <Typography
-        variant="h1"
-        sx={{
-          color: "#795DA8",
-          fontWeight: "700",
-          fontSize: { sm: "45px", xs: "32px" },
-          textAlign: "center",
-          // border:"1px solid green"
-        }}
-      >
-        Browse Template
-      </Typography>
-      <Grid
-        container
-        sx={{
-          width: "95%",
-          margin: " 30px auto",
-          display: "flex",
-          justifyContent: "space-around",
-          alignItems: "center",
-          bgcolor: "#f1eef6",
-          // backgroundImage: "url(./assets/leaves2.png)",
-          padding: "20px 10px",
-          // border: "1px solid #795DA8",
-          borderRadius: "20px",
-          backgroundColor: "transparent",
-        }}
-      >
-        {loadingTemplate ? (
-          <Grid
-            item
-            xs={12}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              padding: "20px",
-            }}
-          >
-            <CircularProgress
-              color="primary"
-              sx={{
-                bgcolor: "transparent !important",
-                "& svg": {
-                  bgcolor: "transparent !important",
-                },
-              }}
-            />{" "}
-          </Grid>
-        ) : (
-          ""
-        )}
-        {templateList?.map((singleTemplate, index) => {
-          // console.log("templates...", singleTemplate);
-          return (
+    <>
+      <Stack mt={3} mb={3} padding={"10px"}>
+        <Typography
+          variant="h1"
+          sx={{
+            color: "#795DA8",
+            fontWeight: "700",
+            fontSize: { sm: "45px", xs: "32px" },
+            textAlign: "center",
+            // border:"1px solid green"
+          }}
+        >
+          Browse Templates
+        </Typography>
+        <Grid
+          container
+          sx={{
+            width: "95%",
+            margin: " 30px auto",
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "center",
+            bgcolor: "#f1eef6",
+            // backgroundImage: "url(./assets/leaves2.png)",
+            padding: "20px 10px",
+            // border: "1px solid #795DA8",
+            borderRadius: "20px",
+            backgroundColor: "transparent",
+          }}
+        >
+          {loadingTemplate ? (
             <Grid
-              // component={"button"}
-              boxShadow=" 7px 7px 10px 5px grey"
               item
-              key={index}
-              xl={3.5}
-              lg={3.5}
-              md={3.5}
-              sm={5}
-              xs={10}
-              margin="10px"
-              // padding="5px"
+              xs={12}
               sx={{
-                position: "relative",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: "10px",
-                boxSizing: "border-box",
-                overflow: "hidden",
-                transition: "all 300ms ease",
-                "&:hover img": {
-                  transition: "all 300ms ease",
-                  scale: "1.2",
-                },
-                "&:hover .MuiBox-root": {
-                  transition: "all 300ms ease",
-                  opacity: "1",
-                },
-                "&:hover .MuiButton-root": {
-                  transition: "all 300ms ease",
-                  opacity: "1",
-                },
-              }}
-              onClick={(e) => {
-                toggleTemplatePreviewModal(e, singleTemplate._id);
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "20px",
               }}
             >
-              <Box
+              <CircularProgress
+                color="primary"
                 sx={{
-                  opacity: "0",
-                  display: "flex",
-                  position: "absolute",
-                  width: "100%",
-                  height: "100%",
-                  bgcolor: "rgba(0, 0, 0, 0.36)",
-                  zIndex: "1000",
-                  justifyContent: "center",
-                  alignItems: "center",
+                  bgcolor: "transparent !important",
+                  "& svg": {
+                    bgcolor: "transparent !important",
+                  },
+                }}
+              />{" "}
+            </Grid>
+          ) : (
+            ""
+          )}
+          {templateList?.map((singleTemplate, index) => {
+            // console.log("templates...", singleTemplate);
+            return (
+              <Grid
+                // component={"button"}
+                boxShadow=" 7px 7px 10px 5px grey"
+                item
+                key={index}
+                xl={3.5}
+                lg={3.5}
+                md={3.5}
+                sm={5}
+                xs={10}
+                margin="10px"
+                // padding="5px"
+                sx={{
+                  
+                  position: "relative",
+                  border: "none",
+                  cursor: "pointer",
+                  borderRadius: "10px",
+                  boxSizing: "border-box",
+                  overflow: "hidden",
+                  transition: "all 300ms ease",
+                  "&:hover img": {
+                    transition: "all 300ms ease",
+                    scale: "1.2",
+                  },
+                  "&:hover .MuiBox-root": {
+                    transition: "all 300ms ease",
+                    opacity: "1",
+                  },
+                  "&:hover .MuiButton-root": {
+                    transition: "all 300ms ease",
+                    opacity: "1",
+                  },
+                }}
+                onClick={(e) => {
+                  toggleTemplatePreviewModal(e, singleTemplate._id);
                 }}
               >
-                <Button
-                  variant="text"
+                <Box
                   sx={{
-                    color: "white",
-                    border: "1px solid white",
                     opacity: "0",
+                    display: "flex",
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    bgcolor: "rgba(0, 0, 0, 0.36)",
+                    zIndex: "1000",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  Customize
-                </Button>
-              </Box>
-              <Box
-                display="block"
-                component="img"
-                width="100%"
-                src={`/images/getImage?path=/${singleTemplate?.previewImage}`}
-                borderRadius="10px"
-              />
-            </Grid>
-          );
-        })}
-      </Grid>
-      <Button
-        variant="outlined"
-        sx={{ width: "220px", margin: "auto" }}
-        onClick={() => navigate("/browse_template")}
-      >
-        See more template
-      </Button>
-      {singleTemplateId && (
-        <TemplatePreview
-          carouselClick={carouselClick}
-          toggleTemplatePreviewModal={toggleTemplatePreviewModal}
-          singleTemplateId={singleTemplateId}
-          openTemplatePreviewModal={openTemplatePreviewModal}
-        />
-      )}
-    </Stack>
+                  <Button
+                    variant="text"
+                    sx={{
+                      color: "white",
+                      border: "1px solid white",
+                      opacity: "0",
+                    }}
+                  >
+                    Customize
+                  </Button>
+                </Box>
+                <Box
+                  display="block"
+                  component="img"
+                  width="100%"
+                  src={`/images/getImage?path=/${singleTemplate?.previewImage}`}
+                  borderRadius="10px"
+                />
+              </Grid>
+            );
+          })}
+        </Grid>
+        <Button
+          variant="outlined"
+          sx={{ width: "220px", margin: "auto" }}
+          onClick={() => navigate("/browse_template")}
+        >
+          See more templates
+        </Button>
+        {singleTemplateId && (
+          <TemplatePreview
+            carouselClick={carouselClick}
+            toggleTemplatePreviewModal={toggleTemplatePreviewModal}
+            singleTemplateId={singleTemplateId}
+            openTemplatePreviewModal={openTemplatePreviewModal}
+            toggleLoginModal={toggleLoginModal}
+          />
+        )}
+      </Stack>
+      {/* <LogInModal
+        openLoginModal={open}
+        toggleLogInModal={toggleLoginModal}
+        toggleRegisterModal={toggleRegisterModal}
+        setOpenLoginModal={setopen}
+      /> */}
+    </>
   );
 };
 

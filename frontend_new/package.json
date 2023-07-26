@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
-  "proxy": "http://192.168.29.149:8085",
+  "proxy": "http://eviteguru.com",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",

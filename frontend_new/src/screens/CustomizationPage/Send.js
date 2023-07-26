@@ -36,14 +36,73 @@ import { LoadingButton } from "@mui/lab";
 import ImportContacts from "./ImportContacts";
 import { Constants } from "../../redux/constants/action-types";
 import { GrDocumentText } from "react-icons/gr";
+import DeleteModal from "../../components/deleteModal";
 
 const Send = () => {
+  const { id } = useParams();
+  console.log("id=>", id);
   const [anchorEl, setAnchorEl] = useState(null);
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
   const [openAddUserModal, setOpenAddUserModal] = useState(false);
   const [openBulkModal, setOpenBulkModal] = useState(false);
   const [guestList, setguestList] = useState([]);
   const [listStatus, setListStatus] = useState(false);
+  const [insideButtonLoading, setInsideButtonLoading] = useState(false);
+  const [guestId, setGuestId] = useState(null);
+  // ======================
+  const [singleContactDetails, setSingleContactDetails] = useState(null);
+  const [openEditContact, setOpenEditContact] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
+  const toggleEditContactModal = () => setOpenEditContact(!openEditContact);
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+  const handleOpenEditContactModal = (contactDetails) => {
+    setSingleContactDetails(contactDetails);
+    toggleEditContactModal();
+  };
+  const handleRemove = (id) => {
+    console.log("removed=>", id);
+    setGuestId(id);
+    toggleDeleteModal();
+  };
+  // ======================
+
+  const deleteMany = async () => {
+    setInsideButtonLoading(true);
+    try {
+      const res = await axios.patch(
+        `${Constants.URL}/guest/remove-guests-from-event`,
+        { guestIds: [...rowSelectionModel], eventId: id }
+      );
+      if (res.status === 200) {
+        console.log("guestDeleted=>", res);
+        setInsideButtonLoading(false);
+        getGuestListDetails(createdEventDetails?.guestListId);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+      setInsideButtonLoading(false);
+    }
+  };
+  // =======================
+  const handleConfirmDelete = async () => {
+    // setloading(true);
+    try {
+      const res = await axios.patch(
+        `${Constants.URL}/guest/remove-guests-from-event`,
+        { guestIds: [guestId], eventId: id }
+      );
+      if (res.status === 200) {
+        console.log("guestDeleted=>", res);
+        // getContactList();
+        getGuestListDetails(createdEventDetails?.guestListId);
+        // setloading(true);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+      // setloading(true);
+    }
+  };
   const [loading, setLoading] = useState(true);
   const [importModal, setImportModal] = useState(false);
   const [left, setLeft] = useState({ events: 0, invitees: 0 });
@@ -64,7 +123,6 @@ const Send = () => {
     setOpenBulkModal(!openBulkModal);
   };
   // =======================================
-  const { id } = useParams();
 
   // =======================================
   const dispatch = useDispatch();
@@ -278,8 +336,8 @@ const Send = () => {
       width: 120,
     },
     {
-      field: "action",
-      headerName: "Action",
+      field: "invite",
+      headerName: "Invite",
       width: 150,
 
       renderCell: (params) => {
@@ -329,9 +387,44 @@ const Send = () => {
         );
       },
     },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <Stack direction={"row"}>
+            <Button
+              disabled={params.row.status === "Not Invited" ? false : true}
+              color="inherit"
+              variant="outlined"
+              size="small"
+              sx={{ mr: 1 }}
+              onClick={() => handleOpenEditContactModal(params?.row)}
+            >
+              {/* <DeleteForeverIcon /> */}
+              edit
+            </Button>
+            <Button
+              disabled={params.row.status === "Not Invited" ? false : true}
+              variant="outlined"
+              color="inherit"
+              size="small"
+              sx={{ ml: 1 }}
+              onClick={() => handleRemove(params?.row?._id)}
+            >
+              {/* <DeleteForeverIcon /> */}
+              delete
+            </Button>
+          </Stack>
+        );
+      },
+    },
   ];
   // ==get single event details =======
   const getSingleEventDetails = async () => {
+    console.log("console is coming=>", id);
     try {
       const res = await axios.get(`${Constants.URL}/event/${id}`);
       if (res.status === 200) {
@@ -416,7 +509,7 @@ const Send = () => {
   // =====end of useEffect =====
   return (
     <>
-      <Stack width={"100%"} p={1}>
+      <Stack width={"100%"} mt={4} p={1}>
         <Stack>
           <Typography variant="h5" fontWeight={"800"} textAlign={"center"}>
             Invitees
@@ -433,6 +526,33 @@ const Send = () => {
               onClick={() => createGuestList()}
             >
               Create List
+            </Button>
+          )}
+          &nbsp; &nbsp;
+          {insideButtonLoading ? (
+            <LoadingButton
+              loading
+              variant="outlined"
+              // color="primary"
+              size="small"
+              sx={{
+                "& .MuiLoadingButton-loadingIndicator": {
+                  color: "rgba(121, 93, 168, 1)",
+                  borderColor: "rgba(121, 93, 168, 1)",
+                },
+              }}
+            >
+              Delete Many
+            </LoadingButton>
+          ) : (
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ color: "white" }}
+              disabled={rowSelectionModel.length >= 1 ? false : true}
+              onClick={() => deleteMany()}
+            >
+              Delete Many
             </Button>
           )}
           &nbsp; &nbsp;
@@ -536,7 +656,8 @@ const Send = () => {
         <DataGrid
           rows={guestList}
           columns={columns}
-          components={{ Toolbar: CustomeToolBar }}
+          // components={{ Toolbar: CustomeToolBar }}
+          slots={{ toolbar: CustomeToolBar }}
           initialState={{
             pagination: {
               paginationModel: {
@@ -569,17 +690,7 @@ const Send = () => {
             },
           }}
         />
-        {/* <Stack spacing={2} alignItems={"center"}>
-          <Pagination
-            count={10}
-            siblingCount={1}
-            variant="outlined"
-            defaultPage={1}
-            // type={"first"}
-            shape="rounded"
-            boundaryCount={0}
-          />
-        </Stack> */}
+
         <Modal
           open={openAddUserModal}
           closeAfterTransition
@@ -589,6 +700,22 @@ const Send = () => {
             <AddGuests
               toggleAddUserModal={toggleAddUserModal}
               getGuestListDetails={getGuestListDetails}
+            />
+          </>
+        </Modal>
+        <Modal
+          open={openEditContact}
+          closeAfterTransition
+          sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}
+        >
+          <>
+            <AddGuests
+              toggleAddUserModal={toggleEditContactModal}
+              getGuestListDetails={getGuestListDetails}
+              modalType="edit"
+              // guestId={addressBookId}
+              eventId={id}
+              contactDetails={singleContactDetails}
             />
           </>
         </Modal>
@@ -618,6 +745,11 @@ const Send = () => {
             getGuestListDetails={getGuestListDetails}
           />
         </Modal>
+        <DeleteModal
+          open={openDeleteModal}
+          toggleModal={toggleDeleteModal}
+          handleConfirmDelete={handleConfirmDelete}
+        />
       </Stack>
     </>
   );

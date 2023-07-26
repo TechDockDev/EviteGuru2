@@ -113,7 +113,7 @@ const Enterprise = () => {
           fontWeight={"900"}
           textAlign={"center"}
         >
-          Evite Guru{" "}
+          EviteGuru{" "}
           <span style={{ color: "rgba(121, 93, 168, 1)" }}>Enterprise</span>{" "}
           Plan
         </Typography>
