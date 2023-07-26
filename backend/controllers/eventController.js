@@ -29,7 +29,8 @@ const getAllEvents = asyncHandler(async (req, res) => {
 
 const getEventById = asyncHandler(async (req, res) => {
   const event = await EventDetails.findById(req.params.id).populate(
-    "variation"
+    "variation",
+    ["variationJson", "previewImage"]
   );
   const guestList = await Guest.findOne({ event: event._id });
   res.json({

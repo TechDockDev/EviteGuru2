@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import Variation from "../models/variationModel.js";
 import Sticker from "../models/stickerModel.js";
 import expressAsyncHandler from "express-async-handler";
+import Event from "../models/eventModel.js";
 
 const getVariationById = asyncHandler(async (req, res) => {
   const variation = await Variation.findById(req.params._id);
@@ -13,7 +14,11 @@ const getVariationById = asyncHandler(async (req, res) => {
 });
 
 const editVariation = asyncHandler(async (req, res) => {
-  await Variation.findByIdAndUpdate(req.params.id, req.body);
+  const event = await Event.findById(req.params.eventId);
+  await Variation.findByIdAndUpdate(event.variation, {
+    ...req.body,
+    previewImage: req.file.path,
+  });
   res.json({
     status: "success",
     message: "Variation has been updated successfully",
@@ -77,7 +82,8 @@ const sendImage = asyncHandler((req, res) => {
 });
 
 const singleVariation = asyncHandler(async (req, res) => {
-  const variation = await Variation.findById(req.params.id).select(
+  const event = await Event.findById(req.params.eventId);
+  const variation = await Variation.findById(event.variation).select(
     "+variationJson"
   );
   res.json({

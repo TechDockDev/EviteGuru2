@@ -29,7 +29,12 @@ const guestSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "event",
     unique: true,
+    sparse: true,
+    required: function () {
+      return this.listType === "event";
+    },
   },
+  listType: { type: String, enum: ["event", "addressBook"] },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
