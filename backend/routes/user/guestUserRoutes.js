@@ -3,7 +3,13 @@ import {
   addGuest,
   addGuestInBulk,
   addGuestsFromAddressBook,
+  createAddressBook,
   createGuest,
+  deleteGuestsFromAddressBook,
+  deleteGuestsFromEvent,
+  editGuestInAddressBook,
+  editGuestInEvent,
+  getAddressBook,
   getGuestList,
   getGuestListByEvent,
   getGuestListByUser,
@@ -23,6 +29,8 @@ const guestRouter = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+guestRouter.post("/createAddressBook", userAuth, createAddressBook);
+guestRouter.get("/getAddressBook", userAuth, getAddressBook);
 guestRouter.post("/create", userAuth, createGuest);
 guestRouter.patch("/add-guest", userAuth, checkAvailabilityOfInvitee, addGuest);
 guestRouter.patch(
@@ -48,5 +56,17 @@ guestRouter.post(
 );
 guestRouter.patch("/response", guestResponse);
 guestRouter.patch("/response-deny", guestResponseDeny);
+guestRouter.patch(
+  "/edit-guest-from-addressBook",
+  userAuth,
+  editGuestInAddressBook
+);
+guestRouter.patch("/edit-guest-from-event", userAuth, editGuestInEvent);
+guestRouter.patch(
+  "/remove-guests-from-addressBook",
+  userAuth,
+  deleteGuestsFromAddressBook
+);
+guestRouter.patch("/remove-guests-from-event", userAuth, deleteGuestsFromEvent);
 
 export default guestRouter;

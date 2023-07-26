@@ -51,10 +51,11 @@ variationRouter.post("/saveImage", userAuth, upload.array("image"), saveImage);
 variationRouter.get("/sendImage/:imgName", sendImage);
 variationRouter.get("/stickers", userAuth, getStickers);
 variationRouter.get("/left-variation", userAuth, leftVariations);
+variationRouter.route("/:id").delete(userAuth, deleteVariation);
+
 variationRouter
-  .route("/:id")
+  .route("/get-variant-by-event/:eventId")
   .get(userAuth, singleVariation)
-  .patch(userAuth, editVariation)
-  .delete(userAuth, deleteVariation);
+  .patch(userAuth, preview.single("preview"),editVariation);
 
 export default variationRouter;
