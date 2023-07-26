@@ -1,3 +1,4 @@
+import { type } from "@testing-library/user-event/dist/type";
 import { ActionTypes } from "../constants/action-types";
 
 const initialState = { isAuthenticated: false, isUser: false };
@@ -38,6 +39,48 @@ export const snacbarReducer = (
       return { open: true, ...payload };
     case ActionTypes.CLOSE_SNACKBAR:
       return { ...state, open: false };
+    default:
+      return state;
+  }
+};
+
+export const setIsLoading = (state = { open: false }, { type, payload }) => {
+  switch (type) {
+    case ActionTypes.SET_ISLOADING:
+      return { open: payload };
+    default:
+      return state;
+  }
+};
+
+export const setIsNavigate = (
+  state = { status: true, path: null, open: false },
+  { type, payload }
+) => {
+  switch (type) {
+    case ActionTypes.SET_NAVIGATE:
+      return {
+        ...state,
+        status: payload.status,
+        path: payload.path,
+        open: payload.open,
+      };
+    case ActionTypes.OPEN_DIALOGUE:
+      return {
+        ...state,
+        open: payload,
+      };
+
+    default:
+      return state;
+  }
+};
+
+export const setUnsaved = (state = false, { type, payload }) => {
+  switch (type) {
+    case ActionTypes.UNSAVED_STATUS:
+      return payload;
+
     default:
       return state;
   }

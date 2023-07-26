@@ -1,4 +1,12 @@
-import { Grid, Button, Box, Typography } from "@mui/material";
+import {
+  Grid,
+  Button,
+  Box,
+  Typography,
+  IconButton,
+  ListItemButton,
+  TextField,
+} from "@mui/material";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
 
@@ -7,10 +15,11 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Buffer } from "buffer";
-
 import {
   getSingleTemplate,
+  isLoading,
   setEventTemplate,
+  setUnsavedStatus,
 } from "../../redux/action/userActions";
 
 import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
@@ -18,13 +27,35 @@ import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
 import StickersModal from "./StickersModal";
 
 import { Constants } from "../../redux/constants/action-types";
-import { json, svgData } from "../templateJson";
 import Dialogue from "./Dialogue";
 import TextTools from "./TextTools";
 import GroupTools from "./Tools";
 import AddTools from "./AddTools";
+import ShapeTools from "./ShapeTools";
 const Design = (props) => {
+  const ListItemButtonStyle3 = {
+    padding: "0px",
+    transition: "all 200ms ease",
+    marginY: "8px",
+    display: "flex",
+    justifyContent: "center",
+    "& .MuiListItemIcon-root": {
+      minWidth: "",
+    },
+    "& svg": {
+      fontSize: "25px",
+      marginRight: "5px",
+    },
+    "&:hover": {
+      bgcolor: "transparent",
+      borderColor: "#795DA8",
+      "& svg": { color: "#795DA8" },
+      "& span": { color: "#795DA8" },
+    },
+    "&:active": { scale: ".9" },
+  };
   const [dialogueOpen, setDialogueOpen] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
   const ref = useRef(null);
   const [screenSize, setScreenSize] = useState({
     width: ref?.current?.clientWidth,
@@ -38,7 +69,7 @@ const Design = (props) => {
   const [font, setfont] = useState("Montserrat");
   const { editor, onReady } = useFabricJSEditor();
   const [data, setData] = useState();
-  const [templateData, setTemplateData] = useState();
+  const [templateData, setTemplateData] = useState(null);
   const [addStickersModal, setAddStickersModal] = useState(false);
   const [allImages, setAllImages] = useState([]);
   const [isLandscape, setIsLandscape] = useState(false);
@@ -86,9 +117,49 @@ const Design = (props) => {
       top: height / 2,
     });
     editor.canvas.add(object);
+    editor.canvas.renderAll();
+    // isFormDirty(true);
+    dispatch(setUnsavedStatus(true));
   };
 
-  // ========= THis Fuc For Changing TExt Color
+  // ========This Func is for shape addition ====
+  const addShape = (shape) => {
+    if (shape === "Line") {
+      const line = new fabric.Line([80, 100, 200, 100], {
+        stroke: "black",
+        strokeWidth: 5,
+      });
+
+      // Add the line to the canvas
+      editor.canvas.add(line);
+      editor?.canvas.renderAll();
+      dispatch(setUnsavedStatus(true));
+    } else {
+      const object = new fabric[shape]({
+        // left: 100,
+        // top: 100,
+        left: width / 2,
+        top: height / 2,
+        width: shape === "Circle" ? 0 : 200,
+        height: shape === "Circle" ? 0 : 100,
+        radius: shape === "Circle" ? 50 : 0,
+        fill: "black",
+      });
+      editor.canvas.add(object);
+      editor?.canvas.renderAll();
+      dispatch(setUnsavedStatus(true));
+    }
+  };
+  // =============================================
+  // ========= This Func For changing text alignment
+  const textAlign = (value) => {
+    console.log(value);
+    const o = editor?.canvas?.getActiveObject();
+    o.set("textAlign", value);
+    editor?.canvas.renderAll();
+    dispatch(setUnsavedStatus(true));
+  };
+  // ========= THis Func For Changing TExt Color
 
   const changeColor = (e) => {
     setColor(e.target.value);
@@ -97,12 +168,14 @@ const Design = (props) => {
     o.set("fill", e.target.value);
     editor?.setStrokeColor(e.target.value);
     editor?.canvas.renderAll();
+    dispatch(setUnsavedStatus(true));
   };
 
   //   ===========groupselected object to single group ====
   const groupSelectedLayers = () => {
     editor.canvas.getActiveObject().toGroup();
     editor.canvas.renderAll();
+    dispatch(setUnsavedStatus(true));
   };
   // ====================================================
   // ===============================================
@@ -121,18 +194,21 @@ const Design = (props) => {
     // setGroupCanvas(newGroup);
     console.log("group", newGroup);
     editor.canvas.renderAll();
+    dispatch(setUnsavedStatus(true));
   }
   // =================send back=======================
   const moveBackward = () => {
     const myObject = editor.canvas.getActiveObject();
     editor.canvas.sendBackwards(myObject);
     editor.canvas.discardActiveObject();
+    dispatch(setUnsavedStatus(true));
   };
   //   ============send forward =============
   const moveForward = () => {
     const myObject = editor.canvas.getActiveObject();
     editor.canvas.bringForward(myObject);
     editor.canvas.discardActiveObject();
+    dispatch(setUnsavedStatus(true));
   };
   // =====================================
   // =================move to back back=======================
@@ -140,6 +216,7 @@ const Design = (props) => {
     const myObject = editor.canvas.getActiveObject();
     editor.canvas.sendToBack(myObject);
     editor.canvas.discardActiveObject();
+    dispatch(setUnsavedStatus(true));
   };
   //   ============bring to top =============
   const bringToTop = () => {
@@ -147,6 +224,7 @@ const Design = (props) => {
     editor.canvas.bringToFront(myObject);
     editor.canvas.renderAll();
     editor.canvas.discardActiveObject();
+    dispatch(setUnsavedStatus(true));
   };
   // =====================================
   //   ==================ungroup itetms ================
@@ -161,6 +239,7 @@ const Design = (props) => {
     }
 
     editor.canvas.renderAll();
+    dispatch(setUnsavedStatus(true));
   };
   // =====================================================
   // ===========add stickers ============
@@ -181,6 +260,7 @@ const Design = (props) => {
         top: height / 2,
       }
     );
+    dispatch(setUnsavedStatus(true));
   };
 
   //   ========================font family ===
@@ -190,6 +270,7 @@ const Design = (props) => {
     setfont(e.target.value);
     console.log("text=>", o);
     editor.canvas.renderAll();
+    dispatch(setUnsavedStatus(true));
   };
   // ========================================
   //  ===👇 text style BOLD👇
@@ -197,9 +278,11 @@ const Design = (props) => {
     if (editor?.canvas?.getActiveObject().fontWeight === "normal") {
       editor?.canvas?.getActiveObject().set("fontWeight", "bold");
       editor?.canvas?.renderAll();
+      dispatch(setUnsavedStatus(true));
     } else {
       editor?.canvas?.getActiveObject().set("fontWeight", "normal");
       editor?.canvas?.renderAll();
+      dispatch(setUnsavedStatus(true));
     }
   };
   // ===👆 text style BOLD👆
@@ -208,9 +291,11 @@ const Design = (props) => {
     if (editor?.canvas?.getActiveObject().fontStyle === "normal") {
       editor?.canvas?.getActiveObject().set("fontStyle", "italic");
       editor?.canvas?.renderAll();
+      dispatch(setUnsavedStatus(true));
     } else {
       editor?.canvas?.getActiveObject().set("fontStyle", "normal");
       editor?.canvas?.renderAll();
+      dispatch(setUnsavedStatus(true));
     }
   };
   // ===👆 text style ITALIC👆
@@ -219,9 +304,11 @@ const Design = (props) => {
     if (editor?.canvas?.getActiveObject().underline) {
       editor?.canvas?.getActiveObject().set("underline", false);
       editor?.canvas?.renderAll();
+      dispatch(setUnsavedStatus(true));
     } else {
       editor?.canvas?.getActiveObject().set("underline", true);
       editor?.canvas?.renderAll();
+      dispatch(setUnsavedStatus(true));
     }
   };
   // ===👆 text style UNDERLINE👆
@@ -231,9 +318,11 @@ const Design = (props) => {
       if (editor?.canvas?.getActiveObject().linethrough) {
         editor?.canvas?.getActiveObject().set("linethrough", false);
         editor?.canvas?.renderAll();
+        dispatch(setUnsavedStatus(true));
       } else {
         editor?.canvas?.getActiveObject().set("linethrough", true);
         editor?.canvas?.renderAll();
+        dispatch(setUnsavedStatus(true));
       }
     } else {
       alert("No object slected");
@@ -250,6 +339,7 @@ const Design = (props) => {
       });
       editor?.canvas?.add(cloned);
     });
+    dispatch(setUnsavedStatus(true));
   };
   // ===👆 Clone Selected object👆
   //====================To Convert JSON
@@ -344,28 +434,42 @@ const Design = (props) => {
       },
       { left: width / 2, top: height / 2 }
     );
+    dispatch(setUnsavedStatus(true));
   };
   // ======================
 
   //   ====load canvas from json =====
   const loadCanvasFromJson = () => {
     // let object = new fabric.Canvas("canvas");
-
+    dispatch(isLoading(true));
+    editor?.canvas?.clear();
+    // editor.canvas?.renderAll();
     console.log(templateData);
     if (userEventTemplate?.jsonData) {
       console.log("userEventTemplate=>", userEventTemplate?.jsonData);
 
       editor?.canvas.loadFromJSON(userEventTemplate?.jsonData);
       editor?.canvas?.renderAll();
+      dispatch(isLoading(false));
     } else if (!userEventTemplate?.jsonData && templateData) {
       console.log("!userEventTemplate=> and templateData");
       editor?.canvas.loadFromJSON(templateData);
       editor?.canvas?.renderAll();
+      dispatch(isLoading(false));
     }
   };
 
   // ==================================
-
+  const checkActiveObject = (shape) => {
+    if (
+      shape === "circle" ||
+      shape === "rect" ||
+      shape === "triangle" ||
+      shape === "line"
+    )
+      return true;
+    else return false;
+  };
   // =================== This is YOur Handler + Image Downloader
   const downloadImage = (e) => {
     e.preventDefault();
@@ -387,6 +491,7 @@ const Design = (props) => {
   const removeSelectedObject = () => {
     editor?.canvas?.remove(editor?.canvas?.getActiveObject());
     editor?.canvas?.renderAll();
+    dispatch(setUnsavedStatus(true));
   };
   // ==================
   const getTemplate = async () => {
@@ -443,12 +548,20 @@ const Design = (props) => {
 
   useEffect(() => {
     handleOrientationChange();
-    loadCanvasFromJson();
-    return () => {
+    if (templateData !== null) {
       loadCanvasFromJson();
-    };
+    }
+    // return () => {
+    //   loadCanvasFromJson();
+    // };
   }, [templateData]);
   // ================
+  const handleBeforeUnload = (event) => {
+    if (isFormDirty) {
+      event.preventDefault();
+      event.returnValue = ""; // Required for Chrome and Firefox
+    }
+  };
 
   useEffect(() => {
     handleOrientationChange();
@@ -466,6 +579,8 @@ const Design = (props) => {
 
   return (
     <>
+      {isFormDirty ? alert("are you sure you want to leave this page") : ""}
+
       <Box overflow={"auto"} p={1} id="d-parent">
         <Grid container sx={{ width: "100%" }}>
           <Grid
@@ -522,6 +637,43 @@ const Design = (props) => {
             }}
           >
             <Box width={"250px"}>
+              <ShapeTools addShape={addShape} />
+              {console.log("type=>", editor?.canvas?.getActiveObject()?.type)}
+              {checkActiveObject(editor?.canvas?.getActiveObject()?.type) ? (
+                <Box border={"1px solid #E6E2E2"} mb={1}>
+                  <ListItemButton
+                    sx={{ ...ListItemButtonStyle3 }}
+                    // onClick={changeColor}
+                  >
+                    <label htmlFor="colorSelector">
+                      <Box
+                        width={"35px"}
+                        height={"35px"}
+                        bgcolor={color}
+                        border={"2px solid black"}
+                        sx={{ borderRadius: "100%", mr: 1 }}
+                      />
+                      <input
+                        id="colorSelector"
+                        type="color"
+                        value={color}
+                        onChange={changeColor}
+                        style={{ display: "none" }}
+                      />
+                    </label>
+                    <TextField
+                      type="text"
+                      size="small"
+                      value={color}
+                      sx={{ width: "100px", padding: "0px" }}
+                      onChange={changeColor}
+                    />
+                  </ListItemButton>
+                </Box>
+              ) : (
+                ""
+              )}
+
               {editor?.canvas?.getActiveObject() ? (
                 ""
               ) : (
@@ -554,6 +706,7 @@ const Design = (props) => {
                   setfont={setfont}
                   font={font}
                   color={color}
+                  textAlign={textAlign}
                 />
               )}
               {editor?.canvas?.getActiveObject() && (

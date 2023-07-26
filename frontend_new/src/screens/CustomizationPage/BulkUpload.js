@@ -14,12 +14,12 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import * as XLSX from "xlsx";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { openSnackbar } from "../../redux/action/userActions";
+import { isLoading, openSnackbar } from "../../redux/action/userActions";
 import { Constants } from "../../redux/constants/action-types";
 
 // =========================
 const BulkUpload = (props) => {
-  const { createdEventDetails } = useSelector((state) => state);
+  const { createdEventDetails, loading } = useSelector((state) => state);
   const dispatch = useDispatch();
   const [sheetData, setSheetData] = useState("");
   const [bulkFile, setBulkFile] = useState(null);
@@ -100,6 +100,7 @@ const BulkUpload = (props) => {
   // ==end of handleDownload ===========
   //=== handleupload file bulk upload ====
   const handleUploadFile = async () => {
+    dispatch(isLoading(true));
     try {
       props.setLoading(true);
       if (bulkFile) {
@@ -115,14 +116,17 @@ const BulkUpload = (props) => {
           props?.toggleBulkModal();
           props?.getGuestListDetails(createdEventDetails?.guestListId);
           props?.setLoading(false);
+          dispatch(isLoading(false));
         }
       } else {
         props?.setLoading(false);
+        dispatch(isLoading(false));
         alert("Please Select File First");
         dispatch(openSnackbar("Please Select a File First", "warning"));
       }
     } catch (error) {
       console.log("error=>", error);
+      dispatch(isLoading(false));
       dispatch(
         openSnackbar(
           "something went wrong with your file download example and fill as instructed then upload,",
@@ -378,7 +382,10 @@ const BulkUpload = (props) => {
           <Stack alignItems={"center"} mt={2}>
             <Button
               variant="contained"
-              color="primary"
+              // color="primary"
+              disabled={loading ? true : false}
+              disableElevation
+              sx={{ color: "white" }}
               onClick={handleUploadFile}
             >
               Upload

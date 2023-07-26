@@ -125,7 +125,12 @@ const FooterSection = () => {
                 />
               </IconButton> */}
               {/* ========= */}
-              <IconButton sx={{ bgcolor: "transparent" }}>
+              <IconButton
+                sx={{ bgcolor: "transparent" }}
+                component="a"
+                href="https://www.instagram.com/eviteguru/"
+                target="_blank"
+              >
                 <Box
                   bgcolor="transparent"
                   component={"img"}
@@ -192,15 +197,17 @@ const FooterSection = () => {
                 )}
               </Stack>
               <Stack bgcolor="transparent">
-                {/* <Typography
+                <Typography
                   component={NavLink}
+                  to={"/privacyPolicy"}
+                  target="_blank"
                   sx={{ textDecoration: "none" }}
                   fontSize={"14px"}
                   color={"#3B285B"}
                   bgcolor="transparent"
                 >
                   Privacy Policy
-                </Typography> */}
+                </Typography>
                 {/* <Typography
                   component={NavLink}
                   sx={{ textDecoration: "none" }}
@@ -210,15 +217,17 @@ const FooterSection = () => {
                 >
                   Cookie Policy
                 </Typography> */}
-                {/* <Typography
+                <Typography
                   component={NavLink}
+                  to={"/termsAndConditions"}
+                  target="_blank"
                   sx={{ textDecoration: "none" }}
                   fontSize={"14px"}
                   color={"#3B285B"}
                   bgcolor="transparent"
                 >
                   Terms and condition
-                </Typography> */}
+                </Typography>
               </Stack>
             </Box>
           </Stack>

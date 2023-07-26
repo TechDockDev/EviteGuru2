@@ -1,8 +1,16 @@
-import { Box, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import React from "react";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import { TbTextRecognition } from "react-icons/tb";
 import ExtensionIcon from "@mui/icons-material/Extension";
+
 
 const AddTools = ({ addText, toggleStickersModal, onUploadImage }) => {
   // ===👇 Toolbar button 👇===
@@ -90,6 +98,10 @@ const AddTools = ({ addText, toggleStickersModal, onUploadImage }) => {
           Stickers
         </ListItemText>
       </ListItemButton>
+      {/* ======================= */}
+     
+     
+      {/* ======================= */}
     </Box>
   );
 };

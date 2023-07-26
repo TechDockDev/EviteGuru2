@@ -15,7 +15,7 @@ const ActiveCardInfo = () => {
   const navigate = useNavigate();
   // ===========================
   const { userDetail } = useSelector((state) => state);
-  console.log("userDetail", userDetail);
+  // console.log("userDetail", userDetail);
   return (
     <Card
       sx={{
@@ -24,6 +24,7 @@ const ActiveCardInfo = () => {
         borderRadius: "16px",
         py: 2,
         boxShadow: "0px 2px 24px -1px rgb(0 0 0 / 10%)",
+        minHeight:"305px"
       }}
       // elevation={18}
     >

@@ -1,8 +1,7 @@
 {
   "name": "admin_frontend",
   "version": "0.1.0",
-  "proxy": "http://3.20.225.149:8085",
-  "homepage": "/admin",
+  "proxy": "http://192.168.29.249:8085",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.0.1",

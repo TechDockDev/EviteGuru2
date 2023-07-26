@@ -13,8 +13,8 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import PasswordReset from "../LoginModal/PasswordReset";
 import axios from "axios";
 import { Constants } from "../../redux/constants/action-types";
-import { openSnackbar } from "../../redux/action/userActions";
-import { useDispatch } from "react-redux";
+import { isLoading, openSnackbar } from "../../redux/action/userActions";
+import { useDispatch, useSelector } from "react-redux";
 import {
   RecaptchaVerifier,
   getAuth,
@@ -24,6 +24,7 @@ import { Authentication } from "../../firebaseAuth/firebase";
 import { useNavigate } from "react-router";
 
 const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
+  const { loading } = useSelector((state) => state);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -39,14 +40,11 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
     toggleEmailVerifyModal();
   };
 
-  const resetRecaptcha = () => {
-    recaptchaRef.current.reset();
-    // setRecaptchaToken('');
-  };
   const onChangeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const verifyEmail = async (e) => {
+    dispatch(isLoading(true));
     e.preventDefault();
     try {
       const res = await axios.post(`${Constants.URL}/forget-password`, {
@@ -55,7 +53,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
       if (res.status === 200) {
         console.log("response=>", res);
         setUserPhone(`+${res?.data?.phone}`);
-
+        dispatch(isLoading(false));
         await sendOtpVerificationCode(`+${res?.data?.phone}`);
       }
     } catch (error) {
@@ -90,12 +88,16 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
   // ========send otp ==============
   const sendOtpVerificationCode = async (phone) => {
     // window.recaptchaVerifier.render();
+    dispatch(isLoading(true));
     console.log("console is coming=>", phone);
     const auth = getAuth();
-    await configureCaptcha();
+    if (!window.confirmationResult) {
+      await configureCaptcha();
+    }
     signInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
       .then((confirmationResult) => {
         // setOtp(true);
+        dispatch(isLoading(false));
         setModalContent("updatePassword");
         dispatch(
           openSnackbar("Otp has been sent to your mobile number", "success")
@@ -107,6 +109,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
       .catch((error) => {
         // Error; SMS not sent
         // ...
+        dispatch(isLoading(false));
         console.log("error=>", error);
         // window.recaptchaVerifier.reset()
 
@@ -115,6 +118,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
   };
   // =====verify otp =====
   const verifyOtp = async (code) => {
+    dispatch(isLoading(true));
     console.log(typeof code);
     await window.confirmationResult
       .confirm(code)
@@ -125,6 +129,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
         setFormData({ ...formData, idToken: idToken });
         // window.recaptchaVerifier.reset()
         setVerified(true);
+        dispatch(isLoading(false));
         dispatch(
           openSnackbar(
             "Otp Verified Successfully! Now Proceed to Register Your account",
@@ -135,6 +140,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
       .catch((error) => {
         // navigate("/");
         console.log(error);
+        dispatch(isLoading(false));
         dispatch(openSnackbar("invalid otp , please try again", "error"));
         // setVerified(false);
         // setModalContent("getOtp");
@@ -147,6 +153,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
   // ===============================
 
   const updatePassword = async (password) => {
+    dispatch(isLoading(true));
     try {
       const res = await axios.post(`${Constants.URL}/change-forget-password`, {
         password: password,
@@ -154,12 +161,14 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
       });
       if (res.status === 200) {
         console.log("res=>", res);
+        dispatch(isLoading(false));
         dispatch(openSnackbar(res?.data?.message, "success"));
         toggleEmailVerifyModal();
       }
     } catch (error) {
       console.log("error=>", error);
       dispatch(openSnackbar("error", "error"));
+      dispatch(isLoading(false));
     }
   };
   // ================================
@@ -188,7 +197,7 @@ const VerifyEmailAddresss = ({ toggleEmailVerifyModal, recaptchaRef }) => {
           sx={{
             width: "150px",
             position: "absolute",
-            top: "10px",
+            top: "20px",
             left: "30px",
           }}
         >

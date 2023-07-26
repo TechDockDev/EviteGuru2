@@ -28,10 +28,19 @@ export const ActionTypes = {
 
   OPEN_SNACKBAR: "OPEN_SNACKBAR",
   CLOSE_SNACKBAR: "CLOSE_SNACKBAR",
+
+  SET_ISLOADING: "SET_OPEN_ISLOADING",
+  SET_NAVIGATE: "SET_NAVIGATE",
+  OPEN_DIALOGUE: "OPEN_DIALOGUE",
+
+
+  UNSAVED_STATUS:"UNSAVED_STATUS",
 };
 
 export const Constants = {
-  IMG_URL: "http://3.20.225.149:8085/api/v1/user",
+  // IMG_URL: "http://192.168.29.249:8085/api/v1/user",
+  // IMG_URL: "http://3.20.225.149:8085/api/v1/user",
+  IMG_URL: "eviteguru.com/api/v1/user",
   URL: "/api/v1/user",
   IMG_PATH: "/images/getImage?path=",
 };

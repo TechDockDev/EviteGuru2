@@ -44,7 +44,7 @@ const GroupTools = ({
     "&:active": { scale: ".9" },
   };
   return (
-    <Box width={"100%"} border={"1px solid"}>
+    <Box width={"100%"} border={"1px solid #E6E2E2"} >
       {/*  👇==== Group Selected ====  👇    */}
       <Stack
         //   direction={"row"}

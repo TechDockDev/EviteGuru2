@@ -170,7 +170,7 @@ const LogInModal = ({
                 sx={{
                   width: "150px",
                   position: "absolute",
-                  top: "10px",
+                  top: "20px",
                   left: "30px",
                 }}
               >
@@ -348,6 +348,7 @@ const LogInModal = ({
               <Button
                 variant="contained"
                 fullWidth
+                onClick={googleHandler}
                 sx={{
                   bgcolor: "white",
                   // width: "40%",
@@ -357,17 +358,11 @@ const LogInModal = ({
                   },
                 }}
               >
-                <Stack
-                // onChange={submit}
-                // onClick={submit}
-                >
-                  <Box
-                    component="img"
-                    bgcolor={"transparent"}
-                    onClick={googleHandler}
-                    src="./assets/google_color_icon.svg"
-                  />
-                </Stack>
+                <Box
+                  component="img"
+                  bgcolor={"transparent"}
+                  src="./assets/google_color_icon.svg"
+                />
               </Button>
             </Stack>
             <Typography
@@ -403,10 +398,10 @@ const LogInModal = ({
                 Register Now
               </Button>
             </Typography>
-            <div id="captcha-button" ref={recaptchaRef}></div>
           </Stack>
         </Paper>
       </Modal>
+      <div id="captcha-button" ref={recaptchaRef}></div>
       <PasswordChange
         open={openPasswordChangeModal}
         onClose={togglePasswordChangeModal}

@@ -9,6 +9,7 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
+  Modal,
   OutlinedInput,
   Select,
   Stack,
@@ -29,7 +30,9 @@ import ClearIcon from "@mui/icons-material/Clear";
 import TemplatePreview from "../TemplatePreview/TemplatePreview";
 import { Constants } from "../../redux/constants/action-types";
 import { openSnackbar } from "../../redux/action/userActions";
-import { TbTypography } from "react-icons/tb";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
+import DeleteModal from "../../components/deleteModal";
 const MyEvents = () => {
   const dispatch = useDispatch();
 
@@ -39,6 +42,8 @@ const MyEvents = () => {
   const [singleTemplateId, setSingleTemplateId] = useState("");
   // ============================================
   const navigate = useNavigate();
+  const [eventId, seteventId] = useState(null);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [allEvents, setAllEvents] = useState([]);
   const [left, setLeft] = useState({ events: 0, invitees: 0 });
   const [filteredEvents, setFilteredEvents] = useState([]);
@@ -48,6 +53,8 @@ const MyEvents = () => {
   const [counts, setCounts] = useState(1);
   const [search, setSearch] = useState("");
   const [activeSearch, setactiveSearch] = useState(false);
+
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
 
   const handleChangePage = (event, newPage) => {
     console.log("pages=>", newPage);
@@ -101,6 +108,23 @@ const MyEvents = () => {
   };
 
   // =============================
+  const handleDelete = (id) => {
+    // alert(`it is being deleted = > ${id}`);
+    seteventId(id);
+    toggleDeleteModal();
+  };
+  const handleConfirmDelete = async () => {
+    try {
+      const res = await axios.delete(`${Constants.URL}/event/${eventId}`);
+      if (res.status === 200) {
+        console.log("deleteResponse=>", res);
+        dispatch(openSnackbar(res.data.message, "success"));
+        await getAllEvents();
+      }
+    } catch (error) {
+      console.log("error=>", error);
+    }
+  };
   // === to all events ========
   const getAllEvents = async (page, limit) => {
     setLoading(true);
@@ -110,7 +134,6 @@ const MyEvents = () => {
       );
       if (res.status === 200) {
         // console.log("response=>", res);
-
         setAllEvents(res?.data?.events);
         setFilteredEvents(res?.data?.events);
         setCounts(res?.data?.totalEvents);
@@ -157,7 +180,7 @@ const MyEvents = () => {
   }, []);
 
   return (
-    <Box width={"100%"} component={Container}>
+    <Box width={"100%"} mt={4} component={Container}>
       <Stack mb={1}>
         <Typography variant="h5" fontWeight={"800"} textAlign={"center"}>
           All Events
@@ -409,7 +432,7 @@ const MyEvents = () => {
                   >
                     {event?.name}
                   </Typography>
-                  <Box borderRadius={"8px"} position={"relative"}>
+                  <Box borderRadius={"8px"} border={"0.1px solid"} position={"relative"}>
                     <Box
                       sx={{
                         opacity: "0",
@@ -461,14 +484,26 @@ const MyEvents = () => {
                       }}
                     />
                   </Box>
-
-                  {/* <Button
-                    disableElevation
-                    variant="contained"
-                    sx={{ color: "white", mt: 1 }}
-                  >
-                    Customize
-                  </Button> */}
+                  <Stack direction={"row"} mt={1} spacing={1}>
+                    <Button
+                      disableElevation
+                      variant="contained"
+                      sx={{ color: "white" }}
+                      onClick={() =>
+                        navigate(`/dashboard/edit/event/${event._id}`)
+                      }
+                    >
+                      <DriveFileRenameOutlineIcon />
+                    </Button>
+                    <Button
+                      disableElevation
+                      variant="contained"
+                      sx={{ color: "white" }}
+                      onClick={() => handleDelete(event._id)}
+                    >
+                      <DeleteForeverIcon />
+                    </Button>
+                  </Stack>
                 </Grid>
               );
             })
@@ -502,6 +537,16 @@ const MyEvents = () => {
         // data={templateData}
         openTemplatePreviewModal={openTemplatePreviewModal}
       />
+      {/* {openDeleteModal ? ( */}
+      <DeleteModal
+        open={openDeleteModal}
+        toggleModal={toggleDeleteModal}
+        // delId={eventId}
+        handleConfirmDelete={handleConfirmDelete}
+      />
+      {/* ) : (
+        ""
+      )} */}
     </Box>
   );
 };

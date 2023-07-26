@@ -15,6 +15,10 @@ import FormatBoldIcon from "@mui/icons-material/FormatBold";
 import FormatItalicIcon from "@mui/icons-material/FormatItalic";
 import FormatUnderlinedIcon from "@mui/icons-material/FormatUnderlined";
 import StrikethroughSIcon from "@mui/icons-material/StrikethroughS";
+import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
+import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
+import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
+import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 const TextTools = ({
   changeFont,
   changeColor,
@@ -24,6 +28,7 @@ const TextTools = ({
   strike,
   font,
   color,
+  textAlign,
 }) => {
   console.log("color=>", color);
 
@@ -68,7 +73,7 @@ const TextTools = ({
           //   direction={"row"}
           alignItems={"start"}
           justifyContent={"center"}
-          border={"1px solid black"}
+          border={"1px solid #E6E2E2"}
           paddingX={"5px"}
           boxSizing={"border-box"}
           width={"100%"}
@@ -134,6 +139,24 @@ const TextTools = ({
             aria-label="outlined button group"
             sx={{ marginBottom: "10px" }}
           >
+            <Button onClick={() => textAlign("left")}>
+              <FormatAlignLeftIcon />
+            </Button>
+            <Button onClick={() => textAlign("center")}>
+              <FormatAlignCenterIcon />
+            </Button>
+            <Button onClick={() => textAlign("right")}>
+              <FormatAlignRightIcon />
+            </Button>
+            <Button onClick={() => textAlign("justify")}>
+              <FormatAlignJustifyIcon />
+            </Button>
+          </ButtonGroup>
+          <ButtonGroup
+            variant="outlined"
+            aria-label="outlined button group"
+            sx={{ marginBottom: "10px" }}
+          >
             {/*  👇 Font Style BOLD  👇    */}
             <Button size={"small"} onClick={bold}>
               <FormatBoldIcon />
@@ -151,10 +174,11 @@ const TextTools = ({
             </Button>
             {/* 👆 Font Style UNDERLINE 👆   */}
             {/*  👇 Font Style STRIKETHROUGH  👇    */}
-            <Button size={"small"} onClick={strike}>
+            {/* <Button size={"small"} onClick={strike}>
               {" "}
               <StrikethroughSIcon />
-            </Button>
+            </Button> */}
+
             {/* 👆 Font Style STRIKETHROUGH 👆   */}
           </ButtonGroup>
         </Stack>

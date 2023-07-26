@@ -85,11 +85,9 @@ function Pricing() {
           fontSize={{ md: "38px" }}
           fontWeight={"900"}
         >
-          Evite Guru Pricing
+          EviteGuru Pricing
         </Typography>
-        <Typography variant="h6" fontSize={{ xs: "12px", md: "18px" }}>
-          Get a plan ,Start now. No hidden fees.
-        </Typography>
+        
       </Stack>
       <Stack mt={4}>
         <Grid container justifyContent={"center"} alignItems={"center"} sx={{}}>
@@ -118,7 +116,16 @@ function Pricing() {
             allPlans &&
             allPlans.map((plan, index) => {
               return (
-                <Grid item lg={3.5} md={4} sm={5.5} xs={12} p={2} key={index}>
+                <Grid
+                  item
+                  lg={3.5}
+                  md={4}
+                  sm={5.5}
+                  xs={12}
+                  p={2}
+                  key={index}
+                  alignItems={"start"}
+                >
                   <PricingCard
                     plan={plan}
                     handleModalOpen={handleModalOpen}
@@ -154,6 +161,7 @@ function Pricing() {
             />{" "}
           </Grid>
         ) : (
+          
           <Faqs content={allFaqs} />
         )}
       </Stack>

@@ -1,7 +1,9 @@
 import {
   Box,
+  Button,
   CircularProgress,
   Grid,
+  Modal,
   Pagination,
   Stack,
   Typography,
@@ -20,15 +22,75 @@ import axios from "axios";
 import { useState } from "react";
 import { Constants } from "../../redux/constants/action-types";
 import { openSnackbar } from "../../redux/action/userActions";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import CreateContact from "./CreateContact";
+import DeleteModal from "../../components/deleteModal";
+import { LoadingButton } from "@mui/lab";
 
 const AddressBook = () => {
   const { pageTitle } = useSelector((state) => state);
+  const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
+  const [insideButtonLoading, setInsideButtonLoading] = useState(false);
   const [allContacts, setAllContacts] = useState([]);
+  const [addressBookId, setAddressBookId] = useState(null);
+  const [singleContactDetails, setSingleContactDetails] = useState(null);
+  const [openEditContact, setOpenEditContact] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [guestId, setGuestId] = useState(null);
   const [loading, setloading] = useState(true);
+  const [openAddUserModal, setOpenAddUserModal] = useState(false);
   const dispatch = useDispatch();
+  const toggleAddUserModal = () => {
+    setOpenAddUserModal(!openAddUserModal);
+  };
+  const toggleDeleteModal = () => setOpenDeleteModal(!openDeleteModal);
+  const handleOpenEditContactModal = (contactDetails) => {
+    setSingleContactDetails(contactDetails);
+    toggleEditContactModal();
+  };
+
+  const toggleEditContactModal = () => setOpenEditContact(!openEditContact);
   function CustomeToolBar() {
     return (
       <Grid container>
+        <Grid xs={12} item  >
+          <Stack direction={"row"} spacing={1} alignItems={"end"} justifyContent={"end"}>
+            {insideButtonLoading ? (
+              <LoadingButton
+                loading
+                variant="outlined"
+                // color="primary"
+                size="small"
+                sx={{
+                  "& .MuiLoadingButton-loadingIndicator": {
+                    color: "rgba(121, 93, 168, 1)",
+                    borderColor: "rgba(121, 93, 168, 1)",
+                  },
+                }}
+              >
+                Delete Many
+              </LoadingButton>
+            ) : (
+              <Button
+                variant="contained"
+                size="small"
+                sx={{ color: "white" }}
+                disabled={rowSelectionModel.length >= 1 ? false : true}
+                onClick={() => deleteMany()}
+              >
+                Delete Many
+              </Button>
+            )}
+            <Button
+              size="small"
+              sx={{ color: "white" }}
+              variant="contained"
+              onClick={toggleAddUserModal}
+            >
+              Add
+            </Button>
+          </Stack>
+        </Grid>
         <Grid
           item
           md={5}
@@ -48,6 +110,7 @@ const AddressBook = () => {
             }}
           />
         </Grid>
+        
         <Grid
           item
           md={7}
@@ -55,20 +118,27 @@ const AddressBook = () => {
           xs={12}
           sx={{ alignItems: "center", display: "flex" }}
         >
-          <Stack width={"100%"}>
-            <GridToolbarQuickFilter
-              fullWidth
-              variant="outlined"
-              size="small"
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  color: "rgba(158, 158, 158, 1)",
-                  borderRadius: "10px",
-                  borderColor: "rgba(158, 158, 158, 1)",
-                },
-              }}
-            />
-          </Stack>
+          {/* <Stack
+            width={"100%"}
+            direction={"row"}
+            justifyContent={"space-between"}
+            alignContent={"center"}
+            alignItems={"center"}
+          > */}
+          <GridToolbarQuickFilter
+            fullWidth
+            variant="outlined"
+            size="small"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                color: "rgba(158, 158, 158, 1)",
+                borderRadius: "10px",
+                borderColor: "rgba(158, 158, 158, 1)",
+              },
+            }}
+          />
+
+          {/* </Stack> */}
         </Grid>
       </Grid>
     );
@@ -95,10 +165,85 @@ const AddressBook = () => {
     {
       field: "email",
       headerName: "email",
-      width: 200,
+      width: 250,
+    },
+    {
+      field: "Action",
+      headerName: "Action",
+      width: 150,
+      align: "center",
+      renderCell: (params) => {
+        return (
+          <Stack direction={"row"}>
+            <Button
+              color="inherit"
+              variant="outlined"
+              disabled={rowSelectionModel.length > 0 ? true : false}
+              size="small"
+              sx={{ mr: 1 }}
+              onClick={() => handleOpenEditContactModal(params?.row)}
+            >
+              {/* <DeleteForeverIcon /> */}
+              edit
+            </Button>
+            <Button
+              variant="outlined"
+              disabled={rowSelectionModel.length > 0 ? true : false}
+              color="inherit"
+              size="small"
+              sx={{ ml: 1 }}
+              onClick={() => handleRemove(params?.row?._id)}
+            >
+              {/* <DeleteForeverIcon /> */}
+              delete
+            </Button>
+          </Stack>
+        );
+      },
     },
   ];
 
+  // =====handleRemove contacts ==========
+  const handleRemove = (id) => {
+    console.log("removed=>", id);
+    setGuestId(id);
+    toggleDeleteModal();
+  };
+  const handleConfirmDelete = async () => {
+    setloading(true);
+    try {
+      const res = await axios.patch(
+        `${Constants.URL}/guest/remove-guests-from-addressBook`,
+        { guestIds: [guestId] }
+      );
+      if (res.status === 200) {
+        console.log("guestDeleted=>", res);
+        getContactList();
+        setloading(true);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+      setloading(true);
+    }
+  };
+
+  const deleteMany = async () => {
+    setInsideButtonLoading(true);
+    try {
+      const res = await axios.patch(
+        `${Constants.URL}/guest/remove-guests-from-addressBook`,
+        { guestIds: [...rowSelectionModel] }
+      );
+      if (res.status === 200) {
+        console.log("guestDeleted=>", res);
+        setInsideButtonLoading(false);
+        getContactList();
+      }
+    } catch (error) {
+      console.log("error=>", error);
+      setInsideButtonLoading(false);
+    }
+  };
   // ===extract all contact list to a single list ===
   const extractAllcontacts = (guestLists) => {
     guestLists.forEach((list) => {
@@ -123,9 +268,44 @@ const AddressBook = () => {
     }
   };
   // ====end of contact list===
+  const getAddressBook = async () => {
+    setloading(true);
+    try {
+      const res = await axios.get(`${Constants.URL}/guest/getAddressBook`);
+      if (res.status === 200) {
+        console.log("getAddressBook=>", res.data.guestList._id);
+        setAddressBookId(res?.data?.guestList?._id);
+        // setAllContacts(res?.data?.guestList?.guests);
+        getContactList();
+        setloading(false);
+      }
+    } catch (error) {
+      if (error.response.status === 404) {
+        createAddressBook();
+      } else {
+        setloading(false);
+        console.log("error=>", error);
+      }
+    }
+  };
+  // console.log("addressBookId=>", addressBookId);
+  const createAddressBook = async () => {
+    setloading(true);
+    try {
+      const res = await axios.post(`${Constants.URL}/guest/createaddressbook`);
+      if (res.status === 200) {
+        console.log("createBook=>", res);
+        setloading(false);
+      }
+    } catch (error) {
+      console.log("error=>", error);
+      setloading(false);
+    }
+  };
   // useEffect
   useEffect(() => {
-    getContactList();
+    // getContactList();
+    getAddressBook();
     dispatch(setPageTitle("Address Book"));
     return () => {
       dispatch(setPageTitle(""));
@@ -154,6 +334,7 @@ const AddressBook = () => {
         <Box
           sx={{
             m: 1,
+            mt: 4,
           }}
         >
           <Typography
@@ -181,7 +362,8 @@ const AddressBook = () => {
           <>
             <Stack mt={2}>
               <DataGrid
-                components={{ Toolbar: CustomeToolBar }}
+                // components={{ Toolbar: CustomeToolBar }}
+                slots={{ toolbar: CustomeToolBar }}
                 //   slots={{ toolbar: QuickSearchToolbar }}
                 rows={allContacts}
                 columns={columns}
@@ -192,10 +374,15 @@ const AddressBook = () => {
                     },
                   },
                 }}
+                rowSelection={insideButtonLoading ? false : true}
                 getRowId={(row) => row._id}
                 autoHeight={true}
                 pageSizeOptions={[5]}
-                // checkboxSelection
+                checkboxSelection
+                onRowSelectionModelChange={(newRowSelectionModel) => {
+                  setRowSelectionModel(newRowSelectionModel);
+                }}
+                // rowSelectionModel={rowSelectionModel}
                 disableRowSelectionOnClick
                 getRowClassName={(params) =>
                   params?.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
@@ -216,7 +403,44 @@ const AddressBook = () => {
             </Stack>
           </>
         )}
-
+        <Modal
+          open={openAddUserModal}
+          closeAfterTransition
+          sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}
+        >
+          <>
+            <CreateContact
+              toggleAddUserModal={toggleAddUserModal}
+              // getGuestListDetails={getGuestListDetails}
+              guestId={addressBookId}
+              getAddressBook={getAddressBook}
+              getContactList={getContactList}
+            />
+          </>
+        </Modal>
+        {/* modal to edit contact  */}
+        <Modal
+          open={openEditContact}
+          closeAfterTransition
+          sx={{ bgcolor: "transparent", backdropFilter: "blur(2px)" }}
+        >
+          <>
+            <CreateContact
+              toggleAddUserModal={toggleEditContactModal}
+              modalType={"edit"}
+              contactDetails={singleContactDetails}
+              guestId={addressBookId}
+              getAddressBook={getAddressBook}
+              getContactList={getContactList}
+              // getGuestListDetails={getGuestListDetails}
+            />
+          </>
+        </Modal>
+        <DeleteModal
+          open={openDeleteModal}
+          toggleModal={toggleDeleteModal}
+          handleConfirmDelete={handleConfirmDelete}
+        />
         {/* ============  👆 Guests list table👆============= */}
       </Box>
     </>

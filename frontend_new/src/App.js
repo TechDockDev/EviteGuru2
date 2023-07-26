@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   closeSnackbar,
+  isLoading,
   openSnackbar,
   userAuth,
 } from "./redux/action/userActions";
@@ -35,25 +36,34 @@ import { Alert, Snackbar } from "@mui/material";
 import AddressBook from "./screens/CustomizationPage/AddressBook";
 
 import DiscountCheckOut from "./screens/pricing/DiscountCheckOut";
-// import Test from "./screens/CustomizationPage/Test.js";
-import NewTest from "./screens/CustomizationPage/NewTest";
+
+import PreviewInviteesResponseScreen from "./screens/InviteesResponseScreen/previewInvitationResponseScreen";
+import EditCustomizationPage from "./screens/EditCustomizationPage/EditCustomizationPage";
+import Loader from "./reusableComponents/isLoading/Loader";
+import PreventNavigation from "./reusableComponents/preventNavigation";
+import TermsAndCondition from "./components/terms-condition-privacy-policy/TermsAndCondition";
+import PrivacyPolicy from "./components/terms-condition-privacy-policy/PrivacyPolicy";
 
 const App = () => {
-  const { snackbar, userDetail } = useSelector((state) => state);
+  const { snackbar, userDetail, loading } = useSelector((state) => state);
   const navigate = useNavigate();
-  // console.log("snackbar=>", snackbar);
+  console.log("loading=>", loading.open);
   const dispatch = useDispatch();
   // =====get login status ========
   const getUserLoginStatus = async () => {
+    dispatch(isLoading(true));
     try {
+      console.log("loadingStatus=>", loading.open);
       const res = await axios.get(`${Constants.URL}/auth`);
       if (res.status === 200) {
         // console.log("ressponse=>", res);
         // dispatch(openSnackbar(res?.data?.message, "success"));
         dispatch(userAuth(res?.data?.user));
+        dispatch(isLoading(false));
       }
     } catch (error) {
-      // console.log("error=>", error);
+      console.log("error=>", error);
+      dispatch(isLoading(false));
       // dispatch(openSnackbar("You are not logged in please login", "error"));
     }
   };
@@ -67,8 +77,13 @@ const App = () => {
   const handleClose = () => {
     dispatch(closeSnackbar());
   };
+  const setIsLoading = () => {
+    dispatch(isLoading(!loading.open));
+  };
   return (
     <>
+      <PreventNavigation />
+      <Loader />
       <Snackbar
         open={snackbar?.open}
         autoHideDuration={3000}
@@ -89,17 +104,17 @@ const App = () => {
           path="/guest-event-view-screen/:eventId/:guestId"
           element={<InviteesResponseScreen />}
         />
-        <Route path="/new-test" element={<NewTest />} />
+        <Route path="/termsAndConditions" element={<TermsAndCondition />} />
+        <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
         <Route path="/" element={<Header />}>
           <Route index element={<HomeScreen />} />
           <Route path="/browse_template" element={<BrowseTemplate />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/enterprise" element={<Enterprise />} />
           <Route path="/paymentGateway" element={<PaymentGateway />} />
-          {/* <Route path="/test" element={<Test />} /> */}
           <Route path="/discount" element={<DiscountCheckOut />} />
         </Route>
-        <Route path="*" element={<h4>Error 404 Page Not Found</h4>} />
+        {/* <Route path="*" element={<h4>Error 404 Page Not Found</h4>} /> */}
         <Route
           path="/payment/success/status"
           element={<PaymentSuccessScreen />}
@@ -112,6 +127,10 @@ const App = () => {
             <Route path="/dashboard/my-events" element={<MyEvents />} />
             <Route path="/dashboard/view-event" element={<EventStats />} />
             <Route path="/dashboard/edit/:id" element={<CustomizationPage />} />
+            <Route
+              path="/dashboard/edit/event/:id"
+              element={<EditCustomizationPage />}
+            />
             <Route path="/dashboard/preview/:id" element={<Preview />} />
             <Route path="/dashboard/:id/send" element={<Send />} />
 
@@ -124,6 +143,10 @@ const App = () => {
             <Route
               path="/dashboard/subscriptions"
               element={<Subscriptions />}
+            />
+            <Route
+              path="/dashboard/guest-event-preview/:eventId/:guestId"
+              element={<PreviewInviteesResponseScreen />}
             />
           </Route>
         </Routes>

@@ -18,7 +18,7 @@ import axios from "axios";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import Moment from "react-moment";
 import { Constants } from "../../redux/constants/action-types";
-import { openSnackbar } from "../../redux/action/userActions";
+import { isLoading, openSnackbar } from "../../redux/action/userActions";
 //=============================
 const EventStats = () => {
   const { state } = useLocation();
@@ -172,12 +172,15 @@ const EventStats = () => {
   // ===end of guest list =======
   // ===getEventStats ===========
   const getEventStats = async (eventId) => {
+    dispatch(isLoading(true));
     try {
       const res = await axios.get(`${Constants.URL}/event/stats/${eventId}`);
       console.log("response=>", res);
       setStats(res?.data?.stats);
+      dispatch(isLoading(false));
     } catch (error) {
       console.log("error=>", error);
+      dispatch(isLoading(false));
       dispatch(
         openSnackbar("something went wrong with stats of events", "error")
       );
@@ -202,6 +205,7 @@ const EventStats = () => {
       sx={{
         // border: "2px solid red",
         height: "100%",
+        mt: 4,
         // width: {
         //   xl: "calc(100vw - 250px)",
         //   lg: "calc(100vw - 270px)",

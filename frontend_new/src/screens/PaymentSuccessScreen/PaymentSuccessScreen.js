@@ -64,7 +64,7 @@ const PaymentSuccessScreen = () => {
             Payment Successful
           </Typography>
           <Typography variant="caption" textAlign={"center"}>
-            Thank you for choosing evite Guru. Your plan will be active shortly!
+            Thank you for choosing EviteGuru. Your plan will be active shortly!
           </Typography>
           <Card
             sx={{

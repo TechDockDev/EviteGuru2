@@ -15,6 +15,7 @@ import {
   Box,
   Modal,
   TextField,
+  ButtonGroup,
 } from "@mui/material";
 import { FabricJSCanvas, useFabricJSEditor } from "fabricjs-react";
 import { fabric } from "fabric";
@@ -43,7 +44,11 @@ import WallpaperIcon from "@mui/icons-material/Wallpaper";
 import { DataContext } from "../AppContext";
 import { url } from "../url";
 import Dialogue from "./Dialogue";
-
+import ShapeTools from "../component/ShapeTools";
+import FormatAlignJustifyIcon from "@mui/icons-material/FormatAlignJustify";
+import FormatAlignLeftIcon from "@mui/icons-material/FormatAlignLeft";
+import FormatAlignRightIcon from "@mui/icons-material/FormatAlignRight";
+import FormatAlignCenterIcon from "@mui/icons-material/FormatAlignCenter";
 const AdminTemplateCreateScreen = () => {
   const [descModal, setDescModal] = useState(false);
   const [templateName, setTemplateName] = useState("");
@@ -80,11 +85,20 @@ const AdminTemplateCreateScreen = () => {
   let canvasEl = document.querySelector(".canvas-container");
   let height = canvasEl?.clientHeight;
   let width = canvasEl?.clientWidth;
-
+  const checkActiveObject = (shape) => {
+    if (
+      shape === "circle" ||
+      shape === "rect" ||
+      shape === "triangle" ||
+      shape === "line"
+    )
+      return true;
+    else return false;
+  };
   // ===========👇 Add background IMAGE👇  ===================
   const setBackgroundImage = (e) => {
     const reader = new FileReader();
-    console.log("img=>",e.target.files[0].width)
+    console.log("imag=>", e.target.files[0].width);
     setAllImages([...allImages, e.target.files[0]]);
 
     reader.onload = function (event) {
@@ -122,7 +136,31 @@ const AdminTemplateCreateScreen = () => {
     reader.readAsDataURL(e.target.files[0]);
   };
   // ============👆Add background IMAGE👆   =================
+  const addShape = (shape) => {
+    if (shape === "Line") {
+      const line = new fabric.Line([80, 100, 200, 100], {
+        stroke: "black",
+        strokeWidth: 5,
+      });
 
+      // Add the line to the canvas
+      editor.canvas.add(line);
+      editor?.canvas.renderAll();
+    } else {
+      const object = new fabric[shape]({
+        // left: 100,
+        // top: 100,
+        left: width / 2,
+        top: height / 2,
+        width: shape === "Circle" ? 0 : 200,
+        height: shape === "Circle" ? 0 : 100,
+        radius: shape === "Circle" ? 50 : 0,
+        fill: "black",
+      });
+      editor.canvas.add(object);
+      editor?.canvas.renderAll();
+    }
+  };
   // ===========================================
 
   // ========== Stickers modal ============
@@ -150,7 +188,13 @@ const AdminTemplateCreateScreen = () => {
     });
     editor.canvas.add(object);
   };
-
+  // ========= This Func For changing text alignment
+  const textAlign = (value) => {
+    console.log(value);
+    const o = editor?.canvas?.getActiveObject();
+    o.set("textAlign", value);
+    editor?.canvas.renderAll();
+  };
   // ========= THis Fuc For Changing TExt Color
 
   const changeColor = (e) => {
@@ -670,15 +714,33 @@ const AdminTemplateCreateScreen = () => {
                 </ListItemButton>
                 {/* 👆 Font Style UNDERLINE 👆   */}
                 {/*  👇 Font Style STRIKETHROUGH  👇    */}
-                <ListItemButton
+                {/* <ListItemButton
                   sx={{ ...ListItemButtonStyle3 }}
                   onClick={strike}
                 >
                   <ListItemIcon>
                     <StrikethroughSIcon />
                   </ListItemIcon>
-                </ListItemButton>
+                </ListItemButton> */}
                 {/* 👆 Font Style STRIKETHROUGH 👆   */}
+                <ButtonGroup
+                  variant="outlined"
+                  aria-label="outlined button group"
+                  sx={{ marginBottom: "10px" }}
+                >
+                  <Button onClick={() => textAlign("left")}>
+                    <FormatAlignLeftIcon />
+                  </Button>
+                  <Button onClick={() => textAlign("center")}>
+                    <FormatAlignCenterIcon />
+                  </Button>
+                  <Button onClick={() => textAlign("right")}>
+                    <FormatAlignRightIcon />
+                  </Button>
+                  <Button onClick={() => textAlign("justify")}>
+                    <FormatAlignJustifyIcon />
+                  </Button>
+                </ButtonGroup>
               </Stack>
             </Grid>
             {/* 👆 TOOLS TO EDIT TEXT(VISIBLE WHEN TEXT IS SELECTED) 👆   */}
@@ -809,6 +871,18 @@ const AdminTemplateCreateScreen = () => {
                 </ListItemButton>
 
                 {/* 👆 ==== Add Photo ==== 👆   */}
+                <ShapeTools addShape={addShape} />
+                {checkActiveObject(editor?.canvas?.getActiveObject()?.type) ? (
+                  <ListItemButton
+                    sx={{ ...ListItemButtonStyle3 }}
+                    onClick={changeColor}
+                  >
+                    <input type="color" onChange={changeColor} />
+                  </ListItemButton>
+                ) : (
+                  ""
+                )}
+                {/*  👇 change font COLOR button  👇    */}
 
                 {/*  👇==== Add text ====  👇    */}
                 <ListItemButton
@@ -834,6 +908,7 @@ const AdminTemplateCreateScreen = () => {
                   </ListItemText>
                 </ListItemButton>
                 {/* 👆 ==== Add text ==== 👆   */}
+
                 {/*  👇==== Stickers ====  👇    */}
                 <ListItemButton
                   sx={{ ...ListItemButtonStyle }}
