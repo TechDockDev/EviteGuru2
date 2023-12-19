@@ -52,7 +52,20 @@ const purchasePlan = expressAsyncHandler(async (req, res) => {
   res.json({ url: session.url });
   // res.redirect(303, session.url);
 });
+const unSubscribe = expressAsyncHandler(async (req, res) => {
+  const userId = req.user.id;
 
+  const user = await User.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.planType = undefined;
+  user.subscription = undefined;
+
+  await user.save();
+  res.json({ message: "Unsubscribed successfully" });
+});
 const paymentSuccess = expressAsyncHandler(async (req, res) => {
   const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
   if (session.payment_status === "paid") {
@@ -135,4 +148,5 @@ export {
   purchasePlan,
   paymentSuccess,
   paymentFailure,
+  unSubscribe,
 };

@@ -20,6 +20,7 @@ import {
   leftInvitees,
   openStatus,
   sendInvitation,
+  sendRSVPNote,
 } from "../../controllers/guestController.js";
 import { userAuth } from "../../middlewares/authMiddleware.js";
 import multer from "multer";
@@ -54,6 +55,7 @@ guestRouter.post(
   checkAvailabilityOfInvitee,
   addGuestsFromAddressBook
 );
+guestRouter.patch("/sendRSVPNote", sendRSVPNote);
 guestRouter.patch("/response", guestResponse);
 guestRouter.patch("/response-deny", guestResponseDeny);
 guestRouter.patch(

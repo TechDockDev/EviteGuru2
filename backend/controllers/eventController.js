@@ -3,8 +3,17 @@ import EventDetails from "../models/eventModel.js";
 import Guest from "../models/guestModel.js";
 
 const createEvent = asyncHandler(async (req, res) => {
-  let { name, hostName, date, venue, address, additionalInfo, variationId } =
-    req.body;
+  let {
+    name,
+    hostName,
+    date,
+    venue,
+    address,
+    additionalInfo,
+    variationId,
+    mealPreferences,
+    dressCode,
+  } = req.body;
   const eventDetails = await EventDetails.create({
     name,
     hostName,
@@ -14,6 +23,8 @@ const createEvent = asyncHandler(async (req, res) => {
     additionalInfo,
     user: req.user.id,
     variation: variationId,
+    mealPreferences,
+    dressCode,
   });
   res.json({
     status: "success",
@@ -111,7 +122,11 @@ const getTotalEventsByUser = asyncHandler(async (req, res) => {
 });
 
 const editEvent = asyncHandler(async (req, res) => {
-  const event = await EventDetails.findByIdAndUpdate(req.params.id, req.body);
+  const event = await EventDetails.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
   res.json({
     status: "success",
     message: "Event has been updated successfully",

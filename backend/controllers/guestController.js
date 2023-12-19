@@ -223,11 +223,28 @@ const getSingleGuest = asyncHandler(async (req, res) => {
 });
 
 const guestResponse = asyncHandler(async (req, res) => {
-  const { adult, child, eventId, singleGuestId } = req.body;
+  const { adult, child, mealPrefrences, eventId, singleGuestId } = req.body;
   const guest = await Guest.findOne({ event: eventId });
   const singleGuest = guest.guests.id(singleGuestId);
-  singleGuest.set({ adult, child, status: "Attending" });
+  singleGuest.set({ adult, child, mealPrefrences, status: "Attending" });
   await guest.save();
+
+  res.json({
+    status: "success",
+    message: "Guest Response has been taken successfully",
+  });
+});
+
+const sendRSVPNote = asyncHandler(async (req, res) => {
+  const { eventId, singleGuestId, rsvpNote } = req.body;
+  const guest = await Guest.findOne({ event: eventId });
+  console.log("Guest data", guest);
+  const singleGuest = guest.guests.id(singleGuestId);
+  console.log("singleGuest======================>", singleGuest);
+  guest.set({ rsvpNote });
+  await guest.save();
+
+  console.log("RSVPNOTE data", guest);
   res.json({
     status: "success",
     message: "Guest Response has been taken successfully",
@@ -255,11 +272,15 @@ const sendInvitation = asyncHandler(async (req, res) => {
       return { id, email };
     } else return;
   });
+
+  console.log("gusestInfo", guestsInfo);
   const phoneNumbers = guestList.guests.map(({ id, phone }) => {
     if (guestIds.includes(id)) {
       return phone;
     }
   });
+
+  console.log("phoneNumbers", phoneNumbers);
   const ipAddress = req.socket.remoteAddress;
   const address = ipAddress.replace(/^.*:/, "");
   await sendBulkPersonalizedEmails(event, guestsInfo, address);
@@ -270,8 +291,12 @@ const sendInvitation = asyncHandler(async (req, res) => {
     }
     return { ...guest };
   });
+
+  console.log("guests", guests);
   guestList.guests = guests;
+
   await guestList.save();
+  console.log("guests", guests);
   res.json({
     status: "success",
     message: "Invitations have been sent successfully",
@@ -328,7 +353,10 @@ const editGuestInEvent = expressAsyncHandler(async (req, res) => {
 
 const editGuestInAddressBook = expressAsyncHandler(async (req, res) => {
   const { name, email, phone, membersAllowed, singleGuestId } = req.body;
-  const guest = await Guest.findOne({ user: req.user.id, listType: "addressBook" });
+  const guest = await Guest.findOne({
+    user: req.user.id,
+    listType: "addressBook",
+  });
   const singleGuest = guest.guests.id(singleGuestId);
   singleGuest.set({ name, email, phone, membersAllowed });
   await guest.save();
@@ -372,6 +400,7 @@ export {
   getGuestList,
   getSingleGuest,
   guestResponse,
+  sendRSVPNote,
   guestResponseDeny,
   getGuestListByUser,
   getGuestListByEvent,

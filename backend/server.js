@@ -67,3 +67,8 @@ const PORT = process.env.PORT || 8080; // port No.
 app.listen(PORT, async (req, res) => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
+
+// for future changes
+// TWILIO_ACCOUNT_SID=AC1e0a08985c3b7c02fd3f9349368ee358
+// TWILIO_AUTH_TOKEN=bea47ca632e5ee377ce3db9d7ad07259
+// JWT_SECRET=VZNAGhARsRZUftJtigpz

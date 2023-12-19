@@ -230,6 +230,15 @@ const updateUser = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndDelete(req.params.userId);
+
+  res.json({
+    status: "success",
+    message: "User delete successfully",
+    user,
+  });
+});
 // logout
 const logOut = asyncHandler(async (req, res) => {
   res
@@ -252,5 +261,6 @@ export {
   changePassword,
   changeForgetPasssword,
   forgetPasssword,
+  deleteUser,
   logOut,
 };

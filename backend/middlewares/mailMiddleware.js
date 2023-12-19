@@ -71,15 +71,24 @@ async function sendBulkPersonalizedEmails(event, guestInfo, address) {
     // Only needed if you don't have a real mail account for testing
     let testAccount = await nodemailer.createTestAccount();
     // create reusable transporter object using the default SMTP transport
+
     let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false, // true for 465, false for other ports
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
       auth: {
-        user: "conrad.huel@ethereal.email", // generated ethereal user
-        pass: "Pjs6dmvjXsu6xXbhAQ", // generated ethereal password
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
       },
     });
+    // let transporter = nodemailer.createTransport({
+    //   host: "smtp.ethereal.email",
+    //   port: 587,
+    //   secure: false, // true for 465, false for other ports
+    //   auth: {
+    //     user: "conrad.huel@ethereal.email", // generated ethereal user
+    //     pass: "Pjs6dmvjXsu6xXbhAQ", // generated ethereal password
+    //   },
+    // });
 
     // send mail with defined transport object
     guestInfo.forEach(({ id, email }) => {
@@ -92,6 +101,7 @@ async function sendBulkPersonalizedEmails(event, guestInfo, address) {
             // text: body,
             html: generateHtml(id, event, address),
           },
+
           (err, info) => {
             if (err) {
               console.log(err);
@@ -99,6 +109,7 @@ async function sendBulkPersonalizedEmails(event, guestInfo, address) {
             }
           }
         );
+        console.log("INFO++++++++++++", info);
       }
     });
 

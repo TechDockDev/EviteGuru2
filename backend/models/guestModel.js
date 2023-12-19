@@ -14,6 +14,15 @@ const singleGuestSchema = mongoose.Schema(
     membersAllowed: {
       type: Number,
     },
+    mealPrefrences: {
+      type: String,
+      default: null,
+    },
+    rsvpNote: {
+      type: String,
+      default: null,
+    },
+
     status: {
       type: String,
       enum: ["Not Invited", "Pending", "Open", "Not Attending", "Attending"],

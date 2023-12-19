@@ -4,6 +4,7 @@ import {
   paymentFailure,
   paymentSuccess,
   purchasePlan,
+  unSubscribe,
   viewPlan,
   viewallPlans,
 } from "../../controllers/subscriptionController.js";
@@ -11,6 +12,7 @@ import {
 const subscriptionRouter = express.Router();
 
 subscriptionRouter.post("/purchase", userAuth, purchasePlan);
+subscriptionRouter.get("/unSubscribe", userAuth, unSubscribe);
 subscriptionRouter.get("/success", paymentSuccess);
 subscriptionRouter.get("/failure", paymentFailure);
 subscriptionRouter.get("/all", viewallPlans);
